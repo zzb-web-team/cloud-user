@@ -1,0 +1,550 @@
+body,
+div,
+span,
+header,
+footer,
+nav,
+section,
+aside,
+article,
+ul,
+dl,
+dt,
+dd,
+li,
+a,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+i,
+b,
+em,
+textarea,
+button,
+input,
+select,
+figure,
+figcaption {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-decoration: none;
+    border: none;
+    // font-weight: normal;
+    // font-family: PingFangSC-Light, helvetica, "Heiti SC";
+    box-sizing: border-box;
+    font-size: 14px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    &:hover {
+        outline: none;
+    }
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+//头部样式
+.top_title {
+    width: 100%;
+    height: 60px;
+    line-height: 70px;
+    text-align: left;
+    font-size: 18px;
+    color: #202020;
+    background: #ffffff;
+    padding-left: 45px;
+    box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.07);
+}
+
+.content-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.customWidth {
+    width: 20%;
+    .el-form-item__label {
+        width: 90px !important;
+    }
+    .el-form-item__content {
+        margin-left: 80px !important;
+    }
+    input {
+        width: 80%;
+    }
+}
+
+.content-container {
+    // padding: 0 !important;
+    background: #F7F8FC;
+}
+
+.content {
+    width: 100%;
+    // max-width: 1920px;
+    height: 100%;
+    background: #F7F8FC;
+}
+
+//登录框样式
+.log_input .el-input {
+    width: 80%;
+}
+
+.log_input .el-form-item__content {
+    display: flex;
+}
+
+.login-form-input .el-input__inner {
+    border: 0 none;
+    border-radius: 0px;
+}
+
+.ipfs_item_img>p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.domain_dialog .customWidth {
+    width: 35%;
+}
+
+.domain_dialog .customWidth .el-form-item__content {
+    margin-left: 90px !important;
+}
+
+.domain_dialog .customWidth .el-form-item__content .el-input {
+    width: 80%;
+}
+
+.domain_dialog .customWidth .el-form-item__label {
+    width: 100px !important;
+    overflow: hidden;
+}
+
+.yama .el-form-item__label {
+    width: 120px;
+}
+
+.yama .el-input {
+    width: 77%;
+}
+
+.yama .el-form-item__error {
+    left: 23%;
+}
+
+//筛选按钮旋转
+.aa {
+    transition: all 1s;
+}
+
+.go {
+    transform: rotate(-180deg);
+    transition: all 1s;
+}
+
+//筛选按钮背景色
+.seach_top_right {
+    float: left;
+    width: 80px;
+    text-align: center;
+    height: 36px;
+    margin-top: 10px;
+    line-height: 36px;
+    margin-left: 10px;
+    color: #666666;
+}
+
+.setwhile {
+    background: #ffffff;
+    margin-top: 0px;
+    border: 1px solid #DCDFE6;
+}
+
+.sethui {
+    background: #f2f6fa;
+    border: none;
+    height: 50px !important;
+}
+
+//忘记密码
+.forget_from .el-form-item .el-form-item__content {
+    margin-left: 0 !important;
+}
+
+//注册
+.registered_from .el-form-item .el-form-item__content {
+    margin-left: 0 !important;
+}
+
+//手机号登录
+.phone_log .el-form-item .el-form-item__content {
+    margin-left: 0 !important;
+}
+
+.el-dialog {
+    padding-right: 40px;
+}
+
+.yure_content .el-tabs__header {
+    padding-left: 45px;
+    margin-top: -4px;
+    background: #ffffff;
+    font-size: 20px;
+}
+
+.yure_content .el-tabs .el-tabs__content {
+    margin: auto;
+    height: 590px;
+    background: #ffffff;
+    margin-left: 45px;
+    margin-right: 45px;
+    padding: 29px 45px;
+    margin-top: 38px;
+    box-shadow: 0px 3px 7px 0px rgba(51, 97, 146, 0.07);
+}
+
+.statisics_con .el-tabs__header {
+    padding-left: 45px;
+    margin-top: -10px;
+    background: #ffffff;
+    font-size: 20px;
+}
+
+.statisics_con .el-tabs .el-tabs__content {
+    margin: auto;
+}
+
+.resources_con .el-tabs .el-tabs__content {
+    margin: auto;
+}
+
+.resources_con .el-tabs__header {
+    padding-left: 45px;
+    margin-top: -10px;
+    background: #ffffff;
+    font-size: 20px;
+}
+
+.termail_con .el-tabs .el-tabs__content {
+    margin: auto;
+}
+
+.termail_con .el-tabs__header {
+    padding-left: 45px;
+    margin-top: -10px;
+    background: #ffffff;
+    font-size: 20px;
+}
+
+.termail_con .el-dialog {
+    width: 23%;
+}
+
+.batch_huan .el-dialog {
+    width: 23%;
+}
+
+.copy_active2 .el-dialog {
+    width: 25%;
+}
+
+.bath .el-tabs {
+    height: 697px;
+}
+
+.bath .is-left {
+    width: 180px;
+    height: 50px;
+    text-align: center !important;
+    font-size: 16px;
+    line-height: 50px;
+}
+
+#tab-zero {
+    margin-bottom: 15px;
+}
+
+.customize .el-dialog {
+    width: 25%;
+}
+
+.el-button--primary.is-plain {
+    color: #297AFF;
+    background: #ffffff;
+    border-color: #297AFF;
+}
+
+.el-button--primary {
+    color: #FFF;
+    background-color: #297AFF;
+    border-color: #297AFF;
+}
+
+.el-button--text {
+    color: #297AFF;
+    background: 0 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #297AFF;
+    color: #FFF;
+}
+
+.el-tabs__item.is-active {
+    color: #297AFF;
+}
+
+.el-tabs__active-bar {
+    background-color: #297AFF;
+}
+
+.el-radio__input.is-checked+.el-radio__label {
+    color: #297AFF;
+}
+
+.el-radio__input.is-checked .el-radio__inner {
+    border-color: #297AFF;
+    background: #297AFF;
+}
+
+.el-tabs__item {
+    color: #b8b8b8;
+    font-size: 16px;
+}
+
+.el-submenu__title {
+    padding-left: 70px !important;
+}
+
+.el-submenu .el-menu-item {
+    padding-left: 80px !important;
+}
+
+// .el-menu .el-menu-item:first-child {
+//     padding-left: 70px !important;
+// }
+.el-menu-vertical-demo .el-menu {
+    box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+}
+
+.el-table {
+    color: #666666;
+    font-size: 14px;
+}
+
+.el-table__header tr,
+.el-table__header th {
+    padding: 0;
+    height: 48px;
+}
+
+.el-table__body tr,
+.el-table__body td {
+    padding: 0;
+    height: 48px;
+}
+
+.add_url .el-input {
+    width: 300px;
+}
+
+.add_url .el-form-item {
+    text-align: left;
+}
+
+.add_url .el-input__inner {
+    height: 36px;
+}
+
+.add_url .other_bgc .el-input__inner {
+    background-color: #F3F6FB;
+    // border: none;
+}
+
+.lot_operating .lot_maintag {
+    width: 180px;
+}
+
+.lot_operating .lot_subtag .el-input__inner {
+    width: 130px;
+    text-align: center;
+}
+
+.el-steps--simple {
+    background: none;
+    margin-bottom: 37px;
+}
+
+.el-tabs__content {
+    overflow: initial;
+}
+
+.bath_m .el-tabs__content {
+    overflow: hidden !important;
+}
+
+.bath_m .bath_demo_dynamic .el-form-item__content {
+    display: flex;
+}
+
+.bath_m .bath_demo_dynamic .el-form-item__content .el-select {
+    margin: 0 5px;
+}
+
+.bath_m .bath_demo_dynamic .el-form-item__content .el-input {
+    margin: 0 5px;
+}
+
+.bath_m .bath_demo_dynamic .el-form-item__content .el-button {
+    margin-left: 10px;
+}
+
+//下载excel模板
+.simple #dwonexcel {
+    position: absolute;
+    top: 17px;
+    left: 205px;
+    width: 85px;
+    height: 36px;
+    line-height: 12px;
+    padding: 1px;
+    text-align: center;
+    border: 1px solid rgba(41, 122, 255, 1);
+    border-radius: 2px;
+}
+
+.con .el-upload-list__item {
+    height: 45px;
+    line-height: 45px;
+    background-color: #ffebcd45;
+    ;
+}
+
+.con .el-upload-list__item:first-child {
+    margin-top: 0;
+}
+
+.con .el-upload-list__item .el-icon-close {
+    top: 12.5px;
+    font-size: 22px;
+}
+
+.simple ul {
+    border-radius: 2px;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    overflow-y: auto;
+}
+
+.el-input-group__append {
+    background-color: #297AFF;
+    color: #297AFF;
+    border: 1px solid #297AFF;
+}
+
+.setpwd .el-dialog__body {
+    padding-left: 40px;
+}
+
+.setpwd .el-input {
+    width: 85%;
+}
+
+.setpwd .el-form-item {
+    text-align: right;
+}
+
+.setpwd .el-form-item__error {
+    padding-left: 80px;
+}
+
+.huancuntime .el-date-editor.el-input {
+    width: 70% !important;
+}
+
+.huancunoption .el-cascader {
+    width: 70%;
+}
+
+.huandan .el-radio-button__inner {
+    width: 111px;
+}
+
+.domin_index .firsturl .cell {
+    // max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.lot_operating .cell {
+    // max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.copy_configuration .cell {
+    // max-width: 1100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.pei_zhi_tabel .el-table_2_column_8 .cell {
+    // max-width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.el-input__inner {
+    height: 36px;
+    line-height: 36px;
+}
+
+.el-button {
+    padding: 10px 30px;
+    border-radius: 2px;
+}
+
+.domin_index .el-button {
+    padding: 10px 10px;
+}
+
+.pei_ting {
+    width: 59px;
+    padding: 0;
+    margin: 0;
+}
+
+.registered .el-dialog__footer {
+    text-align: center;
+}
+
+.registered .el-dialog {
+    margin-top: 10vh !important;
+}
+
+.forget_pwd .el-button,
+.registered .el-button,
+.phone_log .el-button,
+.information .el-dialog__body .el-button {
+    padding: 0 !important;
+}
+
+.simple .el-table .cell {
+    white-space: pre-line;
+}

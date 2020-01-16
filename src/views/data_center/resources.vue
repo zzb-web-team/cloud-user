@@ -652,8 +652,8 @@ export default {
       params.start_ts = this.starttime;
       params.end_ts = this.endtime;
       params.chanId = this.chanid + "";
-      if (this.value1[1]) {
-        params.fileName = this.value1[1];
+      if (this.value1) {
+        params.fileName = this.value1;
       } else {
         params.fileName = "*";
       }

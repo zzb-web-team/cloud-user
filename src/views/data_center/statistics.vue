@@ -395,7 +395,8 @@ export default {
       optionsa3: [
         { value: 0, label: "移动" },
         { value: 1, label: "联通" },
-        { value: 2, label: "电信" }
+        { value: 2, label: "电信" },
+        { value: 3, label: "其他" }
       ],
       optionsb1: [],
       optionsb2: [],

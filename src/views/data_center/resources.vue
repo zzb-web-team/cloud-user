@@ -657,8 +657,8 @@ export default {
       } else {
         params.fileName = "*";
       }
-      if (this.value2) {
-        params.region = this.value2;
+      if (this.value2[1]) {
+        params.region = this.value2[1];
       } else {
         params.region = "*";
       }
@@ -701,8 +701,8 @@ export default {
       } else {
         params.fileName = "*";
       }
-      if (this.value2) {
-        params.region = this.value2;
+      if (this.value2[1]) {
+        params.region = this.value2[1];
       } else {
         params.region = "*";
       }

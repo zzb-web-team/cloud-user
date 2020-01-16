@@ -23,7 +23,7 @@
                   :value="item.label"
                 ></el-option>
               </el-select>
-              <el-select
+              <!-- <el-select
                 v-model="value_a2"
                 placeholder="区域"
                 style="width: 10%;margin-right: 10px;"
@@ -36,7 +36,16 @@
                   :label="item.label"
                   :value="item.label"
                 ></el-option>
-              </el-select>
+              </el-select> -->
+              <el-cascader
+                style="width: 10%;margin-right: 10px;line-height: 36px;"
+                placeholder="区域"
+                :options="optionsa2"
+                ref="cascaderAddr"
+                :show-all-levels="false"
+                v-model="value_a2"
+                @change="getdata"
+              ></el-cascader>
               <el-select
                 v-model="value_a3"
                 placeholder="运营商"
@@ -243,20 +252,15 @@
                   :value="item.label"
                 ></el-option>
               </el-select>
-              <el-select
-                v-model="value_c2"
+              <el-cascader
+                style="width: 10%;margin-right: 10px;line-height: 36px;"
                 placeholder="区域"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata2()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="(item, index) in optionsc2"
-                  :key="index + 'label'"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select>
+                :options="optionsa2"
+                ref="cascaderAddr"
+                :show-all-levels="false"
+                v-model="value_c2"
+                @change="getdata2"
+              ></el-cascader>
               <el-select
                 v-model="value_c3"
                 placeholder="运营商"
@@ -481,7 +485,193 @@ export default {
       timeArray1: [], //图二x
       playTimesArray2: [], //图三y
       timeArray2: [], //图三x
-      vadio_page: 0
+      vadio_page: 0,
+      optionsa2: [
+        {
+          value: "华北",
+          label: "华北",
+          children: [
+            {
+              value: "北京",
+              label: "北京"
+            },
+            {
+              value: "内蒙古",
+              label: "内蒙古"
+            },
+            {
+              value: "山西",
+              label: "山西"
+            },
+            {
+              value: "河北",
+              label: "河北"
+            },
+            {
+              value: "天津",
+              label: "天津"
+            }
+          ]
+        },
+        {
+          value: "西北",
+          label: "西北",
+          children: [
+            {
+              value: "宁夏",
+              label: "宁夏"
+            },
+            {
+              value: "陕西",
+              label: "陕西"
+            },
+            {
+              value: "甘肃",
+              label: "甘肃"
+            },
+            {
+              value: "青海",
+              label: "青海"
+            },
+            {
+              value: "新疆",
+              label: "新疆"
+            }
+          ]
+        },
+        {
+          value: "东北",
+          label: "东北",
+          children: [
+            {
+              value: "黑龙江",
+              label: "黑龙江"
+            },
+            {
+              value: "吉林",
+              label: "吉林"
+            },
+            {
+              value: "辽宁",
+              label: "辽宁"
+            }
+          ]
+        },
+        {
+          value: "华东",
+          label: "华东",
+          children: [
+            {
+              value: "福建",
+              label: "福建"
+            },
+            {
+              value: "江苏",
+              label: "江苏"
+            },
+            {
+              value: "安徽",
+              label: "安徽"
+            },
+            {
+              value: "山东",
+              label: "山东"
+            },
+            {
+              value: "上海",
+              label: "上海"
+            },
+            {
+              value: "浙江",
+              label: "浙江"
+            }
+          ]
+        },
+        {
+          value: "华中",
+          label: "华中",
+          children: [
+            {
+              value: "河南",
+              label: "河南"
+            },
+            {
+              value: "湖北",
+              label: "湖北"
+            },
+            {
+              value: "江西",
+              label: "江西"
+            },
+            {
+              value: "湖南",
+              label: "湖南"
+            }
+          ]
+        },
+        {
+          value: "西南",
+          label: "西南",
+          children: [
+            {
+              value: "贵州",
+              label: "贵州"
+            },
+            {
+              value: "云南",
+              label: "云南"
+            },
+            {
+              value: "重庆",
+              label: "重庆"
+            },
+            {
+              value: "四川",
+              label: "四川"
+            },
+            {
+              value: "西藏",
+              label: "西藏"
+            }
+          ]
+        },
+        {
+          value: "华南",
+          label: "华南",
+          children: [
+            {
+              value: "广东",
+              label: "广东"
+            },
+            {
+              value: "广西",
+              label: "广西"
+            },
+            {
+              value: "海南",
+              label: "海南"
+            }
+          ]
+        },
+        {
+          value: "其他",
+          label: "其他",
+          children: [
+            {
+              value: "香港",
+              label: "香港"
+            },
+            {
+              value: "澳门",
+              label: "澳门"
+            },
+            {
+              value: "台湾",
+              label: "台湾"
+            }
+          ]
+        }
+      ]
     };
   },
   filters: {
@@ -543,28 +733,27 @@ export default {
       getvideo(params)
         .then(res => {
           console.log(res);
-          if(res.status==0){
-            res.result.cols.forEach((item,index)=>{
-              let obj={};
-              obj.value=index;
-              obj.label=item.url_name;
+          if (res.status == 0) {
+            res.result.cols.forEach((item, index) => {
+              let obj = {};
+              obj.value = index;
+              obj.label = item.url_name;
               this.optionsa1.push(obj);
-            })
-            if(res.result.les_count==0){
+            });
+            if (res.result.les_count == 0) {
               this.getcure(0);
-              this.vadio_page=0;
-            }else{
+              this.vadio_page = 0;
+            } else {
               this.vadio_page++;
               this.getseach();
             }
-          }else{
+          } else {
             this.$message.error(res.msg);
           }
         })
         .catch(error => {
           console.log(error);
         });
-      
     },
     //请求数据--曲线图
     getcure(data) {
@@ -579,8 +768,8 @@ export default {
         } else {
           params.fileName = "*";
         }
-        if (this.value_a2) {
-          params.region = this.value_a2;
+        if (this.value_a2[1]) {
+          params.region = this.value_a2[1];
         } else {
           params.region = "*";
         }
@@ -659,8 +848,8 @@ export default {
         } else {
           params.fileName = "*";
         }
-        if (this.value_c2) {
-          params.region = this.value_c2;
+        if (this.value_c2[1]) {
+          params.region = this.value_c2[1];
         } else {
           params.region = "*";
         }
@@ -697,8 +886,8 @@ export default {
       } else {
         params.fileName = "*";
       }
-      if (this.value_c2) {
-        params.region = this.value_c2;
+      if (this.value_c2[1]) {
+        params.region = this.value_c2[1];
       } else {
         params.region = "*";
       }

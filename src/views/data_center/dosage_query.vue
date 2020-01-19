@@ -23,8 +23,6 @@
 					>
 					</el-option>
 				</el-select>
-				<!-- <el-button>全部城市</el-button> -->
-
 				<el-button-group>
 					<el-button @click="today()">今天</el-button>
 					<el-button @click="yesterday()">昨天</el-button>

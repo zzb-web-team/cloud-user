@@ -52,7 +52,7 @@ export default {
 			title: '',
 			message: [],
 			options: {
-				target: 'http://39.100.131.247/url_mgmt/excel_url', //SpringBoot后台接收文件夹数据的接口
+				target: 'http://zzb.onezen.net/url_mgmt/excel_url', //SpringBoot后台接收文件夹数据的接口
 				testChunks: false, //是否测试分片
 				fileParameterName: 'excel'
 			},
@@ -73,7 +73,7 @@ export default {
 	},
 	methods: {
 		dolow() {
-			var url = 'http://39.100.131.247/static/url.xls';
+			var url = 'http://zzb.onezen.net/static/url.xls';
 			window.location.href = url;
 		},
 		//

@@ -17,16 +17,14 @@ import { Message } from 'element-ui';
 //         axios.defaults.baseURL = 'http://xyj.grapefruitcloud.com';
 //         break;
 //     default: //测试环境
-//         axios.defaults.baseURL = 'http://39.100.131.247';
+//         axios.defaults.baseURL = 'http://zzb.onezen.net';
 // }
 var href = window.location.href;
 
 if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
     var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 } else {
-    var userUrl = 'http://39.100.131.247';
-    var yourUrl = 'http://test.zzb.com';
-    // var yourUrl = 'http://10.0.0.140:8090'
+    var userUrl = 'http://zzb.onezen.net';
 }
 // 请求超时时间
 axios.defaults.timeout = 10000;

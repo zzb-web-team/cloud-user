@@ -17,7 +17,7 @@
 			<el-upload
 				class="upload-demo"
 				ref="upload"
-				action="http://39.100.131.247/url_mgmt/excelurluser"
+				action="uploadurl+'/url_mgmt/excelurluser'"
 				:on-preview="handlePreview"
 				:on-remove="handleRemove"
 				:file-list="fileList"
@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import { query_url, add_url } from '../../servers/api';
+import { query_url, add_url, uploadurl } from '../../servers/api';
 export default {
 	inject: ['reload'],
 	data() {
@@ -365,7 +365,7 @@ export default {
 		},
 		errormove(err, file, fileList) {},
 		down() {
-			var url = 'http://39.100.131.247/static/user_url.xls';
+			var url = 'uploadurl/static/user_url.xls';
 			window.location.href = url;
 		},
 		// 表头样式设置

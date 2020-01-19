@@ -117,15 +117,18 @@
 						prop="url_name"
 						label="视频名称"
 					></el-table-column>
-					<!-- <el-table-column prop="id" label="加速">
-            <template slot-scope="scope">
-              <span
-                ><i class="el-icon-circle-check" style="color:#0abf5b;"></i
-                >已启用</span
-              >
-              <span>未启用</span>
-            </template>
-          </el-table-column> -->
+					<el-table-column prop="id" label="加速">
+						<template slot-scope="scope">
+							<!-- <span
+								><i
+									class="el-icon-circle-check"
+									style="color:#0abf5b;"
+								></i
+								>已启用</span
+							>
+							<span>未启用</span> -->
+						</template>
+					</el-table-column>
 					<el-table-column prop="status" label="状态" width="120">
 						<template slot-scope="scope">
 							<span

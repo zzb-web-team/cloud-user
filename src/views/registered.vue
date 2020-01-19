@@ -67,7 +67,7 @@
 							@click="sendyam"
 							:loading="loading"
 							:disabled="getyzmcode"
-							style="background: #297AFF;color: #fff;width:112px;"
+							style="background: #297AFF;color: #fff;width:112px;height:40px;"
 							>{{
 								getyzmcode == true ? num : '获取验证码'
 							}}</el-button

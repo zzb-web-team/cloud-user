@@ -6,11 +6,9 @@ var href = window.location.href;
 if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
     var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 } else {
-    var userUrl = 'http://39.100.131.247';
-    // var userUrl = 'http://test.zzb.com'
-    // var userUrl = 'http://10.0.0.140:8090'
+    var userUrl = 'http://zzb.onezen.net';
 }
-
+export const uploadurl = userUrl;
 //用户管理
 //忘记密码--重置密码
 export const loginbyphone = params =>

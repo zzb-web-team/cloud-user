@@ -10,7 +10,7 @@
 						>
 							<el-select
 								v-model="value1"
-								placeholder="文件名"
+								placeholder="视频名称"
 								style="width: 10%;margin-right: 10px;"
 								@change="getdata()"
 							>
@@ -105,6 +105,7 @@
 									<el-table
 										:data="tablecdn"
 										border
+										height="600"
 										style="width: 98%;margin:10px;"
 										:cell-style="rowClass"
 										:header-cell-style="headClass"
@@ -127,13 +128,13 @@
 											</template>
 										</el-table-column>
 									</el-table>
-									<fenye
+									<!-- <fenye
 										style="float:right;margin:10px 0 20px 0;"
 										@fatherMethod="getpage"
 										@fathernum="gettol"
 										:pagesa="total_cnt"
 										:currentPage="currentPage"
-									></fenye>
+									></fenye> -->
 								</el-col>
 							</el-row>
 						</div>
@@ -145,7 +146,7 @@
 						>
 							<el-select
 								v-model="valuea1"
-								placeholder="文件名"
+								placeholder="视频名称"
 								style="width: 10%;margin-right: 10px;"
 								@change="getdata1()"
 							>
@@ -761,8 +762,16 @@ export default {
 			params.pageSize = this.pageSize;
 			accelerate_flow_table(params)
 				.then(res => {
-					this.tablecdn = res.data.tableList;
-					this.total_cnt = res.data.totalCnt;
+					if (res.status == 0) {
+						if (res.data.timeArray.length > 0) {
+							res.data.timeArray.forEach((item, index) => {
+								let obj = {};
+								obj.timeStamp = item;
+								obj.dataFlow = res.data.streamArray[index];
+								this.tablecdn.push(obj);
+							});
+						}
+					}
 				})
 				.catch(err => {});
 		},

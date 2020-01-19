@@ -107,7 +107,7 @@
 							<el-button
 								v-if="titlename == '修改手机号'"
 								slot="append"
-								style="background: #297AFF;color: #fff;width:112px;"
+								style="background: #297AFF;color: #fff;width:112px;height:40px;"
 								@click="getsscode(titlename)"
 								:disabled="getyzmcode"
 								>{{

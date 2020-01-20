@@ -17,7 +17,7 @@
 			<el-upload
 				class="upload-demo"
 				ref="upload"
-				action="uploadurl+'/url_mgmt/excelurluser'"
+				:action="excel_url"
 				:on-preview="handlePreview"
 				:on-remove="handleRemove"
 				:file-list="fileList"
@@ -190,6 +190,7 @@ export default {
 			title: '',
 			chanid: '',
 			errnum: 0,
+			excel_url: '',
 			disable: true,
 			dialogVisible: false,
 			tableType: false
@@ -201,6 +202,9 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
+
+		this.excel_url = uploadurl + '/url_mgmt/excelurluser';
+		console.log(uploadurl, '*************', this.excel_url);
 	},
 	methods: {
 		splitData(list) {
@@ -289,8 +293,8 @@ export default {
 						res.data[i].label = res.data[i].label + '';
 						res.data[i].status = '';
 						res.data[i].buser_id = this.chanid + '';
-						var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/; // objExp = new RegExp(resyzm);
-						var resship = /^(?!(\d+)$)[\u4e00-\u9fffa-zA-Z\d]{2,50}$/;
+						var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/; // 校验url
+						var resship = /^(?!(\d+)$)[\u4e00-\u9fffa-zA-Z\d]{2,50}$/; //校验视频名称
 						var restable = /^[\u4e00-\u9fffa-zA-Z\d]{4,64}$/; //校验标签
 						var resnum = /^[0-9]*$/; //校验终端
 						if (this.getBLen(res.data[i].url) > 1024) {
@@ -365,7 +369,7 @@ export default {
 		},
 		errormove(err, file, fileList) {},
 		down() {
-			var url = 'uploadurl/static/user_url.xls';
+			var url = uploadurl + '/static/user_url.xls';
 			window.location.href = url;
 		},
 		// 表头样式设置

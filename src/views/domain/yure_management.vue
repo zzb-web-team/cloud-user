@@ -94,7 +94,7 @@
 							<div
 								class="seach_top_right"
 								@click="option_display()"
-								:class="[rotate ? 'sethui' : 'setwhile']"
+								:class="[rotate ? 'sethui' : 'setwhiles']"
 							>
 								筛选
 								<i

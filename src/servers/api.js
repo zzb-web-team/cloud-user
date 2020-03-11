@@ -48,6 +48,9 @@ export const check_label = params =>
 //获取URL列表
 export const query_url = params =>
     post(`${userUrl}/url_mgmt/query_url`, params);
+//获取URL配置
+export const query_config = params =>
+    post(`${userUrl}/url_mgmt/query_config`, params);
 //添加URL
 export const add_url = params => post(`${userUrl}/url_mgmt/add_url`, params);
 //批量管理标签

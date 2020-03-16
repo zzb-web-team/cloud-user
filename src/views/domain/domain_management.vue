@@ -524,7 +524,8 @@ export default {
       urlArr.forEach((item, index) => {
         if (this.multipleSelection.includes(item)) {
           // 如果存在item，就在selection中删掉，再添加到currentSelection内
-          this.multipleSelection.splice(index, 1);
+          const idx = this.multipleSelection.indexOf(item);
+          this.multipleSelection.splice(idx, 1);
           setTimeout(() => {
             this.$refs.multipleTable.toggleRowSelection(this.tableData[index]);
           }, 200);

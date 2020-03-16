@@ -187,7 +187,7 @@
                 @change="gettimes_host"
               ></el-date-picker>
            
-            </div> -->
+            </div>-->
             <div class="device_form" style>
               <div id="myChart1" :style="{ height: '607px' }"></div>
             </div>
@@ -663,20 +663,24 @@ export default {
       params.time_unit = this.timeUnit;
       accelerate_flow(params)
         .then(res => {
-          this.dataFlowArray = res.data.streamArray;
-          this.dataFlownum = res.data.streamArray.length - 1;
-          let upcli = Math.floor(this.dataFlownum / 12);
-          res.data.timeArray.forEach((item, index) => {
-            if (
-              index == 0 ||
-              index == this.dataFlownum ||
-              (index % upcli == 0 && index < upcli * 11)
-            ) {
-              this.timeArray.push(getlocaltimes(item));
-            } else {
-              this.timeArray.push("");
-            }
-          });
+          if (res.status == 0) {
+            this.dataFlowArray = res.data.streamArray;
+            this.dataFlownum = res.data.streamArray.length - 1;
+            let upcli = Math.floor(this.dataFlownum / 12);
+            res.data.timeArray.forEach((item, index) => {
+              if (
+                index == 0 ||
+                index == this.dataFlownum ||
+                (index % upcli == 0 && index < upcli * 11)
+              ) {
+                this.timeArray.push(getlocaltimes(item));
+              } else {
+                this.timeArray.push("");
+              }
+            });
+          } else if (res.status == -1) {
+            this.$message("暂无数据");
+          }
           this.getbot();
           this.drawLine();
         })
@@ -745,21 +749,24 @@ export default {
       params.time_unit = this.timeUnit;
       backsource_flow(params)
         .then(res => {
-          this.dataFlowArray2 = res.data.streamArray;
-          this.dataFlownum2 = res.data.streamArray.length - 1;
-          let upcli = Math.floor(this.dataFlownum2 / 12);
-          res.data.timeArray.forEach((item, index) => {
-            if (
-              index == 0 ||
-              index == this.dataFlownum2 ||
-              (index % upcli == 0 && index < upcli * 11)
-            ) {
-              this.timeArray2.push(getlocaltimes(item));
-            } else {
-              this.timeArray2.push("");
-            }
-          });
-
+          if (res.status == 0) {
+            this.dataFlowArray2 = res.data.streamArray;
+            this.dataFlownum2 = res.data.streamArray.length - 1;
+            let upcli = Math.floor(this.dataFlownum2 / 12);
+            res.data.timeArray.forEach((item, index) => {
+              if (
+                index == 0 ||
+                index == this.dataFlownum2 ||
+                (index % upcli == 0 && index < upcli * 11)
+              ) {
+                this.timeArray2.push(getlocaltimes(item));
+              } else {
+                this.timeArray2.push("");
+              }
+            });
+          } else if (res.status == -1) {
+            this.$message("暂无数据");
+          }
           this.drawLine1();
         })
         .catch(err => {});

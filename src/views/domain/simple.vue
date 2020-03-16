@@ -214,7 +214,7 @@ export default {
               }
               setTimeout(() => {
                 this.$router.push({ path: "/domain_management" });
-              }, 1500);
+              }, 2000);
             }
             page++;
             this.uploadData(list, page);

@@ -377,8 +377,8 @@ export default {
 	color: #333333;
 	pointer-events: none; //不可点击
 	text-align: left;
-	height: 94px;
-	line-height: 94px;
+	height: 64px;
+	line-height: 64px;
 	span {
 		font-size: 18px;
 	}

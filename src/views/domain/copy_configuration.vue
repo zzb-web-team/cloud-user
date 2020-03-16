@@ -24,9 +24,9 @@
         </el-steps>
       </div>
 
-      <div v-if="actives === 1">
+      <div v-show="actives === 1">
         <el-table
-          ref="multipleTable"
+          ref="multipleTable_pei"
           :data="futableData"
           tooltip-effect="dark"
           stripe
@@ -70,9 +70,9 @@
           </el-table-column>
         </el-table>
         <el-button style="margin-top: 12px;" type="primary" @click="next">下一步</el-button>
-        <el-button style="margin-top: 12px;" @click="fureset">取消</el-button>
+        <el-button style="margin-top: 12px;" @click="fureset(1)">取消</el-button>
       </div>
-      <div v-else-if="actives === 2">
+      <div v-show="actives === 2">
         <div style="display: flex;justify-content: flex-start;align-items: center;margin: 10px 0">
           <span style="margin-right:21px;color:#333333;font-size:14px;">URL列表</span>
           <el-input
@@ -130,7 +130,7 @@
         </div>
         <el-button style="margin-top: 2px;" type="primary" @click="last">上一步</el-button>
         <el-button style="margin-top: 2px;" type="primary" @click="next">下一步</el-button>
-        <el-button style="margin-top: 2px;" @click="fureset">取消</el-button>
+        <el-button style="margin-top: 2px;" @click="fureset(2)">取消</el-button>
       </div>
     </div>
   </div>
@@ -165,25 +165,29 @@ export default {
           configuration: "回源HOST",
           nowconfiguration: "已配置",
           pname: "host_url",
-          tabnum: "two"
+          tabnum: "two",
+          index: 0
         },
         {
           configuration: "缓存设置",
           nowconfiguration: "已配置",
           pname: "cache_config",
-          tabnum: "there"
+          tabnum: "there",
+          index: 1
         },
         {
           configuration: "缓存过期时间",
           nowconfiguration: "已配置",
           pname: "expire_time",
-          tabnum: "second"
+          tabnum: "second",
+          index: 2
         },
         {
           configuration: "自定义页面",
           nowconfiguration: "",
           pname: "custom_page",
-          tabnum: "four"
+          tabnum: "four",
+          index: 3
         }
       ],
       //配置信息
@@ -312,23 +316,23 @@ export default {
     //配置项
     seturlconfig() {
       this.multipleSelection.forEach((item, index) => {
-        if (item == "host_url") {
-          this.configuration[item] = JSON.parse(
-            JSON.stringify(this.copydatalist[item])
+        if (item.pname == "host_url") {
+          this.configuration[item.pname] = JSON.parse(
+            JSON.stringify(this.copydatalist[item.pname])
           );
-        } else if (item == "cache_config") {
+        } else if (item.pname == "cache_config") {
           let dataarr = {};
           dataarr.cache_config = {};
           dataarr.cache_config.data = this.copydatalist.cache_config.data;
           dataarr.cache_config.valid = this.copydatalist.cache_config.valid;
           this.configuration.cache_config = dataarr;
-        } else if (item == "expire_time") {
+        } else if (item.pname == "expire_time") {
           this.configuration.cache_config = JSON.parse(
             JSON.stringify(this.copydatalist.cache_config)
           );
-        } else if (item == "custom_page") {
-          this.configuration[item] = JSON.parse(
-            JSON.stringify(this.copydatalist[item])
+        } else if (item.pname == "custom_page") {
+          this.configuration[item.pname] = JSON.parse(
+            JSON.stringify(this.copydatalist[item.pname])
           );
         }
       });
@@ -383,6 +387,7 @@ export default {
     },
     //下一步按钮
     next() {
+      console.log(this.actives);
       if (this.actives == 1) {
         if (this.multipleSelection.length <= 0) {
           this.$message.error("请至少勾选一个配置项");
@@ -429,26 +434,37 @@ export default {
           });
       }
       if (this.actives++ > 2) {
-        if (this.active++ > 2) this.active = 0;
+        this.active = 0;
         return false;
       }
     },
     //复制配置上一步
     last() {
-      if (this.actives-- < 1) {
-        // this.actives = 0;
+      let _this = this;
+      if (_this.actives == 2) {
+        _this.$nextTick(function() {
+          _this.multipleSelection.forEach(item => {
+            console.log(item.index);
+            _this.$refs.multipleTable_pei.toggleRowSelection(
+              _this.futableData[item.index],
+              true
+            );
+          });
+        });
+      }
+      if (_this.actives-- < 1) {
+        _this.actives = 1;
         return false;
       }
     },
     //选择配置项
     handleSelectionChange(val) {
+      this.multipleSelection = [];
       if (val) {
         val.forEach((item, index) => {
-          this.multipleSelection.push(item.pname);
+          this.multipleSelection.push(item);
         });
       }
-      console.log(val);
-      console.log(this.multipleSelection);
     },
     //选择URL--多选
     handlistChange(val) {
@@ -475,8 +491,20 @@ export default {
       this.urllistVisible = true;
     },
     //复制配置取消
-    fureset() {
-      this.actives = 1;
+    fureset(num) {
+      console.log(num);
+      if (num == 1) {
+        this.$nextTick(function() {
+          this.multipleSelection.forEach(item => {
+            this.$refs.multipleTable_pei.toggleRowSelection(
+              this.futableData[item.index],
+              false
+            );
+          });
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
       this.dialupdata = false;
     },
     //返回

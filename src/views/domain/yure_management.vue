@@ -569,7 +569,7 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
-		this.gettoken();
+		// this.gettoken();
 	},
 	methods: {
 		//获去token列表

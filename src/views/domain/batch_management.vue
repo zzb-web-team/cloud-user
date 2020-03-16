@@ -368,10 +368,9 @@
                 </template>
               </el-table-column>
               <el-table-column
-                class="pei_zi_url"
                 prop="url"
                 label="链接"
-                style="width: 130px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
+                :show-overflow-tooltip="true"
               ></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
@@ -1377,5 +1376,11 @@ export default {
       padding-left: 27px;
     }
   }
+}
+.pei_zi_url {
+  max-width: 130px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

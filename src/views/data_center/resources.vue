@@ -4,76 +4,77 @@
     <div class="user-title" style="display: flex;flex-flow: column;">
       <div class="resources_con">
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="加速流量" name="first">
-            <div
-              style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+          <div
+            style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+          >
+            <el-select
+              v-model="value1"
+              placeholder="视频名称"
+              style="width: 10%;margin-right: 10px;"
+              @change="getdata()"
             >
-              <el-select
-                v-model="value1"
-                placeholder="视频名称"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="(item, index) in options1"
-                  :key="index + 'vadio'"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select>
-              <el-cascader
-                style="width: 10%;margin-right: 10px;line-height: 36px;"
-                placeholder="区域"
-                :options="optionsa2"
-                ref="cascaderAddr"
-                :show-all-levels="false"
-                v-model="value2"
-                @change="getdata"
-              ></el-cascader>
-              <el-select
-                v-model="value3"
-                placeholder="运营商"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="(item, index) in optionsa3"
-                  :key="item + index"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select>
-              <el-button-group>
-                <el-button v-show="!shoudzyx" @click="today()">今天</el-button>
-                <el-button v-show="!shoudzyx" @click="yesterday()">昨天</el-button>
-                <el-button v-show="!shoudzyx" @click="sevendat()">近7天</el-button>
-                <el-button v-show="!shoudzyx" @click="thirtyday()">近30天</el-button>
-                <el-button @click="showzdyx">
-                  自定义
-                  <i class="el-icon-date"></i>
-                </el-button>
-              </el-button-group>
-              <el-date-picker
-                v-show="shoudzyx"
-                style="margin-left:10px;"
-                v-model="val2"
-                type="datetimerange"
-                :picker-options="pickerOptions"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                align="left"
-                @change="gettimes"
-              ></el-date-picker>
-              <!-- <el-button
+              <el-option label="全部" value="*"></el-option>
+              <el-option
+                v-for="(item, index) in options1"
+                :key="index + 'vadio'"
+                :label="item.label"
+                :value="item.label"
+              ></el-option>
+            </el-select>
+            <el-cascader
+              style="width: 10%;margin-right: 10px;line-height: 36px;"
+              placeholder="区域"
+              :options="optionsa2"
+              ref="cascaderAddr"
+              :show-all-levels="false"
+              v-model="value2"
+              @change="getdata"
+            ></el-cascader>
+            <el-select
+              v-model="value3"
+              placeholder="运营商"
+              style="width: 10%;margin-right: 10px;"
+              @change="getdata()"
+            >
+              <el-option label="全部" value="*"></el-option>
+              <el-option
+                v-for="(item, index) in optionsa3"
+                :key="item + index"
+                :label="item.label"
+                :value="item.label"
+              ></el-option>
+            </el-select>
+            <el-button-group>
+              <el-button v-show="!shoudzyx" @click="today()">今天</el-button>
+              <el-button v-show="!shoudzyx" @click="yesterday()">昨天</el-button>
+              <el-button v-show="!shoudzyx" @click="sevendat()">近7天</el-button>
+              <el-button v-show="!shoudzyx" @click="thirtyday()">近30天</el-button>
+              <el-button @click="showzdyx">
+                自定义
+                <i class="el-icon-date"></i>
+              </el-button>
+            </el-button-group>
+            <el-date-picker
+              v-show="shoudzyx"
+              style="margin-left:10px;"
+              v-model="val2"
+              type="datetimerange"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              align="left"
+              @change="gettimes"
+            ></el-date-picker>
+            <!-- <el-button
                 style="margin-left:10px;"
                 type="primary"
                 @click="seachtu(1)"
                 >确定</el-button
-              >-->
-            </div>
+            >-->
+          </div>
+
+          <el-tab-pane label="加速流量" name="first">
             <div class="device_form">
               <div id="myChart" :style="{ height: '607px' }"></div>
             </div>
@@ -123,7 +124,7 @@
           </el-tab-pane>
 
           <el-tab-pane label="回源统计" name="second">
-            <div
+            <!-- <div
               style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
             >
               <el-select
@@ -185,13 +186,8 @@
                 align="left"
                 @change="gettimes_host"
               ></el-date-picker>
-              <!-- <el-button
-                style="margin-left:10px;"
-                type="primary"
-                @click="seachtu(2)"
-                >确定</el-button
-              >-->
-            </div>
+           
+            </div> -->
             <div class="device_form" style>
               <div id="myChart1" :style="{ height: '607px' }"></div>
             </div>
@@ -731,18 +727,18 @@ export default {
       params.start_ts = this.starttime;
       params.end_ts = this.endtime;
       params.chanId = this.chanid + "";
-      if (this.valuea1) {
-        params.fileName = this.valuea1;
+      if (this.value1) {
+        params.fileName = this.value1;
       } else {
         params.fileName = "*";
       }
-      if (this.valuea2[1]) {
-        params.region = this.valuea2[1];
+      if (this.value2[1]) {
+        params.region = this.value2[1];
       } else {
         params.region = "*";
       }
-      if (this.valuea3) {
-        params.isp = this.valuea3;
+      if (this.value3) {
+        params.isp = this.value3;
       } else {
         params.isp = "*";
       }
@@ -861,19 +857,13 @@ export default {
     },
     //选项卡
     handleClick(tab, event) {
-      this.starttime =
-        new Date(new Date().toLocaleDateString()).getTime() / 1000;
-      this.endtime = Date.parse(new Date()) / 1000;
-      this.settimeunit(this.starttime, this.endtime);
+      // this.starttime =
+      //   new Date(new Date().toLocaleDateString()).getTime() / 1000;
+      // this.endtime = Date.parse(new Date()) / 1000;
+      // this.settimeunit(this.starttime, this.endtime);
       if (tab.index == 0) {
-        this.value1 = "";
-        this.value2 = "";
-        this.value3 = "";
         this.gettable1();
       } else {
-        this.valuea1 = "";
-        this.valuea2 = "";
-        this.valuea3 = "";
         this.gettable2();
       }
     },
@@ -1059,8 +1049,7 @@ export default {
 <style lang="scss">
 .myself-container {
   width: 100%;
-  min-width: 1600px;
-
+  // min-width: 1600px;
   .device_form {
     width: auto;
     height: auto;

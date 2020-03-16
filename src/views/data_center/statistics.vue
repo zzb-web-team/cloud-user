@@ -1301,7 +1301,7 @@ export default {
 <style lang="scss">
 .myself-container {
   width: 100%;
-  min-width: 1600px;
+  // min-width: 1600px;
 
   .device_form {
     width: auto;

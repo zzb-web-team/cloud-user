@@ -51,13 +51,13 @@
                 >
                   <el-input v-model="tokene.name" placeholder="英文或汉字，30 字符内" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="类型：" :label-width="formLabelWidth">
+                <!-- <el-form-item label="类型：" :label-width="formLabelWidth">
                   <el-select v-model="tokene.region" placeholder="请选择终端类型" disabled>
                     <el-option label="ios/android" value="0"></el-option>
                     <el-option label="ios" value="1"></el-option>
                     <el-option label="android" value="2"></el-option>
                   </el-select>
-                </el-form-item>
+                </el-form-item> -->
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="quxzteaone">取 消</el-button>
@@ -74,7 +74,7 @@
             >
               <el-table-column prop="id" label="终端ID" width="160"></el-table-column>
               <el-table-column prop="term" label="终端"></el-table-column>
-              <el-table-column prop="type" label="终端类型"></el-table-column>
+              <!-- <el-table-column prop="type" label="终端类型"></el-table-column> -->
               <el-table-column label="token">
                 <template slot-scope="scope">
                   <el-button

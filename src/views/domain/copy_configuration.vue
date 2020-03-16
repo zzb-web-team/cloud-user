@@ -33,9 +33,10 @@
           style="width: 100%"
           :cell-style="rowClass"
           :header-cell-style="headClass"
+          :row-key="getRowKeysfirst"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
           <el-table-column prop="configuration" label="配置项"></el-table-column>
           <el-table-column prop="nowconfiguration" label="当前配置" show-overflow-tooltip>
             <template slot-scope="scope">
@@ -229,6 +230,10 @@ export default {
     getRowKey(row) {
       return row.url;
     },
+    getRowKeysfirst(row) {
+      return row.tabnum; // 设定每一条对应一个key
+    },
+
     //获取页码
     getpage(pages) {
       this.tolpage = pages;
@@ -356,6 +361,9 @@ export default {
                 type: "success",
                 message: "复制配置成功!"
               });
+              setTimeout(() => {
+                this.$router.push({ path: "/domain_management" });
+              }, 1000);
             } else {
               let errarr = "";
               res.data.res_data.forEach((item, index) => {
@@ -439,6 +447,8 @@ export default {
           this.multipleSelection.push(item.pname);
         });
       }
+      console.log(val);
+      console.log(this.multipleSelection);
     },
     //选择URL--多选
     handlistChange(val) {

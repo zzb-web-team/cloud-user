@@ -83,7 +83,7 @@
         >
           >
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="dominds" label="URL" class-name="firsturl"></el-table-column>
+          <el-table-column prop="dominds" label="URL" class-name="firsturl" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="url_name" label="视频名称"></el-table-column>
           <!-- <el-table-column prop="idstatus" label="加速">
             <template slot-scope="scope">

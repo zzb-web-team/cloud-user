@@ -103,7 +103,7 @@
                 }}
               </span>
             </template>
-          </el-table-column> -->
+          </el-table-column>-->
           <el-table-column label="上传状态">
             <template slot-scope="scope">
               <span v-if="scope.row.status == '成功'" style="color:green">成功</span>
@@ -212,6 +212,9 @@ export default {
                   }
                 }
               }
+              setTimeout(() => {
+                this.$router.push({ path: "/domain_management" });
+              }, 1500);
             }
             page++;
             this.uploadData(list, page);
@@ -313,8 +316,6 @@ export default {
             this.disable = false;
           }
           this.tableList = res.data;
-        } else {
-          this.$router.push({ path: "/domain_management" });
         }
       } else {
         this.$message({

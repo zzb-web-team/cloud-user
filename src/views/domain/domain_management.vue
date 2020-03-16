@@ -83,7 +83,12 @@
         >
           >
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column prop="dominds" label="URL" class-name="firsturl" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column
+            prop="dominds"
+            label="URL"
+            class-name="firsturl"
+            :show-overflow-tooltip="true"
+          ></el-table-column>
           <el-table-column prop="url_name" label="视频名称"></el-table-column>
           <!-- <el-table-column prop="idstatus" label="加速">
             <template slot-scope="scope">
@@ -231,6 +236,7 @@ export default {
     return {
       currentPage: 1,
       multipleSelection: [],
+      currentSelection: [],
       ruleForm: {
         pass: "",
         checkPass: "",
@@ -444,17 +450,6 @@ export default {
       sessionStorage.setItem("tabdata", JSON.stringify(this.tableData));
       this.$router.push({ path: "/lot_operating" });
     },
-    //多选
-    handleSelectionChange(val) {
-      if (val.leength == 0) {
-        this.multipleSelection = [];
-      } else {
-        this.multipleSelection = [];
-        val.forEach((item, index) => {
-          this.multipleSelection.push(item.dominds);
-        });
-      }
-    },
     // 保存选中的数据id,row-key就是要指定一个key标识这一行的数据
     getRowKey(row) {
       return row.url;
@@ -464,6 +459,9 @@ export default {
     },
     //获取数据列表
     getuserlist() {
+      // 已选择项
+      this.updateSelection();
+
       let params = new Object();
       params.page = this.tolpage - 1;
       params.buser_id = this.chanid + "";
@@ -501,10 +499,45 @@ export default {
                 obj.url = item.url;
               });
             }
+
+            // 整理列表选中项
+            this.formatChoosen(this.tableData);
           } else {
           }
         })
         .catch(err => {});
+    },
+
+    // 刷新已选择数组
+    updateSelection() {
+      if (this.currentSelection.length) {
+        this.multipleSelection = this.multipleSelection.concat(
+          this.currentSelection
+        );
+        this.currentSelection = [];
+        console.log("updateSelection:", this.multipleSelection);
+      }
+    },
+    // 整理列表选中项
+    formatChoosen(arr) {
+      const urlArr = this.tableData.map(item => item.dominds);
+      urlArr.forEach((item, index) => {
+        if (this.multipleSelection.includes(item)) {
+          // 如果存在item，就在selection中删掉，再添加到currentSelection内
+          this.multipleSelection.splice(index, 1);
+          setTimeout(() => {
+            this.$refs.multipleTable.toggleRowSelection(this.tableData[index]);
+          }, 200);
+        }
+      });
+      console.log("formatChoosen--multipleSelection:", this.multipleSelection);
+    },
+    //多选
+    handleSelectionChange(val) {
+      if (val.length) {
+        this.currentSelection = val.map(item => item.dominds);
+      }
+      console.log(this.currentSelection);
     },
     //获取页码
     getpage(pages) {
@@ -596,7 +629,8 @@ export default {
             params.data_count = 0;
           } else {
             let urllist = [];
-            this.multipleSelection.forEach((item, index) => {
+            const arr = this.multipleSelection.concat(this.currentSelection);
+            arr.forEach((item, index) => {
               let selelist = [];
               selelist.push(item);
               selelist.push(0);
@@ -639,7 +673,8 @@ export default {
         params.data_array = urllist;
       } else {
         let urllist = [];
-        this.multipleSelection.forEach((item, index) => {
+        const arr = this.multipleSelection.concat(this.currentSelection);
+        arr.forEach((item, index) => {
           let selelist = [];
           selelist.push(item);
           selelist.push(1);
@@ -676,8 +711,9 @@ export default {
             arr.push(datalist.dominds);
             params.data_array = arr;
           } else {
-            params.data_array = this.multipleSelection;
-            params.data_count = this.multipleSelection.length;
+            const arr = this.multipleSelection.concat(this.currentSelection);
+            params.data_array = arr;
+            params.data_count = arr.length;
           }
           delete_url(params)
             .then(res => {

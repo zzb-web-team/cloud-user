@@ -38,7 +38,9 @@ export const forgetpassword = params =>
 //忘记密码--重置密码
 export const resetpassword = params =>
     post(`${userUrl}/clouduser/resetpassword`, params);
-
+//重置密钥
+export const resecret = params =>
+    post(`${userUrl}/clouduser/resecret`, params);
 /**配置管理 */
 
 //校验标签

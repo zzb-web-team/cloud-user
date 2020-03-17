@@ -159,7 +159,7 @@
 										{ validator: jiourl, trigger: 'blur' }
 									]"
                 >
-                  <el-input v-model="huiurl.url" placeholder="请输入回源URL地址" maxlength="70"></el-input>
+                  <el-input v-model="huiurl.url" placeholder="请输入回源URL地址"></el-input>
                 </el-form-item>
               </el-form>
 
@@ -367,11 +367,7 @@
                   <span style="color:#0ABF5B" v-else>启动中</span>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="url"
-                label="链接"
-                :show-overflow-tooltip="true"
-              ></el-table-column>
+              <el-table-column prop="url" label="链接" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button @click="zidingyi(scope.$index)" type="text" size="small">

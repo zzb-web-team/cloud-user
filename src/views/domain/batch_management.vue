@@ -122,7 +122,7 @@
               <span>回源HOST</span>
               <div>
                 <el-switch
-                  v-model="datalist.host_url.valid"
+                  v-model="valuek"
                   active-color="#13ce66"
                   inactive-color="#EEEEEE"
                   @change="changeSwitch"
@@ -1006,11 +1006,21 @@ export default {
     },
     //添加回源信息--取消
     nohosturl(formName) {
+      console.log(this.datalist.host_url.valid);
+      console.log(this.valuek);
+      // return false;
       this.dialogVisible = false;
-      this.valuek = false;
-      this.datalist.host_url.valid = false;
-      this.urlno = false;
-      this.$refs[formName].resetFields();
+      if (this.datalist.host_url.valid == false) {
+        this.urlno = false;
+        this.valuek = false;
+      } else {
+        console.log("2");
+        //this.urlno = true;
+        //this.valuek = false;
+        this.$refs[formName].resetFields();
+      }
+
+      // this.datalist.host_url.valid = false;
     },
     //关闭按钮
     handleClose1() {
@@ -1050,9 +1060,8 @@ export default {
       this.setquery_url();
     },
     changeSwitch() {
-      this.valuek = !this.valuek;
       if (this.valuek == true) {
-        this.urlno = true;
+        //this.urlno = true;
         this.dialogVisible = true;
         if (this.datalist.host_url.url) {
           this.huiurl.url = this.datalist.host_url.url;

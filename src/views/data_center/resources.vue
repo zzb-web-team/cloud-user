@@ -766,6 +766,8 @@ export default {
             });
           } else if (res.status == -1) {
             this.$message("暂无数据");
+            this.dataFlowArray2 = this.dataFlowArray;
+            this.timeArray2 = this.timeArray;
           }
           this.drawLine1();
         })

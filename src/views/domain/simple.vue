@@ -84,7 +84,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="buser_id" label="渠道ID"></el-table-column>
-          <el-table-column prop="label" label="标签">
+          <!-- <el-table-column prop="label" label="标签">
             <template slot-scope="scope">
               <span v-if="scope.row.err_label == false" style="color:red">{{ scope.row.label }}</span>
               <span v-else style="color:green;">
@@ -93,7 +93,7 @@
                 }}
               </span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <!-- <el-table-column prop="label2" label="视频终端">
             <template slot-scope="scope">
               <span v-if="scope.row.err_label2 == false" style="color:red">{{ scope.row.label2 }}</span>
@@ -293,13 +293,13 @@ export default {
               res.data[i].status += "视频名称不能大于50字符\n";
               res.data[i].err_url_name = false;
             }
-            if (
-              res.data[i].label !== "" &&
-              restable.test(res.data[i].label) === false
-            ) {
-              res.data[i].status += `标签格式错误\n`;
-              res.data[i].err_label = false;
-            }
+            // if (
+            //   res.data[i].label !== "" &&
+            //   restable.test(res.data[i].label) === false
+            // ) {
+            //   res.data[i].status += `标签格式错误\n`;
+            //   res.data[i].err_label = false;
+            // }
             // if (resnum.test(res.data[i].label2) === false) {
             //   res.data[i].status += `终端格式错误\n`;
             //   res.data[i].err_label2 = false;

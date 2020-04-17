@@ -95,7 +95,7 @@
               </span>
             </li>
             <!--  -->
-            <li>
+            <!-- <li>
               <span>标签</span>
               <span class="tala_con" v-if="!xas">
                 {{
@@ -112,7 +112,7 @@
                 : '确定'
                 }}
               </span>
-            </li>
+            </li> -->
           </ol>
         </el-tab-pane>
         <el-tab-pane label="回源配置" name="two">

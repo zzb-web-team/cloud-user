@@ -65,7 +65,7 @@
               添加URL
             </el-button>
             <el-button type="primary" plain @click="upload_btn">批量导入URL</el-button>
-            <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button>
+            <!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
           </div>
         </div>
         <!-- 主体数据表格 -->
@@ -105,11 +105,11 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="标签" width="50">
+          <!-- <el-table-column label="标签" width="50">
             <template slot-scope="scope">
               <i class="iconfont icon-biaoqian" @click="handleClick(scope.row)"></i>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="time_create" sortable="custom" label="创建时间">
             <template slot-scope="scope">
               <span>{{ scope.row.time_create | settimes }}</span>

@@ -257,6 +257,24 @@ body {
     width: 23%;
 }
 
+.acceleerate_con .el-dialog {
+    width: 30%;
+    height: 300px;
+}
+
+.acceleerate_con .con_lable .el-button {
+    padding: 0;
+}
+
+.domin_index .el-table .el-button {
+    padding: 0;
+}
+
+.acceleerate_con .con_lable .con_lable_top_btn .el-button,
+.acceleerate_con .con_lable .add_dialog .el-button {
+    padding: 10px 30px;
+}
+
 .batch_huan .el-dialog {
     width: 23%;
 }
@@ -557,4 +575,8 @@ body {
 
 .show_key_btn {
     padding: 10px 5px;
+}
+
+.add_url .el-form-item__label {
+    text-align: left;
 }

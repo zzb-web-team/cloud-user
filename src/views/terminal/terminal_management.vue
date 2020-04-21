@@ -487,7 +487,7 @@ export default {
       this.srttokensneno();
     },
 
-    //添加--关不按钮
+    //添加--关闭按钮
     handleClose2() {
       this.quxzteaone();
     },

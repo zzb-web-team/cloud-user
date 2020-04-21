@@ -6,38 +6,85 @@
 					class="el-icon-arrow-left"
 					style="color:#297AFF;font-size: 18px;margin-right:23px;font-weight: 600;"
 				></i>
-				添加URL
+				创建加速内容
 			</span>
 		</div>
 		<div class="content">
 			<el-form :model="dynamicValidateForm" ref="dynamicValidateForm">
+				<p>创建点播加速内容</p>
 				<el-form-item
-					label="URL:"
+					label="加速内容名称:"
 					:label-width="formLabelWidth"
-					prop="url_a"
-					:rules="[
-						{ required: true, validator: jiourl, trigger: 'blur' },
-					]"
-				>
-					<el-input
-						class="other_bgc"
-						v-model="dynamicValidateForm.url_a"
-						placeholder="URL头固定为https:// 或http://，1024字符内"
-						maxlength="1024"
-					></el-input>
-				</el-form-item>
-				<el-form-item
-					label="视频名称:"
-					:label-width="formLabelWidth"
-					prop="url_name"
+					prop="url_content"
 					:rules="[
 						{ required: true, validator: jioshi, trigger: 'blur' },
 					]"
 				>
 					<el-input
 						class="other_bgc"
-						v-model="dynamicValidateForm.url_name"
-						placeholder="4~50个字符，汉字、英文字母、数字组合，或纯汉字或英文，不能为纯数字"
+						v-model="dynamicValidateForm.url_content"
+						placeholder="4-50个字符，汉字、英文、数字任意组合"
+						maxlength="1024"
+					></el-input>
+					<span class="add_url_point">创建成功后将无法修改</span>
+				</el-form-item>
+				<p class="add_url_title">加速配置</p>
+				<el-form-item
+					label="源站域名"
+					:label-width="formLabelWidth"
+					prop="url_address"
+					:rules="{
+						required: true,
+						message: '源站域名不能为空',
+						trigger: 'blur',
+					}"
+				>
+					<el-select
+						v-model="dynamicValidateForm.url_address"
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="(item, index) in yewu"
+							:key="index"
+							:label="item.label"
+							:value="item.value"
+						></el-option>
+					</el-select>
+					<el-button
+						type="text"
+						size="small"
+						@click="go_accelerate_management"
+						v-show="yewu.length < 0"
+						>去添加</el-button
+					>
+				</el-form-item>
+				<el-form-item
+					label="回源路径:"
+					:label-width="formLabelWidth"
+					prop="back_path"
+					:rules="[
+						{ required: true, validator: jiozhu, trigger: 'blur' },
+					]"
+				>
+					<el-input
+						class="other_bgc"
+						v-model="dynamicValidateForm.back_path"
+						placeholder="开头固定为/，2-1024字符内"
+						maxlength="1024"
+					></el-input>
+				</el-form-item>
+				<el-form-item
+					label="播放路径:"
+					:label-width="formLabelWidth"
+					prop="play_path"
+					:rules="[
+						{ required: true, validator: jiozhu, trigger: 'blur' },
+					]"
+				>
+					<el-input
+						class="other_bgc"
+						v-model="dynamicValidateForm.play_path"
+						placeholder="开头固定为/，2-1024字符内"
 						autocomplete="off"
 						maxlength="50"
 					></el-input>
@@ -45,15 +92,15 @@
 				<el-form-item
 					label="视频格式"
 					:label-width="formLabelWidth"
-					prop="radio"
+					prop="format"
 					:rules="{
 						required: true,
-						message: '业务类型不能为空',
+						message: '视频格式不能为空',
 						trigger: 'blur',
 					}"
 				>
 					<el-select
-						v-model="dynamicValidateForm.radio"
+						v-model="dynamicValidateForm.format"
 						placeholder="请选择"
 					>
 						<el-option
@@ -64,42 +111,7 @@
 						></el-option>
 					</el-select>
 				</el-form-item>
-				<!-- <el-form-item
-          label="视频终端:"
-          :label-width="formLabelWidth"
-          prop="labe2"
-          :rules="{
-						required: true,
-						message: '视频终端不能为空',
-						trigger: 'blur'
-					}"
-        >
-          <el-select v-model="dynamicValidateForm.labe2" placeholder="请选择">
-            <el-option
-              v-for="(item, index) in fu"
-              :key="index + item"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>-->
-				<!-- <el-form-item
-          label="标签:"
-          :label-width="formLabelWidth"
-          prop="labe1"
-          :rules="[{ validator: jiozhu, trigger: 'blur' }]"
-        >
-          <el-input
-            class="other_bgc"
-            v-model="dynamicValidateForm.labe1"
-            placeholder="4~64个字符，英文字母或字母+数字组合"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item> -->
 			</el-form>
-			<!-- <p>
-				说明：用户可以自定义标签设置，标签设置为自选项，标签设置的作用是保护源站信息隐藏不被泄露，防止黑客攻击
-			</p> -->
 			<div slot="footer" class="add_urlfooter">
 				<el-button
 					type="primary"
@@ -118,7 +130,7 @@
 </template>
 
 <script>
-import { add_url, check_label, getterminal } from '../../servers/api';
+import { add_url } from '../../servers/api';
 export default {
 	data() {
 		return {
@@ -128,8 +140,13 @@ export default {
 				labe2: '',
 				radio: '',
 				url_a: '',
+				url_content: '',
+				url_address: '',
+				back_path: '',
+				play_path: '',
+				format: '',
 			},
-			formLabelWidth: '100px',
+			formLabelWidth: '110px',
 			yewu: [
 				{
 					value: 0,
@@ -144,16 +161,7 @@ export default {
 					label: 'flv',
 				},
 			],
-			fu: [
-				// {
-				//   value: 0,
-				//   label: "腾讯视频"
-				// },
-				// {
-				//   value: 1,
-				//   label: "南瓜视频"
-				// }
-			],
+			fu: [],
 			label2: [],
 			chanid: '',
 			page: 0,
@@ -167,7 +175,6 @@ export default {
 		}
 		this.fu = [];
 		this.label2 = [];
-		this.getlabrl2();
 	},
 	methods: {
 		//返回
@@ -180,85 +187,25 @@ export default {
 		},
 		//添加URL取消
 		dialogFormVisibles(formName) {
-			this.dynamicValidateForm.url_name = '';
-			this.dynamicValidateForm.labe1 = '';
-			this.dynamicValidateForm.labe1 = '';
-			this.dynamicValidateForm.radio = '';
-			this.dynamicValidateForm.url_a = '';
+			this.dynamicValidateForm.url_content = '';
+			this.dynamicValidateForm.url_address = '';
+			this.dynamicValidateForm.back_path = '';
+			this.dynamicValidateForm.play_path = '';
+			this.dynamicValidateForm.format = '';
 			this.dialogFormVisible = false;
 			this.$refs[formName].resetFields();
 			this.$router.go(-1);
-		},
-		//获取视频终端
-		getlabrl2() {
-			let parmas = new Object();
-			parmas.chanid = this.chanid;
-			parmas.page = this.page;
-			getterminal(parmas)
-				.then((res) => {
-					res.result.cols.forEach((item, index) => {
-						let obj = {};
-						obj.value = item.id;
-						// obj.label = item.name + "--" + "(" + item.type + ")";
-						obj.label = item.name;
-						this.label2.push(obj);
-					});
-					if (res.result.les_count == 0) {
-						var obj = {};
-						for (var i = 0; i < this.label2.length; i++) {
-							if (!obj[this.label2[i].value]) {
-								this.fu.push(this.label2[i]);
-								obj[this.label2[i].value] = true;
-							}
-						}
-						return false;
-					} else {
-						this.page++;
-						this.getlabrl2();
-					}
-				})
-				.catch((error) => {});
-		},
-		//验证标签
-		jiaotabel() {
-			if (this.dynamicValidateForm.labe1 != '') {
-				let parmas = new Object();
-				let labelarr = [];
-				labelarr.push(this.dynamicValidateForm.labe1);
-				parmas.data_count = 1;
-				parmas.data_array = labelarr;
-				check_label(parmas)
-					.then((res) => {
-						if (res.status == 0) {
-							if (res.data.success_count == 0) {
-								this.$message.error('标签已存在');
-								return false;
-							} else {
-								this.addurl();
-							}
-						} else {
-							this.$message.error(res.err_msg);
-							return false;
-						}
-					})
-					.catch((error) => {});
-			} else {
-				this.addurl();
-			}
 		},
 		addurl() {
 			//添加url
 			let parmise = new Object();
 			let arr = [];
 			let dataobj = new Object();
-			dataobj.url = this.dynamicValidateForm.url_a;
-			dataobj.url_type = this.dynamicValidateForm.radio;
-			dataobj.url_name = this.dynamicValidateForm.url_name;
-			//   dataobj.label = this.dynamicValidateForm.labe1;
-			dataobj.label = 'admeort';
-			dataobj.label2 = 0;
-			// dataobj.label2 = this.dynamicValidateForm.labe2;
-			dataobj.buser_id = this.chanid + '';
+			dataobj.url_content = this.dynamicValidateForm.url_content;
+			dataobj.url_address = this.dynamicValidateForm.url_address;
+			dataobj.back_path = this.dynamicValidateForm.back_path;
+			dataobj.play_path = this.dynamicValidateForm.play_path;
+			dataobj.format = this.dynamicValidateForm.format;
 			dataobj.create_time = Date.parse(new Date()) / 1000;
 			arr.push(dataobj);
 			parmise.data_array = arr;
@@ -271,11 +218,11 @@ export default {
 								message: 'URL添加成功',
 								type: 'success',
 							});
-							this.dynamicValidateForm.url_name = '';
-							this.dynamicValidateForm.labe1 = '';
-							this.dynamicValidateForm.labe2 = '';
-							this.dynamicValidateForm.radio = '';
-							this.dynamicValidateForm.url_a = '';
+							this.dynamicValidateForm.url_content = '';
+							this.dynamicValidateForm.url_address = '';
+							this.dynamicValidateForm.back_path = '';
+							this.dynamicValidateForm.play_path = '';
+							this.dynamicValidateForm.format = '';
 							this.dialogFormVisible = false;
 							setTimeout(() => {
 								this.$router.push({
@@ -304,6 +251,9 @@ export default {
 				})
 				.catch((error) => {});
 		},
+		go_accelerate_management() {
+			this.$router.push({ path: '/accelerate_management' });
+		},
 		getBLen(str) {
 			if (str == null) return 0;
 			if (typeof str != 'string') {
@@ -315,40 +265,24 @@ export default {
 		dialogFormVisiblea(formName) {
 			this.$refs[formName].validate((valid) => {
 				if (valid) {
-					this.jiaotabel();
+					this.addurl();
 				} else {
 					return false;
 				}
 			});
 		},
-		//校验url
-		jiourl(rule, value, callback) {
-			if (value === '') {
-				callback(new Error('请输入URL'));
-			} else {
-				var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
-				// objExp = new RegExp(resyzm);
-				if (this.getBLen(value) > 1024) {
-					callback(new Error('URL长度不能超出1024个字符'));
-				} else if (resyzm.test(value) === false) {
-					callback(new Error('URL格式错误'));
-				} else {
-					callback();
-				}
-			}
-		},
-		//校验视频名称
+		//校验加速内容名称
 		jioshi(rule, value, callback) {
 			if (value === '') {
-				callback(new Error('请输入视频名称'));
+				callback(new Error('请输入加速内容名称'));
 			} else {
-				var resyzm = /^(?!(\d+)$)[\u4e00-\u9fffa-zA-Z\d]{2,50}$/;
-				if (this.getBLen(value) > 50) {
-					callback(new Error('视频名称不能超出50个字符'));
-				} else if (this.getBLen(value) < 4) {
-					callback(new Error('视频名称不能少于4个字符'));
+				var resyzm = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,1024}$/;
+				if (this.getBLen(value) > 1024) {
+					callback(new Error('加速内容名称不能超出1024个字符'));
+				} else if (this.getBLen(value) < 2) {
+					callback(new Error('加速内容名称不能少于2个字符'));
 				} else if (resyzm.test(value) === false) {
-					callback(new Error('视频名称格式错误'));
+					callback(new Error('加速内容名称格式错误'));
 				} else {
 					callback();
 				}
@@ -357,7 +291,7 @@ export default {
 		//校验标签
 		jiozhu(rule, value, callback) {
 			if (value === '') {
-				callback();
+				callback(new Error('路径不能为空'));
 			} else {
 				var resyzm = /^[\u4e00-\u9fffa-zA-Z\d]{4,64}$/;
 				if (resyzm.test(value) === false) {
@@ -384,13 +318,23 @@ export default {
 	margin-top: 20px;
 	padding: 23px 38px;
 	p {
-		width: 396px;
+		width: 100%;
 		height: 30px;
-		font-size: 12px;
+		font-size: 16px;
 		font-weight: 500;
 		text-align: left;
-		color: #999999;
+		color: #333333;
 		line-height: 18px;
+		margin: 15px 0;
+	}
+	.add_url_title {
+		display: inline-block;
+		padding: 15px 0;
+		border-top: 1px solid #e3e3e3;
+	}
+	.add_url_point {
+		font-size: 12px;
+		color: #9b9b9b;
 	}
 	.add_urlfooter {
 		border-top: 1px solid #e3e3e3;
@@ -398,5 +342,17 @@ export default {
 		margin-top: 24px;
 		padding-top: 21px;
 	}
+}
+input::-webkit-input-placeholder {
+	color: #c0c4cc;
+	font-size: 12px;
+}
+input::-moz-input-placeholder {
+	color: #c0c4cc;
+	font-size: 12px;
+}
+input::-ms-input-placeholder {
+	color: #c0c4cc;
+	font-size: 12px;
 }
 </style>

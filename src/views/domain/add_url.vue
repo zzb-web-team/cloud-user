@@ -97,9 +97,9 @@
           ></el-input>
         </el-form-item> -->
 			</el-form>
-			<p>
+			<!-- <p>
 				说明：用户可以自定义标签设置，标签设置为自选项，标签设置的作用是保护源站信息隐藏不被泄露，防止黑客攻击
-			</p>
+			</p> -->
 			<div slot="footer" class="add_urlfooter">
 				<el-button
 					type="primary"

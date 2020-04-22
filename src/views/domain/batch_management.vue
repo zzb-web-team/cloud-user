@@ -33,11 +33,6 @@
 						style="background:#0ABF5B;color:#ffffff;height:34px;line-height: 10px;"
 						>启用</el-button
 					>
-					<!-- <el-button
-              @click="setquery_url()"
-              style="background:#0ABF5B;color:#ffffff;width:76px;height:34px;line-height: 10px;"
-              >保存</el-button
-            >-->
 				</div>
 			</div>
 			<el-tabs
@@ -49,8 +44,7 @@
 				<el-tab-pane label="基础配置" name="one">
 					<div
 						style="font-weight: 600;font-size: 18px;text-align: left;margin: 10px 0;"
-					>
-					</div>
+					></div>
 					<ol class="tala">
 						<li>
 							<span>创建时间</span>
@@ -67,8 +61,8 @@
 							>
 							<span
 								style="color: rgb(64, 158, 255);"
-								@click="cleckurl"
-								>查看</span
+								@click="cleckurl(1)"
+								>修改</span
 							>
 						</li>
 						<li>
@@ -80,8 +74,8 @@
 							>
 							<span
 								style="color: rgb(64, 158, 255);"
-								@click="cleckurl"
-								>查看</span
+								@click="cleckurl(2)"
+								>修改</span
 							>
 						</li>
 						<li>
@@ -93,20 +87,10 @@
 							>
 							<span
 								style="color: rgb(64, 158, 255);"
-								@click="cleckurl"
-								>查看</span
+								@click="cleckurl(3)"
+								>修改</span
 							>
 						</li>
-						<!--  -->
-
-						<el-dialog title="url" :visible.sync="zurl" width="30%">
-							<span>{{ sleckurl }}</span>
-							<span slot="footer" class="dialog-footer">
-								<el-button type="primary" @click="zurl = false"
-									>确 定</el-button
-								>
-							</span>
-						</el-dialog>
 
 						<li>
 							<span>视频格式</span>
@@ -129,19 +113,60 @@
 									fas == false
 										? datalist.label2 != ''
 											? '修改'
-											: '设置'
+											: '修改'
 										: '确定'
 								}}
 							</span>
 						</li>
+						<!-- 基础配置弹窗 -->
+						<el-dialog title="url" :visible.sync="zurl" width="30%">
+							<span>{{ sleckurl }}</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="zurl = false"
+									>确 定</el-button
+								>
+							</span>
+						</el-dialog>
+						<!-- 基础配置弹窗 -->
+						<el-dialog
+							:title="'修改' + dialog_title"
+							:visible.sync="basisVisible"
+							class="add_dialog"
+							@close="handleClose"
+						>
+							<el-form :model="basisform" ref="accelerate_dialog">
+								<el-form-item
+									:label="dialog_title"
+									:label-width="formLabelWidth"
+									prop="name"
+									:rules="[
+										{
+											validator: jiobasis,
+											trigger: 'blur',
+										},
+									]"
+								>
+									<el-input
+										v-model="basisform.name"
+										autocomplete="off"
+										:placeholder="basis_point"
+									></el-input>
+								</el-form-item>
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button @click="quxzteaone">取 消</el-button>
+								<el-button type="primary" @click="quxzteao"
+									>确定</el-button
+								>
+							</div>
+						</el-dialog>
 					</ol>
 				</el-tab-pane>
-				<el-tab-pane label="回源配置" name="two">
+				<!-- <el-tab-pane label="回源配置" name="two">
 					<div class="talb">
 						<div
 							style="font-weight: 600;font-size: 18px;text-align: left;margin: 10px 0;"
-						>
-						</div>
+						></div>
 						<div class="talb_title_tio">
 							<span>回源HOST</span>
 							<div>
@@ -165,9 +190,9 @@
 								>
 								<span class="tala_x" @click="xzurl">修改</span>
 							</div>
-						</div>
+						</div> -->
 						<!-- 回源弹窗 -->
-						<el-dialog
+						<!-- <el-dialog
 							title="请输入回源URL地址"
 							:visible.sync="dialogVisible"
 							width="630px"
@@ -191,10 +216,10 @@
 										placeholder="请输入回源URL地址"
 									></el-input>
 								</el-form-item>
-							</el-form>
+							</el-form> -->
 
 							<!-- 分割 -->
-							<el-button @click="nohosturl('hosturlref')"
+							<!-- <el-button @click="nohosturl('hosturlref')"
 								>取 消</el-button
 							>
 							<el-button
@@ -204,7 +229,7 @@
 							>
 						</el-dialog>
 					</div>
-				</el-tab-pane>
+				</el-tab-pane> -->
 
 				<el-tab-pane label="缓存配置" name="there">
 					<el-tabs v-model="activeName" tab-position="left">
@@ -519,6 +544,11 @@ export default {
 	data() {
 		return {
 			city_disabled: false,
+			dialog_title: '源站域名', //基础配置弹出框标题
+			baseis_num: 1,
+			basisform: { name: '' }, //基础配置弹出框内容
+			basis_point: '', //基础配置弹出框提示文字
+			basisVisible: false, //基础配置弹出框显示隐藏
 			loading: false,
 			huiurl: { url: '' },
 			setstate: false,
@@ -748,7 +778,7 @@ export default {
 				expire: 0,
 				state: 0,
 			},
-			options:[
+			options: [
 				{
 					value: 0,
 					label: 'mp4',
@@ -891,9 +921,46 @@ export default {
 	},
 	methods: {
 		//查看url
-		cleckurl() {
-			this.zurl = true;
-			this.sleckurl = this.datalist.url;
+		cleckurl(num) {
+			// this.zurl = true;
+			// this.sleckurl = this.datalist.url;
+			if (num == 1) {
+				this.dialog_title = '源站域名';
+				this.basis_point = 'http://或https://开头，72字符内';
+				this.baseis_num = 1;
+			} else if (num == 2) {
+				this.dialog_title = '回源路径';
+				this.basis_point = '开头固定为/，2-1024字符内';
+				this.baseis_num = 2;
+			} else {
+				this.dialog_title = '播放路径';
+				this.basis_point = '开头固定为/，2-1024字符内';
+				this.baseis_num = 3;
+			}
+			this.basisVisible = true;
+		},
+		//基础配置弹窗--关闭
+		handleClose() {
+			this.quxzteaone();
+		},
+		//基础配置弹窗--取消
+		quxzteaone() {
+			this.basisVisible = false;
+			this.$refs.accelerate_dialog.resetFields();
+			this.form.name = '';
+		},
+		//基础配置弹窗--确定
+		quxzteao() {
+			let _this = this;
+			this.$refs.accelerate_dialog.validate((valid) => {
+				if (valid) {
+					this.$message({
+						message: '修改添加成功',
+						type: 'success',
+					});
+					this.basisVisible = false;
+				}
+			});
 		},
 		//获取视频终端
 		getlabrl2() {
@@ -1324,6 +1391,13 @@ export default {
 		delhc(data, num) {
 			this.datalist.cache_con.splice(num, 1);
 		},
+		getBLen(str) {
+			if (str == null) return 0;
+			if (typeof str != 'string') {
+				str += '';
+			}
+			return str.replace(/[^\x00-\xff]/g, '01').length;
+		},
 		//自定义添加状态码--确定
 		zareVisible(formName) {
 			this.$refs[formName].validate((valid) => {
@@ -1374,6 +1448,35 @@ export default {
 					callback(new Error('错误码格式错误'));
 				} else {
 					callback();
+				}
+			}
+		},
+		//基础信息修改校验
+		jiobasis(rule, value, callback) {
+			if (this.baseis_num == 1) {
+				if (value === '') {
+					callback(new Error('请输入源站域名'));
+				} else {
+					var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
+					// objExp = new RegExp(resyzm);
+					if (this.getBLen(value) > 72) {
+						callback(new Error('源站域名长度不能超出1024个字符'));
+					} else if (resyzm.test(value) === false) {
+						callback(new Error('源站域名格式错误'));
+					} else {
+						callback();
+					}
+				}
+			} else {
+				if (value === '') {
+					callback(new Error('路径不能为空'));
+				} else {
+					var resyzm = /^\/{1}[0-9a-zA-Z/]{1,1024}$/;
+					if (resyzm.test(value) === false) {
+						callback(new Error('路径格式错误'));
+					} else {
+						callback();
+					}
 				}
 			}
 		},
@@ -1454,7 +1557,7 @@ export default {
 			}
 			.tala_con {
 				display: inline-block;
-				width: 200px;
+				width: 206px;
 			}
 		}
 	}

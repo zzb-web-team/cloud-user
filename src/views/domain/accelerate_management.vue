@@ -384,8 +384,8 @@ export default {
 		tem(tenum) {
 			let parmas = new Object();
 			parmas.type = tenum;
-			if (row) {
-				parmas.url = row.dominds;
+			if (tenum) {
+				parmas.url = tenum.dominds;
 			} else {
 				parmas.url = multipleSelection;
 			}
@@ -520,7 +520,7 @@ export default {
 		//校验url
 		jiourl(rule, value, callback) {
 			if (value === '') {
-				callback(new Error('请输入URL'));
+				callback(new Error('请输入源站域名'));
 			} else {
 				var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
 				// objExp = new RegExp(resyzm);

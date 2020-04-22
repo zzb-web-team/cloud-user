@@ -215,7 +215,7 @@ export default {
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
 							this.$message({
-								message: 'URL添加成功',
+								message: '加速内容添加成功',
 								type: 'success',
 							});
 							this.dynamicValidateForm.url_content = '';
@@ -288,14 +288,14 @@ export default {
 				}
 			}
 		},
-		//校验标签
+		//校验路径
 		jiozhu(rule, value, callback) {
 			if (value === '') {
 				callback(new Error('路径不能为空'));
 			} else {
-				var resyzm = /^[\u4e00-\u9fffa-zA-Z\d]{4,64}$/;
+				var resyzm = /^\/{1}[0-9a-zA-Z/]{1,1024}$/;
 				if (resyzm.test(value) === false) {
-					callback(new Error('标签格式错误'));
+					callback(new Error('路径格式错误'));
 				} else {
 					callback();
 				}

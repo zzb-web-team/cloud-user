@@ -16,7 +16,7 @@
 			<div class="tala_title">
 				<span
 					style="max-width: 230px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-					>{{ datalist.url }}</span
+					>{{ datalist.urlname }}</span
 				>
 				<div>
 					<el-button
@@ -191,8 +191,8 @@
 								<span class="tala_x" @click="xzurl">修改</span>
 							</div>
 						</div> -->
-						<!-- 回源弹窗 -->
-						<!-- <el-dialog
+				<!-- 回源弹窗 -->
+				<!-- <el-dialog
 							title="请输入回源URL地址"
 							:visible.sync="dialogVisible"
 							width="630px"
@@ -218,8 +218,8 @@
 								</el-form-item>
 							</el-form> -->
 
-							<!-- 分割 -->
-							<!-- <el-button @click="nohosturl('hosturlref')"
+				<!-- 分割 -->
+				<!-- <el-button @click="nohosturl('hosturlref')"
 								>取 消</el-button
 							>
 							<el-button
@@ -808,6 +808,7 @@ export default {
 			valueh: false,
 			datalist: {
 				url: '',
+				urlname: '',
 				label: '',
 				create_time: '',
 				label2: 0,
@@ -1013,6 +1014,7 @@ export default {
 					this.oldlabel = res.data.result[0].label;
 					this.datalist.label2 = res.data.result[0].label2;
 					this.datalist.state = res.data.result[0].state;
+					this.datalist.urlname = res.data.result[0].url_name;
 					this.geturlconfig();
 				})
 				.catch((error) => {
@@ -1471,7 +1473,7 @@ export default {
 				if (value === '') {
 					callback(new Error('路径不能为空'));
 				} else {
-					var resyzm = /^\/{1}[0-9a-zA-Z/]{1,1024}$/;
+					var resyzm = /^\/{1}[0-9a-zA-Z\/\+\?%#&=]{1,1024}$/;
 					if (resyzm.test(value) === false) {
 						callback(new Error('路径格式错误'));
 					} else {

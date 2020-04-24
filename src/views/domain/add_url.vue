@@ -16,9 +16,7 @@
 					label="加速内容名称:"
 					:label-width="formLabelWidth"
 					prop="url_content"
-					:rules="[
-						{ required: true, validator: jioshi, trigger: 'blur' },
-					]"
+					:rules="[{ validator: jioshi, trigger: 'blur' }]"
 				>
 					<el-input
 						class="other_bgc"
@@ -34,7 +32,6 @@
 					:label-width="formLabelWidth"
 					prop="url_address"
 					:rules="{
-						required: true,
 						message: '源站域名不能为空',
 						trigger: 'blur',
 					}"
@@ -62,9 +59,7 @@
 					label="回源路径:"
 					:label-width="formLabelWidth"
 					prop="back_path"
-					:rules="[
-						{ required: true, validator: jiozhu, trigger: 'blur' },
-					]"
+					:rules="[{ validator: jiozhu, trigger: 'blur' }]"
 				>
 					<el-input
 						class="other_bgc"
@@ -77,9 +72,7 @@
 					label="播放路径:"
 					:label-width="formLabelWidth"
 					prop="play_path"
-					:rules="[
-						{ required: true, validator: jiozhu, trigger: 'blur' },
-					]"
+					:rules="[{ validator: jiozhu, trigger: 'blur' }]"
 				>
 					<el-input
 						class="other_bgc"
@@ -94,7 +87,6 @@
 					:label-width="formLabelWidth"
 					prop="format"
 					:rules="{
-						required: true,
 						message: '视频格式不能为空',
 						trigger: 'blur',
 					}"

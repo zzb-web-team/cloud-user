@@ -29,7 +29,7 @@
 					<el-input
 						type="textarea"
 						:rows="2"
-						placeholder="请输入url"
+						placeholder="请输入点播加速域名"
 						:autosize="{ minRows: 10, maxRows: 20 }"
 						v-model="textarea1"
 					></el-input>
@@ -62,7 +62,7 @@
 					<el-input
 						type="textarea"
 						:rows="2"
-						placeholder="请输入url"
+						placeholder="请输入点播加速域名"
 						:autosize="{ minRows: 10, maxRows: 20 }"
 						v-model="textarea2"
 					></el-input>

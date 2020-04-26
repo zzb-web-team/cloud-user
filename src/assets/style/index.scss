@@ -513,6 +513,17 @@ body {
     text-overflow: ellipsis;
 }
 
+.accelerate_ma .firsturl .cell {
+    // width: 230px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.acceleerate_con .el-dialog__footer {
+    text-align: center;
+}
+
 .lot_operating .cell {
     // max-width: 230px;
     overflow: hidden;

@@ -31,20 +31,22 @@
 					label="源站域名"
 					:label-width="formLabelWidth"
 					prop="url_address"
-					:rules="{
-						message: '源站域名不能为空',
-						trigger: 'blur',
-					}"
+					:rules="[
+						{
+							message: '源站域名不能为空',
+							trigger: 'blur',
+						},
+					]"
 				>
 					<el-select
 						v-model="dynamicValidateForm.url_address"
 						placeholder="请选择"
 					>
 						<el-option
-							v-for="(item, index) in yewu"
+							v-for="(item, index) in url_arr"
 							:key="index"
 							:label="item.label"
-							:value="item.value"
+							:value="item.label"
 						></el-option>
 					</el-select>
 					<el-button
@@ -86,10 +88,12 @@
 					label="视频格式"
 					:label-width="formLabelWidth"
 					prop="format"
-					:rules="{
-						message: '视频格式不能为空',
-						trigger: 'blur',
-					}"
+					:rules="[
+						{
+							message: '视频格式不能为空',
+							trigger: 'blur',
+						},
+					]"
 				>
 					<el-select
 						v-model="dynamicValidateForm.format"
@@ -99,7 +103,7 @@
 							v-for="(item, index) in yewu"
 							:key="index"
 							:label="item.label"
-							:value="item.value"
+							:value="item.label"
 						></el-option>
 					</el-select>
 				</el-form-item>
@@ -127,11 +131,6 @@ export default {
 	data() {
 		return {
 			dynamicValidateForm: {
-				url_name: '',
-				labe1: '',
-				labe2: '',
-				radio: '',
-				url_a: '',
 				url_content: '',
 				url_address: '',
 				back_path: '',
@@ -139,6 +138,24 @@ export default {
 				format: '',
 			},
 			formLabelWidth: '110px',
+			url_arr: [
+				{
+					value: 0,
+					label: 'http://www.pykty.com',
+				},
+				{
+					value: 1,
+					label: 'http://www.gfsafsg.com',
+				},
+				{
+					value: 2,
+					label: 'http://www.hfsdsej.com',
+				},
+				{
+					value: 3,
+					label: 'http://www.hwhytoie.com',
+				},
+			],
 			yewu: [
 				{
 					value: 0,
@@ -193,11 +210,18 @@ export default {
 			let parmise = new Object();
 			let arr = [];
 			let dataobj = new Object();
-			dataobj.url_content = this.dynamicValidateForm.url_content;
-			dataobj.url_address = this.dynamicValidateForm.url_address;
-			dataobj.back_path = this.dynamicValidateForm.back_path;
-			dataobj.play_path = this.dynamicValidateForm.play_path;
-			dataobj.format = this.dynamicValidateForm.format;
+			dataobj.url_name = this.dynamicValidateForm.url_content;
+			dataobj.domain_id = this.dynamicValidateForm.url_address;
+			dataobj.host_url = this.dynamicValidateForm.back_path;
+			dataobj.url = this.dynamicValidateForm.play_path;
+			if (this.dynamicValidateForm.format == 0) {
+				dataobj.url_type = 'mp4';
+			} else if (this.dynamicValidateForm.format == 1) {
+				dataobj.url_type = 'hls';
+			} else if (this.dynamicValidateForm.format == 2) {
+				dataobj.url_type = 'flv';
+			}
+			dataobj.buser_id = this.chanid + '';
 			dataobj.create_time = Date.parse(new Date()) / 1000;
 			arr.push(dataobj);
 			parmise.data_array = arr;
@@ -227,16 +251,9 @@ export default {
 							} else if (res.data.res_data[0][1] === 2) {
 								this.$message.error('url已存在');
 							} else if (res.data.res_data[0][1] === 3) {
-								this.$message.error('标签已存在');
-							} else if (res.data.res_data[0][1] === 4) {
 								this.$message.error('渠道ID不存在');
-							} else if (res.data.res_data[0][1] === 5) {
+							} else if (res.data.res_data[0][1] === 4) {
 								this.$message.error('数据库写人错误');
-							} else {
-								this.$message({
-									message: 'URL添加成功',
-									type: 'success',
-								});
 							}
 						}
 					}
@@ -255,6 +272,7 @@ export default {
 		},
 		//添加URL确定
 		dialogFormVisiblea(formName) {
+			console.log(this.dynamicValidateForm);
 			this.$refs[formName].validate((valid) => {
 				if (valid) {
 					this.addurl();

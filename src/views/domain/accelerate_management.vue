@@ -1,5 +1,5 @@
 <template>
-	<div class="content">
+	<div class="content accelerate_ma">
 		<!-- title -->
 		<div class="top_title">加速管理</div>
 		<div
@@ -114,18 +114,25 @@
 					<el-table-column
 						prop="dominds"
 						label="源站域名"
+						width="320"
+						class-name="firsturl"
+						:show-overflow-tooltip="true"
 					></el-table-column>
 					<el-table-column label="状态">
 						<template slot-scope="scope">
-							<span v-if="scope.row.status == 0">正常运行</span>
 							<span
-								v-else-if="scope.row.status == 1"
-								style="color: red;"
+								v-if="scope.row.status == 0"
+								style="color:#E54545;"
 								>已停止</span
 							>
 							<span
+								v-else-if="scope.row.status == 1"
+								style="color:#0ABF5B;"
+								>正常运行</span
+							>
+							<span
 								v-else-if="scope.row.status == 2"
-								style="color: red;"
+								style="color:#E54545;"
 								>回源失败</span
 							>
 						</template>
@@ -165,7 +172,7 @@
 								>启用</el-button
 							>
 							<el-button
-								v-if="scope.row.status != 0"
+								v-if="scope.row.status == 0"
 								@click="deleateuser(scope.$index, scope.row)"
 								class="lab_btn"
 								type="text"
@@ -249,6 +256,11 @@ import {
 	change_state,
 	delete_url,
 	getterminal,
+	add_domain,
+	modify_domain,
+	query_domain,
+	del_domain,
+	change_domainstate,
 } from '../../servers/api';
 export default {
 	data() {
@@ -264,6 +276,7 @@ export default {
 			input: '', //搜索输入框
 			value: '',
 			value1: '',
+			tolpage: 1,
 			options: [
 				{
 					value: 0,
@@ -351,6 +364,11 @@ export default {
 					status: '1',
 					time_create: '1583906243',
 				},
+				{
+					dominds: 'http://www.baidu.com',
+					status: '0',
+					time_create: '1583906243',
+				},
 			],
 			form: {
 				name: '',
@@ -374,29 +392,63 @@ export default {
 	components: {
 		fenye,
 	},
-	mounted() {},
+	mounted() {
+		if (this.$cookies.get('id')) {
+			this.chanid = this.$cookies.get('id') * 1;
+		} else {
+			this.$router.push({ path: '/' });
+		}
+		this.getuserlist();
+	},
 	methods: {
-		//获取数据
+		//获取数据--请求
 		getuserlist() {
-			console.log('获取数据');
-		},
-		//根据状态操作
-		tem(tenum) {
-			let parmas = new Object();
-			parmas.type = tenum;
-			if (tenum) {
-				parmas.url = tenum.dominds;
+			// 已选择项
+			this.updateSelection();
+			let params = new Object();
+			params.page = this.tolpage - 1;
+			params.buser_id = this.chanid + '';
+			params.url = this.input;
+			params.state = this.value;
+			params.order = this.order;
+			if (!this.value1) {
+				params.start_time = '';
+				params.end_time = '';
 			} else {
-				parmas.url = multipleSelection;
+				params.start_time = dateToMs(this.value1[0]);
+				params.end_time = dateToMs(this.value1[1]);
 			}
-			getterminal(parmas)
+			query_url(params)
 				.then((res) => {
 					if (res.status == 0) {
+						// this.pager.count = res.data.total;
+						this.total_cnt = res.data.total;
+						this.tableData = [];
+						res.data.result.forEach((item, index) => {
+							let obj = {};
+							obj.dominds = item.url;
+							obj.label = item.label;
+							obj.label2 = item.label2;
+							obj.status = item.state;
+							obj.time_create = item.create_time;
+							obj.camesd = '';
+							obj.url_name = item.url_name;
+							obj.buser_id = item.buser_id + '';
+							this.tableData.push(obj);
+						});
+						if (res.total != 0) {
+							res.data.result.forEach((item, index) => {
+								let obj = {};
+								obj.url = item.url;
+							});
+						}
+
+						// 整理列表选中项
+						this.formatChoosen(this.tableData);
+					} else {
 					}
 				})
-				.catch((error) => {
-					console.log(error);
-				});
+				.catch((err) => {});
 		},
 		//修改
 		revise(num, row) {
@@ -409,17 +461,28 @@ export default {
 		//停用
 		disableuser(num, row) {
 			console.log(row);
-			this.tem(0);
+			if (row) {
+				this.enable_disable(0, row.dominds);
+			} else {
+				this.enable_disable(0);
+			}
 		},
 		//启用
 		enableuser(num, row) {
-			console.log(row);
-			this.tem(1);
+			if (row) {
+				this.enable_disable(1, row.dominds);
+			} else {
+				this.enable_disable(1);
+			}
 		},
 		//删除
 		deleateuser(num, row) {
 			console.log(row);
-			this.tem(2);
+			if (row) {
+				this.delete_domin(row.dominds);
+			} else {
+				this.delete_domin();
+			}
 		},
 		//添加URL
 		new_btn() {
@@ -437,7 +500,7 @@ export default {
 			this.input = '';
 			this.getuserlist();
 		},
-		//自定义事时间
+		//筛选状态
 		gettimes() {
 			this.getuserlist();
 		},
@@ -460,6 +523,7 @@ export default {
 		onSubmit() {
 			this.getuserlist();
 		},
+		//筛选状态
 		getdata() {
 			this.getuserlist();
 		},
@@ -510,6 +574,7 @@ export default {
 				this.multipleSelection
 			);
 		},
+		//计算长度
 		getBLen(str) {
 			if (str == null) return 0;
 			if (typeof str != 'string') {
@@ -567,10 +632,7 @@ export default {
 							.then(() => {
 								_this.tableData[num].dominds = _this.form.name;
 								this.dialogFormVisible = false;
-								this.$message({
-									type: 'info',
-									message: '修改成功',
-								});
+								this.update_domain();
 							})
 							.catch((action) => {
 								this.$message({
@@ -583,19 +645,147 @@ export default {
 								this.dialogFormVisible = false;
 							});
 					} else {
-						let timestamp = new Date().getTime();
-						let obj = {};
-						obj.dominds = this.form.name;
-						obj.status = '';
-						obj.time_create = timestamp / 1000;
-						this.tableData.push(obj);
-						this.$message({
-							message: '源站域名添加成功',
-							type: 'success',
-						});
+						// let timestamp = new Date().getTime();
+						// let obj = {};
+						// obj.dominds = this.form.name;
+						// obj.status = '';
+						// obj.time_create = timestamp / 1000;
+						// this.tableData.push(obj);
+						// this.$message({
+						// 	message: '源站域名添加成功',
+						// 	type: 'success',
+						// });
+						this.add_domin();
 					}
 				}
 			});
+		},
+		//添加域名--请求
+		add_domin() {
+			let params = new Object();
+			let arr = new Array();
+			let dataobj = new Object();
+			let timestamp3 = Date.parse(new Date()) / 1000;
+			dataobj.domain = this.form.name;
+			dataobj.create_time = timestamp3;
+			dataobj.buser_id = this.chanid + '';
+			arr.push(dataobj);
+			params.data_count = 1;
+			params.data_array = arr;
+			add_domain(params)
+				.then((res) => {
+					if (res.status == 0) {
+						if (res.data.failed_count == 0) {
+							this.$message({
+								message: '源站域名添加成功',
+								type: 'success',
+							});
+							this.getuserlist();
+						} else {
+							if (res.data.res_data[0][1] == 1) {
+								this.$message.error('您添加的地址格式有误');
+							} else if (res.data.res_data[0][1] == 2) {
+								this.$message.error('您添加的地址已存在');
+							} else if (res.data.res_data[0][1] == 3) {
+								this.$message.error('该用户不存在');
+							} else if (res.data.res_data[0][1] == 4) {
+								this.$message.error('系统出错请稍后重试');
+							}
+						}
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		//修改--请求
+		update_domain() {
+			let params = new Object();
+			params.buser_id = this.chanid + '';
+			params.domain_id = this.chanid + '';
+			params.domain = this.form.name;
+			modify_domain(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message({
+							type: 'info',
+							message: '修改成功',
+						});
+						this.getuserlist();
+					} else {
+						this.$message(res.err_msg);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		//启用/禁用--请求
+		enable_disable(stat, datalist) {
+			let params = new Object();
+			let arr = new Array();
+			params.buser_id = this.chanid + '';
+			params.state = stat;
+			params.data_count = 0;
+			if (datalist) {
+				arr.push(datalist);
+				params.data_array = arr;
+			} else {
+				params.data_array = this.currentSelection;
+			}
+			change_domainstate(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message({
+							message: '操作完成',
+							type: 'success',
+						});
+						this.getuserlist();
+					} else {
+						this.$message(res.err_msg);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		//删除--请求
+		delete_domin(datalist) {
+			let params = new Object();
+			let arr = new Array();
+			params.buser_id = this.chanid + '';
+			params.data_count = 0;
+			if (datalist) {
+				arr.push(datalist);
+				params.data_array = arr;
+			} else {
+				params.data_array = this.currentSelection;
+			}
+			del_domain(params)
+				.then((res) => {
+					if (res.status == 0) {
+						if (res.data.failed_count == 0) {
+							this.$message({
+								message: '源站域名删除成功',
+								type: 'success',
+							});
+							this.getuserlist();
+						} else {
+							if (res.data.res_data[0][1] == 1) {
+								this.$message.error('域名下存在加速资源');
+							} else if (res.data.res_data[0][1] == 2) {
+								this.$message.error('域名不存在');
+							} else if (res.data.res_data[0][1] == 3) {
+								this.$message.error('系统出错请稍后重试');
+							}
+						}
+					}else{
+                        this.$message(res.err_msg);
+                    }
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 		// 表头样式设置
 		headClass() {

@@ -1148,6 +1148,7 @@ export default {
 					params.data_array = [];
 					params.data_array.push(urllist);
 					params.data_count = 0;
+					params.state = state;
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {

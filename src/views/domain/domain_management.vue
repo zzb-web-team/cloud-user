@@ -783,6 +783,7 @@ export default {
 						params.data_array = urllist;
 						params.data_count = urllist.length;
 					}
+					params.state = 0;
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {
@@ -829,7 +830,7 @@ export default {
 				params.data_count = urllist.length;
 				params.data_array = urllist;
 			}
-
+			params.state = 1;
 			change_state(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -862,6 +863,7 @@ export default {
 						);
 						params.data_array = arr;
 						params.data_count = arr.length;
+						params.buser_id = this.chanid + '';
 					}
 					delete_url(params)
 						.then((res) => {

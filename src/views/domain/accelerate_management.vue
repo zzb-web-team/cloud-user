@@ -45,7 +45,6 @@
 						placeholder="请选择"
 						@change="getdata()"
 					>
-						<el-option label="全部" value></el-option>
 						<el-option
 							v-for="(item, index) in options"
 							:key="index + 'reat'"
@@ -112,7 +111,7 @@
 						width="55"
 					></el-table-column>
 					<el-table-column
-						prop="dominds"
+						prop="domain"
 						label="源站域名"
 						width="320"
 						class-name="firsturl"
@@ -121,30 +120,30 @@
 					<el-table-column label="状态">
 						<template slot-scope="scope">
 							<span
-								v-if="scope.row.status == 0"
+								v-if="scope.row.state == 0"
 								style="color:#E54545;"
 								>已停止</span
 							>
 							<span
-								v-else-if="scope.row.status == 1"
+								v-else-if="scope.row.state == 1"
 								style="color:#0ABF5B;"
 								>正常运行</span
 							>
 							<span
-								v-else-if="scope.row.status == 2"
+								v-else-if="scope.row.state == 2"
 								style="color:#E54545;"
 								>回源失败</span
 							>
 						</template>
 					</el-table-column>
 					<el-table-column
-						prop="time_create"
+						prop="create_time"
 						sortable="custom"
 						label="创建时间"
 					>
 						<template slot-scope="scope"
 							><span>{{
-								scope.row.time_create | settimes
+								scope.row.create_time | settimes
 							}}</span></template
 						>
 					</el-table-column>
@@ -158,21 +157,21 @@
 								>修改</el-button
 							>
 							<el-button
-								v-if="scope.row.status == 0"
+								v-if="scope.row.state == 1"
 								@click="disableuser(scope.$index, scope.row)"
 								type="text"
 								size="small"
 								>停用</el-button
 							>
 							<el-button
-								v-if="scope.row.status != 0"
+								v-if="scope.row.state != 1"
 								@click="enableuser(scope.$index, scope.row)"
 								type="text"
 								size="small"
 								>启用</el-button
 							>
 							<el-button
-								v-if="scope.row.status == 0"
+								v-if="scope.row.state != 1"
 								@click="deleateuser(scope.$index, scope.row)"
 								class="lab_btn"
 								type="text"
@@ -274,21 +273,22 @@ export default {
 			total_cnt: 1,
 			order: 0,
 			input: '', //搜索输入框
-			value: '',
+			value: -1,
 			value1: '',
 			tolpage: 1,
+			domain_id: '',
 			options: [
 				{
+					value: -1,
+					label: '全部',
+				},
+				{
 					value: 0,
-					label: '正常运行',
+					label: '已停用',
 				},
 				{
 					value: 1,
-					label: '回源失败',
-				},
-				{
-					value: 2,
-					label: '已停用',
+					label: '正常运行',
 				},
 			],
 			pickerOptions0: {
@@ -359,16 +359,16 @@ export default {
 				},
 			},
 			tableData: [
-				{
-					dominds: 'http://www.baidu.com',
-					status: '1',
-					time_create: '1583906243',
-				},
-				{
-					dominds: 'http://www.baidu.com',
-					status: '0',
-					time_create: '1583906243',
-				},
+				// {
+				// 	domain: 'http://www.baidu.com',
+				// 	state: '1',
+				// 	time_create: '1583906243',
+				// },
+				// {
+				// 	domain: 'http://www.baidu.com',
+				// 	status: '0',
+				// 	time_create: '1583906243',
+				// },
 			],
 			form: {
 				name: '',
@@ -408,17 +408,17 @@ export default {
 			let params = new Object();
 			params.page = this.tolpage - 1;
 			params.buser_id = this.chanid + '';
-			params.url = this.input;
+			params.domain = this.input;
 			params.state = this.value;
 			params.order = this.order;
 			if (!this.value1) {
-				params.start_time = '';
-				params.end_time = '';
+				params.start_time = 0;
+				params.end_time = 0;
 			} else {
 				params.start_time = dateToMs(this.value1[0]);
 				params.end_time = dateToMs(this.value1[1]);
 			}
-			query_url(params)
+			query_domain(params)
 				.then((res) => {
 					if (res.status == 0) {
 						// this.pager.count = res.data.total;
@@ -426,14 +426,11 @@ export default {
 						this.tableData = [];
 						res.data.result.forEach((item, index) => {
 							let obj = {};
-							obj.dominds = item.url;
-							obj.label = item.label;
-							obj.label2 = item.label2;
-							obj.status = item.state;
-							obj.time_create = item.create_time;
-							obj.camesd = '';
-							obj.url_name = item.url_name;
-							obj.buser_id = item.buser_id + '';
+							obj.buser_id = item.buser_id;
+							obj.create_time = item.create_time;
+							obj.domain = item.domain;
+							obj.domain_id = item.domain_id;
+							obj.state = item.state;
 							this.tableData.push(obj);
 						});
 						if (res.total != 0) {
@@ -454,7 +451,8 @@ export default {
 		revise(num, row) {
 			console.log(row, num);
 			this.dialog_title = '修改域名';
-			this.form.name = row.dominds;
+			this.form.name = row.domain;
+			this.domain_id = row.domain_id;
 			this.title_num = num;
 			this.dialogFormVisible = true;
 		},
@@ -462,7 +460,7 @@ export default {
 		disableuser(num, row) {
 			console.log(row);
 			if (row) {
-				this.enable_disable(0, row.dominds);
+				this.enable_disable(0, row.domain_id);
 			} else {
 				this.enable_disable(0);
 			}
@@ -470,7 +468,7 @@ export default {
 		//启用
 		enableuser(num, row) {
 			if (row) {
-				this.enable_disable(1, row.dominds);
+				this.enable_disable(1, row.domain_id);
 			} else {
 				this.enable_disable(1);
 			}
@@ -479,7 +477,7 @@ export default {
 		deleateuser(num, row) {
 			console.log(row);
 			if (row) {
-				this.delete_domin(row.dominds);
+				this.delete_domin(row.domain_id);
 			} else {
 				this.delete_domin();
 			}
@@ -540,7 +538,7 @@ export default {
 		//多选
 		handleSelectionChange(val) {
 			if (val.length) {
-				this.currentSelection = val.map((item) => item.dominds);
+				this.currentSelection = val.map((item) => item.domain_id);
 			}
 			console.log(this.currentSelection);
 		},
@@ -556,7 +554,7 @@ export default {
 		},
 		// 整理列表选中项
 		formatChoosen(arr) {
-			const urlArr = this.tableData.map((item) => item.dominds);
+			const urlArr = this.tableData.map((item) => item.domain);
 			urlArr.forEach((item, index) => {
 				if (this.multipleSelection.includes(item)) {
 					// 如果存在item，就在selection中删掉，再添加到currentSelection内
@@ -619,7 +617,7 @@ export default {
 							'确认修改源站域名为' +
 								_this.form.name +
 								'？修改后原源站域名' +
-								_this.tableData[num].dominds +
+								_this.tableData[num].domain +
 								'下的加速内容的源站域名将全部自动修改替换为' +
 								_this.form.name,
 							'修改确认',
@@ -630,7 +628,7 @@ export default {
 							}
 						)
 							.then(() => {
-								_this.tableData[num].dominds = _this.form.name;
+								_this.tableData[num].domain = _this.form.name;
 								this.dialogFormVisible = false;
 								this.update_domain();
 							})
@@ -680,6 +678,7 @@ export default {
 								message: '源站域名添加成功',
 								type: 'success',
 							});
+							this.dialogFormVisible = false;
 							this.getuserlist();
 						} else {
 							if (res.data.res_data[0][1] == 1) {
@@ -702,13 +701,13 @@ export default {
 		update_domain() {
 			let params = new Object();
 			params.buser_id = this.chanid + '';
-			params.domain_id = this.chanid + '';
+			params.domain_id = this.domain_id;
 			params.domain = this.form.name;
 			modify_domain(params)
 				.then((res) => {
 					if (res.status == 0) {
 						this.$message({
-							type: 'info',
+							type: 'success',
 							message: '修改成功',
 						});
 						this.getuserlist();
@@ -726,12 +725,24 @@ export default {
 			let arr = new Array();
 			params.buser_id = this.chanid + '';
 			params.state = stat;
-			params.data_count = 0;
+
 			if (datalist) {
 				arr.push(datalist);
 				params.data_array = arr;
+				params.data_count = 1;
 			} else {
-				params.data_array = this.currentSelection;
+				let urllist = [];
+				const arr = this.multipleSelection.concat(
+					this.currentSelection
+				);
+				arr.forEach((item, index) => {
+					// let selelist = [];
+					// selelist.push(item);
+					// selelist.push(0);
+					urllist.push(item);
+				});
+				params.data_array = urllist;
+				params.data_count = urllist.length;
 			}
 			change_domainstate(params)
 				.then((res) => {
@@ -754,17 +765,29 @@ export default {
 			let params = new Object();
 			let arr = new Array();
 			params.buser_id = this.chanid + '';
-			params.data_count = 0;
+
 			if (datalist) {
 				arr.push(datalist);
 				params.data_array = arr;
+				params.data_count = 1;
 			} else {
-				params.data_array = this.currentSelection;
+				let urllist = [];
+				const arr = this.multipleSelection.concat(
+					this.currentSelection
+				);
+				arr.forEach((item, index) => {
+					// let selelist = [];
+					// selelist.push(item);
+					// selelist.push(0);
+					urllist.push(item);
+				});
+				params.data_array = urllist;
+				params.data_count = urllist.length;
 			}
 			del_domain(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (res.data.failed_count == 0) {
+						if (res.data.fail_count == 0) {
 							this.$message({
 								message: '源站域名删除成功',
 								type: 'success',
@@ -772,16 +795,16 @@ export default {
 							this.getuserlist();
 						} else {
 							if (res.data.res_data[0][1] == 1) {
-								this.$message.error('域名下存在加速资源');
+								this.$message.error('域名下存在加速资源，不可删除');
 							} else if (res.data.res_data[0][1] == 2) {
 								this.$message.error('域名不存在');
 							} else if (res.data.res_data[0][1] == 3) {
 								this.$message.error('系统出错请稍后重试');
 							}
 						}
-					}else{
-                        this.$message(res.err_msg);
-                    }
+					} else {
+						this.$message(res.err_msg);
+					}
 				})
 				.catch((error) => {
 					console.log(error);

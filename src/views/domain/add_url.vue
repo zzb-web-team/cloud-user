@@ -46,7 +46,7 @@
 							v-for="(item, index) in url_arr"
 							:key="index"
 							:label="item.label"
-							:value="item.label"
+							:value="item.value"
 						></el-option>
 					</el-select>
 					<el-button
@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import { add_url } from '../../servers/api';
+import { add_url, query_domain } from '../../servers/api';
 export default {
 	data() {
 		return {
@@ -138,24 +138,8 @@ export default {
 				format: '',
 			},
 			formLabelWidth: '110px',
-			url_arr: [
-				{
-					value: 0,
-					label: 'http://www.pykty.com',
-				},
-				{
-					value: 1,
-					label: 'http://www.gfsafsg.com',
-				},
-				{
-					value: 2,
-					label: 'http://www.hfsdsej.com',
-				},
-				{
-					value: 3,
-					label: 'http://www.hwhytoie.com',
-				},
-			],
+			url_arr: [],
+			pagenum: 0,
 			yewu: [
 				{
 					value: 0,
@@ -184,6 +168,7 @@ export default {
 		}
 		this.fu = [];
 		this.label2 = [];
+		this.getuserlist(0);
 	},
 	methods: {
 		//返回
@@ -214,12 +199,12 @@ export default {
 			dataobj.domain_id = this.dynamicValidateForm.url_address;
 			dataobj.host_url = this.dynamicValidateForm.back_path;
 			dataobj.url = this.dynamicValidateForm.play_path;
-			if (this.dynamicValidateForm.format == 0) {
-				dataobj.url_type = 'mp4';
-			} else if (this.dynamicValidateForm.format == 1) {
-				dataobj.url_type = 'hls';
-			} else if (this.dynamicValidateForm.format == 2) {
-				dataobj.url_type = 'flv';
+			if (this.dynamicValidateForm.format == 'mp4') {
+				dataobj.url_type = 0;
+			} else if (this.dynamicValidateForm.format == 'hls') {
+				dataobj.url_type = 1;
+			} else if (this.dynamicValidateForm.format == 'flv') {
+				dataobj.url_type = 2;
 			}
 			dataobj.buser_id = this.chanid + '';
 			dataobj.create_time = Date.parse(new Date()) / 1000;
@@ -259,6 +244,40 @@ export default {
 					}
 				})
 				.catch((error) => {});
+		},
+		//获取url列表--请求
+		getuserlist(page) {
+			// 已选择项
+			let params = new Object();
+			params.page = page;
+			params.buser_id = this.chanid + '';
+			params.domain = '';
+			params.state = -1;
+			params.order = 0;
+			params.start_time = 0;
+			params.end_time = 0;
+			query_domain(params)
+				.then((res) => {
+					if (res.status == 0) {
+						res.data.result.forEach((item, index) => {
+							let obj = {};
+							obj.buser_id = item.buser_id;
+							obj.create_time = item.create_time;
+							obj.label = item.domain;
+							obj.value = item.domain_id;
+							obj.state = item.state;
+							this.url_arr.push(obj);
+						});
+						if (res.data.remaining == 0) {
+							return false;
+						} else {
+							this.pagenum++;
+							this.getuserlist(this.pagenum);
+						}
+					} else {
+					}
+				})
+				.catch((err) => {});
 		},
 		go_accelerate_management() {
 			this.$router.push({ path: '/accelerate_management' });

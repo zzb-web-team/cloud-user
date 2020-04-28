@@ -54,27 +54,39 @@
 						</li>
 						<li>
 							<span>源站域名</span>
-							<span
-								class="tala_con"
-								style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-								>{{ datalist.url }}</span
+							<el-select
+								v-model="datalist.domain_id"
+								placeholder="请选择"
+								:disabled="!yfas"
 							>
-							<span
-								style="color: rgb(64, 158, 255);"
-								@click="cleckurl(1)"
-								>修改</span
-							>
+								<el-option
+									v-for="item in url_arr"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value"
+									class="tala_con"
+								></el-option>
+							</el-select>
+							<span class="tala_x" @click="fsho">
+								{{
+									yfas == false
+										? datalist.domain_id != ''
+											? '修改'
+											: '修改'
+										: '确定'
+								}}
+							</span>
 						</li>
 						<li>
 							<span>回源路径</span>
 							<span
 								class="tala_con"
 								style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-								>{{ datalist.url }}</span
+								>{{ datalist.host_url }}</span
 							>
 							<span
 								style="color: rgb(64, 158, 255);"
-								@click="cleckurl(2)"
+								@click="cleckurl(2, datalist.url)"
 								>修改</span
 							>
 						</li>
@@ -87,7 +99,7 @@
 							>
 							<span
 								style="color: rgb(64, 158, 255);"
-								@click="cleckurl(3)"
+								@click="cleckurl(3, datalist.url)"
 								>修改</span
 							>
 						</li>
@@ -95,11 +107,10 @@
 						<li>
 							<span>视频格式</span>
 							<el-select
-								v-model="datalist.label2"
+								v-model="datalist.url_type"
 								placeholder="请选择"
 								:disabled="!fas"
 							>
-								<!-- <el-option label="未配置" value="0"></el-option> -->
 								<el-option
 									v-for="item in options"
 									:key="item.value"
@@ -108,10 +119,10 @@
 									class="tala_con"
 								></el-option>
 							</el-select>
-							<span class="tala_x" @click="fsho">
+							<span class="tala_x" @click="yfsho">
 								{{
 									fas == false
-										? datalist.label2 != ''
+										? datalist.url_type != ''
 											? '修改'
 											: '修改'
 										: '确定'
@@ -119,14 +130,14 @@
 							</span>
 						</li>
 						<!-- 基础配置弹窗 -->
-						<el-dialog title="url" :visible.sync="zurl" width="30%">
+						<!-- <el-dialog title="url" :visible.sync="zurl" width="30%">
 							<span>{{ sleckurl }}</span>
 							<span slot="footer" class="dialog-footer">
 								<el-button type="primary" @click="zurl = false"
 									>确 定</el-button
 								>
 							</span>
-						</el-dialog>
+						</el-dialog> -->
 						<!-- 基础配置弹窗 -->
 						<el-dialog
 							:title="'修改' + dialog_title"
@@ -150,6 +161,7 @@
 										v-model="basisform.name"
 										autocomplete="off"
 										:placeholder="basis_point"
+										@change="set_dia_val"
 									></el-input>
 								</el-form-item>
 							</el-form>
@@ -537,6 +549,7 @@ import {
 	change_state,
 	getterminal,
 	check_label,
+	query_domain,
 } from '../../servers/api';
 import { dateToMs, getymdtime, setbatime } from '../../servers/sevdate';
 export default {
@@ -546,7 +559,8 @@ export default {
 			city_disabled: false,
 			dialog_title: '源站域名', //基础配置弹出框标题
 			baseis_num: 1,
-			basisform: { name: '' }, //基础配置弹出框内容
+			modify_value: '',
+			basisform: { name: '', othname: '' }, //基础配置弹出框内容
 			basis_point: '', //基础配置弹出框提示文字
 			basisVisible: false, //基础配置弹出框显示隐藏
 			loading: false,
@@ -561,6 +575,7 @@ export default {
 			zurl: false,
 			xas: false,
 			fas: false,
+			yfas: false,
 			dialogVisible: false,
 			huanVisible: false,
 			urlno: false,
@@ -792,6 +807,8 @@ export default {
 					label: 'flv',
 				},
 			],
+			url_arr: [],
+			pagenum: 0,
 			label2: [],
 			hostoptions: [
 				{
@@ -808,12 +825,13 @@ export default {
 			valueh: false,
 			datalist: {
 				url: '',
-				urlname: '',
-				label: '',
+				url_name: '',
+				url_type: 0,
+				buser_id: '',
 				create_time: '',
-				label2: 0,
+				host_url: '',
 				state: 0,
-				host_url: {},
+				domain_id: '',
 				cache_con: [],
 				custom_page: [],
 			},
@@ -916,15 +934,49 @@ export default {
 			}
 		}
 		this.label2 = [];
-		this.options = [];
+		this.getuserlist();
 		this.getqueryurl();
-		this.getlabrl2();
+		// this.options = [];
+		//this.getlabrl2();
 	},
 	methods: {
+		//获取url列表--请求
+		getuserlist(page) {
+			// 已选择项
+			let params = new Object();
+			params.page = page;
+			params.buser_id = this.chanid + '';
+			params.domain = '';
+			params.state = -1;
+			params.order = 0;
+			params.start_time = 0;
+			params.end_time = 0;
+			query_domain(params)
+				.then((res) => {
+					if (res.status == 0) {
+						res.data.result.forEach((item, index) => {
+							let obj = {};
+							obj.buser_id = item.buser_id;
+							obj.create_time = item.create_time;
+							obj.label = item.domain;
+							obj.value = item.domain_id;
+							obj.state = item.state;
+							this.url_arr.push(obj);
+						});
+						if (res.data.remaining == 0) {
+							return false;
+						} else {
+							this.pagenum++;
+							this.getuserlist(this.pagenum);
+						}
+					} else {
+					}
+				})
+				.catch((err) => {});
+		},
 		//查看url
-		cleckurl(num) {
-			// this.zurl = true;
-			// this.sleckurl = this.datalist.url;
+		cleckurl(num, str) {
+			this.basisform.name = str;
 			if (num == 1) {
 				this.dialog_title = '源站域名';
 				this.basis_point = 'http://或https://开头，72字符内';
@@ -940,6 +992,10 @@ export default {
 			}
 			this.basisVisible = true;
 		},
+		//修改基础信息弹窗
+		set_dia_val() {
+			this.basisform.othname = this.basisform.name;
+		},
 		//基础配置弹窗--关闭
 		handleClose() {
 			this.quxzteaone();
@@ -953,13 +1009,16 @@ export default {
 		//基础配置弹窗--确定
 		quxzteao() {
 			let _this = this;
+
 			this.$refs.accelerate_dialog.validate((valid) => {
 				if (valid) {
-					this.$message({
-						message: '修改添加成功',
-						type: 'success',
-					});
-					this.basisVisible = false;
+					if (_this.baseis_num == 2) {
+						_this.datalist.host_url = _this.basisform.othname;
+					} else if (_this.baseis_num == 3) {
+						_this.datalist.url = _this.basisform.othname;
+					}
+					_this.basisVisible = false;
+					_this.updateurl();
 				}
 			});
 		},
@@ -999,22 +1058,27 @@ export default {
 				})
 				.catch((error) => {});
 		},
-		//获取配置信息--
+		//获取配置信息--基础信息
 		getqueryurl() {
 			let parmas = new Object();
-			parmas.url = this.urlname;
+			parmas.url_name = this.urlname;
 			parmas.page = 0;
 			parmas.buser_id = this.chanid + '';
+			parmas.page = 0;
+			parmas.state = -1;
+			parmas.order = 0;
+			parmas.start_time = 0;
+			parmas.end_time = 0;
 			query_url(parmas)
 				.then((res) => {
-					console.log(res);
 					this.datalist.create_time = res.data.result[0].create_time;
 					this.datalist.url = res.data.result[0].url;
-					this.datalist.label = res.data.result[0].label;
-					this.oldlabel = res.data.result[0].label;
-					this.datalist.label2 = res.data.result[0].label2;
+					this.datalist.host_url = res.data.result[0].host_url;
+					this.datalist.domain = res.data.result[0].domain;
+					this.datalist.url_type = res.data.result[0].url_type;
 					this.datalist.state = res.data.result[0].state;
 					this.datalist.urlname = res.data.result[0].url_name;
+					this.datalist.domain_id = res.data.result[0].domain_id;
 					this.geturlconfig();
 				})
 				.catch((error) => {
@@ -1024,22 +1088,11 @@ export default {
 		//获取配置信息--详细信息
 		geturlconfig() {
 			let parmas = new Object();
-			parmas.url = this.urlname;
+			parmas.url_name = this.urlname;
 			parmas.type = 0;
+			parmas.buser_id = this.chanid + '';
 			query_config(parmas)
 				.then((res) => {
-					//回源参数
-					this.datalist.host_url.url = res.data.data.host_url.url;
-					if (res.data.data.host_url.valid == 0) {
-						this.datalist.host_url.valid = false;
-						//回源状态
-						this.valuek = false;
-						this.urlno = false;
-					} else {
-						this.datalist.host_url.valid = true;
-						this.valuek = true;
-						this.urlno = true;
-					}
 					//缓存参数
 					let concash = {};
 					if (res.data.data.cache_config.valid == 0) {
@@ -1058,48 +1111,21 @@ export default {
 		//修改url
 		setquery_url() {
 			this.loading = false;
-			if (this.datalist.label) {
-				if (this.oldlabel !== this.datalist.label) {
-					let adminlanel = new Object();
-					let labelarr = [];
-					labelarr.push(this.datalist.label);
-					adminlanel.data_count = 1;
-					adminlanel.data_array = labelarr;
-					check_label(adminlanel)
-						.then((res) => {
-							if (res.status == 0) {
-								if (res.data.success_count == 0) {
-									this.$message.error('主标签已存在');
-									return false;
-								} else {
-									this.updateurl();
-								}
-							}
-							return false;
-						})
-						.catch((error) => {});
-				} else {
-					this.updateurl();
-				}
-			} else {
-				this.updateurl();
-			}
+			this.updateurl();
 		},
 		updateurl() {
 			let parmas = new Object();
-			let natobj = {};
-			natobj.url = this.datalist.url;
-			natobj.label = this.datalist.label;
-			natobj.label2 = this.datalist.label2;
-			natobj.host_url = new Object();
+			let natobj = new Object();
+			natobj.url_name = this.urlname;
+			natobj.base_config = new Object();
+			natobj.base_config.url = this.datalist.url;
+			natobj.base_config.domain_id = this.datalist.domain_id;
+			natobj.base_config.host_url = this.datalist.host_url;
+			natobj.base_config.url_type = this.datalist.url_type;
+
 			natobj.cache_config = new Object();
 			natobj.custom_page = [];
-			if (this.valuek == false) {
-				natobj.host_url.valid = 0;
-			} else {
-				natobj.host_url.valid = 1;
-			}
-			natobj.host_url.url = this.datalist.host_url.url;
+
 			if (this.valueh == false) {
 				natobj.cache_config.valid = 0;
 			} else {
@@ -1112,9 +1138,11 @@ export default {
 			}
 			natobj.cache_config.data = this.datalist.cache_con;
 			natobj.custom_page = this.datalist.custom_page;
+
+			parmas.data_count = 1;
 			parmas.data_array = [];
 			parmas.data_array.push(natobj);
-			parmas.data_count = 1;
+			parmas.buser_id = this.chanid + '';
 			config_url(parmas)
 				.then((res) => {
 					this.getqueryurl();
@@ -1144,11 +1172,11 @@ export default {
 					let params = new Object();
 					let urllist = [];
 					urllist.push(this.urlname);
-					urllist.push(state);
 					params.data_array = [];
-					params.data_array.push(urllist);
+					params.data_array = urllist;
 					params.data_count = 0;
 					params.state = state;
+					params.buser_id = this.chanid + '';
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {
@@ -1180,9 +1208,15 @@ export default {
 			}
 		},
 		//修改视频终端
-		fsho() {
+		yfsho() {
 			this.fas = !this.fas;
 			if (this.fas == false) {
+				this.setquery_url();
+			}
+		},
+		fsho() {
+			this.yfas = !this.yfas;
+			if (this.yfas == false) {
 				this.setquery_url();
 			}
 		},
@@ -1218,9 +1252,6 @@ export default {
 				this.urlno = false;
 				this.valuek = false;
 			} else {
-				console.log('2');
-				//this.urlno = true;
-				//this.valuek = false;
 				this.$refs[formName].resetFields();
 			}
 

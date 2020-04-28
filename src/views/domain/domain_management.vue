@@ -7,7 +7,7 @@
 			<div class="seach">
 				<div class="seach_top">
 					<el-input
-						placeholder="源站域名"
+						placeholder="加速内容名称"
 						v-model="input"
 						class="input-with-select"
 						maxlength="70"
@@ -42,7 +42,6 @@
 						placeholder="请选择"
 						@change="getdata()"
 					>
-						<el-option label="全部" value></el-option>
 						<el-option
 							v-for="(item, index) in options"
 							:key="index + 'reat'"
@@ -88,7 +87,7 @@
 					<div>
 						<el-button
 							type="primary"
-							@click="new_btn"
+							@click="exp_table"
 							style="width: 100px;"
 						>
 							导出
@@ -118,21 +117,21 @@
 						label="加速内容名称"
 					></el-table-column>
 					<el-table-column
-						prop="dominds"
+						prop="domain"
 						label="源站域名"
 						class-name="firsturl"
 						:show-overflow-tooltip="true"
 					></el-table-column>
 
-					<el-table-column prop="idstatus" label="回源路径">
+					<el-table-column prop="host_url" label="回源路径">
 					</el-table-column>
-					<el-table-column prop="idstatus" label="播放路径">
+					<el-table-column prop="url" label="播放路径">
 					</el-table-column>
-					<el-table-column prop="status" label="状态" width="120">
+					<el-table-column prop="state" label="状态" width="120">
 						<template slot-scope="scope">
 							<span
 								style="color:#0ABF5B;"
-								v-if="scope.row.status == 1"
+								v-if="scope.row.state == 1"
 								>正常运行</span
 							>
 							<span style="color:#E54545;" v-else>已停止</span>
@@ -145,12 +144,12 @@
             </template>
           </el-table-column> -->
 					<el-table-column
-						prop="time_create"
+						prop="create_time"
 						sortable="custom"
 						label="创建时间"
 					>
 						<template slot-scope="scope">
-							<span>{{ scope.row.time_create | settimes }}</span>
+							<span>{{ scope.row.create_time | settimes }}</span>
 						</template>
 						>
 					</el-table-column>
@@ -179,7 +178,7 @@
 								type="text"
 								size="small"
 								@click="disableuser(scope.row)"
-								v-if="scope.row.status == 1"
+								v-if="scope.row.state == 1"
 								>停用</el-button
 							>
 							<el-button
@@ -193,7 +192,7 @@
 								type="text"
 								size="small"
 								@click="deleateuser(scope.row)"
-								v-if="scope.row.status !== 1"
+								v-if="scope.row.state !== 1"
 								style="color:#666666;"
 								>删除</el-button
 							>
@@ -392,6 +391,10 @@ export default {
 			chanid: '',
 			options: [
 				{
+					value: -1,
+					label: '全部',
+				},
+				{
 					value: 0,
 					label: '已停止',
 				},
@@ -405,7 +408,7 @@ export default {
 				},
 			],
 
-			value: '',
+			value: -1,
 			pager: {
 				count: 0,
 				page: 1,
@@ -413,7 +416,7 @@ export default {
 			},
 			tableData: [
 				// {
-				//   dominds: "http://www.baidu.com",
+				//   domain: "http://www.baidu.com",
 				//   url_name: "你好呀",
 				//   label: "1",
 				//   label2: "1",
@@ -561,7 +564,10 @@ export default {
 		new_btn() {
 			this.$router.push({ path: '/add_url' });
 		},
-
+		//导出表格
+		exp_table() {
+			console.log('导出');
+		},
 		//新建用户-删除URL
 		removeDomain(item) {
 			var index = this.dynamicValidateForm.domains.indexOf(item);
@@ -601,12 +607,12 @@ export default {
 			let params = new Object();
 			params.page = this.tolpage - 1;
 			params.buser_id = this.chanid + '';
-			params.url = this.input;
+			params.url_name = this.input;
 			params.state = this.value;
 			params.order = this.order;
 			if (!this.value1) {
-				params.start_time = '';
-				params.end_time = '';
+				params.start_time = 0;
+				params.end_time = 0;
 			} else {
 				params.start_time = dateToMs(this.value1[0]);
 				params.end_time = dateToMs(this.value1[1]);
@@ -619,14 +625,15 @@ export default {
 						this.tableData = [];
 						res.data.result.forEach((item, index) => {
 							let obj = {};
-							obj.dominds = item.url;
-							obj.label = item.label;
-							obj.label2 = item.label2;
-							obj.status = item.state;
-							obj.time_create = item.create_time;
-							obj.camesd = '';
+							obj.buser_id = item.buser_id;
+							obj.create_time = item.create_time;
+							obj.domain = item.domain;
+							obj.domain_id = item.domain_id;
+							obj.state = item.state;
+                            obj.url = item.url;
+                            obj.host_url=item.host_url;
 							obj.url_name = item.url_name;
-							obj.buser_id = item.buser_id + '';
+							obj.url_type = item.url_type;
 							this.tableData.push(obj);
 						});
 						if (res.total != 0) {
@@ -656,7 +663,7 @@ export default {
 		},
 		// 整理列表选中项
 		formatChoosen(arr) {
-			const urlArr = this.tableData.map((item) => item.dominds);
+			const urlArr = this.tableData.map((item) => item.url_name);
 			urlArr.forEach((item, index) => {
 				if (this.multipleSelection.includes(item)) {
 					// 如果存在item，就在selection中删掉，再添加到currentSelection内
@@ -677,7 +684,7 @@ export default {
 		//多选
 		handleSelectionChange(val) {
 			if (val.length) {
-				this.currentSelection = val.map((item) => item.dominds);
+				this.currentSelection = val.map((item) => item.url_name);
 			}
 			console.log(this.currentSelection);
 		},
@@ -725,14 +732,14 @@ export default {
 		handleClick(row) {
 			this.$router.push({
 				path: '/batch_management',
-				query: { urlress: row.dominds },
+				query: { urlress: row.url_name },
 			});
 		},
 		//复制配置
 		updatauser(row) {
 			this.$router.push({
 				path: '/copy_configuration',
-				query: { urlress: row.dominds },
+				query: { urlress: row.url_name },
 			});
 		},
 		//监控
@@ -762,28 +769,20 @@ export default {
 			})
 				.then(() => {
 					let params = new Object();
-					let urllist = [];
 					if (datalist) {
-						urllist.push(datalist.dominds);
-						urllist.push(0);
 						params.data_array = [];
-						params.data_array.push(urllist);
+						params.data_array.push(datalist.url_name);
 						params.data_count = 0;
 					} else {
 						let urllist = [];
 						const arr = this.multipleSelection.concat(
 							this.currentSelection
 						);
-						arr.forEach((item, index) => {
-							let selelist = [];
-							selelist.push(item);
-							selelist.push(0);
-							urllist.push(selelist);
-						});
-						params.data_array = urllist;
-						params.data_count = urllist.length;
+						params.data_array = arr;
+						params.data_count = arr.length;
 					}
 					params.state = 0;
+					params.buser_id = this.chanid + '';
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {
@@ -809,28 +808,25 @@ export default {
 
 			let urllist = [];
 			if (datalist) {
-				let selelist = [];
-				selelist.push(datalist.dominds);
-				selelist.push(1);
-				urllist.push(selelist);
-				params.data_count = 0;
 				params.data_array = [];
-				params.data_array = urllist;
+				params.data_array.push(datalist.url_name);
+				params.data_count = 0;
 			} else {
 				let urllist = [];
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
 				);
-				arr.forEach((item, index) => {
-					let selelist = [];
-					selelist.push(item);
-					selelist.push(1);
-					urllist.push(selelist);
-				});
-				params.data_count = urllist.length;
-				params.data_array = urllist;
+				// arr.forEach((item, index) => {
+				// 	let selelist = [];
+				// 	selelist.push(item);
+				// 	selelist.push(1);
+				// 	urllist.push(selelist);
+				// });
+				params.data_count = arr.length;
+				params.data_array = arr;
 			}
 			params.state = 1;
+			params.buser_id = this.chanid + '';
 			change_state(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -852,23 +848,22 @@ export default {
 			})
 				.then(() => {
 					let params = new Object();
+					params.buser_id = this.chanid + '';
 					if (datalist) {
-						params.data_count = 1;
-						let arr = [];
-						arr.push(datalist.dominds);
-						params.data_array = arr;
+						params.data_array = [];
+						params.data_array.push(datalist.url_name);
+						params.data_count = 0;
 					} else {
 						const arr = this.multipleSelection.concat(
 							this.currentSelection
 						);
 						params.data_array = arr;
 						params.data_count = arr.length;
-						params.buser_id = this.chanid + '';
 					}
 					delete_url(params)
 						.then((res) => {
 							if (res.status == 0) {
-								if (res.data.failed_count == 0) {
+								if (res.data.fail_count == 0) {
 									this.$message({
 										type: 'success',
 										message: '删除成功!',
@@ -878,7 +873,7 @@ export default {
 										type: 'warning',
 										message:
 											'操作成功，共' +
-											res.data.failed_count +
+											res.data.fail_count +
 											'条数据删除失败!请检查是操作项是否处于启用状态。',
 									});
 								}

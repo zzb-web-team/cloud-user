@@ -15,7 +15,7 @@
 								class="input-with-select"
 								maxlength="70"
 								@keyup.enter.native="getdata"
-								style="width:15%;"
+								style="width:15%;margin-right:10px;"
 							>
 								<i
 									slot="prefix"
@@ -156,7 +156,7 @@
 								class="input-with-select"
 								maxlength="70"
 								@keyup.enter.native="getdata1"
-								style="width:15%;"
+								style="width:15%;margin-right:10px;"
 							>
 								<i
 									slot="prefix"
@@ -304,7 +304,7 @@
 								class="input-with-select"
 								maxlength="70"
 								@keyup.enter.native="getdata2"
-								style="width:15%;"
+								style="width:15%;margin-right:10px;"
 							>
 								<i
 									slot="prefix"

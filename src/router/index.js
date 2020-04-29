@@ -122,16 +122,15 @@ const router = new Router({
             component: index,
             icon: 'iconfont icon-jiasu',
             children: [{
-                    path: '/domain_management',
-                    name: '点播加速管理',
-                    component: domain_management,
-                    icon: 'iconfont icon-dian',
-                    // hidden: true
-                },
-                {
                     path: '/accelerate_management',
                     name: '域名管理',
                     component: accelerate_management,
+                    icon: 'iconfont icon-dian',
+                    // hidden: true
+                }, {
+                    path: '/domain_management',
+                    name: '点播加速管理',
+                    component: domain_management,
                     icon: 'iconfont icon-dian',
                     // hidden: true
                 },

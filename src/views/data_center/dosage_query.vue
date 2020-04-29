@@ -8,15 +8,29 @@
 			<div
 				style="display: flex;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
 			>
-				<el-select
+				<el-input
+					placeholder="加速内容名称"
 					v-model="mvitem"
-					placeholder="请选择"
+					class="input-with-select"
+					maxlength="70"
+					@keyup.enter.native="changmvitem"
+					style="width:15%;margin-right:10px;"
+				>
+					<i
+						slot="prefix"
+						class="el-input__icon el-icon-search"
+						@click="changmvitem()"
+					></i>
+				</el-input>
+				<el-select
+					v-model="acc"
+					placeholder="请选择终端"
 					style="margin-right: 10px;"
 					@change="changmvitem"
 				>
 					<el-option label="全部" value="*"></el-option>
 					<el-option
-						v-for="(item, index) in mvlist"
+						v-for="(item, index) in accelist"
 						:key="index"
 						:label="item.label"
 						:value="item.label"
@@ -113,7 +127,8 @@ import {
 	query_conditions,
 	dataflow_curve,
 	dataflow_table,
-	getvideo
+	getvideo,
+	getterminal,
 } from '../../servers/api';
 export default {
 	data() {
@@ -124,6 +139,8 @@ export default {
 				// { timeStamp: "2018/05/02", dataFlow: "2898915641" },
 				// { timeStamp: "2018/05/03", dataFlow: "26846513" }
 			],
+			pagenum: 0,
+			accelist: [],
 			showdate: false,
 			activeName: 'first',
 			mvlist: [],
@@ -147,7 +164,7 @@ export default {
 								) -
 								3600 * 1000 * 24 * 1;
 							picker.$emit('pick', [start, end]);
-						}
+						},
 					},
 					{
 						text: '今天',
@@ -159,7 +176,7 @@ export default {
 								).getTime()
 							);
 							picker.$emit('pick', [start, end]);
-						}
+						},
 					},
 					{
 						text: '最近一周',
@@ -174,7 +191,7 @@ export default {
 								start.getTime() - 3600 * 1000 * 24 * 6
 							);
 							picker.$emit('pick', [start, end]);
-						}
+						},
 					},
 					{
 						text: '最近一个月',
@@ -189,54 +206,54 @@ export default {
 								start.getTime() - 3600 * 1000 * 24 * 29
 							);
 							picker.$emit('pick', [start, end]);
-						}
-					}
+						},
+					},
 				],
 				disabledDate(time) {
 					return time.getTime() > Date.now();
-				}
+				},
 			},
 			value1: [
 				new Date(2000, 10, 10, 10, 10),
-				new Date(2000, 10, 11, 10, 10)
+				new Date(2000, 10, 11, 10, 10),
 			],
 			value2: [],
 			vadio_page: 0,
 			rowHeader: [
 				{
 					prop: 'time',
-					label: '节点ID'
+					label: '节点ID',
 				},
 				{
 					prop: 'totals',
-					label: '使用流量'
+					label: '使用流量',
 				},
 				{
 					prop: 'online_devices',
-					label: '传输次数'
+					label: '传输次数',
 				},
 				{
 					prop: 'average_online',
-					label: '日期'
-				}
+					label: '日期',
+				},
 			],
 			rowHeader1: [
 				{
 					prop: 'time',
-					label: '节点ID'
+					label: '节点ID',
 				},
 				{
 					prop: 'totals',
-					label: '存储容量'
+					label: '存储容量',
 				},
 				{
 					prop: 'online_devices',
-					label: '存储次数'
+					label: '存储次数',
 				},
 				{
 					prop: 'average_online',
-					label: '日期'
-				}
+					label: '日期',
+				},
 			],
 			tableData: [
 				{
@@ -244,8 +261,8 @@ export default {
 					totals: '测试数据1',
 					online_devices: '测试数据1',
 					average_online: '测试数据1',
-					new_percent: '测试数据1'
-				}
+					new_percent: '测试数据1',
+				},
 			],
 			starttime: '',
 			endtime: '',
@@ -256,17 +273,17 @@ export default {
 			dataFlowArray: [], //图
 			timeArray: [], //图
 			dataFlownum: 0,
-			chanid: ''
+			chanid: '',
 		};
 	},
 	filters: {
 		settimes(data) {
 			var stat = getymdtime(data);
 			return stat;
-		}
+		},
 	},
 	components: {
-		fenye
+		fenye,
 	},
 	mounted() {
 		if (this.$cookies.get('id')) {
@@ -278,6 +295,7 @@ export default {
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
 		this.settimeunit(this.starttime, this.endtime);
+		this.getlabrl2();
 		this.getseach();
 	},
 	beforeDestroy() {
@@ -316,7 +334,7 @@ export default {
 			params.chanid = this.chanid + '';
 			params.page = this.vadio_page;
 			getvideo(params)
-				.then(res => {
+				.then((res) => {
 					if (res.status == 0) {
 						res.result.cols.forEach((item, index) => {
 							let obj = {};
@@ -336,7 +354,7 @@ export default {
 					}
 				})
 
-				.catch(err => {});
+				.catch((err) => {});
 		},
 		//请求数据--柱形图
 		gettu() {
@@ -353,7 +371,7 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			dataflow_curve(params)
-				.then(res => {
+				.then((res) => {
 					if (res.data.totalUsage == 0) {
 						this.dataL = 0;
 					} else {
@@ -382,7 +400,7 @@ export default {
 					this.getdtable();
 					this.drawLine();
 				})
-				.catch(err => {});
+				.catch((err) => {});
 		},
 		//请求数据--表格
 		getdtable() {
@@ -399,11 +417,37 @@ export default {
 			params.pageNo = this.pageNo - 1;
 			params.pageSize = this.pageSize;
 			dataflow_table(params)
-				.then(res => {
+				.then((res) => {
 					this.tablecdn = res.data.tableList;
 					this.total_cnt = res.data.totalCnt;
 				})
-				.catch(err => {});
+				.catch((err) => {});
+		},
+		//获取视频终端
+		getlabrl2() {
+			let parmas = new Object();
+			parmas.chanid = this.chanid;
+			parmas.page = this.pagenum;
+			getterminal(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+						res.result.cols.forEach((item) => {
+							let sdf = new Object();
+							sdf.value = item.id;
+							sdf.label = item.name;
+							sdf.chanid = item.chanid;
+							sdf.type = item.type;
+							this.accelist.push(sdf);
+						});
+						if (res.result.les_count == 0) {
+							return false;
+						} else {
+							this.pagenum++;
+							this.getlabrl2();
+						}
+					}
+				})
+				.catch((error) => {});
 		},
 		//下拉框
 		changmvitem() {
@@ -487,14 +531,14 @@ export default {
 			// 绘制图表
 			let options = {
 				title: {
-					text: '流量'
+					text: '流量',
 				},
 				grid: {
 					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。
 					left: '5%', // 默认10%，给24就挺合适的。
 					top: 60, // 默认60
 					right: 35, // 默认10%
-					bottom: 60 // 默认60
+					bottom: 60, // 默认60
 					// width: "100%", // grid 组件的宽度。默认自适应。
 					// height: "100%",
 					// containLabel:true, // grid 区域是否包含坐标轴的刻度标签。(如果true的时候，上下左右可以为0了)
@@ -508,18 +552,18 @@ export default {
 					axisPointer: {
 						type: 'cross',
 						label: {
-							backgroundColor: '#6a7985'
-						}
-					}
+							backgroundColor: '#6a7985',
+						},
+					},
 				},
 				xAxis: {
 					data: this.timeArray,
 					axisTick: {
-						show: false
+						show: false,
 					},
 					axisLabel: {
-						interval: 0 //代表显示所有x轴标签
-					}
+						interval: 0, //代表显示所有x轴标签
+					},
 				},
 				yAxis: {},
 				series: [
@@ -547,16 +591,16 @@ export default {
 									} else {
 										return colorList[1];
 									}
-								}
-							}
-						}
-					}
+								},
+							},
+						},
+					},
 				],
-				backgroundColor: '#FFFFFF'
+				backgroundColor: '#FFFFFF',
 			};
 			myChart.setOption(options);
-		}
-	}
+		},
+	},
 };
 </script>
 

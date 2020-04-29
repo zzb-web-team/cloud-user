@@ -433,7 +433,9 @@ export default {
 				jsonobj.base_config = Object.assign(
 					{},
 					this.copydatalist.base_config
-				);
+                );
+                
+                jsonobj.url_name = item.url;
 				params.data_array.push(jsonobj);
 			});
 			params.buser_id = this.chanid + '';

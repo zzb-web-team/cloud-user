@@ -653,7 +653,8 @@ export default {
       if (value === "") {
         callback(new Error("请输入账号(4-20位字母数字组成的字符串)"));
       } else {
-        var fsdusername = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{4,20}$/;
+        // var fsdusername = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{4,20}$/;
+         var fsdusername = /^(?![0-9]+$)[0-9A-Za-z]{4,20}$/;
         if (fsdusername.test(value) === false) {
           callback(new Error("账号格式错误(4-20位字母数字组成的字符串)"));
         } else {

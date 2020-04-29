@@ -29,7 +29,7 @@
 					<el-input
 						type="textarea"
 						:rows="2"
-						placeholder="请输入点播加速域名"
+						placeholder="请输入点播加速内容,例：test123"
 						:autosize="{ minRows: 10, maxRows: 20 }"
 						v-model="textarea1"
 					></el-input>
@@ -57,12 +57,12 @@
 						style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
 					>
 						Filed预热单次提交最多 10
-						条，使用回车换行输入，刷新任务完成时间预计为 10 分钟
+						条，使用回车换行输入，预热任务完成时间预计为 10 分钟
 					</p>
 					<el-input
 						type="textarea"
 						:rows="2"
-						placeholder="请输入点播加速域名"
+						placeholder="请输入点播加速内容,例：test123"
 						:autosize="{ minRows: 10, maxRows: 20 }"
 						v-model="textarea2"
 					></el-input>
@@ -79,7 +79,7 @@
 					<div class="seach">
 						<div class="seach_top">
 							<el-input
-								placeholder="URL"
+								placeholder="请输入点播加速内容"
 								v-model="input"
 								class="input-with-select"
 								@keyup.enter.native="seachuser"
@@ -102,7 +102,7 @@
 									:class="[
 										rotate
 											? 'fa fa-arrow-down go'
-											: 'fa fa-arrow-down aa'
+											: 'fa fa-arrow-down aa',
 									]"
 								></i>
 							</div>
@@ -169,7 +169,7 @@
 						:header-cell-style="headClass"
 					>
 						<el-table-column
-							prop="url"
+							prop="url_name"
 							label="操作内容"
 						></el-table-column>
 
@@ -241,7 +241,7 @@ import { dateToMs, getymdtime } from '../../servers/sevdate';
 import {
 	resource_refresh,
 	refresh_state,
-	getterminal
+	getterminal,
 } from '../../servers/api';
 export default {
 	data() {
@@ -257,7 +257,7 @@ export default {
 			optiondisplay: false,
 			input: '',
 			valuea: '',
-			valueb: '',
+			valueb: -1,
 			rotate: false,
 			value1: '',
 			citylabel: '',
@@ -266,32 +266,36 @@ export default {
 			options1: [
 				{
 					value: 0,
-					label: 'URL刷新'
+					label: 'URL刷新',
 				},
 				{
 					value: 1,
-					label: '内容预热'
-				}
+					label: '内容预热',
+				},
 			],
 			options2: [
 				{
+					value: -1,
+					label: '全部',
+				},
+				{
 					value: 0,
-					label: '进行中'
+					label: '进行中',
 				},
 				{
 					value: 1,
-					label: '完成'
+					label: '完成',
 				},
 				{
 					value: 2,
-					label: '失败'
-				}
+					label: '失败',
+				},
 			],
 			tableData: [],
 			citylist1: [
 				{
 					value: 0,
-					label: '全部'
+					label: '全部',
 				},
 				{
 					value: 1,
@@ -299,25 +303,25 @@ export default {
 					children: [
 						{
 							value: '北京',
-							label: '北京'
+							label: '北京',
 						},
 						{
 							value: '内蒙古',
-							label: '内蒙古'
+							label: '内蒙古',
 						},
 						{
 							value: '山西',
-							label: '山西'
+							label: '山西',
 						},
 						{
 							value: '河北',
-							label: '河北'
+							label: '河北',
 						},
 						{
 							value: '天津',
-							label: '天津'
-						}
-					]
+							label: '天津',
+						},
+					],
 				},
 				{
 					value: 2,
@@ -325,25 +329,25 @@ export default {
 					children: [
 						{
 							value: '宁夏',
-							label: '宁夏'
+							label: '宁夏',
 						},
 						{
 							value: '陕西',
-							label: '陕西'
+							label: '陕西',
 						},
 						{
 							value: '甘肃',
-							label: '甘肃'
+							label: '甘肃',
 						},
 						{
 							value: 'qinghai',
-							label: '青海'
+							label: '青海',
 						},
 						{
 							value: '新疆',
-							label: '新疆'
-						}
-					]
+							label: '新疆',
+						},
+					],
 				},
 				{
 					value: 3,
@@ -351,17 +355,17 @@ export default {
 					children: [
 						{
 							value: '黑龙江',
-							label: '黑龙江'
+							label: '黑龙江',
 						},
 						{
 							value: '吉林',
-							label: '吉林'
+							label: '吉林',
 						},
 						{
 							value: '辽宁',
-							label: '辽宁'
-						}
-					]
+							label: '辽宁',
+						},
+					],
 				},
 				{
 					value: 4,
@@ -369,29 +373,29 @@ export default {
 					children: [
 						{
 							value: '福建',
-							label: '福建'
+							label: '福建',
 						},
 						{
 							value: '江苏',
-							label: '江苏'
+							label: '江苏',
 						},
 						{
 							value: '安徽',
-							label: '安徽'
+							label: '安徽',
 						},
 						{
 							value: '山东',
-							label: '山东'
+							label: '山东',
 						},
 						{
 							value: '上海',
-							label: '上海'
+							label: '上海',
 						},
 						{
 							value: '浙江',
-							label: '浙江'
-						}
-					]
+							label: '浙江',
+						},
+					],
 				},
 				{
 					value: 5,
@@ -399,21 +403,21 @@ export default {
 					children: [
 						{
 							value: '河南',
-							label: '河南'
+							label: '河南',
 						},
 						{
 							value: '湖北',
-							label: '湖北'
+							label: '湖北',
 						},
 						{
 							value: '江西',
-							label: '江西'
+							label: '江西',
 						},
 						{
 							value: '湖南',
-							label: '湖南'
-						}
-					]
+							label: '湖南',
+						},
+					],
 				},
 				{
 					value: 6,
@@ -421,25 +425,25 @@ export default {
 					children: [
 						{
 							value: '贵州',
-							label: '贵州'
+							label: '贵州',
 						},
 						{
 							value: '云南',
-							label: '云南'
+							label: '云南',
 						},
 						{
 							value: '重庆',
-							label: '重庆'
+							label: '重庆',
 						},
 						{
 							value: '四川',
-							label: '四川'
+							label: '四川',
 						},
 						{
 							value: '西藏',
-							label: '西藏'
-						}
-					]
+							label: '西藏',
+						},
+					],
 				},
 				{
 					value: 7,
@@ -447,17 +451,17 @@ export default {
 					children: [
 						{
 							value: '广东',
-							label: '广东'
+							label: '广东',
 						},
 						{
 							value: '广西',
-							label: '广西'
+							label: '广西',
 						},
 						{
 							value: '海南',
-							label: '海南'
-						}
-					]
+							label: '海南',
+						},
+					],
 				},
 				{
 					value: 8,
@@ -465,18 +469,18 @@ export default {
 					children: [
 						{
 							value: '香港',
-							label: '香港'
+							label: '香港',
 						},
 						{
 							value: '澳门',
-							label: '澳门'
+							label: '澳门',
 						},
 						{
 							value: 'taiwan',
-							label: '台湾'
-						}
-					]
-				}
+							label: '台湾',
+						},
+					],
+				},
 			],
 			pickerOptions0: {
 				shortcuts: [
@@ -496,7 +500,7 @@ export default {
 								) -
 								3600 * 1000 * 24 * 1;
 							picker.$emit('pick', [start, end]);
-						}
+						},
 					},
 					{
 						text: '今天',
@@ -508,7 +512,7 @@ export default {
 								).getTime()
 							);
 							picker.$emit('pick', [start, end]);
-						}
+						},
 					},
 					{
 						text: '最近一周',
@@ -523,7 +527,7 @@ export default {
 								start.getTime() - 3600 * 1000 * 24 * 6
 							);
 							picker.$emit('pick', [start, end]);
-						}
+						},
 					},
 					{
 						text: '最近一个月',
@@ -538,19 +542,19 @@ export default {
 								start.getTime() - 3600 * 1000 * 24 * 29
 							);
 							picker.$emit('pick', [start, end]);
-						}
-					}
+						},
+					},
 				],
 				disabledDate(time) {
 					return time.getTime() > Date.now();
-				}
+				},
 			},
 			errarrs: '',
-			errarrs2: ''
+			errarrs2: '',
 		};
 	},
 	components: {
-		fenye
+		fenye,
 	},
 	filters: {
 		settimes(data) {
@@ -560,7 +564,7 @@ export default {
 			} else {
 				return data;
 			}
-		}
+		},
 	},
 	created() {},
 	mounted() {
@@ -579,8 +583,9 @@ export default {
 			parmas.chanid = this.chanid;
 			parmas.pagesize = 10;
 			parmas.page = 0;
+			parmas.buser_id = this.chanid + '';
 			getterminal(parmas)
-				.then(res => {
+				.then((res) => {
 					if (res.status == 0) {
 						if (res.result.cols.length <= 0) {
 							this.$alert(
@@ -590,17 +595,17 @@ export default {
 									confirmButtonText: '去添加',
 									showClose: false,
 									center: true,
-									callback: action => {
+									callback: (action) => {
 										this.$router.push({
-											path: '/terminal_management'
+											path: '/terminal_management',
 										});
-									}
+									},
 								}
 							);
 						}
 					}
 				})
-				.catch(err => {});
+				.catch((err) => {});
 		},
 		handleChange() {
 			var thsAreaCode = this.$refs.cascaderAddr.getCheckedNodes()[0]
@@ -630,13 +635,13 @@ export default {
 				parmas.type = 0;
 
 				if (this.textarea1 == '') {
-					this.$message.error('请输入要刷新的url地址');
+					this.$message.error('请输入要刷新的加速内容');
 					return false;
 				} else {
 					if (
 						this.removeEmpty(this.textarea1.split('\n')).length > 10
 					) {
-						this.$message.error('url最多输入10条');
+						this.$message.error('最多输入10条');
 						return false;
 					} else {
 						let urlyure = this.removeEmpty(
@@ -644,7 +649,8 @@ export default {
 						);
 
 						let err_num = 0;
-						var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
+						// var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
+						var resyzm = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,1024}$/;
 						this.errarrs = '';
 						urlyure.forEach((item, index) => {
 							if (resyzm.test(item) === false) {
@@ -661,15 +667,15 @@ export default {
 						});
 						if (err_num != 0) {
 							this.$alert(
-								`${this.errarrs}url格式错误`,
+								`${this.errarrs}加速内容格式错误`,
 								'提交信息有误',
 								{
-									dangerouslyUseHTMLString: true
+									dangerouslyUseHTMLString: true,
 								}
 							);
 							return false;
 						} else {
-							parmas.url = urlyure;
+							parmas.url_name = urlyure;
 						}
 					}
 				}
@@ -682,16 +688,17 @@ export default {
 			} else {
 				parmas.type = 1;
 				if (this.textarea2 == '') {
-					this.$message.error('请输入要刷新的url地址');
+					this.$message.error('请输入要刷新的加速内容');
 					return false;
 				} else {
 					let urllist = this.removeEmpty(this.textarea2.split('\n'));
 					if (urllist.length > 10) {
-						this.$message.error('url最多输入10条');
+						this.$message.error('最多输入10条');
 						return false;
 					} else {
 						let err_num = 0;
-						var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
+						// var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
+						var resyzm = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,1024}$/;
 						this.errarrs2 = '';
 						urllist.forEach((item, index) => {
 							if (resyzm.test(item) === false) {
@@ -708,15 +715,15 @@ export default {
 						});
 						if (err_num != 0) {
 							this.$alert(
-								`${this.errarrs2}url格式错误`,
+								`${this.errarrs2}加速内容格式错误`,
 								'提交信息有误',
 								{
-									dangerouslyUseHTMLString: true
+									dangerouslyUseHTMLString: true,
 								}
 							);
 							return false;
 						} else {
-							parmas.url = urllist;
+							parmas.url_name = urllist;
 						}
 					}
 				}
@@ -727,13 +734,14 @@ export default {
 					parmas.area = this.citylabel1[1];
 				}
 			}
+			parmas.buser_id = this.chanid + '';
 			resource_refresh(parmas)
-				.then(res => {
+				.then((res) => {
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
 							this.$message({
 								type: 'success',
-								message: '操作成功!'
+								message: '操作成功!',
 							});
 							if (res.err_code == 165156446464) {
 								//判断是预热还是刷新
@@ -744,7 +752,7 @@ export default {
 										{
 											confirmButtonText: '确定',
 											cancelButtonText: '取消',
-											type: 'warning'
+											type: 'warning',
 										}
 									)
 										.then(() => {
@@ -763,14 +771,14 @@ export default {
 										{
 											confirmButtonText: '确定',
 											cancelButtonText: '取消',
-											type: 'warning'
+											type: 'warning',
 										}
 									)
 										.then(() => {
 											this.$message({
 												type: 'success',
 												message:
-													'某URL某某区域已存在缓存无需刷新!'
+													'某URL某某区域已存在缓存无需刷新!',
 											});
 										})
 										.catch(() => {
@@ -792,7 +800,7 @@ export default {
 								`${this.errarr}操作失败`,
 								res.data.failed_count + '条操作失败',
 								{
-									dangerouslyUseHTMLString: true
+									dangerouslyUseHTMLString: true,
 								}
 							);
 						}
@@ -800,7 +808,7 @@ export default {
 						this.error.$message('操作失败' + res.msg);
 					}
 				})
-				.catch(err => {});
+				.catch((err) => {});
 		},
 		seachdata() {
 			this.getrefreshstate();
@@ -809,33 +817,33 @@ export default {
 		getrefreshstate() {
 			this.tableData = [];
 			let parmas = new Object();
-			parmas.url = this.input;
+			parmas.url_name = this.input;
 			parmas.buser_id = this.chanid + '';
 			parmas.refresh_type = this.valuea;
 			parmas.state = parseInt(this.valueb);
 			if (this.value1 == '') {
-				parmas.start_time = '';
-				parmas.end_time = '';
+				parmas.start_time = 0;
+				parmas.end_time = 0;
 			} else {
 				parmas.start_time = dateToMs(this.value1[0]);
 				parmas.end_time = dateToMs(this.value1[1]);
 			}
 			refresh_state(parmas)
-				.then(res => {
+				.then((res) => {
 					if (res.status == 0) {
 						if (res.data.result.length > 0) {
 							this.tableData = res.data.result;
 						} else {
 							this.$message({
 								message: '暂无数据',
-								type: 'warning'
+								type: 'warning',
 							});
 						}
 					} else {
 						this.$message.error(res.err_msg);
 					}
 				})
-				.catch(err => {});
+				.catch((err) => {});
 		},
 		handleClick(tab, event) {
 			this.textarea1 = '';
@@ -860,7 +868,7 @@ export default {
 		reset() {
 			this.input = '';
 			this.valuea = '';
-			this.valueb = '';
+			this.valueb = -1;
 			this.value1 = '';
 			this.getrefreshstate();
 		},
@@ -871,8 +879,8 @@ export default {
 		// 表格样式设置
 		rowClass() {
 			return 'text-align: center;';
-		}
-	}
+		},
+	},
 };
 </script>
 

@@ -46,7 +46,7 @@
 							v-for="(item, index) in url_arr"
 							:key="index"
 							:label="item.label"
-							:value="item.value"
+							:value="item.label"
 						></el-option>
 					</el-select>
 					<el-button
@@ -196,7 +196,7 @@ export default {
 			let arr = [];
 			let dataobj = new Object();
 			dataobj.url_name = this.dynamicValidateForm.url_content;
-			dataobj.domain_id = this.dynamicValidateForm.url_address;
+			dataobj.domain = this.dynamicValidateForm.url_address;
 			dataobj.host_url = this.dynamicValidateForm.back_path;
 			dataobj.url = this.dynamicValidateForm.play_path;
 			if (this.dynamicValidateForm.format == 'mp4') {

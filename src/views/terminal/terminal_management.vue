@@ -574,7 +574,7 @@ export default {
       if (value === "") {
         callback(new Error("终端名称不能为空"));
       } else {
-        let tokendata = /^[\u4e00-\u9fa5A-Za-z]{1,30}$/;
+        let tokendata = /^[\u4e00-\u9fa5A-Za-z0-9]{1,30}$/;
         if (tokendata.test(value) === false) {
           callback(new Error("终端名称格式错误"));
         } else if (this.getBLen(value) > 30) {

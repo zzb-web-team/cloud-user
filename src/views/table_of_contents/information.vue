@@ -160,7 +160,8 @@
                   slot="append"
                   @click="sendyam"
                   :disabled="getsetcode"
-                  style="background: #297AFF;color: #fff;border:1px solid #297AFF;width:112px;"
+                  style="background: #297AFF;color: #fff;width:112px;height:40px;"
+                  
                 >
                   {{
                   getsetcode == true ? num : '获取验证码'

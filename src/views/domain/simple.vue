@@ -130,10 +130,10 @@
 							</span>
 						</template>
 					</el-table-column>
-					<el-table-column
+					<!-- <el-table-column
 						prop="buser_id"
 						label="渠道ID"
-					></el-table-column>
+					></el-table-column> -->
 					<!-- <el-table-column prop="label" label="标签">
             <template slot-scope="scope">
               <span v-if="scope.row.err_label == false" style="color:red">{{ scope.row.label }}</span>
@@ -262,12 +262,12 @@ export default {
 									if (nowarr[i][1] === 1) {
 										this.tableList[j].status = '格式错误';
 									} else if (nowarr[i][1] === 2) {
-										this.tableList[j].status = 'url重复';
+										this.tableList[j].status = '源站域名重复';
 									} else if (nowarr[i][1] === 3) {
 										this.tableList[j].status = '用户不存在';
 									} else if (nowarr[i][1] === 4) {
 										this.tableList[j].status =
-											'数据库写人错误';
+											'改成渠道ID不存在或终端还未创建';
 									} else {
 										this.tableList[j].status = '成功';
 									}

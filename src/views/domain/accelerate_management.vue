@@ -688,7 +688,7 @@ export default {
 							} else if (res.data.res_data[0][1] == 3) {
 								this.$message.error('该用户不存在');
 							} else if (res.data.res_data[0][1] == 4) {
-								this.$message.error('系统出错请稍后重试');
+								this.$message.error('改成渠道ID不存在或终端还未创建');
 							}
 						}
 					}

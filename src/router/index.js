@@ -232,16 +232,16 @@ const router = new Router({
                         },
                         {
                             path: '/log_download',
-                            name: 'CDN日志下载',
+                            name: '点播加速日志',
                             component: log_download,
                             icon: 'iconfont icon-dian',
                         },
-                        {
-                            path: '/accelerated_log',
-                            name: '点播加速日志',
-                            component: accelerated_log,
-                            icon: 'iconfont icon-dian',
-                        },
+                        // {
+                        //     path: '/accelerated_log',
+                        //     name: '点播加速日志',
+                        //     component: accelerated_log,
+                        //     icon: 'iconfont icon-dian',
+                        // },
                     ],
                 },
             ],
@@ -271,16 +271,16 @@ const router = new Router({
                 },
                 {
                     path: '/log_download',
-                    name: 'CDN日志下载',
+                    name: '点播加速日志',
                     component: log_download,
                     icon: 'iconfont icon-dian',
                 },
-                {
-                    path: '/accelerated_log',
-                    name: '点播加速日志',
-                    component: accelerated_log,
-                    icon: 'iconfont icon-dian',
-                },
+                // {
+                //     path: '/accelerated_log',
+                //     name: '点播加速日志',
+                //     component: accelerated_log,
+                //     icon: 'iconfont icon-dian',
+                // },
             ],
         },
         {

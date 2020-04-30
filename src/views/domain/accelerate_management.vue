@@ -1,7 +1,7 @@
 <template>
 	<div class="content accelerate_ma">
 		<!-- title -->
-		<div class="top_title">加速管理</div>
+		<div class="top_title">域名管理</div>
 		<div
 			style="margin: auto;margin-left: 45px;margin-right: 45px;"
 			class="acceleerate_con"

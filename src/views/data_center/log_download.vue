@@ -1,6 +1,6 @@
 <template>
 	<div class="content">
-		<div class="top_title">加速日志</div>
+		<div class="top_title">点播加速日志</div>
 		<!-- 主体表格 -->
 		<div class="log_download_con">
 			<div class="log_download_con_top">

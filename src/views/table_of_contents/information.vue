@@ -575,7 +575,8 @@ export default {
             callback(new Error("邮箱格式错误"));
           }
         } else if (this.form.titlename == "修改账号") {
-          var fsdusername = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{4,20}$/;
+        //   var fsdusername = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{4,20}$/;
+        var fsdusername = /^(?![0-9]+$)[0-9A-Za-z]{4,20}$/;
           if (fsdusername.test(value) === false) {
             callback(new Error("账号格式错误"));
           } else {

@@ -375,7 +375,7 @@ export default {
                 let obj = {};
                 obj.term = item.name;
                 obj.type = item.type;
-                obj.tokenn = item.token;
+                obj.token = item.token;
                 obj.sea = false;
                 obj.id = item.id;
                 this.tableData.push(obj);
@@ -552,8 +552,11 @@ export default {
     },
     //删除
     dettab(index, row) {
+        console.log(row);
       let parmas = new Object();
       parmas.id = row.id;
+      parmas.chanid = this.chanid;
+      parmas.token = row.token;
       deleteterminal(parmas)
         .then(res => {
           if (res.status == 0) {

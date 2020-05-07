@@ -1,7 +1,7 @@
 <template>
 	<div class="content domin_index">
 		<!-- 面包屑 -->
-		<div class="top_title">URL管理</div>
+		<div class="top_title">点播加速管理</div>
 		<div style="margin: auto;margin-left: 45px;margin-right: 45px;">
 			<!-- 搜索 -->
 			<div class="seach">

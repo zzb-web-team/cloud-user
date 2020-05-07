@@ -516,7 +516,7 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
-		// this.gettoken();
+		this.gettoken();
 		this.getuserlist();
 	},
 	methods: {
@@ -532,7 +532,7 @@ export default {
 					if (res.status == 0) {
 						if (res.result.cols.length <= 0) {
 							this.$alert(
-								'您还未添加终端，还不能操作url！',
+								'您还未添加终端，还不能操作域名！',
 								'温馨提示',
 								{
 									confirmButtonText: '去添加',
@@ -722,7 +722,7 @@ export default {
 		},
 		//搜索重置
 		reset() {
-			this.value = '';
+			this.value = -1;
 			this.value1 = '';
 			this.input = '';
 			this.getuserlist();

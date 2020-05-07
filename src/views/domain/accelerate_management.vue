@@ -10,7 +10,7 @@
 			<div class="seach">
 				<div class="seach_top">
 					<el-input
-						placeholder="请输入域名"
+						placeholder="请输入源站域名"
 						v-model="input"
 						class="input-with-select"
 						maxlength="70"
@@ -201,6 +201,7 @@
 						<el-button
 							type="text"
 							size="small"
+							v-show="del_show"
 							@click="deleateuser()"
 							>删除</el-button
 						>
@@ -271,6 +272,7 @@ export default {
 			dialog_title: '新增域名',
 			title_num: 0,
 			total_cnt: 1,
+			del_show: true,
 			order: 0,
 			input: '', //搜索输入框
 			value: -1,
@@ -493,7 +495,7 @@ export default {
 		},
 		//搜索重置
 		reset() {
-			this.value = '';
+			this.value = -1;
 			this.value1 = '';
 			this.input = '';
 			this.getuserlist();
@@ -537,10 +539,23 @@ export default {
 		},
 		//多选
 		handleSelectionChange(val) {
+			let stateagr = 0;
 			if (val.length) {
-				this.currentSelection = val.map((item) => item.domain_id);
+				this.currentSelection = val.map((item) => item);
 			}
 			console.log(this.currentSelection);
+			stateagr = 0;
+			for (let i = 0; i < this.currentSelection.length; i++) {
+				if (this.currentSelection[i].state == 1) {
+					stateagr = 1;
+				}
+			}
+			console.log(stateagr);
+			if (stateagr == 0) {
+				this.del_show = true;
+			} else {
+				this.del_show = false;
+			}
 		},
 		// 刷新已选择数组
 		updateSelection() {
@@ -585,10 +600,10 @@ export default {
 			if (value === '') {
 				callback(new Error('请输入源站域名'));
 			} else {
-				var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
+				var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,68}$/;
 				// objExp = new RegExp(resyzm);
 				if (this.getBLen(value) > 72) {
-					callback(new Error('源站域名长度不能超出1024个字符'));
+					callback(new Error('源站域名长度不能超出72个字符'));
 				} else if (resyzm.test(value) === false) {
 					callback(new Error('源站域名格式错误'));
 				} else {
@@ -688,7 +703,9 @@ export default {
 							} else if (res.data.res_data[0][1] == 3) {
 								this.$message.error('该用户不存在');
 							} else if (res.data.res_data[0][1] == 4) {
-								this.$message.error('改成渠道ID不存在或终端还未创建');
+								this.$message.error(
+									'改成渠道ID不存在或终端还未创建'
+								);
 							}
 						}
 					}
@@ -739,7 +756,7 @@ export default {
 					// let selelist = [];
 					// selelist.push(item);
 					// selelist.push(0);
-					urllist.push(item);
+					urllist.push(item.domain_id);
 				});
 				params.data_array = urllist;
 				params.data_count = urllist.length;
@@ -775,12 +792,14 @@ export default {
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
 				);
+				console.log(arr);
 				arr.forEach((item, index) => {
 					// let selelist = [];
 					// selelist.push(item);
 					// selelist.push(0);
-					urllist.push(item);
+					urllist.push(item.domain_id);
 				});
+
 				params.data_array = urllist;
 				params.data_count = urllist.length;
 			}
@@ -795,7 +814,9 @@ export default {
 							this.getuserlist();
 						} else {
 							if (res.data.res_data[0][1] == 1) {
-								this.$message.error('域名下存在加速资源，不可删除');
+								this.$message.error(
+									'域名下存在加速资源，不可删除'
+								);
 							} else if (res.data.res_data[0][1] == 2) {
 								this.$message.error('域名不存在');
 							} else if (res.data.res_data[0][1] == 3) {

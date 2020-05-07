@@ -86,7 +86,7 @@
 							>
 							<span
 								style="color: rgb(64, 158, 255);"
-								@click="cleckurl(2, datalist.url)"
+								@click="cleckurl(2, datalist.host_url)"
 								>修改</span
 							>
 						</li>

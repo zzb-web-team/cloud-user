@@ -259,17 +259,21 @@ export default {
 								if (
 									this.tableList[j].url_name == nowarr[i][0]
 								) {
-									if (nowarr[i][1] === 1) {
+									if (nowarr[i][1] === 0) {
+										this.tableList[j].status = '成功';
+									} else if (nowarr[i][1] === 1) {
 										this.tableList[j].status = '格式错误';
 									} else if (nowarr[i][1] === 2) {
-										this.tableList[j].status = '源站域名重复';
+										this.tableList[j].status =
+											'源站域名重复';
 									} else if (nowarr[i][1] === 3) {
 										this.tableList[j].status = '用户不存在';
 									} else if (nowarr[i][1] === 4) {
 										this.tableList[j].status =
-											'改成渠道ID不存在或终端还未创建';
+											'源站域名不存在';
 									} else {
-										this.tableList[j].status = '成功';
+										this.tableList[j].status =
+											'渠道ID不存在或终端还未创建';
 									}
 								}
 							}

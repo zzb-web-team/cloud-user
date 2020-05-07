@@ -234,7 +234,7 @@ export default {
 							if (res.data.res_data[0][1] === 1) {
 								this.$message.error('添加信息格式错误');
 							} else if (res.data.res_data[0][1] === 2) {
-								this.$message.error('源站域名已存在');
+								this.$message.error('加速内容重复');
 							} else if (res.data.res_data[0][1] === 3) {
 								this.$message.error('渠道ID不存在');
 							} else if (res.data.res_data[0][1] === 4) {

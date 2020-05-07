@@ -265,15 +265,15 @@ export default {
 										this.tableList[j].status = '格式错误';
 									} else if (nowarr[i][1] === 2) {
 										this.tableList[j].status =
-											'源站域名重复';
+											'加速内容重复';
 									} else if (nowarr[i][1] === 3) {
 										this.tableList[j].status = '用户不存在';
 									} else if (nowarr[i][1] === 4) {
 										this.tableList[j].status =
-											'源站域名不存在';
+											'渠道ID不存在或终端还未创建';
 									} else {
 										this.tableList[j].status =
-											'渠道ID不存在或终端还未创建';
+											'源站域名不存在';
 									}
 								}
 							}

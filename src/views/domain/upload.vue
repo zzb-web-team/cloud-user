@@ -6,7 +6,7 @@
 					class="el-icon-arrow-left"
 					style="color:#297AFF;font-size: 18px;margin-right:23px;font-weight: 600;"
 				></i>
-				批量导入URL</span
+				批量导入域名</span
 			>
 		</div>
 		<uploader

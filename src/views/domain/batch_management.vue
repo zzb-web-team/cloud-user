@@ -189,23 +189,23 @@
 									@change="changeSwitch"
 								></el-switch>
 								<p>
-									自定义CDN节点回源过程中所需访问的WEB服务器URL
+									自定义CDN节点回源过程中所需访问的WEB服务器域名
 								</p>
 							</div>
 						</div>
 						<div v-show="urlno == true">
 							<div class="talb_title_two">
-								<span>回源URL地址</span>
+								<span>回源域名地址</span>
 								<span
 									style="max-width:160px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
-									>URL：{{ datalist.host_url.url }}</span
+									>域名：{{ datalist.host_url.url }}</span
 								>
 								<span class="tala_x" @click="xzurl">修改</span>
 							</div>
 						</div> -->
 				<!-- 回源弹窗 -->
 				<!-- <el-dialog
-							title="请输入回源URL地址"
+							title="请输入回源域名地址"
 							:visible.sync="dialogVisible"
 							width="630px"
 							@close="handleClose1"
@@ -225,7 +225,7 @@
 								>
 									<el-input
 										v-model="huiurl.url"
-										placeholder="请输入回源URL地址"
+										placeholder="请输入回源域名地址"
 									></el-input>
 								</el-form-item>
 							</el-form> -->
@@ -306,7 +306,7 @@
 												v-if="automatic_time == true"
 												style="font-size: 12px;color: #676767;height: 18px;"
 											>
-												当URL失去热度时缓存将自动过期
+												当域名失去热度时缓存将自动过期
 											</p>
 										</el-form-item>
 										<el-form-item
@@ -464,7 +464,7 @@
 								>
 									<el-input
 										v-model="form.url"
-										placeholder="请输入URL"
+										placeholder="请输入域名"
 										autocomplete="off"
 									></el-input>
 								</el-form-item>
@@ -1159,9 +1159,9 @@ export default {
 		disableuser(state) {
 			let messagetext = '';
 			if (state == 0) {
-				messagetext = '停用后该URL将无法使用, 是否继续?';
+				messagetext = '停用后该域名将无法使用, 是否继续?';
 			} else {
-				messagetext = '启用该URL?';
+				messagetext = '启用该域名?';
 			}
 			this.$confirm(messagetext, '提示', {
 				confirmButtonText: '确定',
@@ -1462,11 +1462,11 @@ export default {
 		//校验url
 		jiourl(rule, value, callback) {
 			if (value === '') {
-				callback(new Error('请输入URL'));
+				callback(new Error('请输入域名'));
 			} else {
 				var resyzm = /^http(s)?:\/\/[^\u4e00-\u9fa5]{1,1020}$/;
 				if (resyzm.test(value) === false) {
-					callback(new Error('URL格式错误'));
+					callback(new Error('域名格式错误'));
 				} else {
 					callback();
 				}

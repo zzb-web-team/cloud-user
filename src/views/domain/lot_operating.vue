@@ -27,7 +27,7 @@
 				</el-select>
 				<el-input
 					v-model="input"
-					placeholder="请输入URL"
+					placeholder="请输入域名"
 					maxlength="70"
 					style="width:300px;margin-left:21px;"
 					@keyup.enter.native="onSubmit"
@@ -56,7 +56,7 @@
 				>
 					<el-table-column
 						prop="dominds"
-						label="URL"
+						label="域名"
 					></el-table-column>
 					<el-table-column prop="label" label="标签">
 						<template slot-scope="scope">

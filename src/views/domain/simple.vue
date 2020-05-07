@@ -6,7 +6,7 @@
 					class="el-icon-arrow-left"
 					style="color:#297AFF;font-size: 18px;font-weight: 600;margin-right:23px;"
 				></i
-				>批量导入URL
+				>批量导入域名
 			</span>
 		</div>
 		<div class="con">

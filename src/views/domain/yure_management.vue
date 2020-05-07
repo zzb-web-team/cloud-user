@@ -8,7 +8,7 @@
 					<!-- <div style="text-align: left;margin: 10px 0;">
             <span>刷新类型：</span>
             <el-radio v-model="radio1" label="1">Filed刷新</el-radio>
-            <el-radio v-model="radio1" label="2">URL刷新</el-radio>
+            <el-radio v-model="radio1" label="2">域名刷新</el-radio>
           </div> -->
 					<span style="color: #666666;font-size:14px;"
 						>刷新区域：</span
@@ -45,7 +45,7 @@
 					<!-- <div style="text-align: left;margin: 10px 0;">
             <span>刷新类型：</span>
             <el-radio v-model="radio2" label="1">Filed刷新</el-radio>
-            <el-radio v-model="radio2" label="2">URL刷新</el-radio>
+            <el-radio v-model="radio2" label="2">域名刷新</el-radio>
           </div> -->
 					<span>预热区域：</span>
 					<el-cascader
@@ -266,7 +266,7 @@ export default {
 			options1: [
 				{
 					value: 0,
-					label: 'URL刷新',
+					label: '域名刷新',
 				},
 				{
 					value: 1,
@@ -747,7 +747,7 @@ export default {
 								//判断是预热还是刷新
 								if (parmas.type == 0) {
 									this.$confirm(
-										'未查询到某某URL某某区域核心节点有存储对应URL视频内容，需先对URL进行该区域的内容预热',
+										'未查询到某某域名某某区域核心节点有存储对应域名视频内容，需先对域名进行该区域的内容预热',
 										'提示',
 										{
 											confirmButtonText: '确定',
@@ -766,7 +766,7 @@ export default {
 										});
 								} else {
 									this.$confirm(
-										'URL区域局部节点已存储URL视频内容，确认预热更多的URL视频内容？',
+										'域名区域局部节点已存储域名视频内容，确认预热更多的域名视频内容？',
 										'提示',
 										{
 											confirmButtonText: '确定',
@@ -778,7 +778,7 @@ export default {
 											this.$message({
 												type: 'success',
 												message:
-													'某URL某某区域已存在缓存无需刷新!',
+													'某域名某某区域已存在缓存无需刷新!',
 											});
 										})
 										.catch(() => {

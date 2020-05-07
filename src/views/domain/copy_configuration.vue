@@ -10,7 +10,7 @@
 			</span>
 		</div>
 		<p class="copy_title">
-			复制配置允许将一个URL的配置项复制到多个URL，帮助您对URL进行批量配置
+			复制配置允许将一个域名的配置项复制到多个域名，帮助您对域名进行批量配置
 		</p>
 		<div class="copy_con">
 			<div>
@@ -25,7 +25,7 @@
 						description="这是一段很长很长很长的描述性文字"
 					></el-step>
 					<el-step
-						title="选择URL"
+						title="选择域名"
 						description="这是一段很长很长很长的描述性文字"
 					></el-step>
 					<el-step
@@ -486,11 +486,11 @@ export default {
 			}
 			if (this.actives == 2) {
 				if (this.urldisable.length <= 0) {
-					this.$message.error('请至少选择一个URL进行复制配置');
+					this.$message.error('请至少选择一个域名进行复制配置');
 					return false;
 				}
 				const confirmText = [
-					'URL配置复制后，操作不可逆，请务必确认您的URL复制选择无误。流量宽带较大的URL，请谨慎复制；若您之前有通过工单进行过后端特殊配置（非控制台功能配置），该特殊配置将无法复制。',
+					'域名配置复制后，操作不可逆，请务必确认您的域名复制选择无误。流量宽带较大的域名，请谨慎复制；若您之前有通过工单进行过后端特殊配置（非控制台功能配置），该特殊配置将无法复制。',
 				];
 				const newDatas = [];
 				const h = this.$createElement;
@@ -554,7 +554,7 @@ export default {
 				});
 			}
 		},
-		//选择URL--多选
+		//选择域名--多选
 		handlistChange(val) {
 			if (val) {
 				this.urlnum = val.length;

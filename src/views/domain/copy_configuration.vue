@@ -429,12 +429,11 @@ export default {
 				this.copydatalist.base_config.url_name = item.url;
 				let jsonobj = new Object();
 				jsonobj = Object.assign({}, this.configuration);
-				jsonobj.base_config = new Object();
-				jsonobj.base_config = Object.assign(
-					{},
-					this.copydatalist.base_config
-                );
-                
+				// jsonobj.base_config = new Object();
+				// jsonobj.base_config = Object.assign(
+				// 	{},
+				// 	this.copydatalist.base_config
+                // );
                 jsonobj.url_name = item.url;
 				params.data_array.push(jsonobj);
 			});

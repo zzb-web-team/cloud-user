@@ -172,10 +172,11 @@ export default {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
 			this.$router.push({ path: '/' });
-		}
+        }
 		this.gettablecdn();
 	},
 	methods: {
+        
 		gettablecdn() {
 			let parmas = new Object();
 			if (this.value2) {

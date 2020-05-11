@@ -234,11 +234,15 @@ export default {
 							if (res.data.res_data[0][1] === 1) {
 								this.$message.error('添加信息格式错误');
 							} else if (res.data.res_data[0][1] === 2) {
-								this.$message.error('加速内容重复');
+								this.$message.error('加速内容名称重复');
 							} else if (res.data.res_data[0][1] === 3) {
-								this.$message.error('渠道ID不存在');
+								this.$message.error('加速内容重复');
 							} else if (res.data.res_data[0][1] === 4) {
-								this.$message.error('数据库写人错误');
+								this.$message.error('渠道ID不存在');
+							}else if (res.data.res_data[0][1] === 5) {
+								this.$message.error('域名不存在');
+							}else if (res.data.res_data[0][1] === 6) {
+								this.$message.error('数据库写入错误');
 							}
 						}
 					}

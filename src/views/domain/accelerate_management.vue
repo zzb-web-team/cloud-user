@@ -399,10 +399,41 @@ export default {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
 			this.$router.push({ path: '/' });
-		}
+        }
+        this.gettoken();
 		this.getuserlist();
 	},
 	methods: {
+        //获去token列表
+		gettoken() {
+			this.tableData = [];
+			let parmas = new Object();
+			parmas.chanid = this.chanid;
+			parmas.pagesize = 10;
+			parmas.page = 0;
+			getterminal(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+						if (res.result.cols.length <= 0) {
+							this.$alert(
+								'您还未添加终端，还不能操作域名！',
+								'温馨提示',
+								{
+									confirmButtonText: '去添加',
+									showClose: false,
+									center: true,
+									callback: (action) => {
+										this.$router.push({
+											path: '/terminal_management',
+										});
+									},
+								}
+							);
+						}
+					}
+				})
+				.catch((err) => {});
+		},
 		//获取数据--请求
 		getuserlist() {
 			// 已选择项
@@ -701,7 +732,7 @@ export default {
 							} else if (res.data.res_data[0][1] == 2) {
 								this.$message.error('您添加的地址已存在');
 							} else if (res.data.res_data[0][1] == 3) {
-								this.$message.error('该用户不存在');
+								this.$message.error('渠道ID不存在');
 							} else if (res.data.res_data[0][1] == 4) {
 								this.$message.error(
 									'改成渠道ID不存在或终端还未创建'

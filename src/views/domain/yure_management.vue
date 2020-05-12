@@ -820,7 +820,8 @@ export default {
 			parmas.url_name = this.input;
 			parmas.buser_id = this.chanid + '';
 			parmas.refresh_type = this.valuea;
-			parmas.state = parseInt(this.valueb);
+            parmas.state = parseInt(this.valueb);
+            parmas.page=this.currentPage-1;
 			if (this.value1 == '') {
 				parmas.start_time = 0;
 				parmas.end_time = 0;
@@ -831,8 +832,10 @@ export default {
 			refresh_state(parmas)
 				.then((res) => {
 					if (res.status == 0) {
+                        this.total_cnt=res.data.total;
 						if (res.data.result.length > 0) {
-							this.tableData = res.data.result;
+                            this.tableData = res.data.result;
+                            
 						} else {
 							this.$message({
 								message: '暂无数据',

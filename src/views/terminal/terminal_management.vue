@@ -101,7 +101,7 @@
                     >
                       <i class="el-icon-arrow-up"></i>
                     </p>
-                    <p>{{ scope.row.tokenn }}</p>
+                    <p>{{ scope.row.token }}</p>
                   </div>
                 </template>
               </el-table-column>

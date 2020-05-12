@@ -10,7 +10,7 @@
 			</span>
 		</div>
 		<p class="copy_title">
-			复制配置允许将一个域名的配置项复制到多个域名，帮助您对域名进行批量配置
+			复制配置允许将一个加速内容的配置项复制到多个加速内容，帮助您对加速内容进行批量配置
 		</p>
 		<div class="copy_con">
 			<div>
@@ -25,7 +25,7 @@
 						description="这是一段很长很长很长的描述性文字"
 					></el-step>
 					<el-step
-						title="选择域名"
+						title="选择加速内容"
 						description="这是一段很长很长很长的描述性文字"
 					></el-step>
 					<el-step
@@ -582,15 +582,18 @@ export default {
 			console.log(num);
 			if (num == 1) {
 				this.$nextTick(function() {
-					this.multipleSelection.forEach((item) => {
-						this.$refs.multipleTable_pei.toggleRowSelection(
-							this.futableData[item.index],
-							false
-						);
-					});
+                    this.$refs.multipleTable_pei.clearSelection();
+                    this.$router.go(-1);
+					// this.multipleSelection.forEach((item) => {
+					// 	this.$refs.multipleTable_pei.toggleRowSelection(
+					// 		this.futableData[item.index],
+					// 		false
+					// 	);
+					// });
 				});
 			} else {
-				this.$refs.multipleTable.clearSelection();
+                this.$refs.multipleTable.clearSelection();
+                this.actives--;
 			}
 			this.dialupdata = false;
 		},

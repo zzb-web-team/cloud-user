@@ -167,6 +167,7 @@
 						style="width: 100%"
 						:cell-style="rowClass"
 						:header-cell-style="headClass"
+                        @sort-change="tableSortChange"
 					>
 						<el-table-column
 							prop="url_name"
@@ -177,7 +178,7 @@
 							prop="are"
 							label="区域"
 						></el-table-column>
-						<el-table-column prop="operation_date" label="操作时间">
+						<el-table-column prop="operation_date" sortable="custom" label="操作时间">
 							<template slot-scope="scope"
 								>{{ scope.row.opt_time | settimes }}
 							</template>
@@ -253,7 +254,8 @@ export default {
 			radio1: '1',
 			textarea1: '',
 			radio2: '1',
-			textarea2: '',
+            textarea2: '',
+            order: 0,
 			optiondisplay: false,
 			input: '',
 			valuea: '',
@@ -822,6 +824,7 @@ export default {
 			parmas.refresh_type = this.valuea;
             parmas.state = parseInt(this.valueb);
             parmas.page=this.currentPage-1;
+            parmas.order=this.order;
 			if (this.value1 == '') {
 				parmas.start_time = 0;
 				parmas.end_time = 0;
@@ -847,6 +850,17 @@ export default {
 					}
 				})
 				.catch((err) => {});
+		},
+        //排序
+		tableSortChange(column) {
+            this.currentPage = 1;
+            console.log(column.order);
+			if (column.order == 'descending') {
+				this.order = 1;
+			} else {
+				this.order = 0;
+			}
+			this.getrefreshstate();
 		},
 		handleClick(tab, event) {
 			this.textarea1 = '';

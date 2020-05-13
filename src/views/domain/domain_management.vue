@@ -808,7 +808,7 @@ export default {
 						newobj.state = 0;
 						newobj.data_array = [];
 						arr.forEach((item, index) => {
-							newobj.data_array.push(item.url_name);
+							newobj.data_array.push(item);
 						});
 						urllist.push(newobj);
 						params.data = urllist;
@@ -877,7 +877,7 @@ export default {
 				newobj.state = 1;
 				newobj.data_array = [];
 				arr.forEach((item, index) => {
-					newobj.data_array.push(item.url_name);
+					newobj.data_array.push(item);
 				});
 				urllist.push(newobj);
 				params.data = urllist;
@@ -943,7 +943,7 @@ export default {
 						newobj.state = 1;
 						newobj.data_array = [];
 						arr.forEach((item, index) => {
-							newobj.data_array.push(item.url_name);
+							newobj.data_array.push(item);
 						});
 						urllist.push(newobj);
 						params.data = urllist;

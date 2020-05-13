@@ -399,12 +399,12 @@ export default {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
 			this.$router.push({ path: '/' });
-        }
-        this.gettoken();
+		}
+		this.gettoken();
 		this.getuserlist();
 	},
 	methods: {
-        //获去token列表
+		//获去token列表
 		gettoken() {
 			this.tableData = [];
 			let parmas = new Object();
@@ -769,27 +769,35 @@ export default {
 		},
 		//启用/禁用--请求
 		enable_disable(stat, datalist) {
+			console.log(stat, datalist);
 			let params = new Object();
 			let arr = new Array();
-			params.buser_id = this.chanid + '';
-			params.state = stat;
-
+			let urllist = [];
 			if (datalist) {
-				arr.push(datalist);
-				params.data_array = arr;
-				params.data_count = 1;
+				let newobj = new Object();
+				newobj.buser_id = this.chanid + '';
+				newobj.data_count = 0;
+				newobj.state = stat;
+				newobj.data_array = [];
+				newobj.data_array.push(datalist);
+
+				urllist.push(newobj);
+				params.data_count = 0;
+				params.data = urllist;
 			} else {
-				let urllist = [];
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
 				);
+				let newobj = new Object();
+				newobj.buser_id = this.chanid + '';
+				newobj.data_count = 0;
+				newobj.state = stat;
+				newobj.data_array = [];
 				arr.forEach((item, index) => {
-					// let selelist = [];
-					// selelist.push(item);
-					// selelist.push(0);
-					urllist.push(item.domain_id);
+					newobj.data_array.push(item.domain_id);
 				});
-				params.data_array = urllist;
+				urllist.push(newobj);
+				params.data = urllist;
 				params.data_count = urllist.length;
 			}
 			change_domainstate(params)
@@ -812,27 +820,30 @@ export default {
 		delete_domin(datalist) {
 			let params = new Object();
 			let arr = new Array();
-			params.buser_id = this.chanid + '';
-
+			let urllist = [];
 			if (datalist) {
-				arr.push(datalist);
-				params.data_array = arr;
-				params.data_count = 1;
+				let newobj = new Object();
+				newobj.buser_id = this.chanid + '';
+				newobj.data_count = 0;
+				newobj.data_array = [];
+				newobj.data_array.push(datalist);
+				urllist.push(newobj);
+				params.data_count = 0;
+				params.data = urllist;
 			} else {
-				let urllist = [];
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
-				);
-				console.log(arr);
+                );
+                let newobj = new Object();
+				newobj.buser_id = this.chanid + '';
+				newobj.data_count = 0;
+				newobj.data_array = [];
 				arr.forEach((item, index) => {
-					// let selelist = [];
-					// selelist.push(item);
-					// selelist.push(0);
-					urllist.push(item.domain_id);
+					newobj.data_array.push(item.domain_id);
 				});
-
-				params.data_array = urllist;
-				params.data_count = urllist.length;
+				urllist.push(newobj);
+				params.data = urllist;
+                params.data_count = 0;
 			}
 			del_domain(params)
 				.then((res) => {

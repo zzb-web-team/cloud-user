@@ -630,8 +630,8 @@ export default {
 							obj.domain = item.domain;
 							obj.domain_id = item.domain_id;
 							obj.state = item.state;
-                            obj.url = item.url;
-                            obj.host_url=item.host_url;
+							obj.url = item.url;
+							obj.host_url = item.host_url;
 							obj.url_name = item.url_name;
 							obj.url_type = item.url_type;
 							this.tableData.push(obj);
@@ -768,21 +768,52 @@ export default {
 				type: 'warning',
 			})
 				.then(() => {
+					// let params = new Object();
+					// if (datalist) {
+					// 	params.data_array = [];
+					// 	params.data_array.push(datalist.url_name);
+					// 	params.data_count = 0;
+					// } else {
+					// 	let urllist = [];
+					// 	const arr = this.multipleSelection.concat(
+					// 		this.currentSelection
+					// 	);
+					// 	params.data_array = arr;
+					// 	params.data_count = arr.length;
+					// }
+					// params.state = 0;
+					// params.buser_id = this.chanid + '';
+
 					let params = new Object();
+					let arr = new Array();
+					let urllist = [];
 					if (datalist) {
-						params.data_array = [];
-						params.data_array.push(datalist.url_name);
+						let newobj = new Object();
+						newobj.buser_id = this.chanid + '';
+						newobj.data_count = 0;
+						newobj.state = 0;
+						newobj.data_array = [];
+						newobj.data_array.push(datalist.url_name);
+
+						urllist.push(newobj);
 						params.data_count = 0;
+						params.data = urllist;
 					} else {
-						let urllist = [];
 						const arr = this.multipleSelection.concat(
 							this.currentSelection
 						);
-						params.data_array = arr;
-						params.data_count = arr.length;
+						let newobj = new Object();
+						newobj.buser_id = this.chanid + '';
+						newobj.data_count = 0;
+						newobj.state = 0;
+						newobj.data_array = [];
+						arr.forEach((item, index) => {
+							newobj.data_array.push(item.url_name);
+						});
+						urllist.push(newobj);
+						params.data = urllist;
+						params.data_count = urllist.length;
 					}
-					params.state = 0;
-					params.buser_id = this.chanid + '';
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {
@@ -804,29 +835,55 @@ export default {
 		},
 		//启用
 		enableuser(datalist) {
-			let params = new Object();
+			// let params = new Object();
 
+			// let urllist = [];
+			// if (datalist) {
+			// 	params.data_array = [];
+			// 	params.data_array.push(datalist.url_name);
+			// 	params.data_count = 0;
+			// } else {
+			// 	let urllist = [];
+			// 	const arr = this.multipleSelection.concat(
+			// 		this.currentSelection
+			// 	);
+			// 	params.data_count = arr.length;
+			// 	params.data_array = arr;
+			// }
+			// params.state = 1;
+			// params.buser_id = this.chanid + '';
+
+			let params = new Object();
+			let arr = new Array();
 			let urllist = [];
 			if (datalist) {
-				params.data_array = [];
-				params.data_array.push(datalist.url_name);
+				let newobj = new Object();
+				newobj.buser_id = this.chanid + '';
+				newobj.data_count = 0;
+				newobj.state = 1;
+				newobj.data_array = [];
+				newobj.data_array.push(datalist.url_name);
+
+				urllist.push(newobj);
 				params.data_count = 0;
+				params.data = urllist;
 			} else {
-				let urllist = [];
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
 				);
-				// arr.forEach((item, index) => {
-				// 	let selelist = [];
-				// 	selelist.push(item);
-				// 	selelist.push(1);
-				// 	urllist.push(selelist);
-				// });
-				params.data_count = arr.length;
-				params.data_array = arr;
+				let newobj = new Object();
+				newobj.buser_id = this.chanid + '';
+				newobj.data_count = 0;
+				newobj.state = 1;
+				newobj.data_array = [];
+				arr.forEach((item, index) => {
+					newobj.data_array.push(item.url_name);
+				});
+				urllist.push(newobj);
+				params.data = urllist;
+				params.data_count = urllist.length;
 			}
-			params.state = 1;
-			params.buser_id = this.chanid + '';
+
 			change_state(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -847,18 +904,50 @@ export default {
 				type: 'warning',
 			})
 				.then(() => {
+					// let params = new Object();
+					// params.buser_id = this.chanid + '';
+					// if (datalist) {
+					// 	params.data_array = [];
+					// 	params.data_array.push(datalist.url_name);
+					// 	params.data_count = 0;
+					// } else {
+					// 	const arr = this.multipleSelection.concat(
+					// 		this.currentSelection
+					// 	);
+					// 	params.data_array = arr;
+					//     params.data_count = arr.length;
+
+					// }
+
 					let params = new Object();
-					params.buser_id = this.chanid + '';
+					let arr = new Array();
+					let urllist = [];
 					if (datalist) {
-						params.data_array = [];
-						params.data_array.push(datalist.url_name);
+						let newobj = new Object();
+						newobj.buser_id = this.chanid + '';
+						newobj.data_count = 0;
+						newobj.state = 1;
+						newobj.data_array = [];
+						newobj.data_array.push(datalist.url_name);
+
+						urllist.push(newobj);
 						params.data_count = 0;
+						params.data = urllist;
 					} else {
 						const arr = this.multipleSelection.concat(
 							this.currentSelection
 						);
-						params.data_array = arr;
-						params.data_count = arr.length;
+						let newobj = new Object();
+						newobj.buser_id = this.chanid + '';
+						newobj.data_count = 0;
+						newobj.state = 1;
+						newobj.data_array = [];
+						arr.forEach((item, index) => {
+							newobj.data_array.push(item.url_name);
+						});
+						urllist.push(newobj);
+						params.data = urllist;
+						params.data_count = urllist.length;
 					}
 					delete_url(params)
 						.then((res) => {

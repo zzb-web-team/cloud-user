@@ -81,7 +81,7 @@
 						v-model="dynamicValidateForm.play_path"
 						placeholder="开头固定为/，2-1024字符内"
 						autocomplete="off"
-						maxlength="50"
+						maxlength="1024"
 					></el-input>
 				</el-form-item>
 				<el-form-item
@@ -326,7 +326,8 @@ export default {
 			if (value === '') {
 				callback(new Error('路径不能为空'));
 			} else {
-				var resyzm = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/;
+                var resyzm = /^\/{1}.{1,1024}$/;
+				// var resyzm = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/;
 				if (resyzm.test(value) === false) {
 					callback(new Error('路径格式错误'));
 				} else {

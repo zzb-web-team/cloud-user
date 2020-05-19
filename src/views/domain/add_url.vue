@@ -53,7 +53,6 @@
 						type="text"
 						size="small"
 						@click="go_accelerate_management"
-						v-show="yewu.length < 0"
 						>去添加</el-button
 					>
 				</el-form-item>

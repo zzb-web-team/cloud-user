@@ -42,7 +42,6 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
-    console.log("666666666666");
     next();
 })
 

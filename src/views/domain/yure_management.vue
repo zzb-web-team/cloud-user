@@ -249,7 +249,8 @@ export default {
 		return {
 			currentPage: 1,
 			errarr: '',
-			total_cnt: 1,
+            total_cnt: 1,
+            pagesize:10,
 			activeName: 'first',
 			radio1: '1',
 			textarea1: '',
@@ -869,8 +870,17 @@ export default {
 				this.getrefreshstate();
 			}
 		},
-		getpage() {},
-		gettol() {},
+        //获取页码
+		getpage(pages) {
+            console.log(pages);
+			this.currentPage = pages;
+			this.getrefreshstate();
+		},
+		//获取每页数量
+		gettol(pagetol) {
+			this.pagesize = pagetol;
+			// this.getrefreshstate();
+		},
 		//筛选按钮
 		option_display() {
 			this.optiondisplay = !this.optiondisplay;

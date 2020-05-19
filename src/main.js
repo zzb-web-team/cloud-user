@@ -41,6 +41,12 @@ Vue.prototype.$echarts = echarts;
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
+router.beforeEach((to, from, next) => {
+    console.log("666666666666");
+    next();
+})
+
+
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

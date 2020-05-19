@@ -52,6 +52,9 @@ export const check_label = (params) =>
 //获取URL列表
 export const query_url = (params) =>
     post(`${userUrl}/url_mgmt/query_url`, params);
+//url导出
+export const url_export_for_admin = (params) =>
+    post(`${userUrl}/url_mgmt/url_export_for_admin`, params);
 //获取URL配置
 export const query_config = (params) =>
     post(`${userUrl}/url_mgmt/query_config`, params);

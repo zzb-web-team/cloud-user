@@ -321,6 +321,7 @@ import {
 	change_state,
 	delete_url,
 	getterminal,
+	url_export_for_admin,
 } from '../../servers/api';
 export default {
 	data() {
@@ -566,7 +567,37 @@ export default {
 		},
 		//导出表格
 		exp_table() {
-			console.log('导出');
+			let params = new Object();
+			params.page = this.tolpage - 1;
+			params.buser_id = this.chanid + '';
+			params.url_name = this.input;
+			params.state = this.value;
+            params.order = this.order;
+            if (!this.value1) {
+				params.start_time = 0;
+				params.end_time = 0;
+			} else {
+				params.start_time = dateToMs(this.value1[0]);
+				params.end_time = dateToMs(this.value1[1]);
+			}
+			url_export_for_admin(params)
+				.then((res) => {
+					if (res.status == 0) {
+                        window.open(res.data.down_load, '_blank');
+                        this.$message({
+							message: '导出成功',
+							type: 'success',
+						});
+					} else {
+						this.$message({
+							message: '导出失败',
+							type: 'warning',
+						});
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 		//新建用户-删除URL
 		removeDomain(item) {

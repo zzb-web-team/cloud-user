@@ -90,9 +90,9 @@ axios.interceptors.response.use(
             if (response.data.status == -5) {
                 Message.error('服务器响应超时!');
             }
-            if (response.data.status == -900) {
-                Message.error('服务器内部错误!');
-            }
+            // if (response.data.status == -900) {
+            //     Message.error('服务器内部错误!');
+            // }
             return Promise.resolve(response);
         } else {
             return Promise.reject(response);

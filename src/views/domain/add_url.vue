@@ -47,6 +47,7 @@
 							:key="index"
 							:label="item.label"
 							:value="item.label"
+							:disabled="item.state != 1"
 						></el-option>
 					</el-select>
 					<el-button
@@ -238,9 +239,9 @@ export default {
 								this.$message.error('加速内容重复');
 							} else if (res.data.res_data[0][1] === 4) {
 								this.$message.error('渠道ID不存在');
-							}else if (res.data.res_data[0][1] === 5) {
+							} else if (res.data.res_data[0][1] === 5) {
 								this.$message.error('域名不存在');
-							}else if (res.data.res_data[0][1] === 6) {
+							} else if (res.data.res_data[0][1] === 6) {
 								this.$message.error('数据库写入错误');
 							}
 						}
@@ -325,7 +326,7 @@ export default {
 			if (value === '') {
 				callback(new Error('路径不能为空'));
 			} else {
-                var resyzm = /^\/{1}.{1,1024}$/;
+				var resyzm = /^\/{1}.{1,1024}$/;
 				// var resyzm = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/;
 				if (resyzm.test(value) === false) {
 					callback(new Error('路径格式错误'));

@@ -8,6 +8,7 @@ import VueCookies from 'vue-cookies';
 import axios from 'axios';
 import { Message, MessageBox } from 'element-ui';
 let v = new Vue();
+
 // import store from '../store/index'
 // 环境的切换
 // let rootsd = process.env.NODE_ENV;
@@ -67,8 +68,6 @@ axios.interceptors.request.use(
                         VueCookies.set('id', '', 0);
                         VueCookies.set('token', '', 0);
                         VueCookies.set('user', '', 0);
-                        // alert(data.msg);
-                        // router.push('/');
                         v.$alert(data.msg, '通知', {
                             confirmButtonText: '确定',
                             showClose: false,

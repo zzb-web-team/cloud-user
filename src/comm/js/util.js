@@ -17,7 +17,9 @@ export default {
         if (r != null) context = r[2];
         reg = null;
         r = null;
-        return context == null || context == '' || context == 'undefined' ? '' : context;
+        return context == null || context == '' || context == 'undefined' ?
+            '' :
+            context;
     },
     formatDate: {
         format: function(date, pattern) {
@@ -73,7 +75,7 @@ export default {
                 return _date;
             }
             return null;
-        }
+        },
     },
     //将时间格式化
     getTimes: function(b) {
@@ -299,10 +301,10 @@ export default {
             { errorCode: 609, errorText: '该 app 版本不存在' },
             { errorCode: 610, errorText: '设备不存在' },
             { errorCode: -900, errorText: '参数不合法' },
-            { errorCode: 702, errorText: '暂无数据' }
+            { errorCode: 702, errorText: '暂无数据' },
         ];
         var queryerrorInfo = errorInfoArr.filter(
-            item => item.errorCode == errorId
+            (item) => item.errorCode == errorId
         );
         return queryerrorInfo[0].errorText;
     },
@@ -321,12 +323,12 @@ export default {
         }
         // 总选择里面的key集合
         let selectAllIds = [];
-        a.forEach(row => {
+        a.forEach((row) => {
             selectAllIds.push(row[idKey]);
         });
         let selectIds = [];
         // 获取当前页选中的id
-        b.forEach(row => {
+        b.forEach((row) => {
             selectIds.push(row[idKey]);
             // 如果总选择里面不包含当前页选中的数据，那么就加入到总选择集合里
             if (selectAllIds.indexOf(row[idKey]) < 0) {
@@ -335,12 +337,12 @@ export default {
         });
         let noSelectIds = [];
         // 得到当前页没有选中的id
-        c.forEach(row => {
+        c.forEach((row) => {
             if (selectIds.indexOf(row[idKey]) < 0) {
                 noSelectIds.push(row[idKey]);
             }
         });
-        noSelectIds.forEach(id => {
+        noSelectIds.forEach((id) => {
             if (selectAllIds.indexOf(id) >= 0) {
                 for (let i = 0; i < a.length; i++) {
                     if (a[i][idKey] == id) {
@@ -373,5 +375,31 @@ export default {
             }
         }
         return tree;
-    }
+    },
+    /**
+     * 函数节流
+     */
+    throttle: function(fn, delay) {
+        var lastTime;
+        var timer;
+        var delay = delay || 200;
+        return function() {
+            var args = arguments;
+            // 记录当前函数触发的时间
+            var nowTime = Date.now();
+            if (lastTime && nowTime - lastTime < delay) {
+                clearTimeout(timer);
+                timer = setTimeout(function() {
+                    // 记录上一次函数触发的时间
+                    lastTime = nowTime;
+                    // 修正this指向问题
+                    fn.apply(this, args);
+                }, delay);
+            } else {
+                lastTime = nowTime;
+                fn.apply(this, args);
+            }
+        };
+    },
+
 };

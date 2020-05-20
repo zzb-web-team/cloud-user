@@ -1,11 +1,13 @@
 /**axios封装
  * 请求拦截、相应拦截、错误统一处理
  */
+import Vue from 'vue';
 import router from '../router/index';
 import http from './ajax';
 import VueCookies from 'vue-cookies';
 import axios from 'axios';
-import { Message } from 'element-ui';
+import { Message, MessageBox } from 'element-ui';
+let v = new Vue();
 // import store from '../store/index'
 // 环境的切换
 // let rootsd = process.env.NODE_ENV;
@@ -33,7 +35,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 请求拦截器
 axios.interceptors.request.use(
-    config => {
+    (config) => {
         var checkwithout = [
             userUrl + '/clouduser/loginbyphone',
             userUrl + '/clouduser/login',
@@ -42,11 +44,12 @@ axios.interceptors.request.use(
             userUrl + '/clouduser/getemail',
             userUrl + '/clouduser/checktoken',
             userUrl + '/clouduser/forgetpassword',
-            userUrl + '/clouduser/resetpassword'
+            userUrl + '/clouduser/resetpassword',
         ];
         if (checkwithout.indexOf(config.url) < 0) {
             if (!VueCookies.get('id')) {
                 alert('登录已过期');
+                alert_is_present();
                 router.push('/');
                 return false;
             }
@@ -55,7 +58,7 @@ axios.interceptors.request.use(
                 method: 'post',
                 data: {
                     id: VueCookies.get('id'),
-                    token: VueCookies.get('token')
+                    token: VueCookies.get('token'),
                 },
                 async: true,
                 success: function(data) {
@@ -64,10 +67,18 @@ axios.interceptors.request.use(
                         VueCookies.set('id', '', 0);
                         VueCookies.set('token', '', 0);
                         VueCookies.set('user', '', 0);
-                        alert('该用户已在其他地方登陆');
-                        router.push('/');
+                        // alert(data.msg);
+                        // router.push('/');
+                        v.$alert(data.msg, '通知', {
+                            confirmButtonText: '确定',
+                            showClose: false,
+                            center: true,
+                            callback: (action) => {
+                                router.push('/');
+                            },
+                        });
                     }
-                }
+                },
             });
         }
 
@@ -77,13 +88,13 @@ axios.interceptors.request.use(
         // const token = store.state.token;
         // token && (config.headers.Authorization = token);
     },
-    error => {
+    (error) => {
         return Promise.error(error);
     }
 );
 // 响应拦截器
 axios.interceptors.response.use(
-    response => {
+    (response) => {
         //console.log(response.status)
         if (response.status === 200) {
             //console.log(Promise.resolve(response));
@@ -91,7 +102,9 @@ axios.interceptors.response.use(
                 Message.error('服务器响应超时!');
             }
             // if (response.data.status == -900) {
-            //     Message.error('服务器内部错误!');
+            //     alert(response.data.msg);
+            //     router.push('/');
+            //     return false;
             // }
             return Promise.resolve(response);
         } else {
@@ -99,7 +112,7 @@ axios.interceptors.response.use(
         }
     },
     // 服务器状态码不是200的情况
-    error => {
+    (error) => {
         //console.log(error.response.status);
         if (error.response.status) {
             switch (error.response.status) {
@@ -137,12 +150,12 @@ export function get(url, params) {
     return new Promise((resolve, reject) => {
         axios
             .get(url, {
-                params: params
+                params: params,
             })
-            .then(res => {
+            .then((res) => {
                 resolve(res.data);
             })
-            .catch(err => {
+            .catch((err) => {
                 // console.log(err.data);
                 reject(err.data);
             });
@@ -157,10 +170,10 @@ export function post(url, params) {
     return new Promise((resolve, reject) => {
         axios
             .post(url, params)
-            .then(res => {
+            .then((res) => {
                 resolve(res.data);
             })
-            .catch(err => {
+            .catch((err) => {
                 reject(err.data);
             });
     });

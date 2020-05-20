@@ -468,6 +468,8 @@
 
 <script>
 import { dateToMs, getymdtime } from '../../servers/sevdate';
+
+import mtImg from '../../assets/img/dowload.png';
 import fenye from '@/components/fenye';
 import {
 	pv_uv_query_conditions,
@@ -1009,8 +1011,8 @@ export default {
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
 			params.pageNo = this.pageNo - 1;
-            params.pageSize = this.pageSize;
-            params.accval3 = this.accval3;
+			params.pageSize = this.pageSize;
+			params.accval3 = this.accval3;
 			if (this.value_c1) {
 				params.fileName = this.value_c1;
 			} else {
@@ -1267,6 +1269,27 @@ export default {
 					text: 'PV/UV',
 					left: 'center',
 				},
+				toolbox: {
+					//show: true,
+					itemSize: 20,
+					itemGap: 30,
+					right: 50,
+					feature: {
+						mark: { show: true },
+						dataView: { show: true, readOnly: false },
+						magicType: { show: true, type: ['line', 'bar'] },
+						restore: { show: true },
+						saveAsImage: { show: false },
+						mydow: {
+							show: true,
+							title: '导出',
+							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							onclick: function() {
+								alert('myToolHandler1');
+							},
+						},
+					},
+				},
 				tooltip: {
 					trigger: 'axis',
 					axisPointer: {
@@ -1381,10 +1404,18 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						// dataView: { show: true },
-						saveAsImage: {
-							//excludeComponents :['toolbox'],
-							pixelRatio: 2,
+						mark: { show: true },
+						dataView: { show: true, readOnly: false },
+						magicType: { show: true, type: ['line', 'bar'] },
+						restore: { show: true },
+						saveAsImage: { show: false },
+						mydow: {
+							show: true,
+							title: '导出',
+							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							onclick: function() {
+								alert('myToolHandler1');
+							},
 						},
 					},
 				},
@@ -1423,6 +1454,27 @@ export default {
 			let option = {
 				title: {
 					text: '访问TOP10',
+				},
+				toolbox: {
+					//show: true,
+					itemSize: 20,
+					itemGap: 30,
+					right: 50,
+					feature: {
+						mark: { show: true },
+						dataView: { show: true, readOnly: false },
+						magicType: { show: true, type: ['line', 'bar'] },
+						restore: { show: true },
+						saveAsImage: { show: false },
+						mydow: {
+							show: true,
+							title: '导出',
+							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							onclick: function() {
+								alert('myToolHandler1');
+							},
+						},
+					},
 				},
 				grid: {
 					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。

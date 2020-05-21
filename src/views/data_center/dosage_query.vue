@@ -542,7 +542,20 @@ export default {
 					feature: {
 						mark: { show: true },
 						dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
+                        magicType: { show: true, type: ['line', 'bar'] },
+                        //设置按钮(图标)的颜色
+                        //  magicType: {
+                        //     show: true,
+                        //     type: ['line', 'bar'],
+                        //     iconStyle: {
+                        //         borderColor: '#22bb22'
+                        //     },
+                        //     emphasis:{
+                        //         iconStyle: {
+                        //             borderColor: '#22bb22'
+                        //         },
+                        //     }
+                        // },
 						restore: { show: true },
 						saveAsImage: { show: false },
 						mydow: {
@@ -595,26 +608,31 @@ export default {
 						barWidth: 30, //柱图宽度
 						data: this.dataFlowArray,
 						itemStyle: {
+                           
 							normal: {
+                                lineStyle:{  
+                                        color:'#297AFF'  //线的颜色
+                                    },
 								//每根柱子颜色设置
-								color: function(params) {
-									let colorList = ['#297AFF', '#297AFF00'];
-									let upcli = Math.floor(
-										_this.dataFlownum / 12
-									);
-									let data_index = params.dataIndex;
-									if (
-										(data_index % upcli == 0 &&
-											data_index < upcli * 11) ||
-										data_index == 0 ||
-										data_index == _this.dataFlownum
-									) {
-										return colorList[0];
-									} else {
-										return colorList[1];
-									}
-								},
-							},
+								// color: function(params) {
+								// 	let colorList = ['#297AFF', '#297AFF00'];
+								// 	let upcli = Math.floor(
+								// 		_this.dataFlownum / 12
+								// 	);
+								// 	let data_index = params.dataIndex;
+								// 	if (
+								// 		(data_index % upcli == 0 &&
+								// 			data_index < upcli * 11) ||
+								// 		data_index == 0 ||
+								// 		data_index == _this.dataFlownum
+								// 	) {
+								// 		return colorList[0];
+								// 	} else {
+								// 		return colorList[1];
+								// 	}
+								// },
+                            },
+                             color:'#00FF00',
 						},
 					},
 				],

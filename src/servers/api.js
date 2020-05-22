@@ -199,3 +199,28 @@ export const query_logfile_table = (params) =>
 //加速日志下载--日志下载
 export const download_logfile = (params) =>
     post(`${userUrl}/logfile_download/download_logfile`, params);
+
+//pvuv导出
+export const export_pv_uv_curve_file = (params) =>
+    post(`${userUrl}/file_download/export_pv_uv_curve_file`, params);
+//播放加速内容图表导出接口
+export const export_playdata_table_file = (params) =>
+    post(`${userUrl}/file_download/export_playdata_table_file`, params);
+//播放加速内容图表导出接口
+export const export_playtimes_curve_file = (params) =>
+    post(`${userUrl}/file_download/export_playtimes_curve_file`, params);
+//访问用户分布导出接口
+export const export_topregion_accesscnt_curve_file = (params) =>
+    post(`${userUrl}/file_download/export_topregion_accesscnt_curve_file`, params);
+//加速流量图表导出接口
+export const export_accelerate_flow_file = (params) =>
+    post(`${userUrl}/file_download/export_accelerate_flow_file`, params);
+//加速流量列表导出接口
+export const export_accelerate_flow_table_file = (params) =>
+    post(`${userUrl}/file_download/export_accelerate_flow_table_file`, params);
+//回源统计导出接口
+export const export_backsource_flow_file = (params) =>
+    post(`${userUrl}/file_download/export_backsource_flow_file`, params);
+//资源用量导出接口
+export const export_dataflow_curve_file = (params) =>
+    post(`${userUrl}/file_download/export_dataflow_curve_file`, params);

@@ -483,6 +483,9 @@ import {
 	query_playdata_table,
 	getvideo,
 	getterminal,
+	export_pv_uv_curve_file,
+	export_topregion_accesscnt_curve_file,
+	export_playtimes_curve_file,
 } from '../../servers/api';
 import echarts from 'echarts';
 export default {
@@ -508,9 +511,9 @@ export default {
 			optionsc1: [],
 			optionsc2: [],
 			optionsc3: [],
-			accval1: '',
-			accval2: '',
-			accval3: '',
+			accval1: '*',
+			accval2: '*',
+			accval3: '*',
 			value_a1: '',
 			value_a2: '',
 			value_a3: '',
@@ -906,7 +909,7 @@ export default {
 				} else {
 					params.isp = '*';
 				}
-				params.accval1 = this.accval1;
+				params.acce = this.accval1;
 				this.uvArray = [];
 				this.pvArray = [];
 				this.timeArray = [];
@@ -946,7 +949,7 @@ export default {
 					params.isp = '*';
 				}
 				params.top = 10;
-				params.accval2 = this.accval2;
+				params.acce = this.accval2;
 				if (data == 1) {
 					this.playTimesArray1 = [];
 					this.timeArray1 = [];
@@ -988,7 +991,7 @@ export default {
 				} else {
 					params.isp = '*';
 				}
-				params.accval3 = this.accval3;
+				params.acce = this.accval3;
 				this.playTimesArray2 = [];
 				this.timeArray2 = [];
 				query_playtimes_curve(params)
@@ -1012,7 +1015,8 @@ export default {
 			params.end_ts = this.endtime;
 			params.pageNo = this.pageNo - 1;
 			params.pageSize = this.pageSize;
-			params.accval3 = this.accval3;
+            params.acce = this.accval3;
+            params.time_unit = this.timeUnit;
 			if (this.value_c1) {
 				params.fileName = this.value_c1;
 			} else {
@@ -1027,7 +1031,7 @@ export default {
 				params.isp = this.value_c3;
 			} else {
 				params.isp = '*';
-			}
+            }
 			query_playdata_table(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1062,6 +1066,112 @@ export default {
 					}
 				})
 				.catch((error) => {});
+		},
+		//导出pupv
+		exoprtant_pupv() {
+			let params = new Object();
+			params.chanId = this.chanid + '';
+			params.start_ts = this.starttime;
+			params.end_ts = this.endtime;
+			params.time_unit = this.timeUnit;
+			if (this.value_a1) {
+				params.fileName = this.value_a1;
+			} else {
+				params.fileName = '*';
+			}
+			if (this.value_a2[1]) {
+				params.region = this.value_a2[1];
+			} else {
+				params.region = '*';
+			}
+			if (this.value_a3) {
+				params.isp = this.value_a3;
+			} else {
+				params.isp = '*';
+			}
+			params.acce = this.accval1;
+			export_pv_uv_curve_file(params)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		//导出用户分布
+		exoprtant_topregion() {
+			let params = new Object();
+			params.chanId = this.chanid + '';
+			params.start_ts = this.starttime;
+			params.end_ts = this.endtime;
+			params.time_unit = this.timeUnit;
+			if (this.value_b1) {
+				params.fileName = this.value_b1;
+			} else {
+				params.fileName = '*';
+			}
+			if (this.value_b2) {
+				params.region = this.value_b2;
+			} else {
+				params.region = '*';
+			}
+			if (this.value_b3) {
+				params.isp = this.value_b3;
+			} else {
+				params.isp = '*';
+			}
+			params.top = 10;
+			params.acce = this.accval2;
+			export_topregion_accesscnt_curve_file(params)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		//导出热门加速类容
+		exoprtant_playtimes() {
+			let params = new Object();
+			params.chanId = this.chanid + '';
+			params.start_ts = this.starttime;
+			params.end_ts = this.endtime;
+			params.time_unit = this.timeUnit;
+			if (this.value_c1) {
+				params.fileName = this.value_c1;
+			} else {
+				params.fileName = '*';
+			}
+			if (this.value_c2[1]) {
+				params.region = this.value_c2[1];
+			} else {
+				params.region = '*';
+			}
+			if (this.value_c3) {
+				params.isp = this.value_c3;
+			} else {
+				params.isp = '*';
+			}
+			params.acce = this.accval3;
+			export_playtimes_curve_file(params)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 		//自定义时间确定按钮
 		seachtu(data) {
@@ -1261,7 +1371,8 @@ export default {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart')
-			);
+            );
+            let _this=this;
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let options = {
@@ -1283,9 +1394,10 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								alert('myToolHandler1');
+								_this.exoprtant_pupv();
 							},
 						},
 					},
@@ -1378,7 +1490,8 @@ export default {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart1')
-			);
+            );
+            let _this=this;
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let options = {
@@ -1412,9 +1525,10 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								alert('myToolHandler1');
+								_this.exoprtant_topregion();
 							},
 						},
 					},
@@ -1448,7 +1562,8 @@ export default {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart2')
-			);
+            );
+            let _this=this;
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let option = {
@@ -1469,9 +1584,10 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								alert('myToolHandler1');
+							_this.exoprtant_playtimes();
 							},
 						},
 					},

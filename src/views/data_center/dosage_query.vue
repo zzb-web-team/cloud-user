@@ -129,6 +129,7 @@ import {
 	dataflow_table,
 	getvideo,
 	getterminal,
+	export_dataflow_curve_file,
 } from '../../servers/api';
 export default {
 	data() {
@@ -140,8 +141,8 @@ export default {
 				// { timeStamp: "2018/05/03", dataFlow: "26846513" }
 			],
 			pagenum: 0,
-            accelist: [],
-            acc:'',
+			accelist: [],
+			acc: '*',
 			showdate: false,
 			activeName: 'first',
 			mvlist: [],
@@ -371,6 +372,7 @@ export default {
 				params.fileName = '*';
 			}
 			params.timeUnit = this.timeUnit;
+			params.acce = this.acc;
 			dataflow_curve(params)
 				.then((res) => {
 					if (res.data.totalUsage == 0) {
@@ -417,6 +419,7 @@ export default {
 			params.timeUnit = this.timeUnit;
 			params.pageNo = this.pageNo - 1;
 			params.pageSize = this.pageSize;
+			params.acce = this.acc;
 			dataflow_table(params)
 				.then((res) => {
 					this.tablecdn = res.data.tableList;
@@ -449,6 +452,30 @@ export default {
 					}
 				})
 				.catch((error) => {});
+		},
+		exportant_dataflow() {
+			let params = new Object();
+			params.start_ts = this.starttime;
+			params.end_ts = this.endtime;
+			params.chanId = this.chanid + '';
+			if (this.mvitem) {
+				params.fileName = this.mvitem;
+			} else {
+				params.fileName = '*';
+			}
+			params.timeUnit = this.timeUnit;
+			params.acce = this.acc;
+			export_dataflow_curve_file(params)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error('导出失败');
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 		//下拉框
 		changmvitem() {
@@ -533,8 +560,8 @@ export default {
 			let options = {
 				title: {
 					text: '流量',
-                },
-                toolbox: {
+				},
+				toolbox: {
 					//show: true,
 					itemSize: 20,
 					itemGap: 30,
@@ -542,28 +569,29 @@ export default {
 					feature: {
 						mark: { show: true },
 						dataView: { show: true, readOnly: false },
-                        magicType: { show: true, type: ['line', 'bar'] },
-                        //设置按钮(图标)的颜色
-                        //  magicType: {
-                        //     show: true,
-                        //     type: ['line', 'bar'],
-                        //     iconStyle: {
-                        //         borderColor: '#22bb22'
-                        //     },
-                        //     emphasis:{
-                        //         iconStyle: {
-                        //             borderColor: '#22bb22'
-                        //         },
-                        //     }
-                        // },
+						magicType: { show: true, type: ['line', 'bar'] },
+						//设置按钮(图标)的颜色
+						//  magicType: {
+						//     show: true,
+						//     type: ['line', 'bar'],
+						//     iconStyle: {
+						//         borderColor: '#22bb22'
+						//     },
+						//     emphasis:{
+						//         iconStyle: {
+						//             borderColor: '#22bb22'
+						//         },
+						//     }
+						// },
 						restore: { show: true },
 						saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								alert('myToolHandler1');
+								_this.exportant_dataflow();
 							},
 						},
 					},
@@ -608,11 +636,10 @@ export default {
 						barWidth: 30, //柱图宽度
 						data: this.dataFlowArray,
 						itemStyle: {
-                           
 							normal: {
-                                lineStyle:{  
-                                        color:'#297AFF'  //线的颜色
-                                    },
+								lineStyle: {
+									color: '#297AFF', //线的颜色
+								},
 								//每根柱子颜色设置
 								// color: function(params) {
 								// 	let colorList = ['#297AFF', '#297AFF00'];
@@ -631,8 +658,8 @@ export default {
 								// 		return colorList[1];
 								// 	}
 								// },
-                            },
-                             color:'#00FF00',
+							},
+							color: '#00FF00',
 						},
 					},
 				],

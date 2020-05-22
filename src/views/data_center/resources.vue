@@ -238,8 +238,10 @@ import {
 	accelerate_flow_table,
 	backsource_flow_query_conditions,
 	backsource_flow,
-    getvideo,
-    getterminal
+	getvideo,
+	getterminal,
+	export_accelerate_flow_file,
+	export_backsource_flow_file,
 } from '../../servers/api';
 import echarts from 'echarts';
 export default {
@@ -248,8 +250,8 @@ export default {
 			currentPage: 1,
 			shoudzyx: false,
 			showzdyz: false,
-            acce: '',
-            pagenum:0,
+			acce: '*',
+			pagenum: 0,
 			accelist: [],
 			options1: [],
 			options2: [],
@@ -610,8 +612,8 @@ export default {
 		this.starttime =
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
-        this.settimeunit(this.starttime, this.endtime);
-        this.getlabrl2();
+		this.settimeunit(this.starttime, this.endtime);
+		this.getlabrl2();
 		this.getseachlabel1();
 		// this.configure()
 	},
@@ -828,8 +830,8 @@ export default {
 					this.drawLine1();
 				})
 				.catch((err) => {});
-        },
-        		//获取视频终端
+		},
+		//获取视频终端
 		getlabrl2() {
 			let parmas = new Object();
 			parmas.chanid = this.chanid;
@@ -854,6 +856,76 @@ export default {
 					}
 				})
 				.catch((error) => {});
+        },
+        //加速流量导出
+		export_accelerate() {
+            let params = new Object();
+            params.start_ts = this.starttime;
+			params.end_ts = this.endtime;
+			params.chanId = this.chanid + '';
+			if (this.value1) {
+				params.fileName = this.value1;
+			} else {
+				params.fileName = '*';
+			}
+			if (this.value2[1]) {
+				params.region = this.value2[1];
+			} else {
+				params.region = '*';
+			}
+			if (this.value3) {
+				params.isp = this.value3;
+			} else {
+				params.isp = '*';
+			}
+			params.acce = this.acce;
+			params.time_unit = this.timeUnit;
+			export_accelerate_flow_file(params)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error('导出失败');
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+        },
+        //回源统计导出
+		export_backsource() {
+            let params = new Object();
+			params.start_ts = this.starttime;
+			params.end_ts = this.endtime;
+			params.chanId = this.chanid + '';
+			if (this.value1) {
+				params.fileName = this.value1;
+			} else {
+				params.fileName = '*';
+			}
+			if (this.value2[1]) {
+				params.region = this.value2[1];
+			} else {
+				params.region = '*';
+			}
+			if (this.value3) {
+				params.isp = this.value3;
+			} else {
+				params.isp = '*';
+			}
+			params.time_unit = this.timeUnit;
+			params.acce = this.acce;
+			export_backsource_flow_file(params)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error('导出失败');
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 		seachtu(data) {
 			if (data == 1) {
@@ -973,8 +1045,8 @@ export default {
 			let options = {
 				title: {
 					text: '流量',
-                },
-                toolbox: {
+				},
+				toolbox: {
 					//show: true,
 					itemSize: 20,
 					itemGap: 30,
@@ -984,13 +1056,14 @@ export default {
 						dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						restore: { show: true },
-							saveAsImage: { show: false },
+						saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								alert('myToolHandler1');
+								_this.export_accelerate();
 							},
 						},
 					},
@@ -1101,8 +1174,8 @@ export default {
 			let options = {
 				title: {
 					text: '流量',
-                },
-                toolbox: {
+				},
+				toolbox: {
 					//show: true,
 					itemSize: 20,
 					itemGap: 30,
@@ -1116,9 +1189,10 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								alert('myToolHandler1');
+								_this.export_backsource();
 							},
 						},
 					},

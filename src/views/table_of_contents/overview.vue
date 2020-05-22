@@ -44,7 +44,7 @@ export default {
 			dataL: 0,
 			dataFlowArray: [],
 			timeArray: [],
-			chanid: ''
+			chanid: '',
 		};
 	},
 	mounted() {
@@ -66,8 +66,9 @@ export default {
 			params.chanId = this.chanid + '';
 			params.fileName = '*';
 			params.timeUnit = 60 * 24;
+			params.acce = '*';
 			dataflow_curve(params)
-				.then(res => {
+				.then((res) => {
 					if (res.data.totalUsage == 0) {
 						this.dataL = 0;
 					} else {
@@ -84,7 +85,7 @@ export default {
 					});
 					this.configure();
 				})
-				.catch(err => {});
+				.catch((err) => {});
 		},
 		//跳转页面
 		godosage() {
@@ -103,28 +104,28 @@ export default {
 						fontSize: 14,
 						color: '#666666',
 						fontStyle: 'normal',
-						fontWeight: '400'
-					}
-                },
-                toolbox: {
+						fontWeight: '400',
+					},
+				},
+				toolbox: {
 					//show: true,
 					itemSize: 20,
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
-						restore: { show: true },
-						saveAsImage: { show: false },
-						mydow: {
-							show: true,
-							title: '导出',
-							icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
-							onclick: function() {
-								alert('myToolHandler1');
-							},
-						},
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
+						// mydow: {
+						// 	show: true,
+						// 	title: '导出',
+						// 	icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+						// 	onclick: function() {
+						// 		alert('myToolHandler1');
+						// 	},
+						// },
 					},
 				},
 				tooltip: {
@@ -132,16 +133,16 @@ export default {
 					axisPointer: {
 						type: 'cross',
 						label: {
-							backgroundColor: '#6a7985'
-						}
-					}
+							backgroundColor: '#6a7985',
+						},
+					},
 				},
 				xAxis: {
 					type: 'category',
-					data: this.timeArray
+					data: this.timeArray,
 				},
 				yAxis: {
-					type: 'value'
+					type: 'value',
 				},
 				series: [
 					{
@@ -152,8 +153,8 @@ export default {
 						smooth: true,
 						itemStyle: {
 							normal: {
-								color: '#09b0f5'
-							}
+								color: '#09b0f5',
+							},
 						},
 						areaStyle: {
 							normal: {
@@ -165,18 +166,18 @@ export default {
 									[
 										{ offset: 0, color: '#A7D5FF' },
 										{ offset: 0.5, color: '#D0E8FF' },
-										{ offset: 1, color: '#ffffff' }
+										{ offset: 1, color: '#ffffff' },
 									]
-								)
-							}
-						} //填充区域样式
-					}
+								),
+							},
+						}, //填充区域样式
+					},
 				],
-				backgroundColor: '#FFFFFF'
+				backgroundColor: '#FFFFFF',
 			};
 			myChart.setOption(options);
-		}
-	}
+		},
+	},
 };
 </script>
 

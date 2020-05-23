@@ -73,7 +73,7 @@
 				<div class="device_form_query">
 					<div id="myChart" :style="{ height: '607px' }"></div>
 				</div>
-				<div class="devide_table">
+				<div class="devide_tables">
 					<el-row type="flex" class="row_active">
 						<el-col
 							:span="24"
@@ -734,11 +734,13 @@ export default {
 		}
 	}
 
-	.devide_table {
+	.devide_tables {
 		padding: 35px;
 		height: auto;
 		overflow: hidden;
 		margin-top: 20px;
+        margin-left: 0 ;
+        margin-right: 0;
 		background: rgba(255, 255, 255, 1);
 		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
 		border-radius: 2px;

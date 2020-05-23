@@ -1052,8 +1052,8 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						restore: { show: true },
 						saveAsImage: { show: false },
@@ -1181,8 +1181,8 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						restore: { show: true },
 						saveAsImage: { show: false },

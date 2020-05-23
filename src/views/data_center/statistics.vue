@@ -1386,8 +1386,8 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						restore: { show: true },
 						saveAsImage: { show: false },
@@ -1517,8 +1517,8 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						restore: { show: true },
 						saveAsImage: { show: false },
@@ -1576,8 +1576,8 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						restore: { show: true },
 						saveAsImage: { show: false },
@@ -1633,7 +1633,22 @@ export default {
 									color: '#409EFF', //改变折线颜色
 								},
 							},
-						},
+                        },
+                        areaStyle: {
+							normal: {
+								color: new echarts.graphic.LinearGradient(
+									0,
+									0,
+									0,
+									1,
+									[
+										{ offset: 0, color: '#409EFF' },
+										
+										{ offset: 1, color: '#ffffff' },
+									]
+								),
+							},
+						}, //填充区域样式
 					},
 				],
 			};

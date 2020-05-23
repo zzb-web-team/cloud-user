@@ -567,8 +567,8 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						mark: { show: true },
-						dataView: { show: true, readOnly: false },
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
 						magicType: { show: true, type: ['line', 'bar'] },
 						//设置按钮(图标)的颜色
 						//  magicType: {
@@ -634,12 +634,14 @@ export default {
 						name: '流量',
 						type: 'bar',
 						barWidth: 30, //柱图宽度
-						data: this.dataFlowArray,
+                        data: this.dataFlowArray,
+                        smooth:true,//设置折线图的弧度
 						itemStyle: {
 							normal: {
 								lineStyle: {
 									color: '#297AFF', //线的颜色
-								},
+                                },
+                                
 								//每根柱子颜色设置
 								// color: function(params) {
 								// 	let colorList = ['#297AFF', '#297AFF00'];
@@ -657,10 +659,26 @@ export default {
 								// 	} else {
 								// 		return colorList[1];
 								// 	}
-								// },
+                                // },
+                                
 							},
 							color: '#00FF00',
-						},
+                        },
+                         areaStyle: {
+							normal: {
+								color: new echarts.graphic.LinearGradient(
+									0,
+									0,
+									0,
+									1,
+									[
+										{ offset: 0, color: '#409EFF' },
+										
+										{ offset: 1, color: '#ffffff' },
+									]
+								),
+							},
+						}, //填充区域样式
 					},
 				],
 				backgroundColor: '#FFFFFF',

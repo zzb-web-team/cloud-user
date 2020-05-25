@@ -245,12 +245,12 @@
 								:style="{ height: '607px' }"
 							></div>
 						</div>
-						<div class="devide_table">
+						<div class="devide_table" v-show="region_show">
 							<el-row type="flex" class="row_active">
 								<el-col
 									:span="24"
 									style="text-align:left;    font-weight: bold;padding-left:10px;"
-									>IP流量平均利用率表</el-col
+									>用户访问区域分布</el-col
 								>
 							</el-row>
 							<el-row type="flex" class="row_active">
@@ -263,7 +263,7 @@
 										:cell-style="rowClass"
 										:header-cell-style="headClass"
 									>
-										<el-table-column label="区域/运营商"
+										<el-table-column label="区域"
 											><template slot-scope="scope">
 												<div v-if="scope.row.region">
 													{{ scope.row.region }}
@@ -273,14 +273,41 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="访问次数">
+										<el-table-column label="总流量">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.accessCnt }}
+													{{ scope.row.dataFlow }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="占比">
+										<el-table-column label="流量占比">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.dataFlowPercnt
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        <el-table-column label="访问次数">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.accessCnt
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        <el-table-column label="访问占比">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.accessPercent
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        <el-table-column label="平均响应时间">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -293,6 +320,85 @@
 								</el-col>
 							</el-row>
 						</div>
+                        <!-- 运营商 -->
+                        <div class="devide_table" v-show="!region_show">
+							<el-row type="flex" class="row_active">
+								<el-col
+									:span="24"
+									style="text-align:left;    font-weight: bold;padding-left:10px;"
+									>用户运营商分布</el-col
+								>
+							</el-row>
+							<el-row type="flex" class="row_active">
+								<el-col :span="24">
+									<el-table
+										:data="tablecdn"
+										border
+										stripe
+										style="width: 100%;margin:10px;"
+										:cell-style="rowClass"
+										:header-cell-style="headClass"
+									>
+										<el-table-column label="运营商"
+											><template slot-scope="scope">
+												<div v-if="scope.row.region">
+													{{ scope.row.region }}
+												</div>
+												<div v-else>
+													{{ scope.row.isp }}
+												</div>
+											</template></el-table-column
+										>
+										<el-table-column label="总流量">
+											<template slot-scope="scope">
+												<div>
+													{{ scope.row.dataFlow }}
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column label="流量占比">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.dataFlowPercnt
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        <el-table-column label="访问次数">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.accessCnt
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        <el-table-column label="访问占比">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.accessPercent
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        <el-table-column label="平均响应时间">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.accessPercent
+													}}
+												</div>
+											</template>
+										</el-table-column>
+									</el-table>
+								</el-col>
+							</el-row>
+						</div>
+
+
+
 					</el-tab-pane>
 					<el-tab-pane label="热门加速内容" name="there">
 						<div
@@ -414,21 +520,21 @@
 										:cell-style="rowClass"
 										:header-cell-style="headClass"
 									>
-										<el-table-column label="视频ID"
+										<el-table-column label="加速内容名称"
 											><template slot-scope="scope">
 												<div>
 													{{ scope.row.fileId }}
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="视频名称">
+										<el-table-column label="流量">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.fileName }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="文件大小">
+										<el-table-column label="流量占比">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -437,7 +543,7 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问流量">
+										<el-table-column label="访问次数">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -445,6 +551,12 @@
 															.accessDataFlow
 															| aaa
 													}}
+												</div>
+											</template> </el-table-column
+										><el-table-column label="访问占比">
+											<template slot-scope="scope">
+												<div>
+													{{ scope.row.fileName }}
 												</div>
 											</template>
 										</el-table-column>
@@ -495,6 +607,7 @@ export default {
 			shoudzy: false,
 			shoudzyx: false,
 			shoudzyz: false,
+            region_show:true,
 			optionsa1: [],
 			optionsa2: [],
 			optionsa3: [
@@ -1015,8 +1128,8 @@ export default {
 			params.end_ts = this.endtime;
 			params.pageNo = this.pageNo - 1;
 			params.pageSize = this.pageSize;
-            params.acce = this.accval3;
-            params.time_unit = this.timeUnit;
+			params.acce = this.accval3;
+			params.time_unit = this.timeUnit;
 			if (this.value_c1) {
 				params.fileName = this.value_c1;
 			} else {
@@ -1031,7 +1144,7 @@ export default {
 				params.isp = this.value_c3;
 			} else {
 				params.isp = '*';
-            }
+			}
 			query_playdata_table(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1326,11 +1439,13 @@ export default {
 
 		//切换到地区
 		goarea() {
+            this.region_show=true;
 			this.twob = false;
 			this.getcure(1);
 		},
 		//切换到运营商
 		gosupplier() {
+            this.region_show=false;
 			this.twob = true;
 			this.getcure(2);
 		},
@@ -1371,8 +1486,8 @@ export default {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart')
-            );
-            let _this=this;
+			);
+			let _this = this;
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let options = {
@@ -1490,8 +1605,8 @@ export default {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart1')
-            );
-            let _this=this;
+			);
+			let _this = this;
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let options = {
@@ -1562,8 +1677,8 @@ export default {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart2')
-            );
-            let _this=this;
+			);
+			let _this = this;
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let option = {
@@ -1587,7 +1702,7 @@ export default {
 							icon:
 								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-							_this.exoprtant_playtimes();
+								_this.exoprtant_playtimes();
 							},
 						},
 					},
@@ -1633,8 +1748,8 @@ export default {
 									color: '#409EFF', //改变折线颜色
 								},
 							},
-                        },
-                        areaStyle: {
+						},
+						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(
 									0,
@@ -1643,7 +1758,7 @@ export default {
 									1,
 									[
 										{ offset: 0, color: '#409EFF' },
-										
+
 										{ offset: 1, color: '#ffffff' },
 									]
 								),

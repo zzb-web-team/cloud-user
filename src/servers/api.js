@@ -224,3 +224,6 @@ export const export_backsource_flow_file = (params) =>
 //资源用量导出接口
 export const export_dataflow_curve_file = (params) =>
     post(`${userUrl}/file_download/export_dataflow_curve_file`, params);
+//资源用量导出接口
+export const export_topisp_accesscnt_curve_file = (params) =>
+    post(`${userUrl}/file_download/export_topisp_accesscnt_curve_file`, params);

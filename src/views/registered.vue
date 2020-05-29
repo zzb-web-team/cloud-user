@@ -46,7 +46,7 @@
               @click="sendyam"
               :loading="loading"
               :disabled="getyzmcode"
-              style="background: #297AFF;color: #fff;width:112px;height:35px;"
+              style="background: #297AFF;color: #fff;width:112px;height:38px;"
             >
               {{
               getyzmcode == true ? num : '获取验证码'

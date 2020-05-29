@@ -41,7 +41,7 @@
 							slot="append"
 							@click="sendyam"
 							:disabled="getyzmcode"
-							style="background: #297AFF;color: #fff;border:1px solid #297AFF;width:112px;height:35px;"
+							style="background: #297AFF;color: #fff;border:1px solid #297AFF;width:112px;height:38px;"
 							>{{
 								getyzmcode == true ? num : '获取验证码'
 							}}</el-button

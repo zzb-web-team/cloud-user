@@ -627,13 +627,11 @@ export default {
 	methods: {
 		//设置时间粒度
 		settimeunit(sratime, endtime) {
-			//6小时
-			if (endtime - sratime <= 21600) {
-				this.timeUnit = 1;
-				//一天
-			} else if (21600 < endtime - sratime <= 86400) {
+			if (endtime - sratime <= 86400) {
+				this.timeUnit = 5;
+			} else if (86400 < endtime - sratime <= 2592000) {
 				this.timeUnit = 60;
-			} else if (86400 < endtime - sratime <= 259200) {
+			} else if (endtime - sratime > 2592000) {
 				this.timeUnit = 1440;
 			}
 		},
@@ -856,11 +854,11 @@ export default {
 					}
 				})
 				.catch((error) => {});
-        },
-        //加速流量导出
+		},
+		//加速流量导出
 		export_accelerate() {
-            let params = new Object();
-            params.start_ts = this.starttime;
+			let params = new Object();
+			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
 			params.chanId = this.chanid + '';
 			if (this.value1) {
@@ -891,10 +889,10 @@ export default {
 				.catch((error) => {
 					console.log(error);
 				});
-        },
-        //回源统计导出
+		},
+		//回源统计导出
 		export_backsource() {
-            let params = new Object();
+			let params = new Object();
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
 			params.chanId = this.chanid + '';
@@ -952,7 +950,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
-			this.endtime = times;
+			this.endtime = times - 1;
 			this.settimeunit(this.starttime, this.endtime);
 			if (!data) {
 				this.gettable1();
@@ -965,7 +963,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times;
+			this.endtime = times - 1;
 			this.settimeunit(this.starttime, this.endtime);
 			if (!data) {
 				this.gettable1();
@@ -978,7 +976,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times;
+			this.endtime = times - 1;
 			this.settimeunit(this.starttime, this.endtime);
 			if (!data) {
 				this.gettable1();
@@ -992,7 +990,7 @@ export default {
 			if (this.val2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
-				this.endtime = Date.parse(new Date()) / 1000;
+				this.endtime = Date.parse(new Date()) / 1000 - 1;
 			} else {
 				this.starttime = dateToMs(this.val2[0]);
 				this.endtime = dateToMs(this.val2[1]);
@@ -1054,9 +1052,9 @@ export default {
 					feature: {
 						// mark: { show: true },
 						// dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
-						restore: { show: true },
-						saveAsImage: { show: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
@@ -1183,9 +1181,9 @@ export default {
 					feature: {
 						// mark: { show: true },
 						// dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
-						restore: { show: true },
-						saveAsImage: { show: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',

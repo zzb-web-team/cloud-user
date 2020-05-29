@@ -157,7 +157,7 @@ const router = new Router({
                 },
                 {
                     path: '/yure_management',
-                    name: '刷新预热管理',
+                    name: '刷新预热',
                     component: yure_management,
                     icon: 'iconfont icon-dian',
                     // hidden: true

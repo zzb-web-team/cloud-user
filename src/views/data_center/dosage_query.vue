@@ -310,16 +310,15 @@ export default {
 	methods: {
 		//设置时间粒度
 		settimeunit(sratime, endtime) {
-			//6小时
-			if (endtime - sratime <= 21600) {
-				this.timeUnit = 1;
-				//一天
-			} else if (21600 < endtime - sratime <= 86400) {
+			if (endtime - sratime <= 86400) {
+				this.timeUnit = 5;
+			} else if (86400 < endtime - sratime <= 2592000) {
 				this.timeUnit = 60;
-			} else if (86400 < endtime - sratime <= 259200) {
+			} else if (endtime - sratime > 2592000) {
 				this.timeUnit = 1440;
 			}
-		},
+        },
+        //生成今天的
 		//获取页码
 		getpage(pages) {
 			this.pageNo = pages;
@@ -495,7 +494,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
-			this.endtime = times;
+			this.endtime = times-1;
 			this.settimeunit(this.starttime, this.endtime);
 			this.gettu();
 		},
@@ -504,7 +503,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times;
+			this.endtime = times-1;
 			this.settimeunit(this.starttime, this.endtime);
 			this.gettu();
 		},
@@ -513,7 +512,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times;
+			this.endtime = times-1;
 			this.settimeunit(this.starttime, this.endtime);
 			this.gettu();
 		},
@@ -522,7 +521,7 @@ export default {
 			if (this.value2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
-				this.endtime = Date.parse(new Date()) / 1000;
+				this.endtime = Date.parse(new Date()) / 1000-1;
 			} else {
 				this.starttime = dateToMs(this.value2[0]);
 				this.endtime = dateToMs(this.value2[1]);
@@ -569,7 +568,7 @@ export default {
 					feature: {
 						// mark: { show: true },
 						// dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
+						//magicType: { show: true, type: ['line', 'bar'] },
 						//设置按钮(图标)的颜色
 						//  magicType: {
 						//     show: true,
@@ -583,8 +582,8 @@ export default {
 						//         },
 						//     }
 						// },
-						restore: { show: true },
-						saveAsImage: { show: false },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
@@ -638,28 +637,28 @@ export default {
                         smooth:true,//设置折线图的弧度
 						itemStyle: {
 							normal: {
-								lineStyle: {
-									color: '#297AFF', //线的颜色
-                                },
+								// lineStyle: {
+								// 	color: '#297AFF', //线的颜色
+                                // },
                                 
 								//每根柱子颜色设置
-								// color: function(params) {
-								// 	let colorList = ['#297AFF', '#297AFF00'];
-								// 	let upcli = Math.floor(
-								// 		_this.dataFlownum / 12
-								// 	);
-								// 	let data_index = params.dataIndex;
-								// 	if (
-								// 		(data_index % upcli == 0 &&
-								// 			data_index < upcli * 11) ||
-								// 		data_index == 0 ||
-								// 		data_index == _this.dataFlownum
-								// 	) {
-								// 		return colorList[0];
-								// 	} else {
-								// 		return colorList[1];
-								// 	}
-                                // },
+								color: function(params) {
+									let colorList = ['#297AFF', '#297AFF00'];
+									let upcli = Math.floor(
+										_this.dataFlownum / 12
+									);
+									let data_index = params.dataIndex;
+									if (
+										(data_index % upcli == 0 &&
+											data_index < upcli * 11) ||
+										data_index == 0 ||
+										data_index == _this.dataFlownum
+									) {
+										return colorList[0];
+									} else {
+										return colorList[1];
+									}
+                                },
                                 
 							},
 							color: '#00FF00',

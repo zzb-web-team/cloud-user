@@ -833,8 +833,8 @@ export default {
 			} else {
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
-                );
-                let newobj = new Object();
+				);
+				let newobj = new Object();
 				newobj.buser_id = this.chanid + '';
 				newobj.data_count = 0;
 				newobj.data_array = [];
@@ -843,11 +843,20 @@ export default {
 				});
 				urllist.push(newobj);
 				params.data = urllist;
-                params.data_count = 0;
+				params.data_count = 0;
 			}
 			del_domain(params)
 				.then((res) => {
-					if (res.status == 0) {
+                    //后台返回状态不一致（成功res.tatus==0，失败res.noting==0）
+					if (res.noting == 0) {
+						if (res.data[0].res_data[0][1] == 1) {
+							this.$message.error('域名下存在加速资源，不可删除');
+						} else if (res.data[0].res_data[0][1] == 2) {
+							this.$message.error('域名不存在');
+						} else if (res.data[0].res_data[0][1] == 3) {
+							this.$message.error('系统出错请稍后重试');
+						}
+					} else if (res.status == 0) {
 						if (res.data.fail_count == 0) {
 							this.$message({
 								message: '源站域名删除成功',

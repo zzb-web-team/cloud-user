@@ -793,7 +793,7 @@ export default {
 		},
 		// 禁用
 		disableuser(datalist) {
-			this.$confirm('禁用后该URL将无法使用, 是否继续?', '提示', {
+			this.$confirm('禁用后该加速内容将关闭加速服务，是否继续？', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning',
@@ -929,7 +929,7 @@ export default {
 		},
 		// 删除
 		deleateuser(datalist) {
-			this.$confirm('此操作将永久删除该URL, 是否继续?', '提示', {
+			this.$confirm('删除后该加速内容的信息将从列表上移除，信息不可恢复，是否继续？', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning',

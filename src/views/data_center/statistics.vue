@@ -1323,7 +1323,8 @@ export default {
 			} else {
 				this.getcure(3);
 			}
-		},
+        },
+      
 		//自定义时间显示
 		showzdy() {
 			this.shoudzy = !this.shoudzy;
@@ -1340,7 +1341,7 @@ export default {
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times;
 			this.endtime = Date.parse(new Date()) / 1000;
-			this.timeUnit = 60;
+			this.timeUnit = 5;
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
@@ -1354,8 +1355,8 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
-			this.endtime = times;
-			this.timeUnit = 60;
+			this.endtime = times-1;
+			this.timeUnit = 5;
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
@@ -1369,8 +1370,8 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times;
-			this.timeUnit = 60 * 24;
+			this.endtime = times-1;
+			this.timeUnit = 60;
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
@@ -1384,8 +1385,8 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times;
-			this.timeUnit = 60 * 24;
+			this.endtime = times-1;
+			this.timeUnit = 1440;
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
@@ -1399,20 +1400,17 @@ export default {
 			if (this.val2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
-				this.endtime = Date.parse(new Date()) / 1000;
+				this.endtime = Date.parse(new Date()) / 1000-1;
 			} else {
 				this.starttime = dateToMs(this.val2[0]);
 				this.endtime = dateToMs(this.val2[1]);
 			}
-			if (this.endtime - this.starttime < 21600) {
+            if (this.endtime - this.starttim <= 86400) {
+				this.timeUnit = 5;
+			} else if (86400 < this.endtime - this.starttim <= 2592000) {
 				this.timeUnit = 60;
-			} else if (
-				this.endtime - this.starttime >= 21600 &&
-				this.endtime - this.starttime < 86400
-			) {
-				this.timeUnit = 60;
-			} else if (this.endtime - this.starttime >= 86400) {
-				this.timeUnit = 60 * 24;
+			} else if (this.endtime - this.starttim > 2592000) {
+				this.timeUnit = 1440;
 			}
 			this.getcure(0);
 		},
@@ -1532,9 +1530,9 @@ export default {
 					feature: {
 						// mark: { show: true },
 						// dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
-						restore: { show: true },
-						saveAsImage: { show: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
@@ -1663,9 +1661,9 @@ export default {
 					feature: {
 						// mark: { show: true },
 						// dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
-						restore: { show: true },
-						saveAsImage: { show: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
@@ -1726,9 +1724,9 @@ export default {
 					feature: {
 						// mark: { show: true },
 						// dataView: { show: true, readOnly: false },
-						magicType: { show: true, type: ['line', 'bar'] },
-						restore: { show: true },
-						saveAsImage: { show: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',

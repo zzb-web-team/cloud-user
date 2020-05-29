@@ -337,7 +337,8 @@ export default {
 						// var restable = /^[\u4e00-\u9fffa-zA-Z\d]{4,64}$/; //校验标签
 						// var resnum = /^[0-9]*$/; //校验终端
 						var resaccelerate = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,1024}$/; //加速内容
-						var respath = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/; //路径
+                        //var respath = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/; //路径
+                        var respath = /^\/{1}.{1,1024}$/;
 
 						if (respath.test(res.data[i].url) === false) {
 							res.data[i].err_url = false;

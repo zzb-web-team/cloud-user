@@ -62,7 +62,7 @@ export default {
 			let starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			params.start_ts = starttime - 60 * 60 * 24 * 30;
-			params.end_ts = starttime;
+			params.end_ts = starttime-1;
 			params.chanId = this.chanid + '';
 			params.fileName = '*';
 			params.timeUnit = 60 * 24;

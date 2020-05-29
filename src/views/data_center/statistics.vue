@@ -235,9 +235,12 @@
 						</div>
 						<div class="device_form" style>
 							<el-button-group>
-								<el-button @click="goarea()">地区</el-button>
+								<el-button :autofocus="true" @click="goarea()"
+                               
+									>地区</el-button
+								>
 								<el-button @click="gosupplier()"
-									>供应商</el-button
+									>运营商</el-button
 								>
 							</el-button-group>
 							<div
@@ -252,6 +255,7 @@
 									style="text-align:left;    font-weight: bold;padding-left:10px;"
 									>用户访问区域分布</el-col
 								>
+
 							</el-row>
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
@@ -263,7 +267,7 @@
 										:cell-style="rowClass"
 										:header-cell-style="headClass"
 									>
-										<el-table-column label="区域"
+										<el-table-column label="省市"
 											><template slot-scope="scope">
 												<div v-if="scope.row.region">
 													{{ scope.row.region }}
@@ -397,7 +401,7 @@
 						<div
 							style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
-							<el-input
+							<!-- <el-input
 								placeholder="加速内容名称"
 								v-model="value_c1"
 								class="input-with-select"
@@ -410,7 +414,7 @@
 									class="el-input__icon el-icon-search"
 									@click="getdata2()"
 								></i>
-							</el-input>
+							</el-input> -->
 							<el-select
 								v-model="accval3"
 								placeholder="终端"
@@ -489,20 +493,20 @@
                 >确定</el-button
               > -->
 						</div>
-						<div class="device_form" style>
+						<!-- <div class="device_form" style>
 							<div
 								id="myChart2"
 								:style="{ height: '607px' }"
 							></div>
-						</div>
+						</div> -->
 						<div class="devide_table">
-							<el-row type="flex" class="row_active">
+							<!-- <el-row type="flex" class="row_active">
 								<el-col
 									:span="24"
 									style="text-align:left;font-weight: bold;padding-left:10px;"
 									>IP流量平均利用率表</el-col
 								>
-							</el-row>
+							</el-row> -->
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
 									<el-table
@@ -516,14 +520,14 @@
 										<el-table-column label="加速内容名称"
 											><template slot-scope="scope">
 												<div>
-													{{ scope.row.fileId }}
+													{{ scope.row.fileName }}
 												</div>
 											</template></el-table-column
 										>
 										<el-table-column label="流量">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.fileName }}
+													{{ scope.row.dataFlow }}
 												</div>
 											</template>
 										</el-table-column>
@@ -531,7 +535,8 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.fileSize | aaa
+														scope.row.dfPercent
+															| aaa
 													}}
 												</div>
 											</template>
@@ -539,17 +544,16 @@
 										<el-table-column label="访问次数">
 											<template slot-scope="scope">
 												<div>
-													{{
-														scope.row
-															.accessDataFlow
-															| aaa
-													}}
+													{{ scope.row.totalCnt }}
 												</div>
 											</template> </el-table-column
 										><el-table-column label="访问占比">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.fileName }}
+													{{
+														scope.row.cntPercent
+															| aaa
+													}}
 												</div>
 											</template>
 										</el-table-column>
@@ -918,8 +922,12 @@ export default {
 			return stat;
 		},
 		aaa(data) {
-			var liu = (data / 1024 / 1024 / 1024).toFixed(4);
-			return liu;
+			if (data <= 0) {
+				return 0;
+			} else {
+				var liu = (data * 100).toFixed(2);
+				return liu + '%';
+			}
 		},
 	},
 	components: {
@@ -1111,7 +1119,7 @@ export default {
 							this.timeArray2.push(getymdtime(item));
 						});
 						this.gettable();
-						this.drawLine2();
+						// this.drawLine2();
 					})
 					.catch((err) => {});
 			}
@@ -1126,22 +1134,8 @@ export default {
 			params.pageNo = this.pageNo - 1;
 			params.pageSize = this.pageSize;
 			params.acce = this.accval3;
+			params.fileName = '*';
 			params.time_unit = this.timeUnit;
-			if (this.value_c1) {
-				params.fileName = this.value_c1;
-			} else {
-				params.fileName = '*';
-			}
-			if (this.value_c2[1]) {
-				params.region = this.value_c2[1];
-			} else {
-				params.region = '*';
-			}
-			if (this.value_c3) {
-				params.isp = this.value_c3;
-			} else {
-				params.isp = '*';
-			}
 			query_playdata_table(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1513,7 +1507,8 @@ export default {
 				this.value_c1 = '';
 				this.value_c2 = '';
 				this.value_c3 = '';
-				this.getcure(3);
+				// this.getcure(3);
+				this.gettable();
 			}
 		},
 		drawLine() {
@@ -1645,7 +1640,7 @@ export default {
 			// 绘制图表
 			let options = {
 				title: {
-					text: '地区和运营商',
+					text: '访问用户数（TOP10）',
 				},
 				grid: {
 					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。

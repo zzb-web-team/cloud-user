@@ -508,12 +508,24 @@ export default {
 		},
 		//删除
 		deleateuser(num, row) {
-			console.log(row);
-			if (row) {
-				this.delete_domin(row.domain_id);
-			} else {
-				this.delete_domin();
-			}
+            this.$confirm('删除后该域名将从列表移动，删除后信息不可恢复，是否继续？', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+			})
+				.then(() => {
+                    console.log(row);
+                    if (row) {
+                        this.delete_domin(row.domain_id);
+                    } else {
+                        this.delete_domin();
+                    }
+                }).catch(()=>{
+                    this.$message({
+						type: 'info',
+						message: '已取消删除',
+					});
+                })
 		},
 		//添加URL
 		new_btn() {

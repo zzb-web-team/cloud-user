@@ -596,7 +596,6 @@ export default {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 		},
 		//新建用户-删除URL
@@ -633,7 +632,7 @@ export default {
 		//获取数据列表
 		getuserlist() {
 			// 已选择项
-			this.updateSelection();
+			//this.updateSelection();
 
 			let params = new Object();
 			params.page = this.tolpage - 1;
@@ -689,7 +688,6 @@ export default {
 					this.currentSelection
 				);
 				this.currentSelection = [];
-				console.log('updateSelection:', this.multipleSelection);
 			}
 		},
 		// 整理列表选中项
@@ -707,17 +705,12 @@ export default {
 					}, 200);
 				}
 			});
-			console.log(
-				'formatChoosen--multipleSelection:',
-				this.multipleSelection
-			);
 		},
 		//多选
 		handleSelectionChange(val) {
 			if (val.length) {
 				this.currentSelection = val.map((item) => item.url_name);
 			}
-			console.log(this.currentSelection);
 		},
 		//获取页码
 		getpage(pages) {
@@ -775,7 +768,6 @@ export default {
 		},
 		//监控
 		pwdwetout(row) {
-			console.log(row);
 			this.$router.push({ path: '/resources', query: { urldata: row } });
 		},
 		submitForm(formName) {

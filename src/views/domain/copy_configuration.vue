@@ -382,12 +382,17 @@ export default {
 			query_url(params)
 				.then((res) => {
 					if (res.status == 0) {
-						res.data.result.forEach((item, index) => {
-							let urlobj = {};
-							urlobj.url = item.url_name;
-							this.urllist.push(urlobj);
-							this.total_cnt = res.data.total;
-						});
+                        this.total_cnt = res.data.total;
+						for (let i = 0; i < res.data.result.length; i++) {
+                            let urlobj = {};
+							if (res.data.result[i].url_name == this.urlname) {
+								continue;
+							} else {
+								urlobj.url = res.data.result[i].url_name;
+								this.urllist.push(urlobj);
+								
+							}
+                        }
 					}
 				})
 				.catch((err) => {});
@@ -433,8 +438,8 @@ export default {
 				// jsonobj.base_config = Object.assign(
 				// 	{},
 				// 	this.copydatalist.base_config
-                // );
-                jsonobj.url_name = item.url;
+				// );
+				jsonobj.url_name = item.url;
 				params.data_array.push(jsonobj);
 			});
 			params.buser_id = this.chanid + '';
@@ -582,8 +587,8 @@ export default {
 			console.log(num);
 			if (num == 1) {
 				this.$nextTick(function() {
-                    this.$refs.multipleTable_pei.clearSelection();
-                    this.$router.go(-1);
+					this.$refs.multipleTable_pei.clearSelection();
+					this.$router.go(-1);
 					// this.multipleSelection.forEach((item) => {
 					// 	this.$refs.multipleTable_pei.toggleRowSelection(
 					// 		this.futableData[item.index],
@@ -592,8 +597,8 @@ export default {
 					// });
 				});
 			} else {
-                this.$refs.multipleTable.clearSelection();
-                this.actives--;
+				this.$refs.multipleTable.clearSelection();
+				this.actives--;
 			}
 			this.dialupdata = false;
 		},

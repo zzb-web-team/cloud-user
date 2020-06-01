@@ -482,7 +482,6 @@ export default {
 		},
 		//修改
 		revise(num, row) {
-			console.log(row, num);
 			this.dialog_title = '修改域名';
 			this.form.name = row.domain;
 			this.domain_id = row.domain_id;
@@ -491,12 +490,21 @@ export default {
 		},
 		//停用
 		disableuser(num, row) {
-			console.log(row);
-			if (row) {
-				this.enable_disable(0, row.domain_id);
-			} else {
-				this.enable_disable(0);
-			}
+			this.$confirm(
+				'停用后与该域名相关的所有加速内容将停用，是否继续？',
+				'提示',
+				{
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning',
+				}
+			).then(() => {
+				if (row) {
+					this.enable_disable(0, row.domain_id);
+				} else {
+					this.enable_disable(0);
+				}
+			});
 		},
 		//启用
 		enableuser(num, row) {
@@ -508,24 +516,28 @@ export default {
 		},
 		//删除
 		deleateuser(num, row) {
-            this.$confirm('删除后该域名将从列表移动，删除后信息不可恢复，是否继续？', '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning',
-			})
+			this.$confirm(
+				'删除后该域名将从列表移动，删除后信息不可恢复，是否继续？',
+				'提示',
+				{
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning',
+				}
+			)
 				.then(() => {
-                    console.log(row);
-                    if (row) {
-                        this.delete_domin(row.domain_id);
-                    } else {
-                        this.delete_domin();
-                    }
-                }).catch(()=>{
-                    this.$message({
+					if (row) {
+						this.delete_domin(row.domain_id);
+					} else {
+						this.delete_domin();
+					}
+				})
+				.catch(() => {
+					this.$message({
 						type: 'info',
 						message: '已取消删除',
 					});
-                })
+				});
 		},
 		//添加URL
 		new_btn() {
@@ -586,14 +598,12 @@ export default {
 			if (val.length) {
 				this.currentSelection = val.map((item) => item);
 			}
-			console.log(this.currentSelection);
 			stateagr = 0;
 			for (let i = 0; i < this.currentSelection.length; i++) {
 				if (this.currentSelection[i].state == 1) {
 					stateagr = 1;
 				}
 			}
-			console.log(stateagr);
 			if (stateagr == 0) {
 				this.del_show = true;
 			} else {
@@ -607,7 +617,6 @@ export default {
 					this.currentSelection
 				);
 				this.currentSelection = [];
-				console.log('updateSelection:', this.multipleSelection);
 			}
 		},
 		// 整理列表选中项
@@ -625,10 +634,6 @@ export default {
 					}, 200);
 				}
 			});
-			console.log(
-				'formatChoosen--multipleSelection:',
-				this.multipleSelection
-			);
 		},
 		//计算长度
 		getBLen(str) {
@@ -754,7 +759,6 @@ export default {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 		},
 		//修改--请求
@@ -776,12 +780,10 @@ export default {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 		},
 		//启用/禁用--请求
 		enable_disable(stat, datalist) {
-			console.log(stat, datalist);
 			let params = new Object();
 			let arr = new Array();
 			let urllist = [];
@@ -825,7 +827,6 @@ export default {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 		},
 		//删除--请求
@@ -859,7 +860,7 @@ export default {
 			}
 			del_domain(params)
 				.then((res) => {
-                    //后台返回状态不一致（成功res.tatus==0，失败res.noting==0）
+					//后台返回状态不一致（成功res.tatus==0，失败res.noting==0）
 					if (res.noting == 0) {
 						if (res.data[0].res_data[0][1] == 1) {
 							this.$message.error('域名下存在加速资源，不可删除');
@@ -891,7 +892,6 @@ export default {
 					}
 				})
 				.catch((error) => {
-					console.log(error);
 				});
 		},
 		// 表头样式设置

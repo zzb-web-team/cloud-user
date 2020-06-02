@@ -1107,7 +1107,7 @@ export default {
 					{
 						name: '流量',
 						type: 'bar',
-						barWidth: 30, //柱图宽度
+						//barWidth: 30, //柱图宽度
 						data: this.dataFlowArray,
 						itemStyle: {
 							normal: {
@@ -1131,7 +1131,20 @@ export default {
 								},
 							},
 						},
-					},
+						showBackground: true,
+						backgroundStyle: {
+							color: 'rgba(220, 220, 220, 0.8)',
+						},
+                    },
+                    // {
+                    //     type: 'bar',
+                    //     itemStyle:{normal:{color:"#e8e8e8"}},
+                    //     barGap:"-100%",
+                    //     // barGategoryGap:30,
+                    //     data:[300,300,300,300,300,300,300,300,300,300,300,300,],
+                    //     animation:false,
+
+                    // }
 				],
 				//   dataZoom : [
 				// 	{

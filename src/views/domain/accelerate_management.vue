@@ -437,7 +437,7 @@ export default {
 		//获取数据--请求
 		getuserlist() {
 			// 已选择项
-			this.updateSelection();
+			//this.updateSelection();
 			let params = new Object();
 			params.page = this.tolpage - 1;
 			params.buser_id = this.chanid + '';

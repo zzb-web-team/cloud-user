@@ -48,6 +48,7 @@
 						placeholder="请输入密码"
 						style="font-size: 16px;display: flex;align-items: center;"
 						class="login-form-input"
+                        @keyup.enter.native="handleSubmit2"
 					></el-input>
 				</el-form-item>
 			</div>

@@ -36,6 +36,7 @@
 						maxlength="6"
 						show-word-limit
 						placeholder="请输入验证码"
+                        @keyup.enter.native="phonlog('ruleForm')"
 					>
 						<el-button
 							slot="append"

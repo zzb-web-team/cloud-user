@@ -72,6 +72,7 @@
 						v-model="ruleForm.checkPass"
 						autocomplete="off"
 						placeholder="请再次输入密码(两次输入的密码须一致)"
+                        @keyup.enter.native="submitForm('ruleForm')"
 					></el-input>
 				</el-form-item>
 				<el-form-item>

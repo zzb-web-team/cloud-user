@@ -130,7 +130,6 @@
 								style="width: 160px;"
 								@change="seachdata()"
 							>
-								<el-option label="全部" value="-1"></el-option>
 								<el-option
 									v-for="(item, index) in options2"
 									:key="index"
@@ -277,6 +276,10 @@ export default {
 				},
 			],
 			options2: [
+				{
+					value: -1,
+					label: '全部',
+				},
 				{
 					value: 0,
 					label: '进行中',

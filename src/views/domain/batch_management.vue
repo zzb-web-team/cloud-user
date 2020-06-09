@@ -23,14 +23,14 @@
 						class="pei_ting"
 						v-if="datalist.state == 1"
 						@click="disableuser(0)"
-						style="background:#E05050;color:#ffffff;height:34px;line-height: 10px;"
+						style="background:#E05050;color:#ffffff;height:34px;line-height: 10px;padding:0"
 						>停用</el-button
 					>
 					<el-button
 						class="pei_ting"
 						v-else
 						@click="disableuser(1)"
-						style="background:#0ABF5B;color:#ffffff;height:34px;line-height: 10px;"
+						style="background:#0ABF5B;color:#ffffff;height:34px;line-height: 10px;padding:0"
 						>启用</el-button
 					>
 				</div>

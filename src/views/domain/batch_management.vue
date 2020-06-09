@@ -1159,7 +1159,7 @@ export default {
 		disableuser(state) {
 			let messagetext = '';
 			if (state == 0) {
-				messagetext = '停用后该域名将无法使用, 是否继续?';
+				messagetext = '禁用后该加速内容将关闭加速服务，是否继续？?';
 			} else {
 				messagetext = '启用该域名?';
 			}
@@ -1169,14 +1169,19 @@ export default {
 				type: 'warning',
 			})
 				.then(() => {
-					let params = new Object();
-					let urllist = [];
-					urllist.push(this.urlname);
-					params.data_array = [];
-					params.data_array = urllist;
-					params.data_count = 0;
-					params.state = state;
-					params.buser_id = this.chanid + '';
+                    console.log(this.urlname)
+                        let params = new Object();
+					    let arr = new Array();
+					    let urllist = [];
+						let newobj = new Object();
+						newobj.buser_id = this.chanid + '';
+						newobj.data_count = 0;
+						newobj.state = state;
+						newobj.data_array = [];
+						newobj.data_array.push(this.urlname);
+						urllist.push(newobj);
+						params.data_count = 0;
+						params.data = urllist;
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {

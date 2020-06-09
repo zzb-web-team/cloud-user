@@ -122,7 +122,7 @@
               <el-button
                 v-else
                 slot="append"
-                style="background: #297AFF;color: #fff;width:112px;"
+               style="background: #297AFF;color: #fff;width:112px;height:38px;"
                 @click="getsscode(titlename)"
                 :disabled="getyzmcode2"
               >

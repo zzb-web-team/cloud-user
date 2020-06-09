@@ -19,7 +19,7 @@
 		</div>
 		<div class="content_bottom">
 			<div class="content_bottom_title">
-				<span>资源用量</span>
+				<span>用量趋势</span>
 				<span @click="godosage">更多数据</span>
 			</div>
 			<div

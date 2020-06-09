@@ -345,7 +345,7 @@ export default {
 	margin: auto;
 	margin-left: 45px;
 	margin-right: 45px;
-	height: 538px;
+	height: auto;
 	background: rgba(255, 255, 255, 1);
 	box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
 	border-radius: 2px;

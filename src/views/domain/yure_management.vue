@@ -1,6 +1,6 @@
 <template>
 	<div class="content">
-		<div class="top_title">刷新预热管理</div>
+		<div class="top_title">刷新预热</div>
 		<!-- 主体内容 -->
 		<div class="yure_content">
 			<el-tabs v-model="activeName" @tab-click="handleClick">

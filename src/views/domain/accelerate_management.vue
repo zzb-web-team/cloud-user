@@ -176,6 +176,15 @@
 								class="lab_btn"
 								type="text"
 								size="small"
+								style="color:#666666;"
+								>删除</el-button
+							>
+							<el-button
+								type="text"
+								size="small"
+								disabled
+								v-else
+								style="color:#c5c5c5;"
 								>删除</el-button
 							>
 						</template>
@@ -758,8 +767,7 @@ export default {
 						}
 					}
 				})
-				.catch((error) => {
-				});
+				.catch((error) => {});
 		},
 		//修改--请求
 		update_domain() {
@@ -779,8 +787,7 @@ export default {
 						this.$message(res.err_msg);
 					}
 				})
-				.catch((error) => {
-				});
+				.catch((error) => {});
 		},
 		//启用/禁用--请求
 		enable_disable(stat, datalist) {
@@ -826,8 +833,7 @@ export default {
 						this.$message(res.err_msg);
 					}
 				})
-				.catch((error) => {
-				});
+				.catch((error) => {});
 		},
 		//删除--请求
 		delete_domin(datalist) {
@@ -891,8 +897,7 @@ export default {
 						this.$message(res.err_msg);
 					}
 				})
-				.catch((error) => {
-				});
+				.catch((error) => {});
 		},
 		// 表头样式设置
 		headClass() {

@@ -278,10 +278,6 @@ export default {
 			],
 			options2: [
 				{
-					value: -1,
-					label: '全部',
-				},
-				{
 					value: 0,
 					label: '进行中',
 				},
@@ -291,6 +287,10 @@ export default {
 				},
 				{
 					value: 2,
+					label: '等待中',
+                },
+                {
+					value: 3,
 					label: '失败',
 				},
 			],

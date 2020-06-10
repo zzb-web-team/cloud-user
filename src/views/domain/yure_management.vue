@@ -811,7 +811,7 @@ export default {
 							);
 						}
 					} else {
-						this.error.$message('操作失败' + res.msg);
+						this.$message.error('操作失败' + res.err_msg);
 					}
 				})
 				.catch((err) => {});

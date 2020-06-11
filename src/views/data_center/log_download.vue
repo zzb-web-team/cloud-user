@@ -193,7 +193,7 @@ export default {
 			query_logfile_table(parmas)
 				.then(res => {
 					if (res.status == 0) {
-						this.total_cnt = res.data.totalCnt;
+						this.total_cnt = res.data.totalPageCnt+res.data.list.length;
 						this.tablecdn = res.data.list;
 					}
 				})

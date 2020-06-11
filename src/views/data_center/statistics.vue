@@ -7,10 +7,10 @@
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="PV/UV" name="first">
 						<div
-							style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
 							<el-input
-								placeholder="加速内容名称"
+								placeholder="请输入加速内容名称"
 								v-model="value_a1"
 								class="input-with-select"
 								maxlength="70"
@@ -23,6 +23,7 @@
 									@click="getdata()"
 								></i>
 							</el-input>
+                            <span style="margin-right:10px;margin-left:15px;">终端:</span>
 							<el-select
 								v-model="accval1"
 								placeholder="终端"
@@ -74,7 +75,7 @@
                   :value="item.label"
                 ></el-option>
               </el-select> -->
-
+                        <span style="margin-right:10px;margin-left:15px;">日期:</span>
 							<el-button-group>
 								<el-button v-show="!shoudzy" @click="today(0)"
 									>今天</el-button
@@ -148,10 +149,10 @@
 
 					<el-tab-pane label="访问用户分布" name="second">
 						<div
-							style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
 							<el-input
-								placeholder="加速内容名称"
+								placeholder="请输入加速内容名称"
 								v-model="value_b1"
 								class="input-with-select"
 								maxlength="70"
@@ -164,6 +165,7 @@
 									@click="getdata1()"
 								></i>
 							</el-input>
+                            <span style="margin-right:10px;margin-left:15px;">终端:</span>
 							<el-select
 								v-model="accval2"
 								placeholder="终端"
@@ -192,6 +194,7 @@
 									:value="item.label"
 								></el-option>
 							</el-select> -->
+                            <span style="margin-right:10px;margin-left:15px;">日期:</span>
 							<el-button-group>
 								<el-button v-show="!shoudzyx" @click="today(1)"
 									>今天</el-button
@@ -399,7 +402,7 @@
 					</el-tab-pane>
 					<el-tab-pane label="热门加速内容" name="there">
 						<div
-							style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
 							<!-- <el-input
 								placeholder="加速内容名称"
@@ -415,6 +418,7 @@
 									@click="getdata2()"
 								></i>
 							</el-input> -->
+                              <span style="margin-right:10px;margin-left:15px;">终端:</span>
 							<el-select
 								v-model="accval3"
 								placeholder="终端"
@@ -452,6 +456,7 @@
 									:value="item.label"
 								></el-option>
 							</el-select> -->
+                             <span style="margin-right:10px;margin-left:15px;">日期:</span>
 							<el-button-group>
 								<el-button v-show="!shoudzyz" @click="today(2)"
 									>今天</el-button

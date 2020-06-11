@@ -6,10 +6,10 @@
 			style="display: flex;flex-flow: column;margin: auto;margin-left:45px;margin-right:45px;"
 		>
 			<div
-				style="display: flex;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
+				style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
 			>
 				<el-input
-					placeholder="加速内容名称"
+					placeholder="请输入加速内容名称"
 					v-model="mvitem"
 					class="input-with-select"
 					maxlength="70"
@@ -22,6 +22,7 @@
 						@click="changmvitem()"
 					></i>
 				</el-input>
+                <span style="margin-right:10px;margin-left:15px;">终端:</span>
 				<el-select
 					v-model="acc"
 					placeholder="请选择终端"
@@ -37,6 +38,7 @@
 					>
 					</el-option>
 				</el-select>
+                 <span style="margin-right:10px;margin-left:15px;">日期:</span>
 				<el-button-group>
 					<el-button @click="today()">今天</el-button>
 					<el-button @click="yesterday()">昨天</el-button>

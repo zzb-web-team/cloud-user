@@ -5,10 +5,10 @@
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<div
-						style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+						style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 					>
 						<el-input
-							placeholder="加速内容名称"
+							placeholder="请输入加速内容名称"
 							v-model="value1"
 							class="input-with-select"
 							maxlength="70"
@@ -21,6 +21,7 @@
 								@click="getdata()"
 							></i>
 						</el-input>
+                         <span style="margin-right:10px;margin-left:15px;">终端:</span>
 						<el-select
 							v-model="acce"
 							placeholder="终端"
@@ -35,6 +36,7 @@
 								:value="item.label"
 							></el-option>
 						</el-select>
+                         <span style="margin-right:10px;margin-left:15px;">区域:</span>
 						<el-cascader
 							style="width: 10%;margin-right: 10px;line-height: 36px;"
 							placeholder="区域"
@@ -44,6 +46,7 @@
 							v-model="value2"
 							@change="getdata"
 						></el-cascader>
+                         <span style="margin-right:10px;margin-left:15px;">运营商:</span>
 						<el-select
 							v-model="value3"
 							placeholder="运营商"
@@ -58,6 +61,7 @@
 								:value="item.label"
 							></el-option>
 						</el-select>
+                         <span style="margin-right:10px;margin-left:15px;">日期:</span>
 						<el-button-group>
 							<el-button v-show="!shoudzyx" @click="today()"
 								>今天</el-button

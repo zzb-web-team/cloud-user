@@ -941,8 +941,8 @@ export default {
 
 			change_state(params)
 				.then((res) => {
-					if (res.status == 0) {
-						if (res.fail_count == 0) {
+					if (res.status == 0||res.noting==0) {
+						if (res.err_code==750||res.data[0].fail_count == 0) {
 							this.$message({
 								type: 'success',
 								message: '操作成功!',
@@ -951,14 +951,14 @@ export default {
 							let url_namearr = [];
 							let no_urlarr = [];
 							let url_statearr = [];
-							for (let i = 0; i < res.res_data.length; i++) {
-								console.log(i);
-								if (res.res_data[i][1] == 1) {
+							for (let i = 0; i < res.data[0].res_data.length; i++) {
+								console.log(res.data[0].res_data[i][1]);
+								if (res.data[0].res_data[i][1] == 1) {
 									url_namearr.push(res.res_data[i][0]);
-								} else if (res.res_data[i][1] == 2) {
+								} else if (res.data[0].res_data[i][1] == 2) {
 									no_urlarr.push(res.res_data[i][0]);
-								} else if (res.res_data[i][1] == 3) {
-									url_statearr.push(res.res_data[i][0]);
+								} else if (res.data[0].res_data[i][1] == 3) {
+									url_statearr.push(res.data[0].res_data[i][0]);
 								}
 							}
 							if (url_namearr.length != 0) {

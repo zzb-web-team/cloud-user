@@ -255,7 +255,7 @@ export default {
 			textarea1: '',
 			radio2: '1',
             textarea2: '',
-            order: 0,
+            order: 1,
 			optiondisplay: false,
 			input: '',
 			valuea: '',

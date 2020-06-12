@@ -21,7 +21,9 @@
 								@click="getdata()"
 							></i>
 						</el-input>
-                         <span style="margin-right:10px;margin-left:15px;">终端:</span>
+						<span style="margin-right:10px;margin-left:15px;"
+							>终端:</span
+						>
 						<el-select
 							v-model="acce"
 							placeholder="终端"
@@ -36,7 +38,9 @@
 								:value="item.label"
 							></el-option>
 						</el-select>
-                         <span style="margin-right:10px;margin-left:15px;">区域:</span>
+						<span style="margin-right:10px;margin-left:15px;"
+							>区域:</span
+						>
 						<el-cascader
 							style="width: 10%;margin-right: 10px;line-height: 36px;"
 							placeholder="区域"
@@ -46,7 +50,9 @@
 							v-model="value2"
 							@change="getdata"
 						></el-cascader>
-                         <span style="margin-right:10px;margin-left:15px;">运营商:</span>
+						<span style="margin-right:10px;margin-left:15px;"
+							>运营商:</span
+						>
 						<el-select
 							v-model="value3"
 							placeholder="运营商"
@@ -61,7 +67,9 @@
 								:value="item.label"
 							></el-option>
 						</el-select>
-                         <span style="margin-right:10px;margin-left:15px;">日期:</span>
+						<span style="margin-right:10px;margin-left:15px;"
+							>日期:</span
+						>
 						<el-button-group>
 							<el-button v-show="!shoudzyx" @click="today()"
 								>今天</el-button
@@ -667,27 +675,21 @@ export default {
 		getseachlabel1() {
 			let params = new Object();
 			params.chanid = this.chanid + '';
-			params.page = this.vadio_page;
-			getvideo(params)
+			accelerate_flow_query_conditions(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (res.result.cols.length > 0) {
-							res.result.cols.forEach((item, index) => {
+						if (res.data.ispSet.length > 0) {
+                            this.optionsa3=[];
+							res.data.ispSet.forEach((item, index) => {
 								let obj = {};
 								obj.value = index;
-								obj.label = item.url_name;
-								this.options1.push(obj);
+								obj.label = item;
+								this.optionsa3.push(obj);
 							});
 						} else {
 							this.$message('暂无数据');
 						}
-						if (res.result.les_count == 0) {
-							this.vadio_page = 0;
-							this.gettable1();
-						} else {
-							this.vadio_page++;
-							this.getseachlabel1();
-						}
+						this.gettable1();
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1072,7 +1074,7 @@ export default {
 				},
 				grid: {
 					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。
-					left: '5%', // 默认10%，给24就挺合适的。
+					left: '8%', // 默认10%，给24就挺合适的。
 					top: 60, // 默认60
 					right: 35, // 默认10%
 					bottom: 60, // 默认60
@@ -1094,6 +1096,8 @@ export default {
 					},
 				},
 				xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
 					data: this.timeArray,
 					axisTick: {
 						show: false,
@@ -1111,7 +1115,7 @@ export default {
 					{
 						name: '流量',
 						type: 'bar',
-						//barWidth: 30, //柱图宽度
+						barWidth: 30, //柱图宽度
 						data: this.dataFlowArray,
 						itemStyle: {
 							normal: {
@@ -1139,16 +1143,16 @@ export default {
 						backgroundStyle: {
 							color: 'rgba(220, 220, 220, 0.8)',
 						},
-                    },
-                    // {
-                    //     type: 'bar',
-                    //     itemStyle:{normal:{color:"#e8e8e8"}},
-                    //     barGap:"-100%",
-                    //     // barGategoryGap:30,
-                    //     data:[300,300,300,300,300,300,300,300,300,300,300,300,],
-                    //     animation:false,
+					},
+					// {
+					//     type: 'bar',
+					//     itemStyle:{normal:{color:"#e8e8e8"}},
+					//     barGap:"-100%",
+					//     // barGategoryGap:30,
+					//     data:[300,300,300,300,300,300,300,300,300,300,300,300,],
+					//     animation:false,
 
-                    // }
+					// }
 				],
 				//   dataZoom : [
 				// 	{
@@ -1214,7 +1218,7 @@ export default {
 				},
 				grid: {
 					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。
-					left: '5%', // 默认10%，给24就挺合适的。
+					left: '8%', // 默认10%，给24就挺合适的。
 					top: 60, // 默认60
 					right: 35, // 默认10%
 					bottom: 60, // 默认60
@@ -1236,6 +1240,8 @@ export default {
 					},
 				},
 				xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
 					data: this.timeArray2,
 					axisLabel: {
 						interval: 0, //代表显示所有x轴标签

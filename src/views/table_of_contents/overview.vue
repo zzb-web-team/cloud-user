@@ -36,7 +36,7 @@
 
 <script>
 import { dataflow_curve } from '../../servers/api';
-import { dateToMs, getymdtime } from '../../servers/sevdate';
+import { dateToMs, getymdtime,getlocaltimes } from '../../servers/sevdate';
 import echarts from 'echarts';
 export default {
 	data() {
@@ -81,7 +81,7 @@ export default {
 					}
 					this.dataFlowArray = res.data.dataFlowArray;
 					res.data.timeArray.forEach((item, index) => {
-						this.timeArray.push(getymdtime(item));
+						this.timeArray.push(getlocaltimes(item));
 					});
 					this.configure();
 				})

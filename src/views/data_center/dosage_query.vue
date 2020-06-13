@@ -656,7 +656,7 @@ export default {
 										data_index == 0 ||
 										data_index == _this.dataFlownum
 									) {
-										return colorList[0];
+										return colorList[0];/*  */
 									} else {
 										return colorList[1];
 									}

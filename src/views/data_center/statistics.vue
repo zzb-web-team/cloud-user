@@ -123,14 +123,14 @@
 								<div class="item_text">总访问次数(pv)</div>
 								<div class="item_count">
 									<span>{{ totalPV }}</span
-									>GB
+									>
 								</div>
 							</div>
 							<div class="item_right">
 								<div class="item_text">独立IP访问数(pv)</div>
 								<div class="item_count">
 									<span>{{ totalUV }}</span
-									>MB/s
+									>
 								</div>
 							</div>
 						</div>

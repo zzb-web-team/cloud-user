@@ -1071,15 +1071,20 @@ export default {
 			parmas.end_time = 0;
 			query_url(parmas)
 				.then((res) => {
-					this.datalist.create_time = res.data.result[0].create_time;
-					this.datalist.url = res.data.result[0].url;
-					this.datalist.host_url = res.data.result[0].host_url;
-					this.datalist.domain = res.data.result[0].domain;
-					this.datalist.url_type = res.data.result[0].url_type;
-					this.datalist.state = res.data.result[0].state;
-					this.datalist.urlname = res.data.result[0].url_name;
-					this.datalist.domain_id = res.data.result[0].domain_id;
-					this.geturlconfig();
+					if (res.status == 0) {
+						this.datalist.create_time =
+							res.data.result[0].create_time;
+						this.datalist.url = res.data.result[0].url;
+						this.datalist.host_url = res.data.result[0].host_url;
+						this.datalist.domain = res.data.result[0].domain;
+						this.datalist.url_type = res.data.result[0].url_type;
+						this.datalist.state = res.data.result[0].state;
+						this.datalist.urlname = res.data.result[0].url_name;
+						this.datalist.domain_id = res.data.result[0].domain_id;
+						this.geturlconfig();
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((error) => {
 					console.log(error);
@@ -1093,18 +1098,22 @@ export default {
 			parmas.buser_id = this.chanid + '';
 			query_config(parmas)
 				.then((res) => {
-					//缓存参数
-					let concash = {};
-					if (res.data.data.cache_config.valid == 0) {
-						//缓存状态
-						concash.valid = false;
-						this.valueh = false;
-					} else {
-						concash.valid = true;
-						this.valueh = true;
-					}
-					this.datalist.cache_con = res.data.data.cache_config.data;
-					this.datalist.custom_page = res.data.data.custom_page;
+                    //缓存参数
+                    if(res.status==0){
+                        let concash = {};
+                        if (res.data.data.cache_config.valid == 0) {
+                            //缓存状态
+                            concash.valid = false;
+                            this.valueh = false;
+                        } else {
+                            concash.valid = true;
+                            this.valueh = true;
+                        }
+                        this.datalist.cache_con = res.data.data.cache_config.data;
+                        this.datalist.custom_page = res.data.data.custom_page;
+                    }else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((err) => {});
 		},
@@ -1151,7 +1160,7 @@ export default {
 						// setTimeout(() => {
 						//   this.$router.push({ path: "/domain_management" });
 						// }, 1000);
-					}
+					}else{this.$message.error(res.msg);}
 				})
 				.catch((err) => {});
 		},
@@ -1169,19 +1178,19 @@ export default {
 				type: 'warning',
 			})
 				.then(() => {
-                    console.log(this.urlname)
-                        let params = new Object();
-					    let arr = new Array();
-					    let urllist = [];
-						let newobj = new Object();
-						newobj.buser_id = this.chanid + '';
-						newobj.data_count = 0;
-						newobj.state = state;
-						newobj.data_array = [];
-						newobj.data_array.push(this.urlname);
-						urllist.push(newobj);
-						params.data_count = 0;
-						params.data = urllist;
+					console.log(this.urlname);
+					let params = new Object();
+					let arr = new Array();
+					let urllist = [];
+					let newobj = new Object();
+					newobj.buser_id = this.chanid + '';
+					newobj.data_count = 0;
+					newobj.state = state;
+					newobj.data_array = [];
+					newobj.data_array.push(this.urlname);
+					urllist.push(newobj);
+					params.data_count = 0;
+					params.data = urllist;
 					change_state(params)
 						.then((res) => {
 							if (res.status == 0) {
@@ -1190,7 +1199,9 @@ export default {
 									type: 'success',
 									message: '操作成功!',
 								});
-							}
+							}else{
+                                this.$message.error(res.msg);
+                            }
 						})
 						.catch((error) => {});
 				})

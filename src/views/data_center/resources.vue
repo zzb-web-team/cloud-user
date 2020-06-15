@@ -740,7 +740,9 @@ export default {
 						});
 					} else if (res.status == -1) {
 						this.$message('暂无数据');
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 					this.getbot();
 					this.drawLine();
 				})
@@ -781,7 +783,9 @@ export default {
 								this.tablecdn.push(obj);
 							});
 						}
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((err) => {});
 		},
@@ -830,7 +834,9 @@ export default {
 						this.$message('暂无数据');
 						this.dataFlowArray2 = this.dataFlowArray;
 						this.timeArray2 = this.timeArray;
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 					this.drawLine1();
 				})
 				.catch((err) => {});
@@ -857,7 +863,9 @@ export default {
 							this.pagenum++;
 							this.getlabrl2();
 						}
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((error) => {});
 		},

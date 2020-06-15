@@ -376,33 +376,37 @@ export default {
 			params.acce = this.acc;
 			dataflow_curve(params)
 				.then((res) => {
-					if (res.data.totalUsage == 0) {
-						this.dataL = 0;
-					} else {
-						this.dataL = (
-							res.data.totalUsage /
-							1024 /
-							1024 /
-							1024
-						).toFixed(4);
-					}
-					this.dataFlowArray = res.data.dataFlowArray;
-					this.dataFlownum = res.data.dataFlowArray.length - 1;
-
-					let upcli = Math.floor(this.dataFlownum / 12);
-					res.data.timeArray.forEach((item, index) => {
-						if (
-							index == 0 ||
-							(index % upcli == 0 && index < upcli * 11) ||
-							index == this.dataFlownum
-						) {
-							this.timeArray.push(getlocaltimes(item));
-						} else {
-							this.timeArray.push('');
-						}
-					});
-					this.getdtable();
-					this.drawLine();
+                    if(res.status==0){
+                        if (res.data.totalUsage == 0) {
+                            this.dataL = 0;
+                        } else {
+                            this.dataL = (
+                                res.data.totalUsage /
+                                1024 /
+                                1024 /
+                                1024
+                            ).toFixed(4);
+                        }
+                        this.dataFlowArray = res.data.dataFlowArray;
+                        this.dataFlownum = res.data.dataFlowArray.length - 1;
+    
+                        let upcli = Math.floor(this.dataFlownum / 12);
+                        res.data.timeArray.forEach((item, index) => {
+                            if (
+                                index == 0 ||
+                                (index % upcli == 0 && index < upcli * 11) ||
+                                index == this.dataFlownum
+                            ) {
+                                this.timeArray.push(getlocaltimes(item));
+                            } else {
+                                this.timeArray.push('');
+                            }
+                        });
+                        this.getdtable();
+                        this.drawLine();
+                    }else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((err) => {});
 		},
@@ -450,7 +454,9 @@ export default {
 							this.pagenum++;
 							this.getlabrl2();
 						}
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((error) => {});
 		},

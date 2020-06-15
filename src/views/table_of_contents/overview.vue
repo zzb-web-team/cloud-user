@@ -69,21 +69,25 @@ export default {
 			params.acce = '*';
 			dataflow_curve(params)
 				.then((res) => {
-					if (res.data.totalUsage == 0) {
-						this.dataL = 0;
-					} else {
-						this.dataL = (
-							res.data.totalUsage /
-							1024 /
-							1024 /
-							1024
-						).toFixed(4);
-					}
-					this.dataFlowArray = res.data.dataFlowArray;
-					res.data.timeArray.forEach((item, index) => {
-						this.timeArray.push(getlocaltimes(item));
-					});
-					this.configure();
+                    if(res.status==0){
+                        if (res.data.totalUsage == 0) {
+                            this.dataL = 0;
+                        } else {
+                            this.dataL = (
+                                res.data.totalUsage /
+                                1024 /
+                                1024 /
+                                1024
+                            ).toFixed(4);
+                        }
+                        this.dataFlowArray = res.data.dataFlowArray;
+                        res.data.timeArray.forEach((item, index) => {
+                            this.timeArray.push(getlocaltimes(item));
+                        });
+                        this.configure();
+                    }else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((err) => {});
 		},

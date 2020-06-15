@@ -233,7 +233,9 @@ export default {
 					if (res.status == 0) {
 						window.open(res.msg, '_blank');
 						// window.location.href = res.msg;
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((error) => {});
 		},

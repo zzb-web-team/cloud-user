@@ -351,6 +351,8 @@ export default {
               this.page = res.result.page;
               this.les_count = res.result.les_count;
             }
+          }else{
+              this.$message.error(res.msg);
           }
         })
         .catch(err => {});
@@ -381,6 +383,8 @@ export default {
                 this.tableData.push(obj);
               });
             }
+          }else{
+              this.$message.error(res.msg);
           }
         })
         .catch(err => {});

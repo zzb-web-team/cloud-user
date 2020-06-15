@@ -852,7 +852,9 @@ export default {
 									type: 'success',
 									message: '操作成功!',
 								});
-							}
+							}else{
+                                this.$message.error(res.msg);
+                            }
 						})
 						.catch((error) => {});
 				})
@@ -998,7 +1000,9 @@ export default {
 							}
 						}
 						this.getuserlist();
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((error) => {});
 		},
@@ -1077,7 +1081,9 @@ export default {
 									});
 								}
 								this.getuserlist();
-							}
+							}else{
+                                this.$message.error(res.msg);
+                            }
 						})
 						.catch((error) => {});
 				})

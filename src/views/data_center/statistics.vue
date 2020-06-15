@@ -23,7 +23,9 @@
 									@click="getdata()"
 								></i>
 							</el-input>
-                            <span style="margin-right:10px;margin-left:15px;">终端:</span>
+							<span style="margin-right:10px;margin-left:15px;"
+								>终端:</span
+							>
 							<el-select
 								v-model="accval1"
 								placeholder="终端"
@@ -75,7 +77,9 @@
                   :value="item.label"
                 ></el-option>
               </el-select> -->
-                        <span style="margin-right:10px;margin-left:15px;">日期:</span>
+							<span style="margin-right:10px;margin-left:15px;"
+								>日期:</span
+							>
 							<el-button-group>
 								<el-button v-show="!shoudzy" @click="today(0)"
 									>今天</el-button
@@ -122,15 +126,13 @@
 							<div class="item_left">
 								<div class="item_text">总访问次数(pv)</div>
 								<div class="item_count">
-									<span>{{ totalPV }}</span
-									>
+									<span>{{ totalPV }}</span>
 								</div>
 							</div>
 							<div class="item_right">
 								<div class="item_text">独立IP访问数(pv)</div>
 								<div class="item_count">
-									<span>{{ totalUV }}</span
-									>
+									<span>{{ totalUV }}</span>
 								</div>
 							</div>
 						</div>
@@ -165,7 +167,9 @@
 									@click="getdata1()"
 								></i>
 							</el-input>
-                            <span style="margin-right:10px;margin-left:15px;">终端:</span>
+							<span style="margin-right:10px;margin-left:15px;"
+								>终端:</span
+							>
 							<el-select
 								v-model="accval2"
 								placeholder="终端"
@@ -194,7 +198,9 @@
 									:value="item.label"
 								></el-option>
 							</el-select> -->
-                            <span style="margin-right:10px;margin-left:15px;">日期:</span>
+							<span style="margin-right:10px;margin-left:15px;"
+								>日期:</span
+							>
 							<el-button-group>
 								<el-button v-show="!shoudzyx" @click="today(1)"
 									>今天</el-button
@@ -239,7 +245,6 @@
 						<div class="device_form" style>
 							<el-button-group>
 								<el-button :autofocus="true" @click="goarea()"
-                               
 									>地区</el-button
 								>
 								<el-button @click="gosupplier()"
@@ -258,7 +263,6 @@
 									style="text-align:left;    font-weight: bold;padding-left:10px;"
 									>用户访问区域分布</el-col
 								>
-
 							</el-row>
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
@@ -418,7 +422,9 @@
 									@click="getdata2()"
 								></i>
 							</el-input> -->
-                              <span style="margin-right:10px;margin-left:15px;">终端:</span>
+							<span style="margin-right:10px;margin-left:15px;"
+								>终端:</span
+							>
 							<el-select
 								v-model="accval3"
 								placeholder="终端"
@@ -456,7 +462,9 @@
 									:value="item.label"
 								></el-option>
 							</el-select> -->
-                             <span style="margin-right:10px;margin-left:15px;">日期:</span>
+							<span style="margin-right:10px;margin-left:15px;"
+								>日期:</span
+							>
 							<el-button-group>
 								<el-button v-show="!shoudzyz" @click="today(2)"
 									>今天</el-button
@@ -1036,20 +1044,26 @@ export default {
 				this.timeArray = [];
 				pv_uv_curve(params)
 					.then((res) => {
-						if (res.data.uvArray) {
-							res.data.uvArray.forEach((item, index) => {
-								this.uvArray.push(Math.floor(item));
-							});
-						}
-						if (res.data.pvArray) {
-							res.data.pvArray.forEach((item, index) => {
-								this.pvArray.push(Math.floor(item));
-							});
-						}
-						res.data.timeArray.forEach((item, index) => {
-							this.timeArray.push(getymdtime(item));
-						});
-						this.drawLine();
+                        if(res.status==0){
+                            this.totalPV = res.data.totalPV;
+                            this.totalUV = res.data.totalUV;
+                            if (res.data.uvArray) {
+                                res.data.uvArray.forEach((item, index) => {
+                                    this.uvArray.push(Math.floor(item));
+                                });
+                            }
+                            if (res.data.pvArray) {
+                                res.data.pvArray.forEach((item, index) => {
+                                    this.pvArray.push(Math.floor(item));
+                                });
+                            }
+                            res.data.timeArray.forEach((item, index) => {
+                                this.timeArray.push(getymdtime(item));
+                            });
+                            this.drawLine();
+                        }else{
+                            this.$message.error(res.msg);
+                        }
 					})
 					.catch((err) => {});
 			} else if (data == 1 || data == 2) {
@@ -1077,12 +1091,14 @@ export default {
 					this.timeArray1 = [];
 					query_topregion_accesscnt_curve(params)
 						.then((res) => {
-							this.playTimesArray1 = res.data.accessCntArray;
-							this.timeArray1 = res.data.regionArray;
-							this.drawLine1();
-							this.tablecdn = res.data.accessCntTable;
-							this.totalPV = res.data.totalPV;
-							this.totalUV = res.data.totalUV;
+                            if(res.status==0){
+                                this.playTimesArray1 = res.data.accessCntArray;
+                                this.timeArray1 = res.data.regionArray;
+                                this.drawLine1();
+                                this.tablecdn = res.data.accessCntTable;
+                            }else{
+                                this.$message.error(res.msg);
+                            }
 						})
 						.catch((err) => {});
 				} else {
@@ -1091,10 +1107,14 @@ export default {
 					this.timeArray1 = [];
 					query_topisp_accesscnt_curve(params)
 						.then((res) => {
-							this.playTimesArray1 = res.data.accessCntArray;
-							this.timeArray1 = res.data.ispArray;
-							this.drawLine1();
-							this.tablecdn = res.data.accessCntTable;
+                            if(res.status==0){
+                                this.playTimesArray1 = res.data.accessCntArray;
+                                this.timeArray1 = res.data.ispArray;
+                                this.drawLine1();
+                                this.tablecdn = res.data.accessCntTable;
+                            }else{
+                                this.$message.error(res.msg);
+                            }
 						})
 						.catch((err) => {});
 				}
@@ -1119,12 +1139,16 @@ export default {
 				this.timeArray2 = [];
 				query_playtimes_curve(params)
 					.then((res) => {
-						this.playTimesArray2 = res.data.playTimesArray;
-						res.data.timeArray.forEach((item, index) => {
-							this.timeArray2.push(getymdtime(item));
-						});
-						this.gettable();
-						// this.drawLine2();
+                        if(res.status==0){
+                            this.playTimesArray2 = res.data.playTimesArray;
+                            res.data.timeArray.forEach((item, index) => {
+                                this.timeArray2.push(getymdtime(item));
+                            });
+                            this.gettable();
+                            // this.drawLine2();
+                        }else{
+                            this.$message.error(res.msg);
+                        }
 					})
 					.catch((err) => {});
 			}
@@ -1146,7 +1170,9 @@ export default {
 					if (res.status == 0) {
 						this.tablecdn2 = res.data.fileList;
 						this.total_cnt = res.data.totalCnt;
-					}
+					}else{
+                        this.$message.error(res.msg);
+                    }
 				})
 				.catch((err) => {});
 		},
@@ -1328,8 +1354,8 @@ export default {
 			} else {
 				this.getcure(3);
 			}
-        },
-      
+		},
+
 		//自定义时间显示
 		showzdy() {
 			this.shoudzy = !this.shoudzy;
@@ -1360,7 +1386,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
-			this.endtime = times-1;
+			this.endtime = times - 1;
 			this.timeUnit = 5;
 			if (data == 0) {
 				this.getcure(0);
@@ -1375,7 +1401,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times-1;
+			this.endtime = times - 1;
 			this.timeUnit = 60;
 			if (data == 0) {
 				this.getcure(0);
@@ -1390,7 +1416,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times-1;
+			this.endtime = times - 1;
 			this.timeUnit = 1440;
 			if (data == 0) {
 				this.getcure(0);
@@ -1405,12 +1431,12 @@ export default {
 			if (this.val2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
-				this.endtime = Date.parse(new Date()) / 1000-1;
+				this.endtime = Date.parse(new Date()) / 1000 - 1;
 			} else {
 				this.starttime = dateToMs(this.val2[0]);
 				this.endtime = dateToMs(this.val2[1]);
 			}
-            if (this.endtime - this.starttim <= 86400) {
+			if (this.endtime - this.starttim <= 86400) {
 				this.timeUnit = 5;
 			} else if (86400 < this.endtime - this.starttim <= 2592000) {
 				this.timeUnit = 60;

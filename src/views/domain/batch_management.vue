@@ -937,7 +937,8 @@ export default {
 		this.getuserlist();
 		this.getqueryurl();
 		// this.options = [];
-		//this.getlabrl2();
+        //this.getlabrl2();
+        
 	},
 	methods: {
 		//获取url列表--请求
@@ -1168,7 +1169,7 @@ export default {
 		disableuser(state) {
 			let messagetext = '';
 			if (state == 0) {
-				messagetext = '禁用后该加速内容将关闭加速服务，是否继续？?';
+				messagetext = '禁用后该加速内容将关闭加速服务，是否继续?';
 			} else {
 				messagetext = '启用该域名?';
 			}

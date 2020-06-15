@@ -70,7 +70,28 @@
 						<span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
 						>
-						<el-button-group>
+                         <el-radio-group
+									v-model="radio1"
+									size="medium"
+									@change="sele_time()"
+								>
+									<el-radio-button label="1"
+										>今天</el-radio-button
+									>
+									<el-radio-button label="2"
+										>昨天</el-radio-button
+									>
+									<el-radio-button label="3"
+										>近7天</el-radio-button
+									>
+									<el-radio-button label="4"
+										>近30天</el-radio-button
+									>
+									<el-radio-button label="5"
+										>自定义</el-radio-button
+									>
+								</el-radio-group>
+						<!-- <el-button-group>
 							<el-button v-show="!shoudzyx" @click="today()"
 								>今天</el-button
 							>
@@ -87,7 +108,7 @@
 								自定义
 								<i class="el-icon-date"></i>
 							</el-button>
-						</el-button-group>
+						</el-button-group> -->
 						<el-date-picker
 							v-show="shoudzyx"
 							style="margin-left:10px;"
@@ -143,10 +164,10 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="总流量">
+										<el-table-column label="总流量(GB)">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.dataFlow }}
+													{{ (scope.row.dataFlow/1024/1024/1024).toFixed(2) }}
 												</div>
 											</template>
 										</el-table-column>
@@ -259,6 +280,7 @@ import echarts from 'echarts';
 export default {
 	data() {
 		return {
+            radio1:"1",
 			currentPage: 1,
 			shoudzyx: false,
 			showzdyz: false,
@@ -627,7 +649,10 @@ export default {
 		this.settimeunit(this.starttime, this.endtime);
 		this.getlabrl2();
 		this.getseachlabel1();
-		// this.configure()
+        // this.configure()
+         if(sessionStorage.getItem('tab_name')){
+            this.activeName=sessionStorage.getItem('tab_name');
+        }
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -679,7 +704,7 @@ export default {
 				.then((res) => {
 					if (res.status == 0) {
 						if (res.data.ispSet.length > 0) {
-                            this.optionsa3=[];
+							this.optionsa3 = [];
 							res.data.ispSet.forEach((item, index) => {
 								let obj = {};
 								obj.value = index;
@@ -740,9 +765,9 @@ export default {
 						});
 					} else if (res.status == -1) {
 						this.$message('暂无数据');
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 					this.getbot();
 					this.drawLine();
 				})
@@ -775,6 +800,9 @@ export default {
 			accelerate_flow_table(params)
 				.then((res) => {
 					if (res.status == 0) {
+						if (params.pageNo == 0) {
+							this.tablecdn = [];
+						}
 						if (res.data.timeArray.length > 0) {
 							res.data.timeArray.forEach((item, index) => {
 								let obj = {};
@@ -783,9 +811,9 @@ export default {
 								this.tablecdn.push(obj);
 							});
 						}
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((err) => {});
 		},
@@ -834,9 +862,9 @@ export default {
 						this.$message('暂无数据');
 						this.dataFlowArray2 = this.dataFlowArray;
 						this.timeArray2 = this.timeArray;
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 					this.drawLine1();
 				})
 				.catch((err) => {});
@@ -863,9 +891,9 @@ export default {
 							this.pagenum++;
 							this.getlabrl2();
 						}
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((error) => {});
 		},
@@ -940,59 +968,76 @@ export default {
 				});
 		},
 		seachtu(data) {
-			if (data == 1) {
+			if (this.activeName=='first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
 			}
-		},
+        },
+         sele_time(){
+            if (this.radio1 == 1) {
+				this.shoudzyx = false;
+				this.today();
+			} else if (this.radio1 == 2) {
+				this.shoudzyx = false;
+				this.yesterday();
+			} else if (this.radio1 == 3) {
+				this.shoudzyx = false;
+				this.sevendat();
+			} else if (this.radio1 == 4) {
+				this.shoudzyx = false;
+				this.thirtyday();
+			} else if (this.radio1 == 5) {
+				this.shoudzyx = true;
+			}
+        },
 		//今天
-		today(data) {
+		today() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
-			if (!data) {
+			if (this.activeName=='first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
 			}
 		},
 		//昨天
-		yesterday(data) {
+		yesterday() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
 			this.endtime = times - 1;
 			this.settimeunit(this.starttime, this.endtime);
-			if (!data) {
+			if (this.activeName=='first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
 			}
 		},
 		//七天
-		sevendat(data) {
+		sevendat() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times - 1;
+			this.starttime = times - 24 * 60 * 60 * 6;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
-			if (!data) {
+			if (this.activeName=='first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
 			}
 		},
 		//三十天
-		thirtyday(data) {
+		thirtyday() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times - 1;
+			this.starttime = times - 24 * 60 * 60 * 29;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
-			if (!data) {
+			if (this.activeName=='first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
@@ -1010,7 +1055,11 @@ export default {
 				this.endtime = dateToMs(this.val2[1]);
 			}
 			this.settimeunit(this.starttime, this.endtime);
-			this.gettable1();
+			if (this.activeName=='first') {
+				this.gettable1();
+			} else {
+				this.gettable2();
+			}
 		},
 		gettimes_host(cal) {
 			console.log(this.val2, cal);
@@ -1036,6 +1085,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
+            sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage 
 			// this.starttime =
 			//   new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			// this.endtime = Date.parse(new Date()) / 1000;
@@ -1104,8 +1154,8 @@ export default {
 					},
 				},
 				xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
+					type: 'category',
+					boundaryGap: false,
 					data: this.timeArray,
 					axisTick: {
 						show: false,
@@ -1248,8 +1298,8 @@ export default {
 					},
 				},
 				xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
+					type: 'category',
+					boundaryGap: false,
 					data: this.timeArray2,
 					axisLabel: {
 						interval: 0, //代表显示所有x轴标签
@@ -1292,7 +1342,10 @@ export default {
 			};
 			myChart.setOption(options);
 		},
-	},
+    },
+     destroyed: function () {
+    sessionStorage.removeItem("tab_name");
+},
 };
 </script>
 

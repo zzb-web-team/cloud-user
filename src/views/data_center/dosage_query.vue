@@ -39,13 +39,34 @@
 					</el-option>
 				</el-select>
                  <span style="margin-right:10px;margin-left:15px;">日期:</span>
-				<el-button-group>
+				<!-- <el-button-group>
 					<el-button @click="today()">今天</el-button>
 					<el-button @click="yesterday()">昨天</el-button>
 					<el-button @click="sevendat()">近7天</el-button>
 					<el-button @click="thirtyday()">近30天</el-button>
 					<el-button @click="showzi()">自定义</el-button>
-				</el-button-group>
+				</el-button-group> -->
+                <el-radio-group
+									v-model="radio1"
+									size="medium"
+									@change="sele_time()"
+								>
+									<el-radio-button label="1"
+										>今天</el-radio-button
+									>
+									<el-radio-button label="2"
+										>昨天</el-radio-button
+									>
+									<el-radio-button label="3"
+										>近7天</el-radio-button
+									>
+									<el-radio-button label="4"
+										>近30天</el-radio-button
+									>
+									<el-radio-button label="5"
+										>自定义</el-radio-button
+									>
+								</el-radio-group>
 				<el-date-picker
 					v-show="showdate"
 					style="margin-left:10px;"
@@ -80,7 +101,7 @@
 						<el-col
 							:span="24"
 							style="text-align:left;font-weight: bold;padding-left:10px;"
-							>IP流量平均利用率表</el-col
+							>资源用量表</el-col
 						>
 					</el-row>
 					<el-row type="flex" class="row_active">
@@ -100,9 +121,9 @@
 										</div>
 									</template></el-table-column
 								>
-								<el-table-column label="总流量">
+								<el-table-column label="总流量(GB)">
 									<template slot-scope="scope">
-										<div>{{ scope.row.dataFlow }}</div>
+										<div>{{ (scope.row.dataFlow/1024/1024/1024).toFixed(2) }}</div>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -136,6 +157,7 @@ import {
 export default {
 	data() {
 		return {
+            radio1:"1",
 			currentPage: 1,
 			tablecdn: [
 				// { timeStamp: "2018/05/01", dataFlow: "13585" },
@@ -385,7 +407,7 @@ export default {
                                 1024 /
                                 1024 /
                                 1024
-                            ).toFixed(4);
+                            ).toFixed(2);
                         }
                         this.dataFlowArray = res.data.dataFlowArray;
                         this.dataFlownum = res.data.dataFlowArray.length - 1;
@@ -487,7 +509,24 @@ export default {
 		//下拉框
 		changmvitem() {
 			this.gettu();
-		},
+        },
+        sele_time(){
+            if (this.radio1 == 1) {
+				this.showdate = false;
+				this.today();
+			} else if (this.radio1 == 2) {
+				this.showdate = false;
+				this.yesterday();
+			} else if (this.radio1 == 3) {
+				this.showdate = false;
+				this.sevendat();
+			} else if (this.radio1 == 4) {
+				this.showdate = false;
+				this.thirtyday();
+			} else if (this.radio1 == 5) {
+				this.showdate = true;
+			}
+        },
 		//今天
 		today() {
 			let times =
@@ -510,8 +549,8 @@ export default {
 		sevendat() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times-1;
+			this.starttime = times - 24 * 60 * 60 * 6;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
 			this.gettu();
 		},
@@ -519,8 +558,8 @@ export default {
 		thirtyday() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times-1;
+			this.starttime = times - 24 * 60 * 60 * 29;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
 			this.gettu();
 		},

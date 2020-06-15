@@ -787,6 +787,12 @@ export default {
 		},
 		// 禁用
 		disableuser(datalist) {
+            if (!datalist) {
+				if (this.currentSelection.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
+			}
 			this.$confirm(
 				'禁用后该加速内容将关闭加速服务，是否继续？',
 				'提示',
@@ -867,6 +873,12 @@ export default {
 		},
 		//启用
 		enableuser(datalist) {
+             if (!datalist) {
+				if (this.currentSelection.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
+			}
 			console.log(datalist);
 			let params = new Object();
 			let arr = new Array();
@@ -1008,6 +1020,12 @@ export default {
 		},
 		// 删除
 		deleateuser(datalist) {
+             if (!datalist) {
+				if (this.currentSelection.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
+			}
 			this.$confirm(
 				'删除后该加速内容的信息将从列表上移除，信息不可恢复，是否继续？',
 				'提示',

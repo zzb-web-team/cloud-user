@@ -5,7 +5,7 @@
 		<div class="content_top">
 			<div class="content_top_title">
 				<span>资源用量</span>
-				<span @click="godosage">更多数据</span>
+				<span @click="godosage" class="astyle">更多数据</span>
 			</div>
 			<div class="content_top_con">
 				<p>本月使用流量</p>
@@ -20,7 +20,7 @@
 		<div class="content_bottom">
 			<div class="content_bottom_title">
 				<span>用量趋势</span>
-				<span @click="godosage">更多数据</span>
+				<span @click="godosage" class="astyle">更多数据</span>
 			</div>
 			<div
 				style="height: 483px;padding: 43px 54px;background: #ffffff;box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);"
@@ -36,7 +36,7 @@
 
 <script>
 import { dataflow_curve } from '../../servers/api';
-import { dateToMs, getymdtime,getlocaltimes } from '../../servers/sevdate';
+import { dateToMs, getymdtime, getlocaltimes } from '../../servers/sevdate';
 import echarts from 'echarts';
 export default {
 	data() {
@@ -62,32 +62,32 @@ export default {
 			let starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			params.start_ts = starttime - 60 * 60 * 24 * 30;
-			params.end_ts = starttime-1;
+			params.end_ts = starttime - 1;
 			params.chanId = this.chanid + '';
 			params.fileName = '*';
 			params.timeUnit = 60 * 24;
 			params.acce = '*';
 			dataflow_curve(params)
 				.then((res) => {
-                    if(res.status==0){
-                        if (res.data.totalUsage == 0) {
-                            this.dataL = 0;
-                        } else {
-                            this.dataL = (
-                                res.data.totalUsage /
-                                1024 /
-                                1024 /
-                                1024
-                            ).toFixed(4);
-                        }
-                        this.dataFlowArray = res.data.dataFlowArray;
-                        res.data.timeArray.forEach((item, index) => {
-                            this.timeArray.push(getlocaltimes(item));
-                        });
-                        this.configure();
-                    }else{
-                        this.$message.error(res.msg);
-                    }
+					if (res.status == 0) {
+						if (res.data.totalUsage == 0) {
+							this.dataL = 0;
+						} else {
+							this.dataL = (
+								res.data.totalUsage /
+								1024 /
+								1024 /
+								1024
+							).toFixed(4);
+						}
+						this.dataFlowArray = res.data.dataFlowArray;
+						res.data.timeArray.forEach((item, index) => {
+							this.timeArray.push(getlocaltimes(item));
+						});
+						this.configure();
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((err) => {});
 		},
@@ -257,6 +257,9 @@ export default {
 			text-align: right;
 			color: #1296db;
 		}
+	}
+	.astyle:hover {
+		cursor: pointer;
 	}
 }
 </style>

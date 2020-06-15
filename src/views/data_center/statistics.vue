@@ -80,7 +80,30 @@
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
-							<el-button-group>
+							<div>
+								<el-radio-group
+									v-model="radio1"
+									size="medium"
+									@change="sele_time(0)"
+								>
+									<el-radio-button label="1"
+										>今天</el-radio-button
+									>
+									<el-radio-button label="2"
+										>昨天</el-radio-button
+									>
+									<el-radio-button label="3"
+										>近7天</el-radio-button
+									>
+									<el-radio-button label="4"
+										>近30天</el-radio-button
+									>
+									<el-radio-button label="5"
+										>自定义</el-radio-button
+									>
+								</el-radio-group>
+							</div>
+							<!-- <el-button-group>
 								<el-button v-show="!shoudzy" @click="today(0)"
 									>今天</el-button
 								>
@@ -101,7 +124,7 @@
 								><el-button @click="showzdy"
 									>自定义<i class="el-icon-date"></i
 								></el-button>
-							</el-button-group>
+							</el-button-group> -->
 							<el-date-picker
 								v-show="shoudzy"
 								style="margin-left:10px;"
@@ -201,7 +224,28 @@
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
-							<el-button-group>
+							<el-radio-group
+								v-model="radio1"
+								size="medium"
+								@change="sele_time(1)"
+							>
+								<el-radio-button label="1"
+									>今天</el-radio-button
+								>
+								<el-radio-button label="2"
+									>昨天</el-radio-button
+								>
+								<el-radio-button label="3"
+									>近7天</el-radio-button
+								>
+								<el-radio-button label="4"
+									>近30天</el-radio-button
+								>
+								<el-radio-button label="5"
+									>自定义</el-radio-button
+								>
+							</el-radio-group>
+							<!-- <el-button-group>
 								<el-button v-show="!shoudzyx" @click="today(1)"
 									>今天</el-button
 								>
@@ -222,7 +266,7 @@
 								><el-button @click="showzdyx"
 									>自定义<i class="el-icon-date"></i
 								></el-button>
-							</el-button-group>
+							</el-button-group> -->
 							<el-date-picker
 								v-show="shoudzyx"
 								style="margin-left:10px;"
@@ -284,10 +328,17 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="总流量">
+										<el-table-column label="总流量(GB)">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.dataFlow }}
+													{{
+														(
+															scope.row.dataFlow /
+															1024 /
+															1024 /
+															1024
+														).toFixed(2)
+													}}
 												</div>
 											</template>
 										</el-table-column>
@@ -316,12 +367,12 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="平均响应时间">
+										<el-table-column
+											label="平均响应时间(s)"
+										>
 											<template slot-scope="scope">
 												<div>
-													{{
-														scope.row.accessPercent
-													}}
+													{{ scope.row.avgTime }}
 												</div>
 											</template>
 										</el-table-column>
@@ -358,10 +409,17 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="总流量">
+										<el-table-column label="总流量(GB)">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.dataFlow }}
+													{{
+														(
+															scope.row.dataFlow /
+															1024 /
+															1024 /
+															1024
+														).toFixed(2)
+													}}
 												</div>
 											</template>
 										</el-table-column>
@@ -390,12 +448,12 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="平均响应时间">
+										<el-table-column
+											label="平均响应时间(s)"
+										>
 											<template slot-scope="scope">
 												<div>
-													{{
-														scope.row.accessPercent
-													}}
+													{{ scope.row.avgTime }}
 												</div>
 											</template>
 										</el-table-column>
@@ -465,7 +523,28 @@
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
-							<el-button-group>
+							<el-radio-group
+								v-model="radio1"
+								size="medium"
+								@change="sele_time(3)"
+							>
+								<el-radio-button label="1"
+									>今天</el-radio-button
+								>
+								<el-radio-button label="2"
+									>昨天</el-radio-button
+								>
+								<el-radio-button label="3"
+									>近7天</el-radio-button
+								>
+								<el-radio-button label="4"
+									>近30天</el-radio-button
+								>
+								<el-radio-button label="5"
+									>自定义</el-radio-button
+								>
+							</el-radio-group>
+							<!-- <el-button-group>
 								<el-button v-show="!shoudzyz" @click="today(2)"
 									>今天</el-button
 								>
@@ -486,7 +565,7 @@
 								><el-button @click="showzdyz"
 									>自定义<i class="el-icon-date"></i
 								></el-button>
-							</el-button-group>
+							</el-button-group> -->
 							<el-date-picker
 								v-show="shoudzyz"
 								style="margin-left:10px;"
@@ -537,10 +616,17 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="流量">
+										<el-table-column label="流量(GB)">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.dataFlow }}
+													{{
+														(
+															scope.row.dataFlow /
+															1024 /
+															1024 /
+															1024
+														).toFixed(2)
+													}}
 												</div>
 											</template>
 										</el-table-column>
@@ -614,6 +700,7 @@ import echarts from 'echarts';
 export default {
 	data() {
 		return {
+			radio1: '1',
 			currentPage: 1,
 			shoudzy: false,
 			shoudzyx: false,
@@ -956,7 +1043,10 @@ export default {
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
 		this.getlabrl2();
-		this.getseach();
+        this.getseach();
+         if(sessionStorage.getItem('tab_name')){
+            this.activeName=sessionStorage.getItem('tab_name');
+        }
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -1044,26 +1134,26 @@ export default {
 				this.timeArray = [];
 				pv_uv_curve(params)
 					.then((res) => {
-                        if(res.status==0){
-                            this.totalPV = res.data.totalPV;
-                            this.totalUV = res.data.totalUV;
-                            if (res.data.uvArray) {
-                                res.data.uvArray.forEach((item, index) => {
-                                    this.uvArray.push(Math.floor(item));
-                                });
-                            }
-                            if (res.data.pvArray) {
-                                res.data.pvArray.forEach((item, index) => {
-                                    this.pvArray.push(Math.floor(item));
-                                });
-                            }
-                            res.data.timeArray.forEach((item, index) => {
-                                this.timeArray.push(getymdtime(item));
-                            });
-                            this.drawLine();
-                        }else{
-                            this.$message.error(res.msg);
-                        }
+						if (res.status == 0) {
+							this.totalPV = res.data.totalPV;
+							this.totalUV = res.data.totalUV;
+							if (res.data.uvArray) {
+								res.data.uvArray.forEach((item, index) => {
+									this.uvArray.push(Math.floor(item));
+								});
+							}
+							if (res.data.pvArray) {
+								res.data.pvArray.forEach((item, index) => {
+									this.pvArray.push(Math.floor(item));
+								});
+							}
+							res.data.timeArray.forEach((item, index) => {
+								this.timeArray.push(getymdtime(item));
+							});
+							this.drawLine();
+						} else {
+							this.$message.error(res.msg);
+						}
 					})
 					.catch((err) => {});
 			} else if (data == 1 || data == 2) {
@@ -1091,14 +1181,14 @@ export default {
 					this.timeArray1 = [];
 					query_topregion_accesscnt_curve(params)
 						.then((res) => {
-                            if(res.status==0){
-                                this.playTimesArray1 = res.data.accessCntArray;
-                                this.timeArray1 = res.data.regionArray;
-                                this.drawLine1();
-                                this.tablecdn = res.data.accessCntTable;
-                            }else{
-                                this.$message.error(res.msg);
-                            }
+							if (res.status == 0) {
+								this.playTimesArray1 = res.data.accessCntArray;
+								this.timeArray1 = res.data.regionArray;
+								this.drawLine1();
+								this.tablecdn = res.data.accessCntTable;
+							} else {
+								this.$message.error(res.msg);
+							}
 						})
 						.catch((err) => {});
 				} else {
@@ -1107,14 +1197,14 @@ export default {
 					this.timeArray1 = [];
 					query_topisp_accesscnt_curve(params)
 						.then((res) => {
-                            if(res.status==0){
-                                this.playTimesArray1 = res.data.accessCntArray;
-                                this.timeArray1 = res.data.ispArray;
-                                this.drawLine1();
-                                this.tablecdn = res.data.accessCntTable;
-                            }else{
-                                this.$message.error(res.msg);
-                            }
+							if (res.status == 0) {
+								this.playTimesArray1 = res.data.accessCntArray;
+								this.timeArray1 = res.data.ispArray;
+								this.drawLine1();
+								this.tablecdn = res.data.accessCntTable;
+							} else {
+								this.$message.error(res.msg);
+							}
 						})
 						.catch((err) => {});
 				}
@@ -1139,16 +1229,16 @@ export default {
 				this.timeArray2 = [];
 				query_playtimes_curve(params)
 					.then((res) => {
-                        if(res.status==0){
-                            this.playTimesArray2 = res.data.playTimesArray;
-                            res.data.timeArray.forEach((item, index) => {
-                                this.timeArray2.push(getymdtime(item));
-                            });
-                            this.gettable();
-                            // this.drawLine2();
-                        }else{
-                            this.$message.error(res.msg);
-                        }
+						if (res.status == 0) {
+							this.playTimesArray2 = res.data.playTimesArray;
+							res.data.timeArray.forEach((item, index) => {
+								this.timeArray2.push(getymdtime(item));
+							});
+							this.gettable();
+							// this.drawLine2();
+						} else {
+							this.$message.error(res.msg);
+						}
 					})
 					.catch((err) => {});
 			}
@@ -1170,9 +1260,9 @@ export default {
 					if (res.status == 0) {
 						this.tablecdn2 = res.data.fileList;
 						this.total_cnt = res.data.totalCnt;
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((err) => {});
 		},
@@ -1366,6 +1456,37 @@ export default {
 		showzdyz() {
 			this.shoudzyz = !this.shoudzyz;
 		},
+		sele_time(data) {
+			if (this.radio1 == 1) {
+				this.shoudzy = false;
+				this.shoudzyx = false;
+				this.shoudzyz = false;
+				this.today(data);
+			} else if (this.radio1 == 2) {
+				this.shoudzy = false;
+				this.shoudzyx = false;
+				this.shoudzyz = false;
+				this.yesterday(data);
+			} else if (this.radio1 == 3) {
+				this.shoudzy = false;
+				this.shoudzyx = false;
+				this.shoudzyz = false;
+				this.sevendat(data);
+			} else if (this.radio1 == 4) {
+				this.shoudzy = false;
+				this.shoudzyx = false;
+				this.shoudzyz = false;
+				this.thirtyday(data);
+			} else if (this.radio1 == 5) {
+				if (data == 0) {
+					this.shoudzy = true;
+				} else if (data == 1) {
+					this.shoudzyx = true;
+				} else if (data == 3) {
+					this.shoudzyz = true;
+				}
+			}
+		},
 		//今天
 		today(data) {
 			let times =
@@ -1400,8 +1521,8 @@ export default {
 		sevendat(data) {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 7;
-			this.endtime = times - 1;
+			this.starttime = times - 24 * 60 * 60 * 6;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 60;
 			if (data == 0) {
 				this.getcure(0);
@@ -1415,8 +1536,8 @@ export default {
 		thirtyday(data) {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 30;
-			this.endtime = times - 1;
+			this.starttime = times - 24 * 60 * 60 * 29;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 1440;
 			if (data == 0) {
 				this.getcure(0);
@@ -1517,6 +1638,12 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
+             sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage 
+			this.radio1 = '1';
+			this.val2 = [];
+			this.shoudzy = false;   
+			this.shoudzyx = false;
+			this.shoudzyz = false;
 			//切换时重置时间为当前时间
 			this.starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -1726,7 +1853,7 @@ export default {
 				yAxis: {},
 				series: [
 					{
-						name: '流量',
+						name: '次数',
 						type: 'bar',
 						barWidth: 30, //柱图宽度
 						data: this.playTimesArray1,
@@ -1831,11 +1958,19 @@ export default {
 			};
 			myChart.setOption(option);
 		},
-	},
+    },
+     destroyed: function () {
+    sessionStorage.removeItem("tab_name");
+},
 };
 </script>
 
 <style lang="scss">
+.btn_active {
+	color: #409eff;
+	border-color: #c6e2ff;
+	background-color: #ecf5ff;
+}
 .myself-container {
 	width: 100%;
 	// min-width: 1600px;

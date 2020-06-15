@@ -499,6 +499,12 @@ export default {
 		},
 		//停用
 		disableuser(num, row) {
+			if (!row) {
+				if (this.currentSelection.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
+			}
 			this.$confirm(
 				'停用后与该域名相关的所有加速内容将停用，是否继续？',
 				'提示',
@@ -513,7 +519,12 @@ export default {
 				} else {
 					this.enable_disable(0);
 				}
-			});
+			}).catch(() => {
+					// this.$message({
+					// 	type: 'info',
+					// 	message: '已取消',
+					// });
+				});
 		},
 		//启用
 		enableuser(num, row) {
@@ -525,6 +536,12 @@ export default {
 		},
 		//删除
 		deleateuser(num, row) {
+			if (!row) {
+				if (this.currentSelection.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
+			}
 			this.$confirm(
 				'删除后该域名将从列表移动，删除后信息不可恢复，是否继续？',
 				'提示',
@@ -542,10 +559,10 @@ export default {
 					}
 				})
 				.catch(() => {
-					this.$message({
-						type: 'info',
-						message: '已取消删除',
-					});
+					// this.$message({
+					// 	type: 'info',
+					// 	message: '已取消删除',
+					// });
 				});
 		},
 		//添加URL
@@ -809,6 +826,10 @@ export default {
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
 				);
+				if (arr.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
 				let newobj = new Object();
 				newobj.buser_id = this.chanid + '';
 				newobj.data_count = 0;
@@ -853,6 +874,10 @@ export default {
 				const arr = this.multipleSelection.concat(
 					this.currentSelection
 				);
+				if (arr.length <= 0) {
+					this.$message('至少选择一个源站域名进行操作！');
+					return false;
+				}
 				let newobj = new Object();
 				newobj.buser_id = this.chanid + '';
 				newobj.data_count = 0;

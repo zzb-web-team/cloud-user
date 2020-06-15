@@ -578,7 +578,10 @@ export default {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
 			this.$router.push({ path: '/' });
-		}
+        }
+        if(sessionStorage.getItem('tab_name')){
+            this.activeName=sessionStorage.getItem('tab_name');
+        }
 		// this.gettoken();
 	},
 	methods: {
@@ -867,6 +870,8 @@ export default {
 			this.getrefreshstate();
 		},
 		handleClick(tab, event) {
+            console.log(this.activeName);
+            sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage 
 			this.textarea1 = '';
 			this.textarea2 = '';
 			if (tab.name == 'third') {
@@ -910,7 +915,10 @@ export default {
 		rowClass() {
 			return 'text-align: center;';
 		},
-	},
+    },
+    destroyed: function () {
+    sessionStorage.removeItem("tab_name");
+},
 };
 </script>
 

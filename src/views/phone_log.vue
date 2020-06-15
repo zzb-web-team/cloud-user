@@ -3,7 +3,6 @@
 		<div class="titletext">
 			<el-form
 				:model="ruleForm"
-				status-icon
 				ref="ruleForm"
 				label-width="100px"
 				class="demo-ruleForm phone_log"
@@ -68,7 +67,7 @@
 				<div
 					style="display: flex;justify-content: space-evenly;align-items: center;color:#297AFF;font-size:16px;"
 				>
-					<span @click="gophonelog()">账号密码登陆</span>
+					<span @click="gophonelog()">账号密码登录</span>
 				</div>
 			</el-form>
 		</div>

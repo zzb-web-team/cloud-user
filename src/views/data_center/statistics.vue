@@ -474,7 +474,6 @@
 							</el-row>
 						</div>
 						<fenye
-							v-show="region_show"
 							style="float:right;margin:10px 0 20px 0;"
 							@fatherMethod="f_getpage"
 							@fathernum="f_gettol"
@@ -1094,8 +1093,13 @@ export default {
 		},
 		//获取页码
 		f_getpage(pages) {
-			this.f_pageNo = pages;
-			this.gettable(1);
+            this.f_pageNo = pages;
+            if(this.region_show==true){
+                this.gettable(1);
+            }else{
+                this.gettable(2);
+            }
+			
 		},
 		//获取每页数量
 		f_gettol(pagetol) {

@@ -13,7 +13,7 @@
 					<span style="font-size: 32px;color: #333333;">{{
 						dataL
 					}}</span
-					>G
+					>GB
 				</p>
 			</div>
 		</div>
@@ -59,13 +59,13 @@ export default {
 		//请求数据
 		getlist() {
 			let params = new Object();
-			let starttime =
-				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			params.start_ts = starttime - 60 * 60 * 24 * 30;
-			params.end_ts = starttime - 1;
+			let starttime =new Date(new Date().toLocaleDateString()).getTime() / 1000;
+            let endtime = Date.parse(new Date()) / 1000;
+			params.start_ts = starttime - 60 * 60 * 24 * 29;
+			params.end_ts = endtime;
 			params.chanId = this.chanid + '';
 			params.fileName = '*';
-			params.timeUnit = 60 * 24;
+			params.timeUnit = 60;
 			params.acce = '*';
 			dataflow_curve(params)
 				.then((res) => {

@@ -147,13 +147,13 @@
 
 						<div class="user_item">
 							<div class="item_left">
-								<div class="item_text">总访问次数(pv)</div>
+								<div class="item_text">总访问次数(PV)</div>
 								<div class="item_count">
 									<span>{{ totalPV }}</span>
 								</div>
 							</div>
 							<div class="item_right">
-								<div class="item_text">独立IP访问数(pv)</div>
+								<div class="item_text">独立IP访问数(UV)</div>
 								<div class="item_count">
 									<span>{{ totalUV }}</span>
 								</div>
@@ -287,14 +287,26 @@
               > -->
 						</div>
 						<div class="device_form" style>
-							<el-button-group>
+							<!-- <el-button-group>
 								<el-button :autofocus="true" @click="goarea()"
 									>地区</el-button
 								>
 								<el-button @click="gosupplier()"
 									>运营商</el-button
 								>
-							</el-button-group>
+							</el-button-group> -->
+							<el-radio-group
+								v-model="radio_tab"
+								size="medium"
+								@change="sele_tab(1)"
+							>
+								<el-radio-button label="1"
+									>地区</el-radio-button
+								>
+								<el-radio-button label="2"
+									>运营商</el-radio-button
+								>
+							</el-radio-group>
 							<div
 								id="myChart1"
 								:style="{ height: '607px' }"
@@ -461,6 +473,15 @@
 								</el-col>
 							</el-row>
 						</div>
+						<fenye
+							v-show="region_show"
+							style="float:right;margin:10px 0 20px 0;"
+							@fatherMethod="f_getpage"
+							@fathernum="f_gettol"
+							:pagesa="f_total_cnt"
+							:currentPage="f_currentPage"
+						>
+						</fenye>
 					</el-tab-pane>
 					<el-tab-pane label="热门加速内容" name="there">
 						<div
@@ -701,7 +722,9 @@ export default {
 	data() {
 		return {
 			radio1: '1',
+			radio_tab: '1',
 			currentPage: 1,
+			f_currentPage: 1,
 			shoudzy: false,
 			shoudzyx: false,
 			shoudzyz: false,
@@ -737,6 +760,9 @@ export default {
 			pageSize: 10, //煤业
 			pageNo: 1, //页码
 			total_cnt: 1, //数据总量
+			f_pageSize: 10, //煤业
+			f_pageNo: 1, //页码
+			f_total_cnt: 1, //数据总量
 			tablecdn: [],
 			tablecdn2: [],
 			activeName: 'first',
@@ -1043,10 +1069,10 @@ export default {
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
 		this.getlabrl2();
-        this.getseach();
-         if(sessionStorage.getItem('tab_name')){
-            this.activeName=sessionStorage.getItem('tab_name');
-        }
+		this.getseach();
+		if (sessionStorage.getItem('tab_name')) {
+			this.activeName = sessionStorage.getItem('tab_name');
+		}
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -1066,6 +1092,17 @@ export default {
 			this.pagesize = pagetol;
 			// this.getuserlist();
 		},
+		//获取页码
+		f_getpage(pages) {
+			this.f_pageNo = pages;
+			this.gettable(1);
+		},
+		//获取每页数量
+		f_gettol(pagetol) {
+			this.f_pagesize = pagetol;
+			// this.getuserlist();
+		},
+
 		getdata() {
 			this.getcure(0);
 		},
@@ -1175,6 +1212,8 @@ export default {
 				}
 				params.top = 10;
 				params.acce = this.accval2;
+				params.pageNo = this.f_pageNo;
+				params.pageSize = this.f_pageSize;
 				if (data == 1) {
 					this.datatype = 1;
 					this.playTimesArray1 = [];
@@ -1186,6 +1225,7 @@ export default {
 								this.timeArray1 = res.data.regionArray;
 								this.drawLine1();
 								this.tablecdn = res.data.accessCntTable;
+								this.f_total_cnt = res.data.totalPage;
 							} else {
 								this.$message.error(res.msg);
 							}
@@ -1627,6 +1667,17 @@ export default {
 			this.twob = true;
 			this.getcure(2);
 		},
+		sele_tab(data) {
+			if (this.radio_tab == 1) {
+				this.region_show = true;
+				this.twob = false;
+				this.getcure(1);
+			} else {
+				this.region_show = false;
+				this.twob = true;
+				this.getcure(2);
+			}
+		},
 
 		// 表头样式设置
 		headClass() {
@@ -1638,10 +1689,10 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-             sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage 
+			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.radio1 = '1';
 			this.val2 = [];
-			this.shoudzy = false;   
+			this.shoudzy = false;
 			this.shoudzyx = false;
 			this.shoudzyz = false;
 			//切换时重置时间为当前时间
@@ -1756,7 +1807,7 @@ export default {
 								),
 							},
 						}, //填充区域样式
-						data: this.uvArray,
+						data: this.pvArray,
 					},
 					{
 						name: 'uv',
@@ -1780,7 +1831,7 @@ export default {
 								),
 							},
 						}, //填充区域样式
-						data: this.pvArray,
+						data: this.uvArray,
 					},
 				],
 			};
@@ -1958,10 +2009,10 @@ export default {
 			};
 			myChart.setOption(option);
 		},
-    },
-     destroyed: function () {
-    sessionStorage.removeItem("tab_name");
-},
+	},
+	destroyed: function() {
+		sessionStorage.removeItem('tab_name');
+	},
 };
 </script>
 

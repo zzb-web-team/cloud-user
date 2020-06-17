@@ -22,7 +22,7 @@
 						@click="changmvitem()"
 					></i>
 				</el-input>
-                <span style="margin-right:10px;margin-left:15px;">终端:</span>
+				<span style="margin-right:10px;margin-left:15px;">终端:</span>
 				<el-select
 					v-model="acc"
 					placeholder="请选择终端"
@@ -38,7 +38,7 @@
 					>
 					</el-option>
 				</el-select>
-                 <span style="margin-right:10px;margin-left:15px;">日期:</span>
+				<span style="margin-right:10px;margin-left:15px;">日期:</span>
 				<!-- <el-button-group>
 					<el-button @click="today()">今天</el-button>
 					<el-button @click="yesterday()">昨天</el-button>
@@ -46,27 +46,17 @@
 					<el-button @click="thirtyday()">近30天</el-button>
 					<el-button @click="showzi()">自定义</el-button>
 				</el-button-group> -->
-                <el-radio-group
-									v-model="radio1"
-									size="medium"
-									@change="sele_time()"
-								>
-									<el-radio-button label="1"
-										>今天</el-radio-button
-									>
-									<el-radio-button label="2"
-										>昨天</el-radio-button
-									>
-									<el-radio-button label="3"
-										>近7天</el-radio-button
-									>
-									<el-radio-button label="4"
-										>近30天</el-radio-button
-									>
-									<el-radio-button label="5"
-										>自定义</el-radio-button
-									>
-								</el-radio-group>
+				<el-radio-group
+					v-model="radio1"
+					size="medium"
+					@change="sele_time()"
+				>
+					<el-radio-button label="1">今天</el-radio-button>
+					<el-radio-button label="2">昨天</el-radio-button>
+					<el-radio-button label="3">近7天</el-radio-button>
+					<el-radio-button label="4">近30天</el-radio-button>
+					<el-radio-button label="5">自定义</el-radio-button>
+				</el-radio-group>
 				<el-date-picker
 					v-show="showdate"
 					style="margin-left:10px;"
@@ -123,7 +113,16 @@
 								>
 								<el-table-column label="总流量(GB)">
 									<template slot-scope="scope">
-										<div>{{ (scope.row.dataFlow/1024/1024/1024).toFixed(2) }}</div>
+										<div>
+											{{
+												(
+													scope.row.dataFlow /
+													1024 /
+													1024 /
+													1024
+												).toFixed(2)
+											}}
+										</div>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -157,7 +156,7 @@ import {
 export default {
 	data() {
 		return {
-            radio1:"1",
+			radio1: '1',
 			currentPage: 1,
 			tablecdn: [
 				// { timeStamp: "2018/05/01", dataFlow: "13585" },
@@ -341,8 +340,8 @@ export default {
 			} else if (endtime - sratime > 2592000) {
 				this.timeUnit = 1440;
 			}
-        },
-        //生成今天的
+		},
+		//生成今天的
 		//获取页码
 		getpage(pages) {
 			this.pageNo = pages;
@@ -398,37 +397,42 @@ export default {
 			params.acce = this.acc;
 			dataflow_curve(params)
 				.then((res) => {
-                    if(res.status==0){
-                        if (res.data.totalUsage == 0) {
-                            this.dataL = 0;
-                        } else {
-                            this.dataL = (
-                                res.data.totalUsage /
-                                1024 /
-                                1024 /
-                                1024
-                            ).toFixed(2);
-                        }
-                        this.dataFlowArray = res.data.dataFlowArray;
-                        this.dataFlownum = res.data.dataFlowArray.length - 1;
-    
-                        let upcli = Math.floor(this.dataFlownum / 12);
-                        res.data.timeArray.forEach((item, index) => {
-                            if (
-                                index == 0 ||
-                                (index % upcli == 0 && index < upcli * 11) ||
-                                index == this.dataFlownum
-                            ) {
-                                this.timeArray.push(getlocaltimes(item));
-                            } else {
-                                this.timeArray.push('');
-                            }
-                        });
-                        this.getdtable();
-                        this.drawLine();
-                    }else{
-                        this.$message.error(res.msg);
-                    }
+					if (res.status == 0) {
+						if (res.data.totalUsage == 0) {
+							this.dataL = 0;
+						} else {
+							this.dataL = (
+								res.data.totalUsage /
+								1024 /
+								1024 /
+								1024
+							).toFixed(2);
+						}
+						res.data.dataFlowArray.forEach((item, index) => {
+							this.dataFlowArray.push(
+								(item / 1024 / 1024 / 1024).toFixed(2)
+							);
+						});
+						// this.dataFlowArray = res.data.dataFlowArray;
+						this.dataFlownum = res.data.dataFlowArray.length - 1;
+
+						let upcli = Math.floor(this.dataFlownum / 12);
+						res.data.timeArray.forEach((item, index) => {
+							if (
+								index == 0 ||
+								(index % upcli == 0 && index < upcli * 11) ||
+								index == this.dataFlownum
+							) {
+								this.timeArray.push(getlocaltimes(item));
+							} else {
+								this.timeArray.push('');
+							}
+						});
+						this.getdtable();
+						this.drawLine();
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((err) => {});
 		},
@@ -476,9 +480,9 @@ export default {
 							this.pagenum++;
 							this.getlabrl2();
 						}
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((error) => {});
 		},
@@ -509,9 +513,9 @@ export default {
 		//下拉框
 		changmvitem() {
 			this.gettu();
-        },
-        sele_time(){
-            if (this.radio1 == 1) {
+		},
+		sele_time() {
+			if (this.radio1 == 1) {
 				this.showdate = false;
 				this.today();
 			} else if (this.radio1 == 2) {
@@ -526,7 +530,7 @@ export default {
 			} else if (this.radio1 == 5) {
 				this.showdate = true;
 			}
-        },
+		},
 		//今天
 		today() {
 			let times =
@@ -541,7 +545,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
-			this.endtime = times-1;
+			this.endtime = times - 1;
 			this.settimeunit(this.starttime, this.endtime);
 			this.gettu();
 		},
@@ -568,7 +572,7 @@ export default {
 			if (this.value2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
-				this.endtime = Date.parse(new Date()) / 1000-1;
+				this.endtime = Date.parse(new Date()) / 1000 - 1;
 			} else {
 				this.starttime = dateToMs(this.value2[0]);
 				this.endtime = dateToMs(this.value2[1]);
@@ -658,12 +662,16 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
-					axisPointer: {
-						type: 'cross',
-						label: {
-							backgroundColor: '#6a7985',
+					formatter: function (params) { 
+							return (
+								params[0].name +
+								'<br>' +
+								params[0].seriesName +
+								':' +
+								params[0].data +
+								'(GB)'
+							);
 						},
-					},
 				},
 				xAxis: {
 					data: this.timeArray,
@@ -674,20 +682,22 @@ export default {
 						interval: 0, //代表显示所有x轴标签
 					},
 				},
-				yAxis: {},
+				yAxis: {
+                    name: 'GB',
+                },
 				series: [
 					{
 						name: '流量',
 						type: 'bar',
 						barWidth: 30, //柱图宽度
-                        data: this.dataFlowArray,
-                        smooth:true,//设置折线图的弧度
+						data: this.dataFlowArray,
+						smooth: true, //设置折线图的弧度
 						itemStyle: {
 							normal: {
 								// lineStyle: {
 								// 	color: '#297AFF', //线的颜色
-                                // },
-                                
+								// },
+
 								//每根柱子颜色设置
 								color: function(params) {
 									let colorList = ['#297AFF', '#297AFF00'];
@@ -701,16 +711,15 @@ export default {
 										data_index == 0 ||
 										data_index == _this.dataFlownum
 									) {
-										return colorList[0];/*  */
+										return colorList[0]; /*  */
 									} else {
 										return colorList[1];
 									}
-                                },
-                                
+								},
 							},
 							color: '#00FF00',
-                        },
-                         areaStyle: {
+						},
+						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(
 									0,
@@ -719,7 +728,7 @@ export default {
 									1,
 									[
 										{ offset: 0, color: '#409EFF' },
-										
+
 										{ offset: 1, color: '#ffffff' },
 									]
 								),
@@ -785,8 +794,8 @@ export default {
 		height: auto;
 		overflow: hidden;
 		margin-top: 20px;
-        margin-left: 0 ;
-        margin-right: 0;
+		margin-left: 0;
+		margin-right: 0;
 		background: rgba(255, 255, 255, 1);
 		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
 		border-radius: 2px;

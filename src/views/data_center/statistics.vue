@@ -543,7 +543,7 @@
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
-							<el-radio-group
+							<!-- <el-radio-group
 								v-model="radio1"
 								size="medium"
 								@change="sele_time(3)"
@@ -563,7 +563,7 @@
 								<el-radio-button label="5"
 									>自定义</el-radio-button
 								>
-							</el-radio-group>
+							</el-radio-group> -->
 							<!-- <el-button-group>
 								<el-button v-show="!shoudzyz" @click="today(2)"
 									>今天</el-button
@@ -587,7 +587,6 @@
 								></el-button>
 							</el-button-group> -->
 							<el-date-picker
-								v-show="shoudzyz"
 								style="margin-left:10px;"
 								v-model="val2"
 								type="datetimerange"
@@ -1070,8 +1069,15 @@ export default {
 		this.getlabrl2();
 		this.getseach();
 		if (sessionStorage.getItem('tab_name')) {
-			this.activeName = sessionStorage.getItem('tab_name');
-		}
+            this.activeName = sessionStorage.getItem('tab_name');
+            if(this.activeName=='first'){
+                this.getseach(0);
+            }else if(this.activeName=='second'){
+                this.getseach(1);
+            }else{this.getseach(3);}
+		}else{
+            this.getseach(0);
+        }
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -1099,7 +1105,7 @@ export default {
             }else{
                 this.gettable(2);
             }
-			
+
 		},
 		//获取每页数量
 		f_gettol(pagetol) {
@@ -1117,7 +1123,7 @@ export default {
 			this.getcure(3);
 		},
 		//请求数据--查询条件
-		getseach() {
+		getseach(data) {
 			let params = new Object();
 			params.chanid = this.chanid + '';
 			params.page = this.vadio_page;
@@ -1132,7 +1138,7 @@ export default {
 							this.optionsa1.push(obj);
 						});
 						if (res.result.les_count == 0) {
-							this.getcure(0);
+							this.getcure(data);
 							this.vadio_page = 0;
 						} else {
 							this.vadio_page++;

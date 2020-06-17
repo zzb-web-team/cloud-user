@@ -70,27 +70,17 @@
 						<span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
 						>
-                         <el-radio-group
-									v-model="radio1"
-									size="medium"
-									@change="sele_time()"
-								>
-									<el-radio-button label="1"
-										>今天</el-radio-button
-									>
-									<el-radio-button label="2"
-										>昨天</el-radio-button
-									>
-									<el-radio-button label="3"
-										>近7天</el-radio-button
-									>
-									<el-radio-button label="4"
-										>近30天</el-radio-button
-									>
-									<el-radio-button label="5"
-										>自定义</el-radio-button
-									>
-								</el-radio-group>
+						<el-radio-group
+							v-model="radio1"
+							size="medium"
+							@change="sele_time()"
+						>
+							<el-radio-button label="1">今天</el-radio-button>
+							<el-radio-button label="2">昨天</el-radio-button>
+							<el-radio-button label="3">近7天</el-radio-button>
+							<el-radio-button label="4">近30天</el-radio-button>
+							<el-radio-button label="5">自定义</el-radio-button>
+						</el-radio-group>
 						<!-- <el-button-group>
 							<el-button v-show="!shoudzyx" @click="today()"
 								>今天</el-button
@@ -167,7 +157,14 @@
 										<el-table-column label="总流量(GB)">
 											<template slot-scope="scope">
 												<div>
-													{{ (scope.row.dataFlow/1024/1024/1024).toFixed(2) }}
+													{{
+														(
+															scope.row.dataFlow /
+															1024 /
+															1024 /
+															1024
+														).toFixed(2)
+													}}
 												</div>
 											</template>
 										</el-table-column>
@@ -280,7 +277,7 @@ import echarts from 'echarts';
 export default {
 	data() {
 		return {
-            radio1:"1",
+			radio1: '1',
 			currentPage: 1,
 			shoudzyx: false,
 			showzdyz: false,
@@ -647,12 +644,19 @@ export default {
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
 		this.settimeunit(this.starttime, this.endtime);
-		this.getlabrl2();
-		this.getseachlabel1();
-        // this.configure()
-         if(sessionStorage.getItem('tab_name')){
-            this.activeName=sessionStorage.getItem('tab_name');
-        }
+
+		// this.getseachlabel1();
+		// this.configure()
+		if (sessionStorage.getItem('tab_name')) {
+			this.activeName = sessionStorage.getItem('tab_name');
+			if (this.activeName != 'first') {
+				this.gettable2();
+			} else {
+				this.gettable1();
+			}
+		} else {
+			this.getseachlabel1();
+		}
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -749,7 +753,12 @@ export default {
 			accelerate_flow(params)
 				.then((res) => {
 					if (res.status == 0) {
-						this.dataFlowArray = res.data.streamArray;
+						// this.dataFlowArray = res.data.streamArray;
+						res.data.streamArray.forEach((item, index) => {
+							this.dataFlowArray.push(
+								(item / 1024 / 1024 / 1024).toFixed(2)
+							);
+						});
 						this.dataFlownum = res.data.streamArray.length - 1;
 						let upcli = Math.floor(this.dataFlownum / 12);
 						res.data.timeArray.forEach((item, index) => {
@@ -844,7 +853,12 @@ export default {
 			backsource_flow(params)
 				.then((res) => {
 					if (res.status == 0) {
-						this.dataFlowArray2 = res.data.streamArray;
+						// this.dataFlowArray2 = res.data.streamArray;
+						res.data.streamArray.forEach((item, index) => {
+							this.dataFlowArray2.push(
+								(item / 1024 / 1024 / 1024).toFixed(2)
+							);
+						});
 						this.dataFlownum2 = res.data.streamArray.length - 1;
 						let upcli = Math.floor(this.dataFlownum2 / 12);
 						res.data.timeArray.forEach((item, index) => {
@@ -968,14 +982,14 @@ export default {
 				});
 		},
 		seachtu(data) {
-			if (this.activeName=='first') {
+			if (this.activeName == 'first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
 			}
-        },
-         sele_time(){
-            if (this.radio1 == 1) {
+		},
+		sele_time() {
+			if (this.radio1 == 1) {
 				this.shoudzyx = false;
 				this.today();
 			} else if (this.radio1 == 2) {
@@ -990,7 +1004,7 @@ export default {
 			} else if (this.radio1 == 5) {
 				this.shoudzyx = true;
 			}
-        },
+		},
 		//今天
 		today() {
 			let times =
@@ -998,7 +1012,7 @@ export default {
 			this.starttime = times;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName=='first') {
+			if (this.activeName == 'first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
@@ -1011,7 +1025,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 1;
 			this.endtime = times - 1;
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName=='first') {
+			if (this.activeName == 'first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
@@ -1024,7 +1038,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 6;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName=='first') {
+			if (this.activeName == 'first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
@@ -1037,7 +1051,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 29;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName=='first') {
+			if (this.activeName == 'first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
@@ -1055,7 +1069,7 @@ export default {
 				this.endtime = dateToMs(this.val2[1]);
 			}
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName=='first') {
+			if (this.activeName == 'first') {
 				this.gettable1();
 			} else {
 				this.gettable2();
@@ -1085,7 +1099,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-            sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage 
+			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			// this.starttime =
 			//   new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			// this.endtime = Date.parse(new Date()) / 1000;
@@ -1146,12 +1160,16 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
-					axisPointer: {
-						type: 'cross',
-						label: {
-							backgroundColor: '#6a7985',
+                     formatter: function (params) { 
+							return (
+								params[0].name +
+								'<br>' +
+								params[0].seriesName +
+								':' +
+								params[0].data +
+								'(GB)'
+							);
 						},
-					},
 				},
 				xAxis: {
 					type: 'category',
@@ -1168,7 +1186,9 @@ export default {
 						},
 					},
 				},
-				yAxis: {},
+				yAxis: {
+					name: 'GB',
+				},
 				series: [
 					{
 						name: '流量',
@@ -1290,11 +1310,21 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
-					axisPointer: {
-						type: 'cross',
-						label: {
-							backgroundColor: '#6a7985',
-						},
+					// axisPointer: {
+					// 	type: 'cross',
+					// 	label: {
+					// 		backgroundColor: '#6a7985',
+					// 	},
+					// },
+					formatter: function(params) {
+						return (
+							params[0].name +
+							'<br>' +
+							params[0].seriesName +
+							':' +
+							params[0].data +
+							'(GB)'
+						);
 					},
 				},
 				xAxis: {
@@ -1308,10 +1338,12 @@ export default {
 						show: false,
 					},
 				},
-				yAxis: {},
+				yAxis: {
+					name: 'GB',
+				},
 				series: [
 					{
-						name: '销量',
+						name: '流量',
 						type: 'bar',
 						barWidth: 30, //柱图宽度
 						data: this.dataFlowArray2,
@@ -1342,10 +1374,10 @@ export default {
 			};
 			myChart.setOption(options);
 		},
-    },
-     destroyed: function () {
-    sessionStorage.removeItem("tab_name");
-},
+	},
+	destroyed: function() {
+		sessionStorage.removeItem('tab_name');
+	},
 };
 </script>
 

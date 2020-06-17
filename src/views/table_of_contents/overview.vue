@@ -59,8 +59,9 @@ export default {
 		//请求数据
 		getlist() {
 			let params = new Object();
-			let starttime =new Date(new Date().toLocaleDateString()).getTime() / 1000;
-            let endtime = Date.parse(new Date()) / 1000;
+			let starttime =
+				new Date(new Date().toLocaleDateString()).getTime() / 1000;
+			let endtime = Date.parse(new Date()) / 1000;
 			params.start_ts = starttime - 60 * 60 * 24 * 29;
 			params.end_ts = endtime;
 			params.chanId = this.chanid + '';
@@ -80,7 +81,12 @@ export default {
 								1024
 							).toFixed(4);
 						}
-						this.dataFlowArray = res.data.dataFlowArray;
+						// this.dataFlowArray = res.data.dataFlowArray;
+						res.data.dataFlowArray.forEach((item) => {
+							this.dataFlowArray.push(
+								(item / 1024 / 1024 / 1024).toFixed(2)
+							);
+						});
 						res.data.timeArray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
 						});
@@ -134,11 +140,15 @@ export default {
 				},
 				tooltip: {
 					trigger: 'axis',
-					axisPointer: {
-						type: 'cross',
-						label: {
-							backgroundColor: '#6a7985',
-						},
+					formatter: function(params) {
+						return (
+							params[0].name +
+							'<br>' +
+							params[0].seriesName +
+							':' +
+							params[0].data +
+							'(GB)'
+						);
 					},
 				},
 				xAxis: {
@@ -147,11 +157,12 @@ export default {
 				},
 				yAxis: {
 					type: 'value',
+					name: 'GB',
 				},
 				series: [
 					{
+                        name:'流量',
 						data: this.dataFlowArray,
-
 						type: 'line',
 						symbol: 'none',
 						smooth: true,

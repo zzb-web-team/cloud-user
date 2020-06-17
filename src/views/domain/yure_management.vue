@@ -581,6 +581,9 @@ export default {
         }
         if(sessionStorage.getItem('tab_name')){
             this.activeName=sessionStorage.getItem('tab_name');
+            if(this.activeName=='third'){
+                this.getrefreshstate();
+            }
         }
 		// this.gettoken();
 	},

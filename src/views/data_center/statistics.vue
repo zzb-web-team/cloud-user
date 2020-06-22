@@ -694,6 +694,7 @@
 </template>
 
 <script>
+var _this;
 import { dateToMs, getymdtime } from '../../servers/sevdate';
 
 import mtImg from '../../assets/img/dowload.png';

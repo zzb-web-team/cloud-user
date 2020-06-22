@@ -260,7 +260,13 @@
 </template>
 
 <script>
-import { dateToMs, getymdtime, getlocaltimes } from '../../servers/sevdate';
+var _this;
+import {
+	dateToMs,
+	getymdtime,
+	getlocaltimes,
+	formatBytes,
+} from '../../servers/sevdate';
 import fenye from '@/components/fenye';
 import {
 	accelerate_flow_query_conditions,
@@ -577,7 +583,8 @@ export default {
 			chanid: '',
 			dataFlownum: 0,
 			dataFlownum2: 0,
-			vadio_page: 0,
+            vadio_page: 0,
+            unitdata: 'B',
 		};
 	},
 	filters: {
@@ -713,9 +720,10 @@ export default {
 					if (res.status == 0) {
 						// this.dataFlowArray = res.data.streamArray;
 						res.data.streamArray.forEach((item, index) => {
-							this.dataFlowArray.push(
-								(item / 1024 / 1024 / 1024).toFixed(2)
-							);
+                            this.dataFlowArray.push(formatBytes(item)[0]);
+                            if(index==1){
+                                this.unitdata=formatBytes(item)[1];
+                            }
 						});
 						this.dataFlownum = res.data.streamArray.length - 1;
 						let upcli = Math.floor(this.dataFlownum / 12);
@@ -814,6 +822,10 @@ export default {
 						// this.dataFlowArray2 = res.data.streamArray;
 						res.data.streamArray.forEach((item, index) => {
 							this.dataFlowArray2.push(
+                            //      this.dataFlowArray.push(formatBytes(item)[0]);
+                            // if(index==1){
+                            //     this.unitdata=formatBytes(item)[1];
+                            // }
 								(item / 1024 / 1024 / 1024).toFixed(2)
 							);
 						});

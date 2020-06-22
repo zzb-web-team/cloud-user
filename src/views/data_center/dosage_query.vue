@@ -78,8 +78,7 @@
 					<div class="user-item">
 						<div class="item-text">使用流量</div>
 						<div class="item-count">
-							<span>{{ dataL }}</span
-							>GB
+							<span>{{ dataL }}&nbsp;{{ unitdata }}</span>
 						</div>
 					</div>
 				</el-row>
@@ -111,17 +110,10 @@
 										</div>
 									</template></el-table-column
 								>
-								<el-table-column label="总流量(GB)">
+								<el-table-column label="总流量">
 									<template slot-scope="scope">
 										<div>
-											{{
-												(
-													scope.row.dataFlow /
-													1024 /
-													1024 /
-													1024
-												).toFixed(2)
-											}}
+											{{ scope.row.dataFlow | zhuanb }}
 										</div>
 									</template>
 								</el-table-column>
@@ -142,9 +134,16 @@
 </template>
 
 <script>
+var _this;
 import echarts from 'echarts';
 import fenye from '@/components/fenye';
-import { dateToMs, getymdtime, getlocaltimes } from '../../servers/sevdate';
+import {
+	dateToMs,
+	getymdtime,
+	getlocaltimes,
+	formatBytes,
+	formatBkb,
+} from '../../servers/sevdate';
 import {
 	query_conditions,
 	dataflow_curve,
@@ -257,12 +256,20 @@ export default {
 			timeArray: [], //图
 			dataFlownum: 0,
 			chanid: '',
+			unitdata: 'B',
 		};
+	},
+	beforeCreate: function() {
+		_this = this;
 	},
 	filters: {
 		settimes(data) {
 			var stat = getymdtime(data);
 			return stat;
+		},
+		zhuanb(data) {
+			console.log(_this.unitdata);
+			return formatBkb(data, _this.unitdata) + _this.unitdata;
 		},
 	},
 	components: {
@@ -358,17 +365,17 @@ export default {
 					if (res.status == 0) {
 						if (res.data.totalUsage == 0) {
 							this.dataL = 0;
+							this.unitdata = 'B';
 						} else {
-							this.dataL = (
-								res.data.totalUsage /
-								1024 /
-								1024 /
-								1024
-							).toFixed(2);
-						}
+							this.unitdata = formatBytes(res.data.totalUsage);
+							this.dataL = formatBkb(
+								res.data.totalUsage,
+								this.unitdata
+							);
+                        }
 						res.data.dataFlowArray.forEach((item, index) => {
 							this.dataFlowArray.push(
-								(item / 1024 / 1024 / 1024).toFixed(2)
+								formatBkb(item, this.unitdata)
 							);
 						});
 						// this.dataFlowArray = res.data.dataFlowArray;
@@ -642,7 +649,7 @@ export default {
 							params[0].seriesName +
 							':' +
 							params[0].data +
-							'(GB)'
+							_this.unitdata
 						);
 					},
 				},
@@ -656,7 +663,7 @@ export default {
 					},
 				},
 				yAxis: {
-					name: 'GB',
+					name: _this.unitdata,
 				},
 				series: [
 					{

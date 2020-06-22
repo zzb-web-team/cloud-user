@@ -13,7 +13,7 @@
 					<span style="font-size: 32px;color: #333333;">{{
 						dataL
 					}}</span
-					>GB
+					>{{unitdata}}
 				</p>
 			</div>
 		</div>
@@ -35,8 +35,15 @@
 </template>
 
 <script>
+var _this;
 import { dataflow_curve } from '../../servers/api';
-import { dateToMs, getymdtime, getlocaltimes } from '../../servers/sevdate';
+import {
+	dateToMs,
+	getymdtime,
+	getlocaltimesformatBytes,
+    formatBkb,
+    formatBytes
+} from '../../servers/sevdate';
 import echarts from 'echarts';
 export default {
 	data() {
@@ -45,6 +52,7 @@ export default {
 			dataFlowArray: [],
 			timeArray: [],
 			chanid: '',
+			unitdata: 'B',
 		};
 	},
 	mounted() {
@@ -71,25 +79,27 @@ export default {
 			dataflow_curve(params)
 				.then((res) => {
 					if (res.status == 0) {
+						// let maxnum = Math.max(...res.data.dataFlowArray);
 						if (res.data.totalUsage == 0) {
-							this.dataL = 0;
+                            this.dataL=0;
+							this.unitdata = 'B';
 						} else {
-							this.dataL = (
-								res.data.totalUsage /
-								1024 /
-								1024 /
-								1024
-							).toFixed(4);
-						}
+                            this.unitdata = formatBytes(res.data.totalUsage);
+                            this.dataL = formatBkb(
+								res.data.totalUsage,
+								this.unitdata
+							);
+                        }
+                         console.log('/*-------/*')
 						// this.dataFlowArray = res.data.dataFlowArray;
 						res.data.dataFlowArray.forEach((item) => {
-							this.dataFlowArray.push(
-								(item / 1024 / 1024 / 1024).toFixed(2)
-							);
+                            console.log(item);
+							this.dataFlowArray.push(formatBkb(item, _this.unitdata));
 						});
 						res.data.timeArray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
-						});
+                        });
+                        console.log('/*/*/*/*/*/*/*/*')
 						this.configure();
 					} else {
 						this.$message.error(res.msg);
@@ -103,6 +113,7 @@ export default {
 		},
 		//绘图
 		configure() {
+            console.log(this.dataFlowArray);
 			let myChart = echarts.init(document.getElementById('myChart3')); //这里是为了获得容器所在位置
 			window.onresize = myChart.resize;
 			let options = {
@@ -147,7 +158,7 @@ export default {
 							params[0].seriesName +
 							':' +
 							params[0].data +
-							'(GB)'
+							_this.unitdata
 						);
 					},
 				},
@@ -157,11 +168,11 @@ export default {
 				},
 				yAxis: {
 					type: 'value',
-					name: 'GB',
+					name: _this.unitdata,
 				},
 				series: [
 					{
-                        name:'流量',
+						name: '流量',
 						data: this.dataFlowArray,
 						type: 'line',
 						symbol: 'none',

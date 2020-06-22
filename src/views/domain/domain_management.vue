@@ -57,7 +57,7 @@
 						start-placeholder="开始日期"
 						end-placeholder="结束日期"
 						@change="gettimes"
-						:picker-options="pickerOptions0"
+						:picker-options="pickerOptions"
 					></el-date-picker>
 					<!-- <el-button type="primary" size="mini" @click="seachuser()" style="margin-left: 10px;">确定</el-button> -->
 					<el-button
@@ -431,71 +431,29 @@ export default {
 				// }
 			],
 			order: 0,
-			pickerOptions0: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
+			minDate: '',
+			maxDate: '',
+			pickerOptions: {
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
+					}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
 				},
 			},
 		};
@@ -787,7 +745,7 @@ export default {
 		},
 		// 禁用
 		disableuser(datalist) {
-            if (!datalist) {
+			if (!datalist) {
 				if (this.currentSelection.length <= 0) {
 					this.$message('至少选择一个源站域名进行操作！');
 					return false;
@@ -858,9 +816,9 @@ export default {
 									type: 'success',
 									message: '操作成功!',
 								});
-							}else{
-                                this.$message.error(res.msg);
-                            }
+							} else {
+								this.$message.error(res.msg);
+							}
 						})
 						.catch((error) => {});
 				})
@@ -873,7 +831,7 @@ export default {
 		},
 		//启用
 		enableuser(datalist) {
-             if (!datalist) {
+			if (!datalist) {
 				if (this.currentSelection.length <= 0) {
 					this.$message('至少选择一个源站域名进行操作！');
 					return false;
@@ -955,8 +913,11 @@ export default {
 
 			change_state(params)
 				.then((res) => {
-					if (res.status == 0||res.noting==0) {
-						if (res.err_code==750||res.data[0].fail_count == 0) {
+					if (res.status == 0 || res.noting == 0) {
+						if (
+							res.err_code == 750 ||
+							res.data[0].fail_count == 0
+						) {
 							this.$message({
 								type: 'success',
 								message: '操作成功!',
@@ -965,14 +926,20 @@ export default {
 							let url_namearr = [];
 							let no_urlarr = [];
 							let url_statearr = [];
-							for (let i = 0; i < res.data[0].res_data.length; i++) {
+							for (
+								let i = 0;
+								i < res.data[0].res_data.length;
+								i++
+							) {
 								console.log(res.data[0].res_data[i][1]);
 								if (res.data[0].res_data[i][1] == 1) {
 									url_namearr.push(res.res_data[i][0]);
 								} else if (res.data[0].res_data[i][1] == 2) {
 									no_urlarr.push(res.res_data[i][0]);
 								} else if (res.data[0].res_data[i][1] == 3) {
-									url_statearr.push(res.data[0].res_data[i][0]);
+									url_statearr.push(
+										res.data[0].res_data[i][0]
+									);
 								}
 							}
 							if (url_namearr.length != 0) {
@@ -1012,15 +979,15 @@ export default {
 							}
 						}
 						this.getuserlist();
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((error) => {});
 		},
 		// 删除
 		deleateuser(datalist) {
-             if (!datalist) {
+			if (!datalist) {
 				if (this.currentSelection.length <= 0) {
 					this.$message('至少选择一个源站域名进行操作！');
 					return false;
@@ -1099,9 +1066,9 @@ export default {
 									});
 								}
 								this.getuserlist();
-							}else{
-                                this.$message.error(res.msg);
-                            }
+							} else {
+								this.$message.error(res.msg);
+							}
 						})
 						.catch((error) => {});
 				})

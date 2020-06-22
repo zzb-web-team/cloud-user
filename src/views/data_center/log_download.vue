@@ -89,83 +89,41 @@ export default {
 			tablecdn: [],
 			value2: '',
 			chanid: '',
+			minDate: '',
+			maxDate: '',
 			pickerOptions: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						}
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						}
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						}
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						}
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
 					}
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
-				}
-			}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
+				},
+			},
 		};
 	},
 	filters: {
 		settimes(data) {
 			var stat = getymdtime(data);
 			return stat;
-		}
+		},
 	},
 	components: {
-		fenye
+		fenye,
 	},
 	mounted() {
 		if (this.$cookies.get('id')) {
@@ -191,15 +149,16 @@ export default {
 			parmas.pageSize = this.pagesize;
 			parmas.chanId = this.chanid + '';
 			query_logfile_table(parmas)
-				.then(res => {
+				.then((res) => {
 					if (res.status == 0) {
-						this.total_cnt = res.data.totalPageCnt+res.data.list.length;
+						this.total_cnt =
+							res.data.totalPageCnt + res.data.list.length;
 						this.tablecdn = res.data.list;
-					}else{
-                        this.$message.error(res.msg);
-                    }
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
-				.catch(error => {});
+				.catch((error) => {});
 		},
 		//获取页码
 		getpage(pages) {
@@ -230,13 +189,13 @@ export default {
 				parmas.end_ts = Date.parse(new Date()) / 1000;
 			}
 			download_logfile(parmas)
-				.then(res => {
+				.then((res) => {
 					if (res.status == 0) {
 						window.open(res.msg, '_blank');
 						// window.location.href = res.msg;
 					}
 				})
-				.catch(error => {});
+				.catch((error) => {});
 		},
 		//自定义时间
 		gettimes(val) {
@@ -249,8 +208,8 @@ export default {
 		// 表格样式设置
 		rowClass() {
 			return 'text-align: center;';
-		}
-	}
+		},
+	},
 };
 </script>
 

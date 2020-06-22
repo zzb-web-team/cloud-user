@@ -171,71 +171,29 @@ export default {
 			mvlist: [],
 			mvitem: '',
 			dataL: 0,
+			minDate: '',
+			maxDate: '',
 			pickerOptions: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
+					}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
 				},
 			},
 			value1: [
@@ -447,7 +405,11 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			params.timeUnit = this.timeUnit;
+			if (params.end_ts - params.start_ts > 86400) {
+				params.timeUnit = 1440;
+			} else {
+				params.timeUnit = 60;
+			}
 			params.pageNo = this.pageNo - 1;
 			params.pageSize = this.pageSize;
 			params.acce = this.acc;
@@ -568,7 +530,7 @@ export default {
 			this.gettu();
 		},
 		//自定义时间
-		gettimes(cal) {
+		gettimes(e) {
 			if (this.value2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -662,16 +624,27 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
-					formatter: function (params) { 
-							return (
-								params[0].name +
-								'<br>' +
-								params[0].seriesName +
-								':' +
-								params[0].data +
-								'(GB)'
-							);
+					axisPointer: {
+						type: 'shadow',
+						label: {
+							backgroundColor: '#6a7985',
 						},
+						shadowStyle: {
+							// 阴影指示器样式设置
+							width: '30px', // 阴影大小
+							color: 'rgba(150,150,150,0.3)', // 阴影颜色
+						},
+					},
+					formatter: function(params) {
+						return (
+							params[0].name +
+							'<br>' +
+							params[0].seriesName +
+							':' +
+							params[0].data +
+							'(GB)'
+						);
+					},
 				},
 				xAxis: {
 					data: this.timeArray,
@@ -683,13 +656,14 @@ export default {
 					},
 				},
 				yAxis: {
-                    name: 'GB',
-                },
+					name: 'GB',
+				},
 				series: [
 					{
 						name: '流量',
 						type: 'bar',
 						barWidth: 30, //柱图宽度
+						// barMinWidth:30,
 						data: this.dataFlowArray,
 						smooth: true, //设置折线图的弧度
 						itemStyle: {

@@ -492,71 +492,29 @@ export default {
 			valuea4: '',
 			tablecdn: [],
 			activeName: 'first',
+			minDate: '',
+			maxDate: '',
 			pickerOptions: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
+					}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
 				},
 			},
 			// value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
@@ -1160,16 +1118,16 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
-                     formatter: function (params) { 
-							return (
-								params[0].name +
-								'<br>' +
-								params[0].seriesName +
-								':' +
-								params[0].data +
-								'(GB)'
-							);
-						},
+					formatter: function(params) {
+						return (
+							params[0].name +
+							'<br>' +
+							params[0].seriesName +
+							':' +
+							params[0].data +
+							'(GB)'
+						);
+					},
 				},
 				xAxis: {
 					type: 'category',

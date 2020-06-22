@@ -60,7 +60,7 @@
 						start-placeholder="开始日期"
 						end-placeholder="结束日期"
 						@change="gettimes"
-						:picker-options="pickerOptions0"
+						:picker-options="pickerOptions"
 					></el-date-picker>
 					<!-- <el-button
 						type="primary"
@@ -302,71 +302,29 @@ export default {
 					label: '正常运行',
 				},
 			],
-			pickerOptions0: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
+			minDate: '',
+			maxDate: '',
+			pickerOptions: {
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
+					}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
 				},
 			},
 			tableData: [
@@ -513,13 +471,15 @@ export default {
 					cancelButtonText: '取消',
 					type: 'warning',
 				}
-			).then(() => {
-				if (row) {
-					this.enable_disable(0, row.domain_id);
-				} else {
-					this.enable_disable(0);
-				}
-			}).catch(() => {
+			)
+				.then(() => {
+					if (row) {
+						this.enable_disable(0, row.domain_id);
+					} else {
+						this.enable_disable(0);
+					}
+				})
+				.catch(() => {
 					// this.$message({
 					// 	type: 'info',
 					// 	message: '已取消',

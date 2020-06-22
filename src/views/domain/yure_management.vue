@@ -145,7 +145,7 @@
 								start-placeholder="开始日期"
 								end-placeholder="结束日期"
 								style="width:20%;"
-								:picker-options="pickerOptions0"
+								:picker-options="pickerOptions"
 							></el-date-picker>
 							<el-button
 								@click="seachuser()"
@@ -166,7 +166,7 @@
 						style="width: 100%"
 						:cell-style="rowClass"
 						:header-cell-style="headClass"
-                        @sort-change="tableSortChange"
+						@sort-change="tableSortChange"
 					>
 						<el-table-column
 							prop="url_name"
@@ -177,7 +177,11 @@
 							prop="are"
 							label="区域"
 						></el-table-column>
-						<el-table-column prop="operation_date" sortable="custom" label="操作时间">
+						<el-table-column
+							prop="operation_date"
+							sortable="custom"
+							label="操作时间"
+						>
 							<template slot-scope="scope"
 								>{{ scope.row.opt_time | settimes }}
 							</template>
@@ -248,14 +252,14 @@ export default {
 		return {
 			currentPage: 1,
 			errarr: '',
-            total_cnt: 1,
-            pagesize:10,
+			total_cnt: 1,
+			pagesize: 10,
 			activeName: 'first',
 			radio1: '1',
 			textarea1: '',
 			radio2: '1',
-            textarea2: '',
-            order: 1,
+			textarea2: '',
+			order: 1,
 			optiondisplay: false,
 			input: '',
 			valuea: '',
@@ -291,8 +295,8 @@ export default {
 				{
 					value: 2,
 					label: '等待中',
-                },
-                {
+				},
+				{
 					value: 3,
 					label: '失败',
 				},
@@ -488,71 +492,29 @@ export default {
 					],
 				},
 			],
-			pickerOptions0: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
+			minDate: '',
+			maxDate: '',
+			pickerOptions: {
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
+					}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
 				},
 			},
 			errarrs: '',
@@ -578,13 +540,13 @@ export default {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
 			this.$router.push({ path: '/' });
-        }
-        if(sessionStorage.getItem('tab_name')){
-            this.activeName=sessionStorage.getItem('tab_name');
-            if(this.activeName=='third'){
-                this.getrefreshstate();
-            }
-        }
+		}
+		if (sessionStorage.getItem('tab_name')) {
+			this.activeName = sessionStorage.getItem('tab_name');
+			if (this.activeName == 'third') {
+				this.getrefreshstate();
+			}
+		}
 		// this.gettoken();
 	},
 	methods: {
@@ -832,9 +794,9 @@ export default {
 			parmas.url_name = this.input;
 			parmas.buser_id = this.chanid + '';
 			parmas.refresh_type = this.valuea;
-            parmas.state = parseInt(this.valueb);
-            parmas.page=this.currentPage-1;
-            parmas.order=this.order;
+			parmas.state = parseInt(this.valueb);
+			parmas.page = this.currentPage - 1;
+			parmas.order = this.order;
 			if (this.value1 == '') {
 				parmas.start_time = 0;
 				parmas.end_time = 0;
@@ -845,10 +807,9 @@ export default {
 			refresh_state(parmas)
 				.then((res) => {
 					if (res.status == 0) {
-                        this.total_cnt=res.data.total;
+						this.total_cnt = res.data.total;
 						if (res.data.result.length > 0) {
-                            this.tableData = res.data.result;
-                            
+							this.tableData = res.data.result;
 						} else {
 							this.$message({
 								message: '暂无数据',
@@ -861,10 +822,10 @@ export default {
 				})
 				.catch((err) => {});
 		},
-        //排序
+		//排序
 		tableSortChange(column) {
-            this.currentPage = 1;
-            console.log(column.order);
+			this.currentPage = 1;
+			console.log(column.order);
 			if (column.order == 'descending') {
 				this.order = 1;
 			} else {
@@ -873,17 +834,17 @@ export default {
 			this.getrefreshstate();
 		},
 		handleClick(tab, event) {
-            console.log(this.activeName);
-            sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage 
+			console.log(this.activeName);
+			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.textarea1 = '';
 			this.textarea2 = '';
 			if (tab.name == 'third') {
 				this.getrefreshstate();
 			}
 		},
-        //获取页码
+		//获取页码
 		getpage(pages) {
-            console.log(pages);
+			console.log(pages);
 			this.currentPage = pages;
 			this.getrefreshstate();
 		},
@@ -918,10 +879,10 @@ export default {
 		rowClass() {
 			return 'text-align: center;';
 		},
-    },
-    destroyed: function () {
-    sessionStorage.removeItem("tab_name");
-},
+	},
+	destroyed: function() {
+		sessionStorage.removeItem('tab_name');
+	},
 };
 </script>
 

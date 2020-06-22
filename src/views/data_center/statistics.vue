@@ -363,14 +363,14 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问次数">
+										<el-table-column label="访问用户">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.accessCnt }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问占比">
+										<el-table-column label="占比">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -444,14 +444,14 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问次数">
+										<el-table-column label="访问用户">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.accessCnt }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问占比">
+										<el-table-column label="占比">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -768,71 +768,29 @@ export default {
 			totalUV: 0,
 			datatype: 1,
 			twob: false,
+			minDate: '',
+			maxDate: '',
 			pickerOptions: {
-				shortcuts: [
-					{
-						text: '昨天',
-						onClick(picker) {
-							const end = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							const start =
-								new Date(
-									new Date(
-										new Date().toLocaleDateString()
-									).getTime()
-								) -
-								3600 * 1000 * 24 * 1;
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '今天',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一周',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 6
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-					{
-						text: '最近一个月',
-						onClick(picker) {
-							const end = new Date();
-							const start = new Date(
-								new Date(
-									new Date().toLocaleDateString()
-								).getTime()
-							);
-							start.setTime(
-								start.getTime() - 3600 * 1000 * 24 * 29
-							);
-							picker.$emit('pick', [start, end]);
-						},
-					},
-				],
-				disabledDate(time) {
-					return time.getTime() > Date.now();
+				onPick: ({ maxDate, minDate }) => {
+					this.minDate = minDate;
+					this.maxDate = maxDate;
+				},
+				disabledDate: (time) => {
+					let curDate = new Date().getTime();
+					let two = 365 * 2 * 24 * 3600 * 1000;
+					let twoyear = curDate - two;
+					let three = 30 * 3 * 24 * 3600 * 1000;
+					if (this.minDate) {
+						return (
+							time.getTime() > Date.now() ||
+							time.getTime() < twoyear ||
+							time > new Date(this.minDate.getTime() + three) ||
+							time < new Date(this.minDate.getTime() - three)
+						);
+					}
+					return (
+						time.getTime() > Date.now() || time.getTime() < twoyear
+					);
 				},
 			},
 			value1: [
@@ -1069,15 +1027,17 @@ export default {
 		this.getlabrl2();
 		this.getseach();
 		if (sessionStorage.getItem('tab_name')) {
-            this.activeName = sessionStorage.getItem('tab_name');
-            if(this.activeName=='first'){
-                this.getseach(0);
-            }else if(this.activeName=='second'){
-                this.getseach(1);
-            }else{this.getseach(3);}
-		}else{
-            this.getseach(0);
-        }
+			this.activeName = sessionStorage.getItem('tab_name');
+			if (this.activeName == 'first') {
+				this.getseach(0);
+			} else if (this.activeName == 'second') {
+				this.getseach(1);
+			} else {
+				this.getseach(3);
+			}
+		} else {
+			this.getseach(0);
+		}
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -1099,13 +1059,12 @@ export default {
 		},
 		//获取页码
 		f_getpage(pages) {
-            this.f_pageNo = pages;
-            if(this.region_show==true){
-                this.gettable(1);
-            }else{
-                this.gettable(2);
-            }
-
+			this.f_pageNo = pages;
+			if (this.region_show == true) {
+				this.gettable(1);
+			} else {
+				this.gettable(2);
+			}
 		},
 		//获取每页数量
 		f_gettol(pagetol) {

@@ -154,16 +154,12 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="总流量(GB)">
+										<el-table-column label="总流量">
 											<template slot-scope="scope">
 												<div>
 													{{
-														(
-															scope.row.dataFlow /
-															1024 /
-															1024 /
-															1024
-														).toFixed(2)
+														scope.row.dataFlow
+															| updatabkb
 													}}
 												</div>
 											</template>
@@ -266,6 +262,7 @@ import {
 	getymdtime,
 	getlocaltimes,
 	formatBytes,
+	formatBkb,
 } from '../../servers/sevdate';
 import fenye from '@/components/fenye';
 import {
@@ -583,14 +580,41 @@ export default {
 			chanid: '',
 			dataFlownum: 0,
 			dataFlownum2: 0,
-            vadio_page: 0,
-            unitdata: 'B',
+			vadio_page: 0,
+			unitdata: 'B',
 		};
 	},
 	filters: {
 		settimes(data) {
 			var stat = getymdtime(data);
 			return stat;
+		},
+		updatabkb(data) {
+			if (data == 0) {
+				return 0 + 'B';
+			} else {
+				function formatB(a, b) {
+					if (0 == a) return '0 Bytes';
+					var c = 1024,
+						d = b || 2,
+						e = [
+							'Bytes',
+							'KB',
+							'MB',
+							'GB',
+							'TB',
+							'PB',
+							'EB',
+							'ZB',
+							'YB',
+						],
+						f = Math.floor(Math.log(a) / Math.log(c));
+					return (
+						parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f]
+					);
+				}
+				return formatB(data);
+			}
 		},
 	},
 	components: {
@@ -719,24 +743,30 @@ export default {
 				.then((res) => {
 					if (res.status == 0) {
 						// this.dataFlowArray = res.data.streamArray;
+						let maxnum = Math.max(...res.data.streamArray);
+						if (maxnum == 0) {
+							this.unitdata = 'B';
+						} else {
+							this.unitdata = formatBytes(maxnum);
+						}
 						res.data.streamArray.forEach((item, index) => {
-                            this.dataFlowArray.push(formatBytes(item)[0]);
-                            if(index==1){
-                                this.unitdata=formatBytes(item)[1];
-                            }
+							this.dataFlowArray.push(
+								formatBkb(item, this.unitdata)
+							);
 						});
 						this.dataFlownum = res.data.streamArray.length - 1;
 						let upcli = Math.floor(this.dataFlownum / 12);
 						res.data.timeArray.forEach((item, index) => {
-							if (
-								index == 0 ||
-								index == this.dataFlownum ||
-								(index % upcli == 0 && index < upcli * 11)
-							) {
-								this.timeArray.push(getlocaltimes(item));
-							} else {
-								this.timeArray.push('');
-							}
+							this.timeArray.push(getlocaltimes(item));
+							// if (
+							// 	index == 0 ||
+							// 	index == this.dataFlownum ||
+							// 	(index % upcli == 0 && index < upcli * 11)
+							// ) {
+							// 	this.timeArray.push(getlocaltimes(item));
+							// } else {
+							// 	this.timeArray.push('');
+							// }
 						});
 					} else if (res.status == -1) {
 						this.$message('暂无数据');
@@ -819,28 +849,32 @@ export default {
 			backsource_flow(params)
 				.then((res) => {
 					if (res.status == 0) {
-						// this.dataFlowArray2 = res.data.streamArray;
+						let maxnum = Math.max(...res.data.streamArray);
+						if (maxnum == 0) {
+							this.unitdata = 'B';
+						} else {
+							this.unitdata = formatBytes(maxnum);
+						}
 						res.data.streamArray.forEach((item, index) => {
 							this.dataFlowArray2.push(
-                            //      this.dataFlowArray.push(formatBytes(item)[0]);
-                            // if(index==1){
-                            //     this.unitdata=formatBytes(item)[1];
-                            // }
-								(item / 1024 / 1024 / 1024).toFixed(2)
+								formatBkb(item, this.unitdata)
 							);
 						});
 						this.dataFlownum2 = res.data.streamArray.length - 1;
 						let upcli = Math.floor(this.dataFlownum2 / 12);
 						res.data.timeArray.forEach((item, index) => {
-							if (
-								index == 0 ||
-								index == this.dataFlownum2 ||
-								(index % upcli == 0 && index < upcli * 11)
-							) {
-								this.timeArray2.push(getlocaltimes(item));
-							} else {
-								this.timeArray2.push('');
-							}
+							this.timeArray2.push(
+								getlocaltimes(item, this.unitdata)
+							);
+							// if (
+							// 	index == 0 ||
+							// 	index == this.dataFlownum2 ||
+							// 	(index % upcli == 0 && index < upcli * 11)
+							// ) {
+							// 	this.timeArray2.push(getlocaltimes(item));
+							// } else {
+							// 	this.timeArray2.push('');
+							// }
 						});
 					} else if (res.status == -1) {
 						this.$message('暂无数据');
@@ -1130,6 +1164,17 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
+					axisPointer: {
+						type: 'shadow',
+						label: {
+							backgroundColor: '#6a7985',
+						},
+						shadowStyle: {
+							// 阴影指示器样式设置
+							// width: '30px', // 阴影大小
+							color: 'rgba(150,150,150,0.3)', // 阴影颜色
+						},
+					},
 					formatter: function(params) {
 						return (
 							params[0].name +
@@ -1137,7 +1182,7 @@ export default {
 							params[0].seriesName +
 							':' +
 							params[0].data +
-							'(GB)'
+							_this.unitdata
 						);
 					},
 				},
@@ -1149,7 +1194,7 @@ export default {
 						show: false,
 					},
 					axisLabel: {
-						interval: 0, //代表显示所有x轴标签
+						// interval: 0, //代表显示所有x轴标签
 						// rotate: -30, //代表逆时针旋转45度
 						textStyle: {
 							color: '#999',
@@ -1157,34 +1202,37 @@ export default {
 					},
 				},
 				yAxis: {
-					name: 'GB',
+					name: _this.unitdata,
 				},
 				series: [
 					{
 						name: '流量',
 						type: 'bar',
-						barWidth: 30, //柱图宽度
+						barMaxWidth: 30, //柱图宽度
 						data: this.dataFlowArray,
 						itemStyle: {
 							normal: {
-								//每根柱子颜色设置
-								color: function(params) {
-									let colorList = ['#297AFF', '#297AFF00'];
-									let upcli = Math.floor(
-										_this.dataFlownum / 12
-									);
-									let data_index = params.dataIndex;
-									if (
-										(data_index % upcli == 0 &&
-											data_index < upcli * 11) ||
-										data_index == 0 ||
-										data_index == _this.dataFlownum
-									) {
-										return colorList[0];
-									} else {
-										return colorList[1];
-									}
+								lineStyle: {
+									color: '#297AFF', //线的颜色
 								},
+								//每根柱子颜色设置
+								// color: function(params) {
+								// 	let colorList = ['#297AFF', '#297AFF00'];
+								// 	let upcli = Math.floor(
+								// 		_this.dataFlownum / 12
+								// 	);
+								// 	let data_index = params.dataIndex;
+								// 	if (
+								// 		(data_index % upcli == 0 &&
+								// 			data_index < upcli * 11) ||
+								// 		data_index == 0 ||
+								// 		data_index == _this.dataFlownum
+								// 	) {
+								// 		return colorList[0];
+								// 	} else {
+								// 		return colorList[1];
+								// 	}
+								// },
 							},
 						},
 						showBackground: true,
@@ -1280,12 +1328,17 @@ export default {
 				color: '#297AFF',
 				tooltip: {
 					trigger: 'axis',
-					// axisPointer: {
-					// 	type: 'cross',
-					// 	label: {
-					// 		backgroundColor: '#6a7985',
-					// 	},
-					// },
+					axisPointer: {
+						type: 'shadow',
+						label: {
+							backgroundColor: '#6a7985',
+						},
+						shadowStyle: {
+							// 阴影指示器样式设置
+							// width: '30px', // 阴影大小
+							color: 'rgba(150,150,150,0.3)', // 阴影颜色
+						},
+					},
 					formatter: function(params) {
 						return (
 							params[0].name +
@@ -1293,7 +1346,7 @@ export default {
 							params[0].seriesName +
 							':' +
 							params[0].data +
-							'(GB)'
+							_this.unitdata
 						);
 					},
 				},
@@ -1301,42 +1354,46 @@ export default {
 					type: 'category',
 					boundaryGap: false,
 					data: this.timeArray2,
-					axisLabel: {
-						interval: 0, //代表显示所有x轴标签
-					},
+					// axisLabel: {
+					// 	interval: 0, //代表显示所有x轴标签
+					// },
 					axisTick: {
 						show: false,
 					},
 				},
 				yAxis: {
-					name: 'GB',
+					name: _this.unitdata,
 				},
 				series: [
 					{
 						name: '流量',
 						type: 'bar',
-						barWidth: 30, //柱图宽度
+						// barWidth: 30, //柱图宽度
+						barMaxWidth: 30,
 						data: this.dataFlowArray2,
 						itemStyle: {
 							normal: {
-								//每根柱子颜色设置
-								color: function(params) {
-									let colorList = ['#297AFF', '#297AFF00'];
-									let upcli = Math.floor(
-										_this.dataFlownum2 / 12
-									);
-									let data_index = params.dataIndex;
-									if (
-										(data_index % upcli == 0 &&
-											data_index < upcli * 11) ||
-										data_index == 0 ||
-										data_index == _this.dataFlownum2
-									) {
-										return colorList[0];
-									} else {
-										return colorList[1];
-									}
+								lineStyle: {
+									color: '#297AFF', //线的颜色
 								},
+								//每根柱子颜色设置
+								// color: function(params) {
+								// 	let colorList = ['#297AFF', '#297AFF00'];
+								// 	let upcli = Math.floor(
+								// 		_this.dataFlownum2 / 12
+								// 	);
+								// 	let data_index = params.dataIndex;
+								// 	if (
+								// 		(data_index % upcli == 0 &&
+								// 			data_index < upcli * 11) ||
+								// 		data_index == 0 ||
+								// 		data_index == _this.dataFlownum2
+								// 	) {
+								// 		return colorList[0];
+								// 	} else {
+								// 		return colorList[1];
+								// 	}
+								// },
 							},
 						},
 					},

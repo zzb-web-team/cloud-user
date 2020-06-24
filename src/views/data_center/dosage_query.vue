@@ -270,7 +270,8 @@ export default {
 		zhuanb(data) {
 			console.log(_this.unitdata);
 			return formatBkb(data, _this.unitdata) + _this.unitdata;
-		},
+        },
+        
 	},
 	components: {
 		fenye,
@@ -383,15 +384,16 @@ export default {
 
 						let upcli = Math.floor(this.dataFlownum / 12);
 						res.data.timeArray.forEach((item, index) => {
-							if (
-								index == 0 ||
-								(index % upcli == 0 && index < upcli * 11) ||
-								index == this.dataFlownum
-							) {
-								this.timeArray.push(getlocaltimes(item));
-							} else {
-								this.timeArray.push('');
-							}
+                            this.timeArray.push(getlocaltimes(item));
+							// if (
+							// 	index == 0 ||
+							// 	(index % upcli == 0 && index < upcli * 11) ||
+							// 	index == this.dataFlownum
+							// ) {
+							// 	this.timeArray.push(getlocaltimes(item));
+							// } else {
+							// 	this.timeArray.push('');
+							// }
 						});
 						this.getdtable();
 						this.drawLine();
@@ -638,7 +640,7 @@ export default {
 						},
 						shadowStyle: {
 							// 阴影指示器样式设置
-							width: '30px', // 阴影大小
+							// width: '30px', // 阴影大小
 							color: 'rgba(150,150,150,0.3)', // 阴影颜色
 						},
 					},
@@ -658,9 +660,9 @@ export default {
 					axisTick: {
 						show: false,
 					},
-					axisLabel: {
-						interval: 0, //代表显示所有x轴标签
-					},
+					// axisLabel: {
+					// 	interval: 0, //代表显示所有x轴标签
+					// },
 				},
 				yAxis: {
 					name: _this.unitdata,
@@ -669,34 +671,34 @@ export default {
 					{
 						name: '流量',
 						type: 'bar',
-						barWidth: 30, //柱图宽度
-						// barMinWidth:30,
+						// barWidth: 30, //柱图宽度
+						barMaxWidth:30,
 						data: this.dataFlowArray,
 						smooth: true, //设置折线图的弧度
 						itemStyle: {
 							normal: {
-								// lineStyle: {
-								// 	color: '#297AFF', //线的颜色
-								// },
+								lineStyle: {
+									color: '#297AFF', //线的颜色
+								},
 
 								//每根柱子颜色设置
-								color: function(params) {
-									let colorList = ['#297AFF', '#297AFF00'];
-									let upcli = Math.floor(
-										_this.dataFlownum / 12
-									);
-									let data_index = params.dataIndex;
-									if (
-										(data_index % upcli == 0 &&
-											data_index < upcli * 11) ||
-										data_index == 0 ||
-										data_index == _this.dataFlownum
-									) {
-										return colorList[0]; /*  */
-									} else {
-										return colorList[1];
-									}
-								},
+								// color: function(params) {
+								// 	let colorList = ['#297AFF', '#297AFF00'];
+								// 	let upcli = Math.floor(
+								// 		_this.dataFlownum / 12
+								// 	);
+								// 	let data_index = params.dataIndex;
+								// 	if (
+								// 		(data_index % upcli == 0 &&
+								// 			data_index < upcli * 11) ||
+								// 		data_index == 0 ||
+								// 		data_index == _this.dataFlownum
+								// 	) {
+								// 		return colorList[0]; /*  */
+								// 	} else {
+								// 		return colorList[1];
+								// 	}
+								// },
 							},
 							color: '#00FF00',
 						},

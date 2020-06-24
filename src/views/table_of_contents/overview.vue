@@ -42,6 +42,7 @@ import {
 	getymdtime,
 	getlocaltimesformatBytes,
     formatBkb,
+    getlocaltimes,
     formatBytes
 } from '../../servers/sevdate';
 import echarts from 'echarts';
@@ -70,16 +71,15 @@ export default {
 			let starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			let endtime = Date.parse(new Date()) / 1000;
-			params.start_ts = starttime - 60 * 60 * 24 * 29;
-			params.end_ts = endtime;
+			params.start_ts = starttime - 60 * 60 * 24 * 30;
+            params.end_ts = endtime;
 			params.chanId = this.chanid + '';
 			params.fileName = '*';
-			params.timeUnit = 60;
+			params.timeUnit = 1440;
 			params.acce = '*';
 			dataflow_curve(params)
 				.then((res) => {
 					if (res.status == 0) {
-						// let maxnum = Math.max(...res.data.dataFlowArray);
 						if (res.data.totalUsage == 0) {
                             this.dataL=0;
 							this.unitdata = 'B';
@@ -90,16 +90,13 @@ export default {
 								this.unitdata
 							);
                         }
-                         console.log('/*-------/*')
-						// this.dataFlowArray = res.data.dataFlowArray;
 						res.data.dataFlowArray.forEach((item) => {
-                            console.log(item);
-							this.dataFlowArray.push(formatBkb(item, _this.unitdata));
-						});
+							this.dataFlowArray.push(formatBkb(item, this.unitdata));
+                        });
 						res.data.timeArray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
                         });
-                        console.log('/*/*/*/*/*/*/*/*')
+                      
 						this.configure();
 					} else {
 						this.$message.error(res.msg);
@@ -113,7 +110,7 @@ export default {
 		},
 		//绘图
 		configure() {
-            console.log(this.dataFlowArray);
+            var _this=this;
 			let myChart = echarts.init(document.getElementById('myChart3')); //这里是为了获得容器所在位置
 			window.onresize = myChart.resize;
 			let options = {

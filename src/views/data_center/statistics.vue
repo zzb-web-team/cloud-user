@@ -363,14 +363,14 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问用户">
+										<el-table-column label="独立访问IP数">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.accessCnt }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="占比">
+										<el-table-column label="独立访问IP占比">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -444,6 +444,7 @@
 												</div>
 											</template>
 										</el-table-column>
+                                        
 										<el-table-column label="访问用户">
 											<template slot-scope="scope">
 												<div>
@@ -659,13 +660,21 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="访问次数">
+										<el-table-column label="加速内容被加速的次数">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.totalCnt }}
 												</div>
 											</template> </el-table-column
-										><el-table-column label="访问占比">
+										>
+                                        <el-table-column label="加速内容被请求加速(播放)的次数">
+											<template slot-scope="scope">
+												<div>
+													{{ scope.row.totalAccelCnt }}
+												</div>
+											</template> </el-table-column
+										>
+                                        <el-table-column label="访问占比">
 											<template slot-scope="scope">
 												<div>
 													{{

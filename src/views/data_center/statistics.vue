@@ -1034,19 +1034,19 @@ export default {
 		this.starttime =
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
-		this.getlabrl2();
-		this.getseach();
+        this.getlabrl2();
+        console.log(sessionStorage.getItem('tab_name'));
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			if (this.activeName == 'first') {
-				this.getseach(0);
+				this.getcure(0);
 			} else if (this.activeName == 'second') {
-				this.getseach(1);
+				this.getcure(1);
 			} else {
-				this.getseach(3);
+				this.getcure(3);
 			}
 		} else {
-			this.getseach(0);
+			this.getcure(0);
 		}
 	},
 	beforeDestroy() {
@@ -1090,36 +1090,6 @@ export default {
 		},
 		getdata2() {
 			this.getcure(3);
-		},
-		//请求数据--查询条件
-		getseach(data) {
-			let params = new Object();
-			params.chanid = this.chanid + '';
-			params.page = this.vadio_page;
-			getvideo(params)
-				.then((res) => {
-					console.log(res);
-					if (res.status == 0) {
-						res.result.cols.forEach((item, index) => {
-							let obj = {};
-							obj.value = index;
-							obj.label = item.url_name;
-							this.optionsa1.push(obj);
-						});
-						if (res.result.les_count == 0) {
-							this.getcure(data);
-							this.vadio_page = 0;
-						} else {
-							this.vadio_page++;
-							this.getseach();
-						}
-					} else {
-						this.$message.error(res.msg);
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
 		},
 		//请求数据--曲线图
 		getcure(data) {

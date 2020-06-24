@@ -635,7 +635,8 @@ export default {
 		this.settimeunit(this.starttime, this.endtime);
 
 		// this.getseachlabel1();
-		// this.configure()
+        // this.configure()
+        this.getlabrl2();
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			if (this.activeName != 'first') {

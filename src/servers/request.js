@@ -6,7 +6,8 @@ import router from '../router/index';
 import http from './ajax';
 import VueCookies from 'vue-cookies';
 import axios from 'axios';
-import { Message, MessageBox } from 'element-ui';
+import { Message, Loading } from 'element-ui';
+import _ from 'lodash';
 let v = new Vue();
 
 // import store from '../store/index'
@@ -29,6 +30,46 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else {
     var userUrl = 'http://zzb.onezen.net';
 }
+// 加载动画
+//loading对象
+var loading;
+
+//当前正在请求的数量
+let needLoadingRequestCount = 0;
+//显示loading
+function showLoading(target) {
+    // 后面这个判断很重要，因为关闭时加了抖动，此时loading对象可能还存在，
+    // 但needLoadingRequestCount已经变成0.避免这种情况下会重新创建个loading
+    if (needLoadingRequestCount === 0 && !loading) {
+        loading = Loading.service({
+            lock: true,
+            text: 'Loading...',
+            background: 'rgba(255, 255, 255, 0.5)',
+            target: target || 'body'
+        });
+    }
+    needLoadingRequestCount++;
+}
+
+//隐藏loading
+function hideLoading() {
+    needLoadingRequestCount--;
+    needLoadingRequestCount = Math.max(needLoadingRequestCount, 0); //做个保护
+    if (needLoadingRequestCount === 0) {
+        //关闭loading
+        toHideLoading();
+    }
+}
+//防抖：将 300ms 间隔内的关闭 loading 便合并为一次。防止连续请求时， loading闪烁的问题。
+var toHideLoading = _.debounce(() => {
+    /**
+     * 坑：在拦截起调用新的Loading之前检测是否有实例存在，如果有则调用close()方法关闭实例，然后再调用新的Loading！！！！！！！！！！！！
+     */
+    if (loading) {
+        loading.close();
+        loading = null;
+    }
+}, 300);
 // 请求超时时间
 axios.defaults.timeout = 10000;
 // post请求头
@@ -37,6 +78,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // 请求拦截器
 axios.interceptors.request.use(
     (config) => {
+
         var checkwithout = [
             userUrl + '/clouduser/loginbyphone',
             userUrl + '/clouduser/login',
@@ -81,6 +123,9 @@ axios.interceptors.request.use(
             });
         }
 
+        if (config.headers.showLoading !== false) {
+            showLoading(config.headers.loadingTarget);
+        }
         return config;
         // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
         // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
@@ -88,12 +133,21 @@ axios.interceptors.request.use(
         // token && (config.headers.Authorization = token);
     },
     (error) => {
+        //判断当前请求是否设置了不显示Loading
+        if (config.headers.showLoading !== false) {
+            hideLoading();
+        }
+        Message.error('请求超时!');
         return Promise.error(error);
     }
 );
 // 响应拦截器
 axios.interceptors.response.use(
     (response) => {
+
+        if (response.config.headers.showLoading !== false) {
+            hideLoading();
+        }
         //console.log(response.status)
         if (response.status === 200) {
             //console.log(Promise.resolve(response));
@@ -112,6 +166,13 @@ axios.interceptors.response.use(
     },
     // 服务器状态码不是200的情况
     (error) => {
+        //判断当前请求是否设置了不显示Loading（不显示自然无需隐藏）
+        if (error.config.headers.showLoading !== false) {
+            hideLoading();
+        }
+        if (error.response && error.response.status == 404) {
+            router.push('/');
+        }
         //console.log(error.response.status);
         if (error.response.status) {
             switch (error.response.status) {

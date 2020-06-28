@@ -165,13 +165,13 @@
 											</template>
 										</el-table-column>
 									</el-table>
-									<!-- <fenye
+									<fenye
 										style="float:right;margin:10px 0 20px 0;"
 										@fatherMethod="getpage"
 										@fathernum="gettol"
 										:pagesa="total_cnt"
 										:currentPage="currentPage"
-                  ></fenye>-->
+                  ></fenye>
 								</el-col>
 							</el-row>
 						</div>
@@ -806,9 +806,8 @@ export default {
 			accelerate_flow_table(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (params.pageNo == 0) {
-							this.tablecdn = [];
-						}
+                        this.total_cnt=res.data.totalCnt;
+						this.tablecdn = [];
 						if (res.data.timeArray.length > 0) {
 							res.data.timeArray.forEach((item, index) => {
 								let obj = {};

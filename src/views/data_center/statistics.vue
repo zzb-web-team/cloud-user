@@ -660,14 +660,14 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="加速内容被加速的次数">
+										<el-table-column label="加速次数">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.totalCnt }}
 												</div>
 											</template> </el-table-column
 										>
-                                        <el-table-column label="加速内容被请求加速(播放)的次数">
+                                        <el-table-column label="访问次数">
 											<template slot-scope="scope">
 												<div>
 													{{ scope.row.totalAccelCnt }}

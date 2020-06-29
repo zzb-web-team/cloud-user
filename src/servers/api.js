@@ -8,6 +8,7 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else {
     var userUrl = 'http://zzb.onezen.net';
 }
+
 export const uploadurl = userUrl;
 //用户管理
 //忘记密码--重置密码

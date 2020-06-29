@@ -21,7 +21,7 @@
 					<el-input
 						class="other_bgc"
 						v-model="dynamicValidateForm.url_content"
-						placeholder="4-50个字符，汉字、英文、数字任意组合"
+						placeholder="4-50个字符，汉字、英文、数字下划线任意组合"
 						maxlength="1024"
 					></el-input>
 					<span class="add_url_point">创建成功后将无法修改</span>
@@ -309,7 +309,7 @@ export default {
 			if (value === '') {
 				callback(new Error('请输入加速内容名称'));
 			} else {
-				var resyzm = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,1024}$/;
+				var resyzm = /^[\u4e00-\u9fa5a-zA-Z0-9_]{1,1024}$/;
 				if (this.getBLen(value) > 1024) {
 					callback(new Error('加速内容名称不能超出1024个字符'));
 				} else if (this.getBLen(value) < 2) {

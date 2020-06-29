@@ -30,6 +30,7 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else {
     var userUrl = 'http://zzb.onezen.net';
 }
+
 // 加载动画
 //loading对象
 var loading;

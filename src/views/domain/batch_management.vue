@@ -937,8 +937,7 @@ export default {
 		this.getuserlist();
 		this.getqueryurl();
 		// this.options = [];
-        //this.getlabrl2();
-        
+		//this.getlabrl2();
 	},
 	methods: {
 		//获取url列表--请求
@@ -977,6 +976,7 @@ export default {
 		},
 		//查看url
 		cleckurl(num, str) {
+			console.log(str);
 			this.basisform.name = str;
 			if (num == 1) {
 				this.dialog_title = '源站域名';
@@ -991,11 +991,13 @@ export default {
 				this.basis_point = '开头固定为/，2-1024字符内';
 				this.baseis_num = 3;
 			}
-			this.basisVisible = true;
+            this.basisVisible = true;
+            this.set_dia_val();
 		},
 		//修改基础信息弹窗
 		set_dia_val() {
 			this.basisform.othname = this.basisform.name;
+			console.log(this.basisform.othname);
 		},
 		//基础配置弹窗--关闭
 		handleClose() {
@@ -1018,6 +1020,7 @@ export default {
 					} else if (_this.baseis_num == 3) {
 						_this.datalist.url = _this.basisform.othname;
 					}
+					console.log(_this.basisform.othname);
 					_this.basisVisible = false;
 					_this.updateurl();
 				}
@@ -1099,22 +1102,23 @@ export default {
 			parmas.buser_id = this.chanid + '';
 			query_config(parmas)
 				.then((res) => {
-                    //缓存参数
-                    if(res.status==0){
-                        let concash = {};
-                        if (res.data.data.cache_config.valid == 0) {
-                            //缓存状态
-                            concash.valid = false;
-                            this.valueh = false;
-                        } else {
-                            concash.valid = true;
-                            this.valueh = true;
-                        }
-                        this.datalist.cache_con = res.data.data.cache_config.data;
-                        this.datalist.custom_page = res.data.data.custom_page;
-                    }else{
-                        this.$message.error(res.msg);
-                    }
+					//缓存参数
+					if (res.status == 0) {
+						let concash = {};
+						if (res.data.data.cache_config.valid == 0) {
+							//缓存状态
+							concash.valid = false;
+							this.valueh = false;
+						} else {
+							concash.valid = true;
+							this.valueh = true;
+						}
+						this.datalist.cache_con =
+							res.data.data.cache_config.data;
+						this.datalist.custom_page = res.data.data.custom_page;
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((err) => {});
 		},
@@ -1124,6 +1128,7 @@ export default {
 			this.updateurl();
 		},
 		updateurl() {
+			console.log(this.datalist);
 			let parmas = new Object();
 			let natobj = new Object();
 			natobj.url_name = this.urlname;
@@ -1161,7 +1166,9 @@ export default {
 						// setTimeout(() => {
 						//   this.$router.push({ path: "/domain_management" });
 						// }, 1000);
-					}else{this.$message.error(res.msg);}
+					} else {
+						this.$message.error(res.msg);
+					}
 				})
 				.catch((err) => {});
 		},
@@ -1200,9 +1207,9 @@ export default {
 									type: 'success',
 									message: '操作成功!',
 								});
-							}else{
-                                this.$message.error(res.msg);
-                            }
+							} else {
+								this.$message.error(res.msg);
+							}
 						})
 						.catch((error) => {});
 				})
@@ -1522,7 +1529,7 @@ export default {
 				if (value === '') {
 					callback(new Error('路径不能为空'));
 				} else {
-                    var resyzm = /^\/{1}.{1,1024}$/;
+					var resyzm = /^\/{1}.{1,1024}$/;
 					if (resyzm.test(value) === false) {
 						callback(new Error('路径格式错误'));
 					} else {

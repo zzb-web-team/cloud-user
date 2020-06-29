@@ -340,16 +340,12 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="总流量(GB)">
+										<el-table-column label="总流量">
 											<template slot-scope="scope">
 												<div>
 													{{
-														(
-															scope.row.dataFlow /
-															1024 /
-															1024 /
-															1024
-														).toFixed(2)
+														
+															scope.row.dataFlow |updatabkb
 													}}
 												</div>
 											</template>
@@ -421,16 +417,12 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="总流量(GB)">
+										<el-table-column label="总流量">
 											<template slot-scope="scope">
 												<div>
 													{{
-														(
-															scope.row.dataFlow /
-															1024 /
-															1024 /
-															1024
-														).toFixed(2)
+														scope.row.dataFlow
+															| updatabkb
 													}}
 												</div>
 											</template>
@@ -444,7 +436,7 @@
 												</div>
 											</template>
 										</el-table-column>
-                                        
+
 										<el-table-column label="访问用户">
 											<template slot-scope="scope">
 												<div>
@@ -636,16 +628,12 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="流量(GB)">
+										<el-table-column label="流量">
 											<template slot-scope="scope">
 												<div>
 													{{
-														(
-															scope.row.dataFlow /
-															1024 /
-															1024 /
-															1024
-														).toFixed(2)
+														
+															scope.row.dataFlow |updatabkb
 													}}
 												</div>
 											</template>
@@ -665,16 +653,18 @@
 												<div>
 													{{ scope.row.totalCnt }}
 												</div>
-											</template> </el-table-column
-										>
-                                        <el-table-column label="访问次数">
+											</template>
+										</el-table-column>
+										<el-table-column label="访问次数">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.totalAccelCnt }}
+													{{
+														scope.row.totalAccelCnt
+													}}
 												</div>
-											</template> </el-table-column
-										>
-                                        <el-table-column label="访问占比">
+											</template>
+										</el-table-column>
+										<el-table-column label="访问占比">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -1021,6 +1011,33 @@ export default {
 				return liu + '%';
 			}
 		},
+		updatabkb(data) {
+			if (data == 0) {
+				return 0 + 'B';
+			} else {
+				function formatB(a, b) {
+					if (0 == a) return '0 Bytes';
+					var c = 1024,
+						d = b || 2,
+						e = [
+							'Bytes',
+							'KB',
+							'MB',
+							'GB',
+							'TB',
+							'PB',
+							'EB',
+							'ZB',
+							'YB',
+						],
+						f = Math.floor(Math.log(a) / Math.log(c));
+					return (
+						parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f]
+					);
+				}
+				return formatB(data);
+			}
+		},
 	},
 	components: {
 		fenye,
@@ -1034,8 +1051,8 @@ export default {
 		this.starttime =
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
-        this.getlabrl2();
-        console.log(sessionStorage.getItem('tab_name'));
+		this.getlabrl2();
+		console.log(sessionStorage.getItem('tab_name'));
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			if (this.activeName == 'first') {

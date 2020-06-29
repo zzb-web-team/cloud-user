@@ -487,7 +487,7 @@ export default {
 			optionsa4: [],
 			value1: '',
 			value2: '',
-			value3: '',
+			value3: '*',
 			value4: '',
 			valuea1: '',
 			valuea2: '',

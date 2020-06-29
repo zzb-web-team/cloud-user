@@ -171,7 +171,7 @@
 										@fathernum="gettol"
 										:pagesa="total_cnt"
 										:currentPage="currentPage"
-                  ></fenye>
+									></fenye>
 								</el-col>
 							</el-row>
 						</div>
@@ -293,6 +293,10 @@ export default {
 			options4: [],
 			optionsa1: [],
 			optionsa2: [
+				{
+					value: -1,
+					label: '全部',
+				},
 				{
 					value: '华北',
 					label: '华北',
@@ -486,7 +490,7 @@ export default {
 			],
 			optionsa4: [],
 			value1: '',
-			value2: '',
+			value2: -1,
 			value3: '*',
 			value4: '',
 			valuea1: '',
@@ -635,8 +639,8 @@ export default {
 		this.settimeunit(this.starttime, this.endtime);
 
 		// this.getseachlabel1();
-        // this.configure()
-        this.getlabrl2();
+		// this.configure()
+		this.getlabrl2();
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			if (this.activeName != 'first') {
@@ -728,7 +732,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]) {
+			if (this.value2[1] && this.value2 != -1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -790,7 +794,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]) {
+			if (this.value2[1]&&this.value2!=-1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -806,7 +810,7 @@ export default {
 			accelerate_flow_table(params)
 				.then((res) => {
 					if (res.status == 0) {
-                        this.total_cnt=res.data.totalCnt;
+						this.total_cnt = res.data.totalCnt;
 						this.tablecdn = [];
 						if (res.data.timeArray.length > 0) {
 							res.data.timeArray.forEach((item, index) => {
@@ -834,7 +838,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]) {
+			if (this.value2[1]&&this.value2!=-1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -926,7 +930,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]) {
+			if (this.value2[1]&&this.value2!=-1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -961,7 +965,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]) {
+			if (this.value2[1]&&this.value2!=-1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';

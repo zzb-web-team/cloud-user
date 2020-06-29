@@ -1103,7 +1103,12 @@ export default {
 			this.getcure(0);
 		},
 		getdata1() {
-			this.getcure(1);
+            if(this.radio_tab==1){
+                this.getcure(1);
+            }else{
+                this.getcure(2);
+            }
+			
 		},
 		getdata2() {
 			this.getcure(3);

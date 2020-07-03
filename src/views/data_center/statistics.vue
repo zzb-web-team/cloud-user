@@ -387,6 +387,14 @@
 									</el-table>
 								</el-col>
 							</el-row>
+                            <fenye
+							style="text-align:right;margin:10px 0 20px 0;"
+							@fatherMethod="f_getpage"
+							@fathernum="f_gettol"
+							:pagesa="f_total_cnt"
+							:currentPage="f_currentPage"
+						>
+						</fenye>
 						</div>
 						<!-- 运营商 -->
 						<div class="devide_table" v-show="!region_show">
@@ -465,15 +473,16 @@
 									</el-table>
 								</el-col>
 							</el-row>
-						</div>
-						<fenye
-							style="float:right;margin:10px 0 20px 0;"
+                            <fenye
+							style="text-align:right;margin:10px 0 20px 0;"
 							@fatherMethod="f_getpage"
 							@fathernum="f_gettol"
 							:pagesa="f_total_cnt"
 							:currentPage="f_currentPage"
 						>
 						</fenye>
+						</div>
+                       
 					</el-tab-pane>
 					<el-tab-pane label="热门加速内容" name="there">
 						<div
@@ -651,7 +660,7 @@
 										<el-table-column label="加速次数">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.totalCnt }}
+													{{ scope.row.totalAccelCnt }}
 												</div>
 											</template>
 										</el-table-column>
@@ -659,7 +668,7 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.totalAccelCnt
+														scope.row.totalCnt
 													}}
 												</div>
 											</template>
@@ -800,7 +809,7 @@ export default {
 			val2: [],
 			starttime: '',
 			endtime: '',
-			timeUnit: 60,
+			timeUnit: 5,
 			chanid: '',
 			uvArray: [], //图一y1
 			pvArray: [], //图一y2
@@ -1086,7 +1095,7 @@ export default {
 		},
 		//获取页码
 		f_getpage(pages) {
-			this.f_pageNo = pages;
+			this.f_currentPage = pages;
 			if (this.region_show == true) {
 				this.gettable(1);
 			} else {
@@ -1111,6 +1120,7 @@ export default {
 			
 		},
 		getdata2() {
+            this.currentPage=1;
 			this.getcure(3);
 		},
 		//请求数据--曲线图
@@ -1183,7 +1193,7 @@ export default {
 				}
 				params.top = 10;
 				params.acce = this.accval2;
-				params.pageNo = this.f_pageNo;
+				params.pageNo = this.f_currentPage;
 				params.pageSize = this.f_pageSize;
 				if (data == 1) {
 					this.datatype = 1;
@@ -1261,7 +1271,7 @@ export default {
 			params.chanId = this.chanid + '';
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
-			params.pageNo = this.pageNo - 1;
+			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
 			params.acce = this.accval3;
 			params.fileName = '*';
@@ -1622,7 +1632,8 @@ export default {
 				this.timeUnit = 60;
 			} else if (this.endtime - this.starttime >= 86400) {
 				this.timeUnit = 60 * 24;
-			}
+            }
+            this.currentPage=1;
 			this.getcure(3);
 		},
 
@@ -1639,6 +1650,7 @@ export default {
 			this.getcure(2);
 		},
 		sele_tab(data) {
+            this.f_currentPage=1;
 			if (this.radio_tab == 1) {
 				this.region_show = true;
 				this.twob = false;

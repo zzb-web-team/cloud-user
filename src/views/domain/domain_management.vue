@@ -137,7 +137,12 @@
 								v-if="scope.row.state == 1"
 								>正常运行</span
 							>
-							<span style="color:#E54545;" v-else>已停止</span>
+							<span
+								style="color:#E54545;"
+								v-else-if="scope.row.state == 0"
+								>已停止</span
+							>
+							<span style="color:#E54545;" v-else>回源失败</span>
 						</template>
 					</el-table-column>
 

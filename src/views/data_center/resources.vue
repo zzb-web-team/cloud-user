@@ -74,6 +74,7 @@
 							v-model="radio1"
 							size="medium"
 							@change="sele_time()"
+							v-show="!shoudzyx"
 						>
 							<el-radio-button label="1">今天</el-radio-button>
 							<el-radio-button label="2">昨天</el-radio-button>
@@ -81,6 +82,13 @@
 							<el-radio-button label="4">近30天</el-radio-button>
 							<el-radio-button label="5">自定义</el-radio-button>
 						</el-radio-group>
+						<el-button
+							type="primary"
+							v-show="shoudzyx"
+							style="background:#409EFF;border:#409EFF"
+							@click="setshoudzyx"
+							>自定义</el-button
+						>
 						<!-- <el-button-group>
 							<el-button v-show="!shoudzyx" @click="today()"
 								>今天</el-button
@@ -687,7 +695,12 @@ export default {
 			// this.getuserlist();
 		},
 		getdata() {
-			this.gettable1();
+			this.currentPage = 1;
+			if (this.activeName == 'first') {
+				this.gettable1();
+			} else {
+				this.gettable2();
+			}
 		},
 		getdata1() {
 			this.gettable2();
@@ -794,7 +807,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]&&this.value2!=-1) {
+			if (this.value2[1] && this.value2 != -1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -804,7 +817,7 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			params.pageNo = this.pageNo - 1;
+			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
 			params.acce = this.acce;
 			accelerate_flow_table(params)
@@ -838,7 +851,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]&&this.value2!=-1) {
+			if (this.value2[1] && this.value2 != -1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -930,7 +943,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]&&this.value2!=-1) {
+			if (this.value2[1] && this.value2 != -1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -965,7 +978,7 @@ export default {
 			} else {
 				params.fileName = '*';
 			}
-			if (this.value2[1]&&this.value2!=-1) {
+			if (this.value2[1] && this.value2 != -1) {
 				params.region = this.value2[1];
 			} else {
 				params.region = '*';
@@ -996,18 +1009,30 @@ export default {
 				this.gettable2();
 			}
 		},
+		setshoudzyx() {
+			this.shoudzyx = !this.shoudzyx;
+			if (this.shoudzyx != true) {
+				this.radio1 = 1;
+				this.val2 = '';
+			}
+			this.sele_time();
+		},
 		sele_time() {
 			if (this.radio1 == 1) {
 				this.shoudzyx = false;
+				this.val2 = '';
 				this.today();
 			} else if (this.radio1 == 2) {
 				this.shoudzyx = false;
+				this.val2 = '';
 				this.yesterday();
 			} else if (this.radio1 == 3) {
 				this.shoudzyx = false;
+				this.val2 = '';
 				this.sevendat();
 			} else if (this.radio1 == 4) {
 				this.shoudzyx = false;
+				this.val2 = '';
 				this.thirtyday();
 			} else if (this.radio1 == 5) {
 				this.shoudzyx = true;

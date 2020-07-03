@@ -13,7 +13,7 @@
 					<span style="font-size: 32px;color: #333333;">{{
 						dataL
 					}}</span
-					>{{unitdata}}
+					>{{ unitdata }}
 				</p>
 			</div>
 		</div>
@@ -41,9 +41,9 @@ import {
 	dateToMs,
 	getymdtime,
 	getlocaltimesformatBytes,
-    formatBkb,
-    getlocaltimes,
-    formatBytes
+	formatBkb,
+	getlocaltimes,
+	formatBytes,
 } from '../../servers/sevdate';
 import echarts from 'echarts';
 export default {
@@ -65,14 +65,21 @@ export default {
 		this.getlist();
 	},
 	methods: {
+		// 本月第一天
+		getCurrentMonthFirst() {
+			var date = new Date();
+			date.setDate(1);
+			return (
+				new Date(new Date(date).toLocaleDateString()).getTime() / 1000
+			);
+		},
 		//请求数据
 		getlist() {
 			let params = new Object();
-			let starttime =
-				new Date(new Date().toLocaleDateString()).getTime() / 1000;
+			let starttime = this.getCurrentMonthFirst();
 			let endtime = Date.parse(new Date()) / 1000;
-			params.start_ts = starttime - 60 * 60 * 24 * 30;
-            params.end_ts = endtime;
+			params.start_ts = starttime;
+			params.end_ts = endtime;
 			params.chanId = this.chanid + '';
 			params.fileName = '*';
 			params.timeUnit = 1440;
@@ -81,22 +88,24 @@ export default {
 				.then((res) => {
 					if (res.status == 0) {
 						if (res.data.totalUsage == 0) {
-                            this.dataL=0;
+							this.dataL = 0;
 							this.unitdata = 'B';
 						} else {
-                            this.unitdata = formatBytes(res.data.totalUsage);
-                            this.dataL = formatBkb(
+							this.unitdata = formatBytes(res.data.totalUsage);
+							this.dataL = formatBkb(
 								res.data.totalUsage,
 								this.unitdata
 							);
-                        }
+						}
 						res.data.dataFlowArray.forEach((item) => {
-							this.dataFlowArray.push(formatBkb(item, this.unitdata));
-                        });
+							this.dataFlowArray.push(
+								formatBkb(item, this.unitdata)
+							);
+						});
 						res.data.timeArray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
-                        });
-                      
+						});
+
 						this.configure();
 					} else {
 						this.$message.error(res.msg);
@@ -110,7 +119,7 @@ export default {
 		},
 		//绘图
 		configure() {
-            var _this=this;
+			var _this = this;
 			let myChart = echarts.init(document.getElementById('myChart3')); //这里是为了获得容器所在位置
 			window.onresize = myChart.resize;
 			let options = {

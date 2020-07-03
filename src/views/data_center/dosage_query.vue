@@ -46,17 +46,19 @@
 					<el-button @click="thirtyday()">近30天</el-button>
 					<el-button @click="showzi()">自定义</el-button>
 				</el-button-group> -->
-				<el-radio-group
-					v-model="radio1"
-					size="medium"
-					@change="sele_time()"
-				>
-					<el-radio-button label="1">今天</el-radio-button>
-					<el-radio-button label="2">昨天</el-radio-button>
-					<el-radio-button label="3">近7天</el-radio-button>
-					<el-radio-button label="4">近30天</el-radio-button>
-					<el-radio-button label="5">自定义</el-radio-button>
-				</el-radio-group>
+				<div style="min-width: 385px;">
+					<el-radio-group
+						v-model="radio1"
+						size="medium"
+						@change="sele_time()"
+					>
+						<el-radio-button label="1">今天</el-radio-button>
+						<el-radio-button label="2">昨天</el-radio-button>
+						<el-radio-button label="3">近7天</el-radio-button>
+						<el-radio-button label="4">近30天</el-radio-button>
+						<el-radio-button label="5">自定义</el-radio-button>
+					</el-radio-group>
+				</div>
 				<el-date-picker
 					v-show="showdate"
 					style="margin-left:10px;"
@@ -126,6 +128,7 @@
 						@fathernum="gettol"
 						:pagesa="total_cnt"
 						:currentPage="currentPage"
+						ref="fen"
 					></fenye>
 				</div>
 			</div>
@@ -267,11 +270,20 @@ export default {
 			var stat = getymdtime(data);
 			return stat;
 		},
-		zhuanb(data) {
-			console.log(_this.unitdata);
-			return formatBkb(data, _this.unitdata) + _this.unitdata;
-        },
-        
+		// zhuanb(data) {
+		// 	return formatBkb(data, _this.unitdata) + _this.unitdata;
+		// },
+		zhuanb(a) {
+			if (0 == a) return '0 B';
+			var c = 1024;
+			var d = 2;
+			var e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+			var f = Math.floor(Math.log(a) / Math.log(c));
+			if (e[f] == 'TB' || e[f] == 'PB') {
+				d = 4;
+			}
+			return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
+		},
 	},
 	components: {
 		fenye,
@@ -310,7 +322,7 @@ export default {
 		//生成今天的
 		//获取页码
 		getpage(pages) {
-			this.pageNo = pages;
+			this.currentPage = pages;
 			this.getdtable();
 		},
 		//获取每页数量
@@ -373,7 +385,7 @@ export default {
 								res.data.totalUsage,
 								this.unitdata
 							);
-                        }
+						}
 						res.data.dataFlowArray.forEach((item, index) => {
 							this.dataFlowArray.push(
 								formatBkb(item, this.unitdata)
@@ -384,7 +396,7 @@ export default {
 
 						let upcli = Math.floor(this.dataFlownum / 12);
 						res.data.timeArray.forEach((item, index) => {
-                            this.timeArray.push(getlocaltimes(item));
+							this.timeArray.push(getlocaltimes(item));
 							// if (
 							// 	index == 0 ||
 							// 	(index % upcli == 0 && index < upcli * 11) ||
@@ -419,7 +431,7 @@ export default {
 			} else {
 				params.timeUnit = 60;
 			}
-			params.pageNo = this.pageNo - 1;
+			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
 			params.acce = this.acc;
 			dataflow_table(params)
@@ -483,9 +495,12 @@ export default {
 		},
 		//下拉框
 		changmvitem() {
+			this.currentPage = 1;
+			console.log(this.$refs.fen);
 			this.gettu();
 		},
 		sele_time() {
+			this.currentPage = 1;
 			if (this.radio1 == 1) {
 				this.showdate = false;
 				this.today();
@@ -672,7 +687,7 @@ export default {
 						name: '流量',
 						type: 'bar',
 						// barWidth: 30, //柱图宽度
-						barMaxWidth:30,
+						barMaxWidth: 30,
 						data: this.dataFlowArray,
 						smooth: true, //设置折线图的弧度
 						itemStyle: {

@@ -686,7 +686,7 @@ export default {
 		},
 		//获取页码
 		getpage(pages) {
-			this.pageNo = pages;
+			this.currentPage = pages;
 			this.getbot();
 		},
 		//获取每页数量

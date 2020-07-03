@@ -1672,6 +1672,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
+            this.timeUnit=5;
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.radio1 = '1';
 			this.val2 = [];

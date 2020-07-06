@@ -3,7 +3,6 @@
     <div class="titletext">
       <el-form
         :model="ruleForm"
-        status-icon
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm registered_from"
@@ -27,7 +26,7 @@
             type="password"
             v-model="ruleForm.pass"
             autocomplete="off"
-            placeholder="登陆密码(8~16个字符支持英文，数字，符号组合)"
+            placeholder="登录密码(8~16个字符支持英文，数字，符号组合)"
           ></el-input>
         </el-form-item>
         <el-form-item label prop="checkPass" :rules="[{ validator: jioqpwd, trigger: 'blur' }]">
@@ -83,7 +82,7 @@
           <!-- <el-button type="primary" @click="submitForm('ruleForm')" :disabled="checkedbtn">提交</el-button> -->
           <!-- <el-button @click="resetForm('ruleForm')">重置</el-button> -->
         </el-form-item>
-        <p style="text-align: center;color: royalblue;" @click="gologin()">去登陆</p>
+        <p style="text-align: center;color: royalblue;" @click="gologin()">去登录</p>
       </el-form>
     </div>
     <!-- 服务条款 -->
@@ -123,7 +122,7 @@
         <div>
           <strong>服务费用</strong>
         </div>（1）XXX服务的计费方式及价格等信息，以XXX各具体服务项目网页公布的计费和价格信息为准。
-        <br />（2）您登陆XXX平台后，可以通过管理后台进行查看帐户信息、开通、中止或终止服务项目、充值及查看帐单等操作。
+        <br />（2）您登录XXX平台后，可以通过管理后台进行查看帐户信息、开通、中止或终止服务项目、充值及查看帐单等操作。
         <br />（3）在您提交订单并在付费后方可享受XXX提供的服务。如您提交订单后7日内未付款的，本服务条款及与您就服务达成的一切协议无效。
         <br />（4）您如需就充值金额开具发票的，需通过向客服邮箱发送电子邮件的形式提出要求，XXX公司将在30个工作日内向您寄送发票。发票信息和寄送信息以您提供的信息为准，由于信息不准确造成的后果不由XXX公司承担。
         <br />（5）服务期满后双方达成一致，继续由XXX向您提供服务的，您应至少在服务期满前7日支付续费款项。如续费时XXX对产品名称、服务或价格进行了调整的，双方同意按照续约当时有效的新的产品名称、服务和价格由XXX提供服务。

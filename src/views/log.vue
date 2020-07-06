@@ -72,7 +72,7 @@
 			<div
 				style="display: flex;justify-content: space-evenly;align-items: center;color:#297AFF;font-size:16px;"
 			>
-				<span @click="gophonelog()">手机验证登陆</span>
+				<span @click="gophonelog()">手机验证登录</span>
 			</div>
 		</el-form>
 	</div>
@@ -130,7 +130,7 @@ export default {
 				path: '/registered'
 			});
 		},
-		//验证码登陆
+		//验证码登录
 		gophonelog() {
 			this.$router.push({
 				path: '/phone_log'
@@ -140,7 +140,7 @@ export default {
 		handleReset2() {
 			this.$refs.ruleForm2.resetFields();
 		},
-		//登陆
+		//登录
 		handleSubmit2(ev) {
 			var _this = this;
 			this.$refs.ruleForm2.validate(valid => {

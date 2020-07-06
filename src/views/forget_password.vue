@@ -3,7 +3,6 @@
 		<div class="titletext">
 			<el-form
 				:model="ruleForm"
-				status-icon
 				ref="ruleForm"
 				label-width="100px"
 				class="demo-ruleForm forget_from"
@@ -59,7 +58,7 @@
 						type="password"
 						v-model="ruleForm.pass"
 						autocomplete="off"
-						placeholder="登陆密码(8~16个字符支持英文，数字，符号组合)"
+						placeholder="登录密码(8~16个字符支持英文，数字，符号组合)"
 					></el-input>
 				</el-form-item>
 				<el-form-item
@@ -91,7 +90,7 @@
 					style="text-align: center;color: #297AFF;"
 					@click="gologin()"
 				>
-					去登陆
+					去登录
 				</p>
 			</el-form>
 		</div>

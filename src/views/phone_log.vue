@@ -130,7 +130,7 @@ export default {
 					this.getyzmcode = false;
 				});
 		},
-		//登陆
+		//登录
 		phonlog(formName) {
 			this.$refs[formName].validate(valid => {
 				if (valid) {
@@ -190,7 +190,7 @@ export default {
 				path: '/registered'
 			});
 		},
-		//验证码登陆
+		//验证码登录
 		gophonelog() {
 			this.$router.push({
 				path: '/'

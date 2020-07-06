@@ -73,7 +73,7 @@
           </span>
         </p>
         <p>
-          <span class="titlenama">登陆密码</span>
+          <span class="titlenama">登录密码</span>
           <span class="titlenama">******</span>
           <span @click="setuserpwd">
             修改密码
@@ -483,7 +483,7 @@ export default {
           .catch(err => {});
       }
     },
-    //修改登陆密码--获取验证码
+    //修改登录密码--获取验证码
     sendyam() {
       this.getyzmcode = true;
       let params = new Object();

@@ -14,7 +14,7 @@ export const uploadurl = userUrl;
 //忘记密码--重置密码
 export const loginbyphone = (params) =>
     post(`${userUrl}/clouduser/loginbyphone`, params);
-//登陆
+//登录
 export const login = (params) => post(`${userUrl}/clouduser/login`, params);
 //注册
 export const register = (params) =>

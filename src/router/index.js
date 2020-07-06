@@ -47,13 +47,13 @@ Vue.use(Router);
 const router = new Router({
     routes: [{
             path: '/',
-            name: '登陆',
+            name: '登录',
             component: log,
             hidden: true,
         },
         {
             path: '/phone_log',
-            name: '手机号登陆',
+            name: '手机号登录',
             component: phone_log,
             hidden: true,
         },

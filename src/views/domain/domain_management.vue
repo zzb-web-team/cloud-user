@@ -534,7 +534,7 @@ export default {
 		//导出表格
 		exp_table() {
 			let params = new Object();
-			params.page = this.tolpage - 1;
+			params.page = this.currentPage - 1;
 			params.buser_id = this.chanid + '';
 			params.url_name = this.input;
 			params.state = this.value;
@@ -592,6 +592,7 @@ export default {
 			return row.url;
 		},
 		getdata() {
+            this.currentPage=1;
 			this.getuserlist();
 		},
 		//获取数据列表
@@ -600,7 +601,7 @@ export default {
 			//this.updateSelection();
 
 			let params = new Object();
-			params.page = this.tolpage - 1;
+			params.page = this.currentPage - 1;
 			params.buser_id = this.chanid + '';
 			params.url_name = this.input;
 			params.state = this.value;
@@ -679,7 +680,7 @@ export default {
 		},
 		//获取页码
 		getpage(pages) {
-			this.tolpage = pages;
+			this.currentPage = pages;
 			this.getuserlist();
 		},
 		//获取每页数量
@@ -689,6 +690,7 @@ export default {
 		},
 		//回车事件
 		onSubmit() {
+            this.currentPage=1;
 			this.getuserlist();
 		},
 		//筛选按钮
@@ -698,6 +700,7 @@ export default {
 		},
 		//确定搜索
 		seachuser() {
+            this.currentPage=1;
 			this.getuserlist();
 			// this.optiondisplay = false;
 			// this.rotate = !this.rotate;
@@ -707,10 +710,12 @@ export default {
 		},
 		//自定义事时间
 		gettimes() {
+            this.currentPage=1;
 			this.getuserlist();
 		},
 		//搜索重置
 		reset() {
+            this.currentPage=1;
 			this.value = -1;
 			this.value1 = '';
 			this.input = '';

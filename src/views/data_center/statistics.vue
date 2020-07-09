@@ -388,6 +388,7 @@
 								</el-col>
 							</el-row>
                             <fenye
+                            v-show="tablecdn.length>0"
 							style="text-align:right;margin:10px 0 20px 0;"
 							@fatherMethod="f_getpage"
 							@fathernum="f_gettol"
@@ -474,6 +475,7 @@
 								</el-col>
 							</el-row>
                             <fenye
+                            v-show="tablecdn.length>0"
 							style="text-align:right;margin:10px 0 20px 0;"
 							@fatherMethod="f_getpage"
 							@fathernum="f_gettol"
@@ -685,6 +687,7 @@
 										</el-table-column>
 									</el-table>
 									<fenye
+                                    v-show="tablecdn2.length>0"
 										style="float:right;margin:10px 0 20px 0;"
 										@fatherMethod="getpage"
 										@fathernum="gettol"
@@ -1167,10 +1170,11 @@ export default {
 							res.data.timeArray.forEach((item, index) => {
 								this.timeArray.push(getymdtime(item));
 							});
-							this.drawLine();
+							
 						} else {
-							this.$message.error(res.msg);
-						}
+							this.$message.error(res.err_msg);
+                        }
+                        this.drawLine();
 					})
 					.catch((err) => {});
 			} else if (data == 1 || data == 2) {
@@ -1203,12 +1207,13 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.regionArray;
-								this.drawLine1();
+								
 								this.tablecdn = res.data.accessCntTable;
 								this.f_total_cnt = res.data.totalPage;
 							} else {
-								this.$message.error(res.msg);
-							}
+								this.$message.error(res.err_msg);
+                            }
+                            this.drawLine1();
 						})
 						.catch((err) => {});
 				} else {
@@ -1220,11 +1225,12 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.ispArray;
-								this.drawLine1();
+								
 								this.tablecdn = res.data.accessCntTable;
 							} else {
-								this.$message.error(res.msg);
-							}
+								this.$message.error(res.err_msg);
+                            }
+                            this.drawLine1();
 						})
 						.catch((err) => {});
 				}
@@ -1257,7 +1263,7 @@ export default {
 							this.gettable();
 							// this.drawLine2();
 						} else {
-							this.$message.error(res.msg);
+							this.$message.error(res.err_msg);
 						}
 					})
 					.catch((err) => {});

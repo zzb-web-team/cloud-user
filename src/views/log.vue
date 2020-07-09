@@ -48,7 +48,7 @@
 						placeholder="请输入密码"
 						style="font-size: 16px;display: flex;align-items: center;"
 						class="login-form-input"
-                        @keyup.enter.native="handleSubmit2"
+						@keyup.enter.native="handleSubmit2"
 					></el-input>
 				</el-form-item>
 			</div>
@@ -83,37 +83,48 @@ import { login } from '../servers/api';
 //import NProgress from 'nprogress'
 export default {
 	data() {
+		var validatePass = (rule, value, callback) => {
+			if (value === '') {
+				callback(new Error('请输入账号'));
+			} else {
+				if(value.replace(/\s*/g,"")==''){
+                    callback(new Error('请输入账号'));
+                }else{
+                    callback();
+                }
+			}
+		};
 		return {
 			logining: false,
 			ruleForm2: {
 				account: '',
-				checkPass: ''
+				checkPass: '',
 			},
 			rules2: {
 				account: [
 					{
 						required: true,
-						message: '请输入账号',
-						trigger: 'blur'
-					}
+						validator: validatePass,
+						trigger: 'blur',
+					},
 					//{ validator: validaePass }
 				],
 				checkPass: [
 					{
 						required: true,
 						message: '请输入密码',
-						trigger: 'blur'
-					}
+						trigger: 'blur',
+					},
 					//{ validator: validaePass2 }
-				]
+				],
 			},
-			checked: true
+			checked: true,
 		};
 	},
 	mounted() {
 		if (this.$cookies.get('id')) {
 			this.$router.push({
-				path: '/overview'
+				path: '/overview',
 			});
 		}
 	},
@@ -121,19 +132,19 @@ export default {
 		//忘记密码
 		goforget() {
 			this.$router.push({
-				path: '/forget_password'
+				path: '/forget_password',
 			});
 		},
 		//去注册
 		goregister() {
 			this.$router.push({
-				path: '/registered'
+				path: '/registered',
 			});
 		},
 		//验证码登录
 		gophonelog() {
 			this.$router.push({
-				path: '/phone_log'
+				path: '/phone_log',
 			});
 		},
 		//重置
@@ -143,23 +154,23 @@ export default {
 		//登录
 		handleSubmit2(ev) {
 			var _this = this;
-			this.$refs.ruleForm2.validate(valid => {
+			this.$refs.ruleForm2.validate((valid) => {
 				if (valid) {
 					this.logining = true;
 					var loginParams = {
-						username: this.ruleForm2.account,
-						password: this.ruleForm2.checkPass
+						username: this.ruleForm2.account.replace(/\s*/g,""),
+						password: this.ruleForm2.checkPass.replace(/\s*/g,""),
 					};
 					// this.$router.push({
 					//   path: "/user"
 					// });
-					login(loginParams).then(data => {
+					login(loginParams).then((data) => {
 						this.logining = false;
 
 						if (data.status !== 0) {
 							this.$message({
 								message: data.msg,
-								type: 'error'
+								type: 'error',
 							});
 						} else {
 							sessionStorage.setItem(
@@ -190,7 +201,7 @@ export default {
 								7 * 24 * 60 * 60
 							);
 							this.$router.push({
-								path: '/overview'
+								path: '/overview',
 							});
 						}
 					});
@@ -198,8 +209,8 @@ export default {
 					return false;
 				}
 			});
-		}
-	}
+		},
+	},
 };
 </script>
 

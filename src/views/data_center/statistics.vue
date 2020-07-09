@@ -298,7 +298,7 @@
 							<el-radio-group
 								v-model="radio_tab"
 								size="medium"
-								@change="sele_tab(1)"
+								@change="sele_tab()"
 							>
 								<el-radio-button label="1"
 									>地区</el-radio-button
@@ -1061,7 +1061,6 @@ export default {
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
 		this.getlabrl2();
-		console.log(sessionStorage.getItem('tab_name'));
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			if (this.activeName == 'first') {
@@ -1518,7 +1517,7 @@ export default {
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
-				this.getcure(1);
+				this.sele_tab();
 			} else {
 				this.getcure(3);
 			}
@@ -1533,7 +1532,7 @@ export default {
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
-				this.getcure(1);
+				this.sele_tab();
 			} else {
 				this.getcure(3);
 			}
@@ -1548,7 +1547,7 @@ export default {
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
-				this.getcure(1);
+				this.sele_tab();
 			} else {
 				this.getcure(3);
 			}
@@ -1563,7 +1562,7 @@ export default {
 			if (data == 0) {
 				this.getcure(0);
 			} else if (data == 1) {
-				this.getcure(1);
+				this.sele_tab();
 			} else {
 				this.getcure(3);
 			}
@@ -1649,7 +1648,7 @@ export default {
 			this.twob = true;
 			this.getcure(2);
 		},
-		sele_tab(data) {
+		sele_tab() {
             this.f_currentPage=1;
 			if (this.radio_tab == 1) {
 				this.region_show = true;

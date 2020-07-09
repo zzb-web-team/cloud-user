@@ -239,17 +239,37 @@ export default {
 			this.uploadData(list, 1);
 		},
 		uploadData(list, page) {
-			let len = list.length;
-			let i = (page - 1) * 10;
+			var remaining = 0;
+			var len = list.length;
+			var i = (page - 1) * 10;
 			if (i > len) {
 				return false;
 			}
+			if (list.length - 10 <= 0) {
+				remaining = 0;
+			} else {
+				remaining = list.length - i;
+			}
 			var res = [];
-			res = list.slice(i, i + 10);
+			if (i != 0) {
+				if (remaining > 10) {
+					res = list.slice(i, i + 10);
+				} else {
+					res = list.slice(i, i + remaining);
+				}
+			} else {
+				if (remaining > 10) {
+					res = list.slice(i, i + 10);
+				} else {
+					res = list.slice(i, len - 1);
+				}
+			}
+
 			let param = new Object();
 			param.data_count = res.length;
-			// param.data_array = res;
-			param.data_array = list;
+			param.data_array = res;
+
+			// param.data_array = list;
 			add_url(param)
 				.then((res) => {
 					if (res.status == 0) {
@@ -278,15 +298,18 @@ export default {
 								}
 							}
 						}
-						page++;
-						this.uploadData(list, page);
-						if (res.data.failed_count == 0) {
-							setTimeout(() => {
-								this.$router.push({
-									path: '/domain_management',
-								});
-							}, 2000);
-						}
+						if (parseInt(list.length / 10) <= page - 1) {
+							if (res.data.failed_count == 0) {
+								setTimeout(() => {
+									this.$router.push({
+										path: '/domain_management',
+									});
+								}, 2000);
+							}
+						}else{
+                            page++;
+                            this.uploadData(list, page);
+                        }
 					}
 				})
 				.catch((error) => {});
@@ -337,8 +360,8 @@ export default {
 						// var restable = /^[\u4e00-\u9fffa-zA-Z\d]{4,64}$/; //校验标签
 						// var resnum = /^[0-9]*$/; //校验终端
 						var resaccelerate = /^[\u4e00-\u9fa5a-zA-Z0-9]{1,1024}$/; //加速内容
-                        //var respath = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/; //路径
-                        var respath = /^\/{1}.{1,1024}$/;
+						//var respath = /^\/{1}[0-9a-zA-Z\/\+\.?%#&=]{1,1024}$/; //路径
+						var respath = /^\/{1}.{1,1024}$/;
 
 						if (respath.test(res.data[i].url) === false) {
 							res.data[i].err_url = false;

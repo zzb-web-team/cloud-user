@@ -142,7 +142,7 @@ export default {
 			} else {
 				let times =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
-				parmas.start_ts = times - 24 * 60 * 60 * 6;
+				parmas.start_ts = times - 24 * 60 * 60 * 90;
 				parmas.end_ts = Date.parse(new Date()) / 1000;
 			}
 			parmas.pageNo = Math.abs(this.tolpage - 1);

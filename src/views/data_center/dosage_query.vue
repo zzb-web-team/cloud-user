@@ -80,7 +80,7 @@
 					<div class="user-item">
 						<div class="item-text">使用流量</div>
 						<div class="item-count">
-							<span>{{ dataL }}&nbsp;{{ unitdata }}</span>
+							<span>{{ dataL }}&nbsp;{{ allunitdata }}</span>
 						</div>
 					</div>
 				</el-row>
@@ -259,7 +259,8 @@ export default {
 			timeArray: [], //图
 			dataFlownum: 0,
 			chanid: '',
-			unitdata: 'B',
+            unitdata: 'B',
+            allunitdata:'B',
 		};
 	},
 	beforeCreate: function() {
@@ -378,13 +379,19 @@ export default {
 					if (res.status == 0) {
 						if (res.data.totalUsage == 0) {
 							this.dataL = 0;
-							this.unitdata = 'B';
+							this.allunitdata = 'B';
 						} else {
-							this.unitdata = formatBytes(res.data.totalUsage);
+							this.allunitdata = formatBytes(res.data.totalUsage);
 							this.dataL = formatBkb(
 								res.data.totalUsage,
-								this.unitdata
+								this.allunitdata
 							);
+                        }
+                        let maxnum = Math.max(...res.data.dataFlowArray);
+                        if (maxnum == 0) {
+							this.unitdata = 'B';
+						} else {
+							this.unitdata = formatBytes(maxnum);
 						}
 						res.data.dataFlowArray.forEach((item, index) => {
 							this.dataFlowArray.push(

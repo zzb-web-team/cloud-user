@@ -152,7 +152,7 @@ export default {
 				.then((res) => {
 					if (res.status == 0) {
 						this.total_cnt =
-							res.data.totalPageCnt + res.data.list.length;
+							res.data.totalCnt;
 						this.tablecdn = res.data.list;
 					} else {
 						this.$message.error(res.msg);

@@ -261,14 +261,12 @@ export default {
 				if (remaining > 10) {
 					res = list.slice(i, i + 10);
 				} else {
-					res = list.slice(i, len - 1);
+					res = list.slice(i, len);
 				}
 			}
-
 			let param = new Object();
 			param.data_count = res.length;
 			param.data_array = res;
-
 			// param.data_array = list;
 			add_url(param)
 				.then((res) => {
@@ -306,10 +304,10 @@ export default {
 									});
 								}, 2000);
 							}
-						}else{
-                            page++;
-                            this.uploadData(list, page);
-                        }
+						} else {
+							page++;
+							this.uploadData(list, page);
+						}
 					}
 				})
 				.catch((error) => {});

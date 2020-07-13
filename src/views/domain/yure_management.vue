@@ -252,6 +252,7 @@ export default {
 		return {
 			currentPage: 1,
 			errarr: '',
+			successarr: '',
 			total_cnt: 1,
 			pagesize: 10,
 			activeName: 'first',
@@ -603,6 +604,7 @@ export default {
 		},
 		//请求数据---预热刷新
 		getrefresh(datas) {
+			let nowtime = (Date.parse(new Date()) / 1000).toFixed(0);
 			let parmas = new Object();
 			parmas.buser_id = this.chanid + '';
 			if (datas == 0) {
@@ -711,12 +713,44 @@ export default {
 			parmas.buser_id = this.chanid + '';
 			resource_refresh(parmas)
 				.then((res) => {
+					this.citylabel = '';
+					this.textarea1 = '';
+					this.citylabel1 = '';
+					this.textarea2 = '';
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
 							this.$message({
 								type: 'success',
 								message: '操作成功!',
 							});
+							let arr = [];
+							let obj = {};
+							if (localStorage.getItem('yure_url_name')) {
+								let old_url_name = JSON.parse(
+									localStorage.getItem('yure_url_name')
+								);
+								obj.creatte_time = old_url_name.creatte_time;
+								obj.url_name = parmas.url_name.concat(
+									old_url_name.url_name
+								);
+								obj.area = parmas.area;
+								obj.refresh_type = parmas.refresh_type;
+								old_url_name.push(obj);
+								localStorage.setItem(
+									'yure_url_name',
+									JSON.stringify(arr)
+								);
+							} else {
+								obj.url_name = parmas.url_name;
+								obj.creatte_time = nowtime;
+								obj.area = parmas.area;
+								obj.refresh_type = parmas.refresh_type;
+								arr.push(obj);
+								localStorage.setItem(
+									'yure_url_name',
+									JSON.stringify(arr)
+								);
+							}
 							if (res.err_code == 165156446464) {
 								//判断是预热还是刷新
 								if (parmas.type == 0) {
@@ -765,14 +799,24 @@ export default {
 							}
 						} else {
 							this.errarr = '';
+							this.successarr = '';
 							res.data.res_data.forEach((item, index) => {
-								this.errarr = this.errarr.concat(
-									item[0] + '</br>'
-								);
+								if (item[1] == false) {
+									this.errarr = this.errarr.concat(
+										item[0] + '</br>'
+									);
+								} else {
+									this.successarr = this.successarr.concat(
+										item[0] + '</br>'
+									);
+								}
 							});
 							this.$alert(
 								`${this.errarr}操作失败`,
-								res.data.failed_count + '条操作失败',
+								res.data.failed_count +
+									'条操作失败' +
+									res.data.success_count +
+									'条操作成功',
 								{
 									dangerouslyUseHTMLString: true,
 								}
@@ -834,9 +878,10 @@ export default {
 			this.getrefreshstate();
 		},
 		handleClick(tab, event) {
-			console.log(this.activeName);
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
+			this.citylabel = '';
 			this.textarea1 = '';
+			this.citylabel1 = '';
 			this.textarea2 = '';
 			if (tab.name == 'third') {
 				this.getrefreshstate();

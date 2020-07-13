@@ -118,7 +118,7 @@
 								v-bind:class="{
 									active: item.bgc == true,
 									textdanger: item.bgc == false,
-									onle: item.bsgc == true
+									onle: item.bsgc == true,
 								}"
 							>
 								<i
@@ -146,6 +146,7 @@
 </template>
 
 <script>
+import { refresh_state } from '../servers/api';
 export default {
 	data() {
 		return {
@@ -161,12 +162,47 @@ export default {
 				delivery: false,
 				type: [],
 				resource: '',
-				desc: ''
-			}
+				desc: '',
+            },
+            page:0,
 		};
 	},
 	methods: {
-		onSubmit() {},
+		tanchuan() {
+			if (localStorage.getItem('yure_url_name')) {
+				let _this = this;
+                let yure = JSON.parse(localStorage.getItem('yure_url_name'));
+                this.get_yun_statue(this.page,yure);
+				setInterval(() => {
+					_this.$notify({
+						title: '成功',
+						message: '这是一条成功的提示消息',
+						type: 'success',
+					});
+				}, 60000);
+			}
+		},
+		get_yun_statue(pagr,url_name) {
+			let parmas = new Object();
+			parmas.url_name = this.input;
+			parmas.buser_id = this.$cookies.get('id');
+			parmas.refresh_type = '';
+			parmas.state = -1;
+			parmas.page = 0;
+			parmas.order = 1;
+			parmas.start_time = url_name[0].creatte_time;
+			parmas.end_time = (Date.parse(new Date()) / 1000).toFixed(0);
+			refresh_state(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+                        console.log(res.data.result);
+                        res.data.result.forEach((item,index)=>{
+
+                        });
+					}
+				})
+				.catch((err) => {});
+		},
 		handleopen() {
 			//console.log('handleopen');
 		},
@@ -182,7 +218,7 @@ export default {
 		logout: function() {
 			var _this = this;
 			this.$confirm('确认退出吗?', '提示', {
-				type: 'warning'
+				type: 'warning',
 			})
 				.then(() => {
 					sessionStorage.removeItem('user');
@@ -203,7 +239,7 @@ export default {
 			this.$refs.menuCollapsed.getElementsByClassName(
 				'submenu-hook-' + i
 			)[0].style.display = status ? 'block' : 'none';
-		}
+		},
 	},
 	mounted() {
 		if (this.$cookies.get('user')) {
@@ -220,10 +256,11 @@ export default {
 		if (user) {
 			// user = JSON.parse(user);
 			this.sysUserName = user || '';
+			this.tanchuan();
 		} else {
 			this.$router.push({ path: '/' });
 		}
-	}
+	},
 };
 </script>
 

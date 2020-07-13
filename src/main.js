@@ -45,7 +45,7 @@ router.beforeEach((to, from, next) => {
     next();
 })
 
-
+console.log('33333333333333333');
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

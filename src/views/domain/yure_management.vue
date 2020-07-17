@@ -593,7 +593,7 @@ export default {
 					i = i - 1; // i - 1 ,因为空元素在数组下标 2 位置，删除空之后，后面的元素要向前补位
 				}
 			}
-			return arr;
+			return Array.from(new Set(arr));
 		},
 		getBLen(str) {
 			if (str == null) return 0;
@@ -717,40 +717,56 @@ export default {
 					this.textarea1 = '';
 					this.citylabel1 = '';
 					this.textarea2 = '';
+					let arr = [];
+					if (localStorage.getItem('yure_url_name')) {
+						let old_url_name = JSON.parse(
+							localStorage.getItem('yure_url_name')
+                        );
+                         console.log(old_url_name)
+						res.data.res_data.forEach((item) => {
+							if (item[1] == true) {
+								let obj = {};
+                                obj.url_name=item[0];
+                                obj.creatte_time = nowtime;
+                                obj.area = parmas.area;
+                                obj.type = parmas.type;
+                                arr.push(obj);
+							}
+                        });
+                         if(arr.length>0){
+                             arr = old_url_name.concat(arr);
+                             console.log(arr);
+                             localStorage.setItem(
+                                 'yure_url_name',
+                                 JSON.stringify(arr)
+                             );
+                        }
+					} else {
+                         console.log('*****');
+						res.data.res_data.forEach((item) => {
+							if (item[1] == true) {
+                                let obj = {};
+                                obj.url_name=item[0];
+                                obj.creatte_time = nowtime;
+                                obj.area = parmas.area;
+                                obj.type = parmas.type;
+                                arr.push(obj);
+                            }
+                        });
+                        if(arr.length>0){
+                            localStorage.setItem(
+                                'yure_url_name',
+                                JSON.stringify(arr)
+                            );
+                           
+                        }
+					}
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
 							this.$message({
 								type: 'success',
 								message: '操作成功!',
 							});
-							let arr = [];
-							let obj = {};
-							if (localStorage.getItem('yure_url_name')) {
-								let old_url_name = JSON.parse(
-									localStorage.getItem('yure_url_name')
-								);
-								obj.creatte_time = old_url_name.creatte_time;
-								obj.url_name = parmas.url_name.concat(
-									old_url_name.url_name
-								);
-								obj.area = parmas.area;
-								obj.refresh_type = parmas.refresh_type;
-								old_url_name.push(obj);
-								localStorage.setItem(
-									'yure_url_name',
-									JSON.stringify(arr)
-								);
-							} else {
-								obj.url_name = parmas.url_name;
-								obj.creatte_time = nowtime;
-								obj.area = parmas.area;
-								obj.refresh_type = parmas.refresh_type;
-								arr.push(obj);
-								localStorage.setItem(
-									'yure_url_name',
-									JSON.stringify(arr)
-								);
-							}
 							if (res.err_code == 165156446464) {
 								//判断是预热还是刷新
 								if (parmas.type == 0) {
@@ -803,16 +819,16 @@ export default {
 							res.data.res_data.forEach((item, index) => {
 								if (item[1] == false) {
 									this.errarr = this.errarr.concat(
-										item[0] + '</br>'
+										item[0] + ','
 									);
 								} else {
 									this.successarr = this.successarr.concat(
-										item[0] + '</br>'
+										item[0] + ','
 									);
 								}
 							});
 							this.$alert(
-								`${this.errarr}操作失败`,
+								`${this.errarr}操作失败,${this.successarr}操作成功`,
 								res.data.failed_count +
 									'条操作失败' +
 									res.data.success_count +

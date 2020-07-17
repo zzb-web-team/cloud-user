@@ -163,45 +163,159 @@ export default {
 				type: [],
 				resource: '',
 				desc: '',
-            },
-            page:0,
+			},
+			processing_arr: [],
+			page: 0,
+			yu_error: '',
+			yu_success: '',
+			shua_error: '',
+			shua_success: '',
 		};
 	},
 	methods: {
-		tanchuan() {
-			if (localStorage.getItem('yure_url_name')) {
-				let _this = this;
-                let yure = JSON.parse(localStorage.getItem('yure_url_name'));
-                this.get_yun_statue(this.page,yure);
-				setInterval(() => {
-					_this.$notify({
-						title: '成功',
-						message: '这是一条成功的提示消息',
-						type: 'success',
-					});
-				}, 60000);
-			}
+		tanchuan() {  
+            var _this = this;
+			setInterval(() => {
+				if (localStorage.getItem('yure_url_name')) {
+					let yure = JSON.parse(
+						localStorage.getItem('yure_url_name')
+                    );
+                   this.get_yun_statue(this.page, yure);
+				} else {
+					this.processing_arr = [];
+				}
+			}, 10000);
 		},
-		get_yun_statue(pagr,url_name) {
+		get_yun_statue(page, url_name) {
 			let parmas = new Object();
-			parmas.url_name = this.input;
+			parmas.url_name = '';
 			parmas.buser_id = this.$cookies.get('id');
 			parmas.refresh_type = '';
 			parmas.state = -1;
-			parmas.page = 0;
+			parmas.page = page;
 			parmas.order = 1;
-			parmas.start_time = url_name[0].creatte_time;
-			parmas.end_time = (Date.parse(new Date()) / 1000).toFixed(0);
+			parmas.start_time = url_name[0].creatte_time*1;
+			parmas.end_time = (Date.parse(new Date()) / 1000).toFixed(0)*1;
 			refresh_state(parmas)
 				.then((res) => {
 					if (res.status == 0) {
-                        console.log(res.data.result);
-                        res.data.result.forEach((item,index)=>{
+						this.processing_arr = this.processing_arr.concat(
+							res.data.result
+						);
+						if (res.data.remaining == 0) {
+							let arr = [];
+							this.yu_error = '';
+							this.yu_success = '';
+							this.shua_error = '';
+							this.shua_success = '';
+							this.processing_arr.forEach((item, index) => {
+								if (item.state == 1) {
+									arr.push(item);
+									if (item.refresh_type == 1) {
+										this.yu_success += item.url_name + ',';
+									} else {
+										this.shua_success +=
+											item.url_name + ',';
+									}
+								} else if (item.state == 3) {
+									arr.push(item);
+									if (item.refresh_type == 1) {
+										this.yu_error += item.url_name + ',';
+									} else {
+										this.shua_error += item.url_name + ',';
+									}
+								}else{
+                                }
+							});
 
-                        });
+							if (
+								this.yu_success != '' &&
+								this.shua_success != ''
+							) {
+								_this.$notify({
+									title: '成功',
+									message: `
+                                    ${this.yu_success}预热成功</br>
+                                    ${this.shua_success}刷新成功
+                                    `,
+									type: 'success',
+								});
+							} else if (
+								this.yu_success != '' &&
+								this.shua_success == ''
+							) {
+								_this.$notify({
+									title: '成功',
+									message: `
+                                    ${this.yu_success}预热成功
+                                    `,
+									type: 'success',
+								});
+							} else if (
+								this.yu_success == '' &&
+								this.shua_success != ''
+							) {
+								_this.$notify({
+									title: '成功',
+									message: `
+                                    ${this.shua_success}刷新成功
+                                    `,
+									type: 'success',
+								});
+							}
+							if (this.yu_error != '' && this.shua_error != '') {
+								_this.$notify({
+									title: '失败',
+									message: `
+                                     ${this.yu_error}预热失败</br>
+                                     ${this.shua_error}刷新失败
+                                    `,
+									type: 'warning',
+								});
+							} else if (
+								this.yu_error != '' &&
+								this.shua_error == ''
+							) {
+								_this.$notify({
+									title: '失败',
+									message: `
+                                     ${this.yu_error}预热失败
+                                    `,
+									type: 'warning',
+								});
+							} else if (
+								this.yu_error == '' &&
+								this.shua_error != ''
+							) {
+								_this.$notify({
+									title: '失败',
+									message: `
+                                     ${this.shua_error}刷新失败
+                                    `,
+									type: 'warning',
+								});
+                            }
+                            if(arr.length>0){
+                                this.testing(arr, url_name);
+                            }
+							return false;
+						} else {
+							page++;
+							this.get_yun_statue(page, url_name);
+						}
 					}
 				})
 				.catch((err) => {});
+		},
+		testing(arr, url_list) {
+			var localaarr = url_list;
+			arr.forEach((item) => {
+				url_list.forEach((xtime, index) => {
+					if (xtime.url_name == item.url_name) {
+						url_list.splice(index, 1);
+					}
+				});
+			});
 		},
 		handleopen() {
 			//console.log('handleopen');

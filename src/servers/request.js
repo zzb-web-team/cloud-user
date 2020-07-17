@@ -123,8 +123,7 @@ axios.interceptors.request.use(
                 },
             });
         }
-
-        if (config.headers.showLoading !== false) {
+        if (config.headers.showLoading !== false && config.url.indexOf('refresh_state') < 0) {
             showLoading(config.headers.loadingTarget);
         }
         return config;

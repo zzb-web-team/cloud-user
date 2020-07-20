@@ -172,6 +172,26 @@ export default {
 			shua_success: '',
 		};
 	},
+    mounted() {
+        if (this.$cookies.get('user')) {
+            var user = this.$cookies.get('user');
+            sessionStorage.setItem(
+                'id',
+                JSON.stringify(this.$cookies.get('id'))
+            );
+            sessionStorage.setItem(
+                'user',
+                JSON.stringify(this.$cookies.get('user'))
+            );
+        }
+        if (user) {
+            // user = JSON.parse(user);
+            this.sysUserName = user || '';
+            this.tanchuan();
+        } else {
+            this.$router.push({ path: '/' });
+        }
+    },
 	methods: {
 		tanchuan() {  
             var _this = this;
@@ -354,26 +374,6 @@ export default {
 				'submenu-hook-' + i
 			)[0].style.display = status ? 'block' : 'none';
 		},
-	},
-	mounted() {
-		if (this.$cookies.get('user')) {
-			var user = this.$cookies.get('user');
-			sessionStorage.setItem(
-				'id',
-				JSON.stringify(this.$cookies.get('id'))
-			);
-			sessionStorage.setItem(
-				'user',
-				JSON.stringify(this.$cookies.get('user'))
-			);
-		}
-		if (user) {
-			// user = JSON.parse(user);
-			this.sysUserName = user || '';
-			this.tanchuan();
-		} else {
-			this.$router.push({ path: '/' });
-		}
 	},
 };
 </script>

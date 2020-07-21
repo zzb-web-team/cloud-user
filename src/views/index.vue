@@ -187,7 +187,7 @@ export default {
         if (user) {
             // user = JSON.parse(user);
             this.sysUserName = user || '';
-            this.tanchuan();
+            // this.tanchuan();
         } else {
             this.$router.push({ path: '/' });
         }

@@ -1,14 +1,14 @@
 // import { get, post } from './http'
 import axios from 'axios';
 import {get, post } from './request';
-// var href = window.location.href;
+var href = window.location.href;
 
-// if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
-//     var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
-// } else {
-//     var userUrl = 'http://zzb.onezen.net';
-// }
-var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
+if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
+    var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
+} else {
+    var userUrl = 'http://zzb.onezen.net';
+}
+// var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 export const uploadurl = userUrl;
 //用户管理
 //忘记密码--重置密码
@@ -228,3 +228,13 @@ export const export_dataflow_curve_file = (params) =>
 //资源用量导出接口
 export const export_topisp_accesscnt_curve_file = (params) =>
     post(`${userUrl}/file_download/export_topisp_accesscnt_curve_file`, params);
+
+//流量占比图表
+export const sdk_flow = (params) =>
+    post(`${userUrl}/resource_manage/sdk_flow`, params);
+//流量占比表格
+export const sdk_flow_table = (params) =>
+    post(`${userUrl}/resource_manage/sdk_flow_table`, params);
+//流量监控
+export const sdk_flow_control = (params) =>
+    post(`${userUrl}/resource_manage/sdk_flow_control`, params);

@@ -8,12 +8,12 @@
 						style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 					>
 						<el-input
-							placeholder="请输入加速内容名称"
+							placeholder="请输入加速域名"
 							v-model="value1"
 							class="input-with-select"
 							maxlength="70"
 							@keyup.enter.native="getdata"
-							style="width:15%;margin-right:10px;"
+							style="width:10%;margin-right:10px;"
 						>
 							<i
 								slot="prefix"
@@ -21,7 +21,26 @@
 								@click="getdata()"
 							></i>
 						</el-input>
-						<span style="margin-right:10px;margin-left:15px;"
+						<el-input
+							placeholder="请输入加速内容名称"
+							v-model="value_url"
+							class="input-with-select"
+							maxlength="70"
+							@keyup.enter.native="getdata"
+							style="width:10%;margin-right:10px;"
+							v-show="activeName != 'fourth'"
+						>
+							<i
+								slot="prefix"
+								class="el-input__icon el-icon-search"
+								@click="getdata()"
+							></i>
+						</el-input>
+						<span
+							style="margin-right:10px;margin-left:15px;"
+							v-show="
+								activeName == 'first' || activeName == 'second'
+							"
 							>终端:</span
 						>
 						<el-select
@@ -29,6 +48,9 @@
 							placeholder="终端"
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
+							v-show="
+								activeName == 'first' || activeName == 'second'
+							"
 						>
 							<el-option label="全部" value="*"></el-option>
 							<el-option
@@ -38,10 +60,17 @@
 								:value="item.label"
 							></el-option>
 						</el-select>
-						<span style="margin-right:10px;margin-left:15px;"
+						<span
+							style="margin-right:10px;margin-left:15px;"
+							v-show="
+								activeName == 'first' || activeName == 'second'
+							"
 							>区域:</span
 						>
 						<el-cascader
+							v-show="
+								activeName == 'first' || activeName == 'second'
+							"
 							style="width: 10%;margin-right: 10px;line-height: 36px;"
 							placeholder="区域"
 							:options="optionsa2"
@@ -50,10 +79,17 @@
 							v-model="value2"
 							@change="getdata"
 						></el-cascader>
-						<span style="margin-right:10px;margin-left:15px;"
+						<span
+							style="margin-right:10px;margin-left:15px;"
+							v-show="
+								activeName == 'first' || activeName == 'second'
+							"
 							>运营商:</span
 						>
 						<el-select
+							v-show="
+								activeName == 'first' || activeName == 'second'
+							"
 							v-model="value3"
 							placeholder="运营商"
 							style="width: 10%;margin-right: 10px;"
@@ -66,6 +102,27 @@
 								:label="item.label"
 								:value="item.label"
 							></el-option>
+						</el-select>
+						<span
+							style="margin-right:10px;margin-left:15px;"
+							v-show="
+								activeName == 'third' || activeName == 'fourth'
+							"
+							>终端类型：</span
+						>
+						<el-select
+							v-show="
+								activeName == 'third' || activeName == 'fourth'
+							"
+							v-model="terminalName"
+							placeholder="终端类型"
+							style="width: 10%;margin-right: 10px;"
+							@change="getdata()"
+						>
+							<el-option label="全部" value="*"></el-option>
+							<el-option label="andriod" value="1"></el-option>
+							<el-option label="ios" value="2"></el-option>
+							<el-option label="其他" value="3"></el-option>
 						</el-select>
 						<span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
@@ -111,7 +168,11 @@
 							v-show="shoudzyx"
 							style="margin-left:10px;"
 							v-model="val2"
-							type="datetimerange"
+							:type="
+								activeName == 'third'
+									? 'daterange'
+									: 'datetimerange'
+							"
 							:picker-options="pickerOptions"
 							range-separator="至"
 							start-placeholder="开始日期"
@@ -119,15 +180,15 @@
 							align="left"
 							@change="gettimes"
 						></el-date-picker>
-						<!-- <el-button
-                style="margin-left:10px;"
-                type="primary"
-                @click="seachtu(1)"
-                >确定</el-button
-            >-->
+						<el-button
+							style="margin-left:10px;"
+							type="primary"
+							@click="getdata()"
+							>查询</el-button
+						>
 					</div>
 
-					<el-tab-pane label="加速流量" name="first">
+					<el-tab-pane label="P2P加速流量" name="first">
 						<div class="device_form">
 							<div
 								id="myChart"
@@ -184,78 +245,117 @@
 							</el-row>
 						</div>
 					</el-tab-pane>
-
-					<el-tab-pane label="回源统计" name="second">
-						<!-- <div
-              style="display: flex;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
-            >
-              <el-select
-                v-model="valuea1"
-                placeholder="视频名称"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata1()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="(item, index) in options1"
-                  :key="item.label + index"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select>
-              <el-cascader
-                style="width: 10%;margin-right: 10px;line-height: 36px;"
-                placeholder="区域"
-                :options="optionsa2"
-                ref="cascaderAddr"
-                :show-all-levels="false"
-                v-model="valuea2"
-                @change="getdata1"
-              ></el-cascader>
-              <el-select
-                v-model="valuea3"
-                placeholder="运营商"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata1()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="item in optionsa3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select>
-              <el-button-group>
-                <el-button v-show="!showzdyz" @click="today(2)">今天</el-button>
-                <el-button v-show="!showzdyz" @click="yesterday(2)">昨天</el-button>
-                <el-button v-show="!showzdyz" @click="sevendat(2)">近7天</el-button>
-                <el-button v-show="!showzdyz" @click="thirtyday(2)">近30天</el-button>
-                <el-button @click="showzdyzs">
-                  自定义
-                  <i class="el-icon-date"></i>
-                </el-button>
-              </el-button-group>
-              <el-date-picker
-                v-show="showzdyz"
-                style="margin-left:10px;"
-                v-model="val2"
-                type="datetimerange"
-                :picker-options="pickerOptions"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                align="left"
-                @change="gettimes_host"
-              ></el-date-picker>
-           
-            </div>-->
+					<el-tab-pane label="P2P回源流量" name="second">
 						<div class="device_form" style>
 							<div
 								id="myChart1"
 								:style="{ height: '607px' }"
 							></div>
 						</div>
+					</el-tab-pane>
+					<el-tab-pane label="流量占比" name="third">
+						<el-row class="resources_percentage">
+							<el-col :span="4">
+								<p>{{ totalp2p }}</p>
+								<p>P2P流量</p>
+							</el-col>
+							<el-col :span="4">
+								<p>{{ totalcdn }}</p>
+								<p>CDN流量</p>
+							</el-col>
+						</el-row>
+						<div id="liuliang_echarts"></div>
+						<div class="devide_table">
+							<el-row type="flex" class="row_active">
+								<el-col :span="24">
+									<el-table
+										:data="tableflow"
+										border
+										height="600"
+										style="width: 98%;margin:10px;"
+										:cell-style="rowClass"
+										:header-cell-style="headClass"
+									>
+										<el-table-column label="加速内容名称">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.urlnam
+													}}
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column label="播放URL">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.playurl
+													}}
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column label="P2P加速流量">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.p2pflow
+															| updatabkb
+													}}
+												</div>
+											</template>
+										</el-table-column>
+                                        	<el-table-column label="PCDN加速流量">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.cdnflow
+															| updatabkb
+													}}
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column label="P2P流量占比">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.p2ppercent
+													}}
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column label="CDN流量占比">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.cdnpercent
+													}}
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column label="统计时间">
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.time
+															| settimes
+													}}
+												</div>
+											</template>
+										</el-table-column>
+									</el-table>
+									<fenye
+										style="float:right;margin:10px 0 20px 0;"
+										@fatherMethod="flowgetpage"
+										@fathernum="flowgettol"
+										:pagesa="flowtotal_cnt"
+										:currentPage="flowcurrentPage"
+									></fenye>
+								</el-col>
+							</el-row>
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="流量监控" name="fourth">
+						<div id="jiankong_echarts"></div>
 					</el-tab-pane>
 				</el-tabs>
 			</div>
@@ -271,6 +371,7 @@ import {
 	getlocaltimes,
 	formatBytes,
 	formatBkb,
+	formatBorb,
 } from '../../servers/sevdate';
 import fenye from '@/components/fenye';
 import {
@@ -283,13 +384,17 @@ import {
 	getterminal,
 	export_accelerate_flow_file,
 	export_backsource_flow_file,
+	sdk_flow,
+	sdk_flow_table,
+	sdk_flow_control,
 } from '../../servers/api';
 import echarts from 'echarts';
 export default {
 	data() {
 		return {
 			radio1: '1',
-			currentPage: 1,
+            currentPage: 1,
+            flowcurrentPage:1,
 			shoudzyx: false,
 			showzdyz: false,
 			acce: '*',
@@ -498,6 +603,7 @@ export default {
 			],
 			optionsa4: [],
 			value1: '',
+			value_url: '',
 			value2: -1,
 			value3: '*',
 			value4: '',
@@ -507,6 +613,7 @@ export default {
 			valuea4: '',
 			tablecdn: [],
 			activeName: 'first',
+			terminalName: '',
 			minDate: '',
 			maxDate: '',
 			pickerOptions: {
@@ -588,12 +695,21 @@ export default {
 			timeArray2: [], //图2
 			pageSize: 10, //每页数量
 			pageNo: 1, //当前页码
-			total_cnt: 1, //数据总量
+            total_cnt: 0, //数据总量3
+            flowtotal_cnt:0,
 			chanid: '',
 			dataFlownum: 0,
 			dataFlownum2: 0,
 			vadio_page: 0,
 			unitdata: 'B',
+			totalp2p: '0B',
+            totalcdn: '0B',
+            tableflow:[],
+			p2parr: [],
+			cdnarr: [],
+			tab3arr: [],
+			flow4_data: [],
+			flow4_time: [],
 		};
 	},
 	filters: {
@@ -651,10 +767,14 @@ export default {
 		this.getlabrl2();
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName != 'first') {
-				this.gettable2();
-			} else {
+			if (this.activeName == 'first') {
 				this.gettable1();
+			} else if (this.activeName == 'second') {
+				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		} else {
 			this.getseachlabel1();
@@ -693,13 +813,27 @@ export default {
 		gettol(pagetol) {
 			this.pagesize = pagetol;
 			// this.getuserlist();
+        },
+        //获取页码
+		flowgetpage(pages) {
+			this.flowcurrentPage = pages;
+			this.getbot();
+		},
+		//获取每页数量
+		flowgettol(pagetol) {
+			this.flowpagesize = pagetol;
+			// this.getuserlist();
 		},
 		getdata() {
 			this.currentPage = 1;
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		getdata1() {
@@ -932,6 +1066,89 @@ export default {
 				})
 				.catch((error) => {});
 		},
+		//流量占比图表
+		getflow3() {
+			let parmas = new Object();
+			parmas.chanid = this.chanid;
+			parmas.terminalName = '*';
+			parmas.domain = this.value1;
+			parmas.urlName = this.value_url;
+			parmas.endTs = this.endtime;
+			parmas.startTs = this.starttime;
+			if ((parmas.endTs = parmas.settimes > 86400)) {
+				parmas.timeUnit = 1440;
+			} else {
+				parmas.timeUnit = 60;
+			}
+			sdk_flow(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+						this.totalp2p = updatabkb(res.data.totalp2p);
+						this.totalcdn = updatabkb(res.data.totalcdn);
+						//              p2parr:[],
+						// cdnarr:[],
+						// tab3arr:[],
+
+						res.data.timearray.forEach((item, index) => {
+							this.timearray.push(getlocaltimes(item));
+						});
+						this.gettable3();
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {});
+		},
+		//流量占比表格
+		gettable3() {
+			let parmas = new Object();
+			parmas.chanid = this.chanid;
+			parmas.page = this.pagenum;
+			parmas.terminalName = '*';
+			parmas.domain = this.value1;
+			parmas.urlName = this.value_url;
+			parmas.endTs = this.endtime;
+			parmas.startTs = this.starttime;
+			if ((parmas.endTs = parmas.settimes > 86400)) {
+				parmas.timeUnit = 1440;
+			} else {
+				parmas.timeUnit = 60;
+			}
+			sdk_flow_table(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+                        this.tableflow=res.data;
+						this.drawLine2();
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {});
+		},
+		//流量监控图表
+		getflow4() {
+			let parmas = new Object();
+			parmas.chanid = this.chanid;
+			parmas.domain = '';
+			parmas.terminal_type = '*';
+			parmas.endTs = this.endtime;
+			parmas.startTs = this.starttime;
+			parmas.timeUnit = this.timeUnit;
+			sdk_flow_control(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+						this.flow4_time = res.data.timearray;
+						this.Iospstreamarray = res.data.Iospstreamarray;
+						this.Ioscstreamarray = res.data.Iospstreamarray;
+						this.andriodpstreamarray = res.data.Iospstreamarray;
+						this.andriodcstreamarray = res.data.Iospstreamarray;
+						this.gettable4();
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {});
+		},
 		//加速流量导出
 		export_accelerate() {
 			let params = new Object();
@@ -1005,8 +1222,12 @@ export default {
 		seachtu(data) {
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		setshoudzyx() {
@@ -1047,8 +1268,12 @@ export default {
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		//昨天
@@ -1060,8 +1285,12 @@ export default {
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		//七天
@@ -1073,8 +1302,12 @@ export default {
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		//三十天
@@ -1086,8 +1319,12 @@ export default {
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		//自定义时间
@@ -1104,8 +1341,12 @@ export default {
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
 				this.gettable1();
-			} else {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
+			} else if (this.activeName == 'third') {
+				this.getflow3();
+			} else {
+				this.getflow4();
 			}
 		},
 		gettimes_host(cal) {
@@ -1139,8 +1380,18 @@ export default {
 			// this.settimeunit(this.starttime, this.endtime);
 			if (tab.index == 0) {
 				this.gettable1();
-			} else {
+			} else if (tab.index == 1) {
 				this.gettable2();
+			} else if (tab.index == 2) {
+				this.getflow3();
+				setTimeout(() => {
+					this.drawLine2();
+				}, 1500);
+			} else {
+				this.getflow4();
+				setTimeout(() => {
+					this.drawLine3();
+				}, 1500);
 			}
 		},
 		drawLine() {
@@ -1430,6 +1681,379 @@ export default {
 			};
 			myChart.setOption(options);
 		},
+		drawLine2() {
+			var data1 = [55, 207, 36, 100, 10, 260];
+			var data2 = [330, 22, 181, 35, 442, 40];
+			var data3 = (function() {
+				var datas = [];
+				for (var i = 0; i < data1.length; i++) {
+					datas.push(data1[i] + data2[i]);
+				}
+				return datas;
+			})();
+			let _this = this;
+			// 基于准备好的dom，初始化echarts实例
+			let myChart = this.$echarts.init(
+				document.getElementById('liuliang_echarts')
+			);
+			window.onresize = myChart.resize;
+			// 绘制图表
+			let options = {
+				title: {
+					text: 'P2P流量/CDN流量占比图',
+					left: 'center',
+					textStyle: {
+						color: '#333333',
+						fontSize: 16,
+					},
+				},
+				legend: {
+					// orient: 'vertical',
+					x: 'center', //可设定图例在左、右、居中
+					y: 'bottom', //可设定图例在上、下、居中
+					padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
+					data: ['P2P流量', 'CDN流量'],
+				},
+				tooltip: {
+					trigger: 'axis',
+				},
+				toolbox: {
+					//show: true,
+					itemSize: 20,
+					itemGap: 30,
+					right: 50,
+					feature: {
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
+						mydow: {
+							show: true,
+							title: '导出',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							onclick: function() {
+								_this.export_backsource();
+							},
+						},
+					},
+				},
+				grid: {
+					left: '6%', // 默认10%，给24就挺合适的。
+					top: 60, // 默认60
+					right: 60, // 默认10%
+					bottom: 100, // 默认60
+				},
+				xAxis: {
+					data: [
+						'1:00:00',
+						'2:00:00',
+						'3:00:00',
+						'4:00:00',
+						'5:00:00',
+						'6:00:00',
+					],
+					splitLine: {
+						show: false,
+					},
+				},
+				yAxis: {
+					splitLine: {
+						show: true,
+					},
+					axisTick: {
+						//y轴刻度线
+						show: true,
+					},
+				},
+				series: [
+					{
+						name: 'CDN流量',
+						type: 'bar',
+						stack: '使用情况',
+						data: data1,
+						barMaxWidth: 30, //柱图宽度
+						itemStyle: {
+							normal: {
+								color: '#394989',
+							},
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'insideLeft',
+								color: '#ffffff',
+							},
+						},
+					},
+					{
+						name: 'P2P流量',
+						type: 'bar',
+						stack: '使用情况',
+						data: data2,
+						barMaxWidth: 30, //柱图宽度
+						itemStyle: {
+							normal: {
+								color: '#64A7FC', //柱形图圆角，初始化效果
+								color: new echarts.graphic.LinearGradient(
+									0,
+									1,
+									0,
+									0,
+									[
+										{ offset: 0, color: '#3977E6' },
+										{ offset: 1, color: '#37BBF8' },
+									]
+								),
+								barBorderRadius: [4, 4, 0, 0],
+							},
+
+							//柱形图圆角，鼠标移上去效果
+							emphasis: {
+								barBorderRadius: [4, 4, 0, 0],
+							},
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'insideLeft',
+								color: '#333333',
+							},
+						},
+					},
+					{
+						name: '总计',
+						type: 'line',
+						stack: '总量',
+						symbol: 'none',
+						label: {
+							normal: {
+								show: true,
+								formatter: '{c}',
+								textStyle: { color: '#333333' },
+							},
+						},
+						itemStyle: {
+							normal: {
+								color: 'rgba(128, 128, 128, 0)',
+							},
+						},
+						data: data3,
+					},
+				],
+			};
+			myChart.setOption(options);
+		},
+		drawLine3() {
+			var dataCount = 100;
+			var data = generateData(dataCount);
+			var data1 = generateData(dataCount);
+			var data2 = generateData(dataCount);
+			var data3 = generateData(dataCount);
+			var data4 = generateData(dataCount);
+			let _this = this;
+			function generateData(count) {
+				var baseValue = Math.random() * 1000;
+				var time = +new Date(2011, 0, 1);
+				var smallBaseValue;
+
+				function next(idx) {
+					smallBaseValue =
+						idx % 30 === 0
+							? Math.random() * 700
+							: smallBaseValue + Math.random() * 500 - 250;
+					baseValue += Math.random() * 20 - 10;
+					return Math.max(
+						0,
+						Math.round(baseValue + smallBaseValue) + 3000
+					);
+				}
+
+				var categoryData = [];
+				var valueData = [];
+
+				for (var i = 0; i < count; i++) {
+					categoryData.push(
+						echarts.format.formatTime('yyyy-MM-dd\nhh:mm:ss', time)
+					);
+					valueData.push(next(i).toFixed(2));
+					time += 1000;
+				}
+
+				return {
+					categoryData: categoryData,
+					valueData: valueData,
+				};
+			}
+
+			// 基于准备好的dom，初始化echarts实例
+			let myChart = this.$echarts.init(
+				document.getElementById('jiankong_echarts')
+			);
+			window.onresize = myChart.resize;
+			// 绘制图表
+			let options = {
+				title: {
+					text: '流量监控',
+					left: '12px',
+					textStyle: {
+						color: '#333333',
+						fontSize: 16,
+					},
+				},
+				legend: {
+					// orient: 'vertical',
+					x: 'center', //可设定图例在左、右、居中
+					y: 'bottom', //可设定图例在上、下、居中
+					padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
+					data: ['IOS-P2P', 'IOS-CDN', '安卓-P2P', '安卓-CDN'],
+				},
+				tooltip: {
+					trigger: 'axis',
+				},
+				grid: {
+					left: '6%', // 默认10%，给24就挺合适的。
+					top: 60, // 默认60
+					right: 60, // 默认10%
+					bottom: 100, // 默认60
+				},
+				xAxis: {
+					data: data.categoryData,
+					splitLine: {
+						show: false,
+					},
+				},
+				yAxis: {
+					splitLine: {
+						show: true,
+					},
+					axisTick: {
+						//y轴刻度线
+						show: true,
+					},
+				},
+				series: [
+					{
+						name: 'IOS-P2P',
+						type: 'line',
+						data: data1.valueData,
+						smooth: false,
+						// symbol: 'star', //拐点样式
+						// symbolSize: 8, //拐点大小
+						itemStyle: {
+							normal: {
+								color: '#E8505B',
+							},
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'insideRight',
+								color: '#E8505B',
+								fontSize: 18,
+								formatter: (params) => {
+									if (
+										data1.valueData.length - 1 ==
+										params.dataIndex
+									) {
+										return 'IOS-P2P';
+									} else {
+										return '';
+									}
+								},
+							},
+						},
+					},
+					{
+						name: 'IOS-CDN',
+						type: 'line',
+						data: data2.valueData,
+						smooth: false,
+						// symbol: 'triangle', //拐点样式
+						// symbolSize: 8, //拐点大小
+						itemStyle: {
+							normal: { color: '#14B1AB' },
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'insideRight',
+								color: '#14B1AB',
+								fontSize: 18,
+								formatter: (params) => {
+									if (
+										data2.valueData.length - 1 ==
+										params.dataIndex
+									) {
+										return 'IOS-CDN';
+									} else {
+										return '';
+									}
+								},
+							},
+						},
+					},
+					{
+						name: '安卓-P2P',
+						type: 'line',
+						data: data3.valueData,
+						smooth: false,
+						// symbol: 'pin', //拐点样式
+						// symbolSize: 8, //拐点大小
+						itemStyle: {
+							normal: { color: '#F2C33C' },
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'insideRight',
+								color: '#F2C33C',
+								fontSize: 18,
+								formatter: (params) => {
+									if (
+										data3.valueData.length - 1 ==
+										params.dataIndex
+									) {
+										return '安卓-P2P';
+									} else {
+										return '';
+									}
+								},
+							},
+						},
+					},
+					{
+						name: '安卓-CDN',
+						type: 'line',
+						data: data4.valueData,
+						smooth: false,
+						itemStyle: {
+							normal: { color: '#5970CC' },
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'insideRight',
+								color: '#5970CC',
+								fontSize: 18,
+								formatter: (params) => {
+									if (
+										data4.valueData.length - 1 ==
+										params.dataIndex
+									) {
+										return '安卓-CDN';
+									} else {
+										return '';
+									}
+								},
+							},
+						},
+					},
+				],
+			};
+			myChart.setOption(options);
+		},
 	},
 	destroyed: function() {
 		sessionStorage.removeItem('tab_name');
@@ -1509,6 +2133,45 @@ export default {
 		.devide_pageNation_active {
 			float: right;
 		}
+	}
+	.resources_percentage {
+		background: #ffffff;
+		margin-left: 45px;
+		margin-right: 45px;
+		padding-left: 30px;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		margin-top: 24px;
+		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
+		.el-col {
+			height: 100px;
+			background: rgba(247, 247, 251, 1);
+			border-radius: 8px;
+			p:nth-child(1) {
+				color: #333333;
+				font-size: 24px;
+				margin-top: 30px;
+			}
+			p:nth-child(2) {
+				color: #656565;
+				font-size: 14px;
+			}
+		}
+		.el-col:nth-child(1) {
+			margin-right: 24px;
+		}
+	}
+	#liuliang_echarts,
+	#jiankong_echarts {
+		margin-top: 24px;
+		margin-left: 45px;
+		margin-right: 45px;
+		height: 632px;
+		padding-top: 35px;
+		padding-bottom: 20px;
+		background: rgba(255, 255, 255, 1);
+		border-radius: 2px;
+		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
 	}
 }
 

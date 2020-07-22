@@ -49,7 +49,7 @@
 										{ validator: jiotoken, trigger: 'blur' }
 									]"
                 >
-                  <el-input v-model="tokene.name" placeholder="英文或汉字，30 字符内" autocomplete="off"></el-input>
+                  <el-input v-model="tokene.name" placeholder="英文，数字或汉字，30 字符内" autocomplete="off"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="类型：" :label-width="formLabelWidth">
                   <el-select v-model="tokene.region" placeholder="请选择终端类型" disabled>
@@ -120,6 +120,7 @@
             </el-table>
             <div>
               <fenye
+              v-show="tableData.length>0"
                 style="text-align:right;margin:20px 0 10px 0;"
                 @fatherMethod="getpage"
                 @fathernum="gettol"
@@ -199,6 +200,7 @@
             </el-table>
             <div>
               <fenye
+               v-show="datadown.length>0"
                 style="text-align:right;margin:20px 0 10px 0;"
                 @fatherMethod="getpage2"
                 @fathernum="gettol2"
@@ -236,11 +238,11 @@ export default {
       page: 0, //页码
       tolpage: 1,
       pagesize: 10,
-      total_cnt: 1,
+      total_cnt: 0,
       page2: 0, //页码
       tolpage2: 1,
       pagesize2: 10,
-      total_cnt2: 1,
+      total_cnt2: 0,
       chanid: "",
       order: "id desc",
       form: {

@@ -112,8 +112,8 @@
 							@change="getdata()"
 						>
 							<el-option label="全部" value="-1"></el-option>
-							<el-option label="android" value="1"></el-option>
-							<el-option label="ios" value="0"></el-option>
+							<el-option label="android" value="0"></el-option>
+							<el-option label="ios" value="1"></el-option>
 							<el-option label="其他" value="2"></el-option>
 						</el-select>
 						<span style="margin-right:10px;margin-left:15px;"

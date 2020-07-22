@@ -718,49 +718,49 @@ export default {
 					this.citylabel1 = '';
 					this.textarea2 = '';
 					let arr = [];
-					if (localStorage.getItem('yure_url_name')) {
-						let old_url_name = JSON.parse(
-							localStorage.getItem('yure_url_name')
-                        );
-                         console.log(old_url_name)
-						res.data.res_data.forEach((item) => {
-							if (item[1] == true) {
-								let obj = {};
-                                obj.url_name=item[0];
-                                obj.creatte_time = nowtime;
-                                obj.area = parmas.area;
-                                obj.type = parmas.type;
-                                arr.push(obj);
-							}
-                        });
-                         if(arr.length>0){
-                             arr = old_url_name.concat(arr);
-                             console.log(arr);
-                             localStorage.setItem(
-                                 'yure_url_name',
-                                 JSON.stringify(arr)
-                             );
-                        }
-					} else {
-                         console.log('*****');
-						res.data.res_data.forEach((item) => {
-							if (item[1] == true) {
-                                let obj = {};
-                                obj.url_name=item[0];
-                                obj.creatte_time = nowtime;
-                                obj.area = parmas.area;
-                                obj.type = parmas.type;
-                                arr.push(obj);
-                            }
-                        });
-                        if(arr.length>0){
-                            localStorage.setItem(
-                                'yure_url_name',
-                                JSON.stringify(arr)
-                            );
+					// if (localStorage.getItem('yure_url_name')) {
+					// 	let old_url_name = JSON.parse(
+					// 		localStorage.getItem('yure_url_name')
+                    //     );
+                    //      console.log(old_url_name)
+					// 	res.data.res_data.forEach((item) => {
+					// 		if (item[1] == true) {
+					// 			let obj = {};
+                    //             obj.url_name=item[0];
+                    //             obj.creatte_time = nowtime;
+                    //             obj.area = parmas.area;
+                    //             obj.type = parmas.type;
+                    //             arr.push(obj);
+					// 		}
+                    //     });
+                    //      if(arr.length>0){
+                    //          arr = old_url_name.concat(arr);
+                    //          console.log(arr);
+                    //          localStorage.setItem(
+                    //              'yure_url_name',
+                    //              JSON.stringify(arr)
+                    //          );
+                    //     }
+					// } else {
+                    //      console.log('*****');
+					// 	res.data.res_data.forEach((item) => {
+					// 		if (item[1] == true) {
+                    //             let obj = {};
+                    //             obj.url_name=item[0];
+                    //             obj.creatte_time = nowtime;
+                    //             obj.area = parmas.area;
+                    //             obj.type = parmas.type;
+                    //             arr.push(obj);
+                    //         }
+                    //     });
+                    //     if(arr.length>0){
+                    //         localStorage.setItem(
+                    //             'yure_url_name',
+                    //             JSON.stringify(arr)
+                    //         );
                            
-                        }
-					}
+                    //     }
+					// }
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
 							this.$message({

@@ -389,6 +389,8 @@ import {
 	sdk_flow,
 	sdk_flow_table,
 	sdk_flow_control,
+	export_sdk_flow_table_user_file,
+	export_sdk_flow_control_user_file,
 } from '../../servers/api';
 import echarts from 'echarts';
 export default {
@@ -1079,7 +1081,7 @@ export default {
 		getflow3() {
 			this.zhanbitimearray = [];
 			let parmas = new Object();
-			parmas.chanid = this.chanid;
+			parmas.channelId = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
 				parmas.terminalName = -1;
@@ -1124,7 +1126,7 @@ export default {
 		//流量占比表格
 		gettable3() {
 			let parmas = new Object();
-			parmas.chanid = this.chanid;
+			parmas.channelId = this.chanid;
 			parmas.pageNo = this.flowcurrentPage - 1;
 			if (this.terminalName == '') {
 				parmas.terminalName = -1;
@@ -1163,7 +1165,7 @@ export default {
 		getflow4() {
 			this.flow4_time = [];
 			let parmas = new Object();
-			parmas.chanid = this.chanid;
+			parmas.channelId = this.chanid;
 			if (this.value1 == '') {
 				parmas.domain = '*';
 			} else {
@@ -1181,10 +1183,30 @@ export default {
 			sdk_flow_control(parmas)
 				.then((res) => {
 					if (res.status == 0) {
+						let iosmaxnum = Math.max(...res.data.iospstreamarray);
+						let ioscmaxnum = Math.max(...res.data.ioscstreamarray);
+						let andriodmaxnum = Math.max(
+							...res.data.andriodpstreamarray
+						);
+						let andriodcmaxnum = Math.max(
+							...res.data.andriodcstreamarray
+						);
+						if (iosmaxnum != 0) {
+							this.unitdata = formatBytes(iosmaxnum);
+						} else if (ioscmaxnum != 0) {
+							this.unitdata = formatBytes(ioscmaxnum);
+						} else if (andriodmaxnum != 0) {
+							this.unitdata = formatBytes(andriodmaxnum);
+						} else if (andriodcmaxnum != 0) {
+							this.unitdata = formatBytes(andriodcmaxnum);
+						} else {
+							this.unitdat = 'B';
+						}
 						this.iosp2parray = res.data.iospstreamarray;
 						this.ioscdnarray = res.data.ioscstreamarray;
 						this.andriodp2parray = res.data.andriodpstreamarray;
 						this.andriodcdnarray = res.data.andriodcstreamarray;
+
 						res.data.timeArray.forEach((item, index) => {
 							this.flow4_time.push(getlocaltimes(item));
 						});
@@ -1264,6 +1286,68 @@ export default {
 				.catch((error) => {
 					console.log(error);
 				});
+		},
+		export_tab3() {
+            let parmas = new Object();
+			parmas.channelId = this.chanid;
+			// parmas.chanid = '*';
+			if (this.terminalName == '') {
+				parmas.terminalName = -1;
+			} else {
+				parmas.terminalName = this.terminalName * 1;
+			}
+			if (this.value1 == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value1;
+			}
+			if (this.value_url == '') {
+				parmas.urlName = '*';
+			} else {
+				parmas.urlName = this.value_url;
+			}
+			parmas.endTs = this.endtime;
+			parmas.startTs = this.starttime;
+			if (parmas.endTs - parmas.startTs > 86400) {
+				parmas.timeUnit = 1440;
+			} else {
+				parmas.timeUnit = 60;
+			}
+			export_sdk_flow_table_user_file(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error('导出失败');
+					}
+				})
+				.catch((error) => {});
+		},
+		export_tab4() {
+			let parmas = new Object();
+			parmas.channelId = this.chanid;
+			if (this.value1 == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value1;
+			}
+			parmas.terminalName = -1;
+			parmas.endTs = this.endtime;
+			parmas.startTs = this.starttime;
+			if (parmas.endTs - parmas.startTs > 2505600) {
+				parmas.timeUnit = 1440;
+			} else {
+				parmas.timeUnit = 30;
+			}
+			export_sdk_flow_control_user_file(parmas)
+				.then((res) => {
+					if (res.status == 0) {
+						window.open(res.msg, '_blank');
+					} else {
+						this.$message.error('导出失败');
+					}
+				})
+				.catch((error) => {});
 		},
 		seachtu(data) {
 			if (this.activeName == 'first') {
@@ -1345,8 +1429,8 @@ export default {
 		sevendat() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-            this.starttime = times - 24 * 60 * 60 * 6;
-            this.endtime = Date.parse(new Date()) / 1000;
+			this.starttime = times - 24 * 60 * 60 * 6;
+			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 60;
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
@@ -1765,8 +1849,8 @@ export default {
 						color: '#333333',
 						fontSize: 16,
 					},
-                },
-                animation:false,
+				},
+				animation: false,
 				legend: {
 					// orient: 'vertical',
 					x: 'center', //可设定图例在左、右、居中
@@ -1794,7 +1878,7 @@ export default {
 							icon:
 								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
 							onclick: function() {
-								_this.export_backsource();
+								_this.export_tab3();
 							},
 						},
 					},
@@ -1932,6 +2016,28 @@ export default {
 						fontSize: 16,
 					},
 				},
+				toolbox: {
+					//show: true,
+					itemSize: 20,
+					itemGap: 30,
+					right: 50,
+					feature: {
+						// mark: { show: true },
+						// dataView: { show: true, readOnly: false },
+						// magicType: { show: true, type: ['line', 'bar'] },
+						// restore: { show: true },
+						// saveAsImage: { show: false },
+						mydow: {
+							show: true,
+							title: '导出',
+							icon:
+								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							onclick: function() {
+								_this.export_tab4();
+							},
+						},
+					},
+				},
 				legend: {
 					// orient: 'vertical',
 					x: 'center', //可设定图例在左、右、居中
@@ -1952,7 +2058,8 @@ export default {
 					data: datatime,
 					splitLine: {
 						show: false,
-					},
+                    },
+                    
 				},
 				yAxis: {
 					splitLine: {
@@ -1961,13 +2068,16 @@ export default {
 					axisTick: {
 						//y轴刻度线
 						show: true,
-					},
+                    },
+                    name:_this.unitdata
 				},
 				series: [
 					{
 						name: 'IOS-P2P',
 						type: 'line',
-						data: data1,
+						data: data1.map((item)=>{
+                            return formatBkb(item,_this.unitdata);
+                        }),
 						smooth: false,
 						// symbol: 'star', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -1995,7 +2105,9 @@ export default {
 					{
 						name: 'IOS-CDN',
 						type: 'line',
-						data: data2,
+						data: data2.map((item)=>{
+                            return formatBkb(item,_this.unitdata);
+                        }),
 						smooth: false,
 						// symbol: 'triangle', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -2033,7 +2145,9 @@ export default {
 					{
 						name: '安卓-P2P',
 						type: 'line',
-						data: data3,
+						data: data3.map((item)=>{
+                            return formatBkb(item,_this.unitdata);
+                        }),
 						smooth: false,
 						// symbol: 'pin', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -2071,7 +2185,9 @@ export default {
 					{
 						name: '安卓-CDN',
 						type: 'line',
-						data: data4,
+						data: data4.map((item)=>{
+                            return formatBkb(item,_this.unitdata);
+                        }),
 						smooth: false,
 						itemStyle: {
 							normal: { color: '#5970CC' },

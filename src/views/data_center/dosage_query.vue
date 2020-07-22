@@ -9,6 +9,20 @@
 				style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
 			>
 				<el-input
+					placeholder="请输入加速域名"
+					v-model="urlname"
+					class="input-with-select"
+					maxlength="70"
+					@keyup.enter.native="changmvitem"
+					style="width:15%;margin-right:10px;"
+				>
+					<i
+						slot="prefix"
+						class="el-input__icon el-icon-search"
+						@click="changmvitem()"
+					></i>
+				</el-input>
+				<el-input
 					placeholder="请输入加速内容名称"
 					v-model="mvitem"
 					class="input-with-select"
@@ -22,21 +36,19 @@
 						@click="changmvitem()"
 					></i>
 				</el-input>
-				<span style="margin-right:10px;margin-left:15px;">终端:</span>
+				<span style="margin-right:10px;margin-left:15px;"
+					>终端类型:</span
+				>
 				<el-select
 					v-model="acc"
-					placeholder="请选择终端"
+					placeholder="请选择终端类型"
 					style="margin-right: 10px;"
 					@change="changmvitem"
 				>
-					<el-option label="全部" value="*"></el-option>
-					<el-option
-						v-for="(item, index) in accelist"
-						:key="index"
-						:label="item.label"
-						:value="item.label"
-					>
-					</el-option>
+					<el-option label="全部" value="-1"></el-option>
+					<el-option label="andriod" value="1"></el-option>
+					<el-option label="ios" value="0"></el-option>
+					<el-option label="其他" value="2"></el-option>
 				</el-select>
 				<span style="margin-right:10px;margin-left:15px;">日期:</span>
 				<!-- <el-button-group>
@@ -154,6 +166,8 @@ import {
 	getvideo,
 	getterminal,
 	export_dataflow_curve_file,
+	manage_dataflow_curve,
+	manage_dataflow_table,
 } from '../../servers/api';
 export default {
 	data() {
@@ -167,11 +181,12 @@ export default {
 			],
 			pagenum: 0,
 			accelist: [],
-			acc: '*',
+			acc: '',
 			showdate: false,
 			activeName: 'first',
 			mvlist: [],
 			mvitem: '',
+			urlname: '',
 			dataL: 0,
 			minDate: '',
 			maxDate: '',
@@ -259,8 +274,8 @@ export default {
 			timeArray: [], //图
 			dataFlownum: 0,
 			chanid: '',
-            unitdata: 'B',
-            allunitdata:'B',
+			unitdata: 'B',
+			allunitdata: 'B',
 		};
 	},
 	beforeCreate: function() {
@@ -299,8 +314,9 @@ export default {
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
 		this.settimeunit(this.starttime, this.endtime);
-		this.getlabrl2();
-		this.getseach();
+		//this.getlabrl2();
+		//this.getseach();
+		this.gettu();
 	},
 	beforeDestroy() {
 		if (!this.chart) {
@@ -331,87 +347,73 @@ export default {
 			this.pagesize = pagetol;
 			// this.getuserlist();
 		},
-		//请求数据--查询条件
-		getseach() {
-			let params = new Object();
-			params.chanid = this.chanid + '';
-			params.page = this.vadio_page;
-			getvideo(params)
-				.then((res) => {
-					if (res.status == 0) {
-						res.result.cols.forEach((item, index) => {
-							let obj = {};
-							obj.label = item.url_name;
-							obj.value = index;
-							this.mvlist.push(obj);
-						});
-						if (res.result.les_count == 0) {
-							this.vadio_page = 0;
-							this.gettu();
-						} else {
-							this.vadio_page++;
-							this.getseach();
-						}
-					} else {
-						this.$message.error(res.msg);
-					}
-				})
-
-				.catch((err) => {});
-		},
 		//请求数据--柱形图
 		gettu() {
 			this.dataFlowArray = [];
 			this.timeArray = [];
 			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.mvitem) {
-				params.fileName = this.mvitem;
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			// params.channelId = this.chanid + '';
+			params.channelId = '*';
+			if (this.urlname) {
+				params.urlName = this.urlname;
 			} else {
-				params.fileName = '*';
+				params.urlName = '*';
+			}
+			if (this.mvitem) {
+				params.domain = this.mvitem;
+			} else {
+				params.domain = '*';
 			}
 			params.timeUnit = this.timeUnit;
-			params.acce = this.acc;
-			dataflow_curve(params)
+			if (this.acc == '') {
+				params.terminalName = -1;
+			} else {
+				params.terminalName = this.acc * 1;
+			}
+			params.pageNo = 0;
+			params.pageSize = 10;
+			manage_dataflow_curve(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (res.data.totalUsage == 0) {
+						if (res.data.totaldataflow == 0) {
 							this.dataL = 0;
 							this.allunitdata = 'B';
 						} else {
-							this.allunitdata = formatBytes(res.data.totalUsage);
+							this.allunitdata = formatBytes(
+								res.data.totaldataflow
+							);
 							this.dataL = formatBkb(
-								res.data.totalUsage,
+								res.data.totaldataflow,
 								this.allunitdata
 							);
-                        }
-                        let maxnum = Math.max(...res.data.dataFlowArray);
-                        if (maxnum == 0) {
+						}
+						let maxnum = Math.max(...res.data.dataflowarray);
+						if (maxnum == 0) {
 							this.unitdata = 'B';
 						} else {
 							this.unitdata = formatBytes(maxnum);
 						}
-						res.data.dataFlowArray.forEach((item, index) => {
+						res.data.dataflowarray.forEach((item, index) => {
 							this.dataFlowArray.push(
 								formatBkb(item, this.unitdata)
 							);
 						});
-						// this.dataFlowArray = res.data.dataFlowArray;
-						this.dataFlownum = res.data.dataFlowArray.length - 1;
+						// this.dataflowarray = res.data.dataflowarray;
+						this.dataFlownum = res.data.dataflowarray.length - 1;
 
 						let upcli = Math.floor(this.dataFlownum / 12);
-						res.data.timeArray.forEach((item, index) => {
+						res.data.timearray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
 							// if (
 							// 	index == 0 ||
 							// 	(index % upcli == 0 && index < upcli * 11) ||
 							// 	index == this.dataFlownum
 							// ) {
-							// 	this.timeArray.push(getlocaltimes(item));
+							// 	this.timearray.push(getlocaltimes(item));
 							// } else {
-							// 	this.timeArray.push('');
+							// 	this.timearray.push('');
 							// }
 						});
 						this.getdtable();
@@ -424,67 +426,62 @@ export default {
 		},
 		//请求数据--表格
 		getdtable() {
+			this.tablecdn = [];
 			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.mvitem) {
-				params.fileName = this.mvitem;
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			// params.channelId = this.chanid + '';
+			params.channelId = '*';
+			if (this.urlname) {
+				params.urlName = this.urlname;
 			} else {
-				params.fileName = '*';
+				params.urlName = '*';
 			}
-			if (params.end_ts - params.start_ts > 86400) {
-				params.timeUnit = 1440;
+			if (this.mvitem) {
+				params.domain = this.mvitem;
 			} else {
-				params.timeUnit = 60;
+				params.domain = '*';
+			}
+			params.timeUnit = this.timeUnit;
+			if (this.acc == '') {
+				params.terminalName = -1;
+			} else {
+				params.terminalName = this.acc * 1;
 			}
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
-			params.acce = this.acc;
-			dataflow_table(params)
+			manage_dataflow_table(params)
 				.then((res) => {
-					this.tablecdn = res.data.tableList;
+					// this.tablecdn = res.data.list;
+					res.data.list.forEach((item) => {
+						for (let k in item) {
+							let obj = {};
+							obj.timeStamp = k;
+							obj.dataFlow = item[k];
+
+							this.tablecdn.push(obj);
+						}
+					});
+
 					this.total_cnt = res.data.totalCnt;
 				})
 				.catch((err) => {});
 		},
-		//获取视频终端
-		getlabrl2() {
-			let parmas = new Object();
-			parmas.chanid = this.chanid;
-			parmas.page = this.pagenum;
-			getterminal(parmas)
-				.then((res) => {
-					if (res.status == 0) {
-						res.result.cols.forEach((item) => {
-							let sdf = new Object();
-							sdf.value = item.id;
-							sdf.label = item.name;
-							sdf.chanid = item.chanid;
-							sdf.type = item.type;
-							this.accelist.push(sdf);
-						});
-						if (res.result.les_count == 0) {
-							return false;
-						} else {
-							this.pagenum++;
-							this.getlabrl2();
-						}
-					} else {
-						this.$message.error(res.msg);
-					}
-				})
-				.catch((error) => {});
-		},
+		
 		exportant_dataflow() {
 			let params = new Object();
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
 			params.chanId = this.chanid + '';
 			if (this.mvitem) {
-				params.fileName = this.mvitem;
+				params.domain = this.mvitem;
 			} else {
-				params.fileName = '*';
+				params.domain = '*';
+			}
+			if (this.urlname) {
+				params.urlName = this.urlname;
+			} else {
+				params.urlName = '*';
 			}
 			params.timeUnit = this.timeUnit;
 			params.acce = this.acc;

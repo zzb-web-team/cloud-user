@@ -238,3 +238,17 @@ export const sdk_flow_table = (params) =>
 //流量监控
 export const sdk_flow_control = (params) =>
     post(`${userUrl}/resource_manage/sdk_flow_control`, params);
+
+//流量占比导出
+export const export_sdk_flow_table_user_file = (params) =>
+    post(`${userUrl}/file_download/export_sdk_flow_table_user_file`, params);
+//流量监控导出
+export const export_sdk_flow_control_user_file = (params) =>
+    post(`${userUrl}/file_download/export_sdk_flow_control_user_file`, params);
+
+//用量查询图表
+export const manage_dataflow_curve = (params) =>
+    post(`${userUrl}/resource_usage/manage_dataflow_curve`, params);
+//用量查询表格
+export const manage_dataflow_table = (params) =>
+    post(`${userUrl}/resource_usage/manage_dataflow_table`, params);

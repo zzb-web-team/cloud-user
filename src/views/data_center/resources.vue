@@ -112,7 +112,7 @@
 						>
 						<el-select
 							v-show="
-								activeName == 'third' || activeName == 'fourth'
+								activeName == 'third'
 							"
 							v-model="terminalName"
 							placeholder="终端类型"
@@ -1177,14 +1177,15 @@ export default {
 			} else {
 				parmas.domain = this.value1;
 			}
-			if (this.terminalName == '') {
-				parmas.terminalName = -1;
-			} else {
-				parmas.terminalName = this.terminalName * 1;
-			}
+			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
-			parmas.startTs = this.starttime;
-			parmas.timeUnit = this.timeUnit;
+            parmas.startTs = this.starttime;
+            if (parmas.endTs - parmas.startTs > 2505600) {
+				parmas.timeUnit = 1440;
+			} else {
+				parmas.timeUnit = 30;
+			}
+			//parmas.timeUnit = this.timeUnit;
 			sdk_flow_control(parmas)
 				.then((res) => {
 					if (res.status == 0) {

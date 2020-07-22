@@ -1087,8 +1087,8 @@ export default {
 		getflow3() {
 			this.zhanbitimearray = [];
 			let parmas = new Object();
-			// parmas.chanid = this.chanid;
-			parmas.chanid = '*';
+			parmas.chanid = this.chanid;
+			// parmas.chanid = '*';
 			if (this.terminalName == '') {
 				parmas.terminalName = 0;
 			} else {

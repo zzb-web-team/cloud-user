@@ -36,7 +36,7 @@
 
 <script>
 var _this;
-import { dataflow_curve } from '../../servers/api';
+import { dataflow_curve,manage_dataflow_curve, } from '../../servers/api';
 import {
 	dateToMs,
 	getymdtime,
@@ -75,34 +75,47 @@ export default {
 		},
 		//请求数据
 		getlist() {
-			let params = new Object();
+			// let params = new Object();
 			let starttime = this.getCurrentMonthFirst();
 			let endtime = Date.parse(new Date()) / 1000;
-			params.start_ts = starttime;
-			params.end_ts = endtime;
-			params.chanId = this.chanid + '';
-			params.fileName = '*';
+			// params.start_ts = starttime;
+			// params.end_ts = endtime;
+			// params.chanId = this.chanid + '';
+			// params.fileName = '*';
+			// params.timeUnit = 1440;
+            // params.acce = '*';
+            
+
+
+            let params = new Object();
+			params.startTs = starttime;
+			params.endTs = endtime;
+			params.channelId = this.chanid + '';
+			params.urlName = '*';
+			params.domain = '*';
 			params.timeUnit = 1440;
-			params.acce = '*';
-			dataflow_curve(params)
+			params.terminalName = -1;
+			params.pageNo = 0;
+			params.pageSize = 10;
+			manage_dataflow_curve(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (res.data.totalUsage == 0) {
+						if (res.data.totaldataflow == 0) {
 							this.dataL = 0;
 							this.unitdata = 'B';
 						} else {
-							this.unitdata = formatBytes(res.data.totalUsage);
+							this.unitdata = formatBytes(res.data.totaldataflow);
 							this.dataL = formatBkb(
-								res.data.totalUsage,
+								res.data.totaldataflow,
 								this.unitdata
 							);
 						}
-						res.data.dataFlowArray.forEach((item) => {
+						res.data.dataflowarray.forEach((item) => {
 							this.dataFlowArray.push(
 								formatBkb(item, this.unitdata)
 							);
 						});
-						res.data.timeArray.forEach((item, index) => {
+						res.data.timearray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
 						});
 

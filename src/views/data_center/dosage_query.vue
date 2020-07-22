@@ -354,8 +354,7 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			// params.channelId = this.chanid + '';
-			params.channelId = '*';
+			params.channelId = this.chanid + '';
 			if (this.urlname) {
 				params.urlName = this.urlname;
 			} else {
@@ -430,8 +429,7 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			// params.channelId = this.chanid + '';
-			params.channelId = '*';
+			params.channelId = this.chanid + '';
 			if (this.urlname) {
 				params.urlName = this.urlname;
 			} else {
@@ -472,7 +470,7 @@ export default {
 			let params = new Object();
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
+			params.channelId = this.chanid + '';
 			if (this.mvitem) {
 				params.domain = this.mvitem;
 			} else {

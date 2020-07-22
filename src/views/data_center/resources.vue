@@ -1177,7 +1177,7 @@ export default {
 			if (parmas.endTs - parmas.startTs > 2505600) {
 				parmas.timeUnit = 1440;
 			} else {
-				parmas.timeUnit = 30;
+				parmas.timeUnit = 5;
 			}
 			//parmas.timeUnit = this.timeUnit;
 			sdk_flow_control(parmas)

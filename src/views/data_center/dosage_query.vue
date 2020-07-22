@@ -120,7 +120,7 @@
 								<el-table-column label="时间">
 									<template slot-scope="scope">
 										<div>
-											{{ scope.row.timeStamp | settimes }}
+											{{ scope.row.time | settimes }}
 										</div>
 									</template></el-table-column
 								>
@@ -356,7 +356,8 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			params.channelId = arr;
+            params.channelId = arr;
+            // params.channelId = [];
 			if (this.urlname) {
 				params.urlName = this.urlname;
 			} else {
@@ -378,45 +379,37 @@ export default {
 			manage_dataflow_curve(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (res.data.totaldataflow == 0) {
+						if (res.data.total == 0) {
 							this.dataL = 0;
 							this.allunitdata = 'B';
 						} else {
 							this.allunitdata = formatBytes(
-								res.data.totaldataflow
+								res.data.total
 							);
 							this.dataL = formatBkb(
-								res.data.totaldataflow,
+								res.data.total,
 								this.allunitdata
 							);
 						}
-						let maxnum = Math.max(...res.data.dataflowarray);
+						let maxnum = Math.max(...res.data.data[0].dataflowArray);
 						if (maxnum == 0) {
 							this.unitdata = 'B';
 						} else {
 							this.unitdata = formatBytes(maxnum);
 						}
-						res.data.dataflowarray.forEach((item, index) => {
+						res.data.data[0].dataflowArray.forEach((item, index) => {
 							this.dataFlowArray.push(
 								formatBkb(item, this.unitdata)
 							);
 						});
-						// this.dataflowarray = res.data.dataflowarray;
-						this.dataFlownum = res.data.dataflowarray.length - 1;
+						// this.dataflowarray = res.data.data[0].dataflowArray.;
+						this.dataFlownum = res.data.data[0].dataflowArray.length - 1;
 
-						let upcli = Math.floor(this.dataFlownum / 12);
-						res.data.timearray.forEach((item, index) => {
+						// let upcli = Math.floor(this.dataFlownum / 12);
+						res.data.data[0].timeArray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
-							// if (
-							// 	index == 0 ||
-							// 	(index % upcli == 0 && index < upcli * 11) ||
-							// 	index == this.dataFlownum
-							// ) {
-							// 	this.timearray.push(getlocaltimes(item));
-							// } else {
-							// 	this.timearray.push('');
-							// }
-						});
+                        });
+                        console.log('************');
 						this.getdtable();
 						this.drawLine();
 					} else {
@@ -433,7 +426,8 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			params.channelId = arr;
+            params.channelId = arr;
+            //  params.channelId = [];
 			if (this.urlname) {
 				params.urlName = this.urlname;
 			} else {
@@ -454,17 +448,7 @@ export default {
 			params.pageSize = this.pageSize;
 			manage_dataflow_table(params)
 				.then((res) => {
-					// this.tablecdn = res.data.list;
-					res.data.list.forEach((item) => {
-						for (let k in item) {
-							let obj = {};
-							obj.timeStamp = k;
-							obj.dataFlow = item[k];
-
-							this.tablecdn.push(obj);
-						}
-					});
-
+					this.tablecdn = res.data.list;
 					this.total_cnt = res.data.totalCnt;
 				})
 				.catch((err) => {});
@@ -502,7 +486,6 @@ export default {
 		//下拉框
 		changmvitem() {
 			this.currentPage = 1;
-			console.log(this.$refs.fen);
 			this.gettu();
 		},
 		sele_time() {

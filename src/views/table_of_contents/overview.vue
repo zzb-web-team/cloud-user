@@ -91,7 +91,7 @@ export default {
             let params = new Object();
 			params.startTs = starttime;
             params.endTs = endtime;
-			params.channelId = arr;
+            params.channelId = arr;
 			params.urlName = '*';
 			params.domain = '*';
 			params.timeUnit = 1440;
@@ -101,22 +101,22 @@ export default {
 			manage_dataflow_curve(params)
 				.then((res) => {
 					if (res.status == 0) {
-						if (res.data.totaldataflow == 0) {
+						if (res.data.total == 0) {
 							this.dataL = 0;
 							this.unitdata = 'B';
 						} else {
-							this.unitdata = formatBytes(res.data.totaldataflow);
+							this.unitdata = formatBytes(res.data.total);
 							this.dataL = formatBkb(
-								res.data.totaldataflow,
+								res.data.total,
 								this.unitdata
 							);
 						}
-						res.data.dataflowarray.forEach((item) => {
+						res.data.data[0].dataflowArray.forEach((item) => {
 							this.dataFlowArray.push(
 								formatBkb(item, this.unitdata)
 							);
 						});
-						res.data.timearray.forEach((item, index) => {
+						res.data.data[0].timeArray.forEach((item, index) => {
 							this.timeArray.push(getlocaltimes(item));
 						});
 

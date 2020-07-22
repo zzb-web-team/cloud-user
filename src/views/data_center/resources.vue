@@ -119,10 +119,10 @@
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
 						>
-							<el-option label="全部" value="0"></el-option>
+							<el-option label="全部" value="-1"></el-option>
 							<el-option label="andriod" value="1"></el-option>
-							<el-option label="ios" value="2"></el-option>
-							<el-option label="其他" value="3"></el-option>
+							<el-option label="ios" value="0"></el-option>
+							<el-option label="其他" value="2"></el-option>
 						</el-select>
 						<span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
@@ -1090,7 +1090,7 @@ export default {
 			parmas.chanid = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
-				parmas.terminalName = 0;
+				parmas.terminalName = -1;
 			} else {
 				parmas.terminalName = this.terminalName * 1;
 			}
@@ -1135,7 +1135,7 @@ export default {
 			parmas.chanid = this.chanid;
 			parmas.pageNo = this.flowcurrentPage;
 			if (this.terminalName == '') {
-				parmas.terminalName = 0;
+				parmas.terminalName = -1;
 			} else {
 				parmas.terminalName = this.terminalName * 1;
 			}
@@ -1178,7 +1178,7 @@ export default {
 				parmas.domain = this.value1;
 			}
 			if (this.terminalName == '') {
-				parmas.terminalName = 0;
+				parmas.terminalName = -1;
 			} else {
 				parmas.terminalName = this.terminalName * 1;
 			}

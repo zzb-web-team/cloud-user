@@ -1345,7 +1345,8 @@ export default {
 		sevendat() {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			this.starttime = times - 24 * 60 * 60 * 6;
+            this.starttime = times - 24 * 60 * 60 * 6;
+            this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 60;
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {

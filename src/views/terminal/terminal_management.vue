@@ -33,7 +33,7 @@
           <div
             style="background: #ffffff;padding:15px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 45px;margin-right: 45px;box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);border-radius: 2px;"
           >
-            <el-button type="primary" @click="new_btn">
+            <el-button type="primary" @click="new_btn" :disabled="tableData.length>0">
               <span class="el-icon-plus"></span>
               添加终端
             </el-button>

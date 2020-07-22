@@ -39,6 +39,9 @@ import resources from '@/views/data_center/resources.vue';
 import statistics from '@/views/data_center/statistics.vue';
 import accelerated_log from '@/views/data_center/accelerated_log.vue';
 
+
+import word_map from '@/views/distributed/word_map.vue';
+
 //终端管理
 import terminal_management from '@/views/terminal/terminal_management.vue';
 
@@ -308,6 +311,19 @@ const router = new Router({
             component: terminal_management,
             icon: 'iconfont icon-zhongduanguanli',
         },
+        {
+            path: '/word_map',
+            name: 'IP分布',
+            component: index,
+            hidden: true,
+            icon: 'iconfont icon-zhongduanguanli',
+            children: [{
+                path: '/word_map',
+                name: 'IP分布',
+                component: word_map,
+                hidden: false,
+            }]
+        }
     ],
 });
 

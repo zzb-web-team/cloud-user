@@ -54,11 +54,11 @@ export function formatBytes(a) {
 };
 
 export function formatBorb(a, b) {
-    if (0 == a) return '0 Bytes';
+    if (0 == a) return '0 B';
     var c = 1024,
         d = b || 2,
         e = [
-            'Bytes',
+            'B',
             'KB',
             'MB',
             'GB',

@@ -9,11 +9,12 @@
 					>
 						<el-input
 							placeholder="请输入加速域名"
-							v-model="value1"
+							v-model="value_url"
 							class="input-with-select"
 							maxlength="70"
 							@keyup.enter.native="getdata"
 							style="width:10%;margin-right:10px;"
+							v-show="activeName != 'fourth'"
 						>
 							<i
 								slot="prefix"
@@ -23,12 +24,11 @@
 						</el-input>
 						<el-input
 							placeholder="请输入加速内容名称"
-							v-model="value_url"
+							v-model="value1"
 							class="input-with-select"
 							maxlength="70"
 							@keyup.enter.native="getdata"
 							style="width:10%;margin-right:10px;"
-							v-show="activeName != 'fourth'"
 						>
 							<i
 								slot="prefix"
@@ -119,7 +119,7 @@
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
 						>
-							<el-option label="全部" value="*"></el-option>
+							<el-option label="全部" value="0"></el-option>
 							<el-option label="andriod" value="1"></el-option>
 							<el-option label="ios" value="2"></el-option>
 							<el-option label="其他" value="3"></el-option>
@@ -279,18 +279,14 @@
 										<el-table-column label="加速内容名称">
 											<template slot-scope="scope">
 												<div>
-													{{
-														scope.row.urlnam
-													}}
+													{{ scope.row.urlnam }}
 												</div>
 											</template>
 										</el-table-column>
 										<el-table-column label="播放URL">
 											<template slot-scope="scope">
 												<div>
-													{{
-														scope.row.playurl
-													}}
+													{{ scope.row.playurl }}
 												</div>
 											</template>
 										</el-table-column>
@@ -304,7 +300,7 @@
 												</div>
 											</template>
 										</el-table-column>
-                                        	<el-table-column label="PCDN加速流量">
+										<el-table-column label="PCDN加速流量">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -318,8 +314,12 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.p2ppercent
-													}}
+														(
+															scope.row
+																.p2ppercent *
+															100
+														).toFixed(2)
+													}}%
 												</div>
 											</template>
 										</el-table-column>
@@ -327,16 +327,26 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.cdnpercent
-													}}
+														(
+															scope.row
+																.cdnpercent *
+															100
+														).toFixed(2)
+													}}%
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="统计时间">
+										<el-table-column
+											label="统计时间"
+											width="300px"
+										>
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.time
+														scope.row.stime
+															| settimes
+													}}-{{
+														scope.row.etime
 															| settimes
 													}}
 												</div>
@@ -393,8 +403,9 @@ export default {
 	data() {
 		return {
 			radio1: '1',
-            currentPage: 1,
-            flowcurrentPage:1,
+			currentPage: 1,
+			flowcurrentPage: 1,
+			flowtotal_cnt: 0,
 			shoudzyx: false,
 			showzdyz: false,
 			acce: '*',
@@ -695,21 +706,26 @@ export default {
 			timeArray2: [], //图2
 			pageSize: 10, //每页数量
 			pageNo: 1, //当前页码
-            total_cnt: 0, //数据总量3
-            flowtotal_cnt:0,
+			total_cnt: 0, //数据总量3
+			flowtotal_cnt: 0,
 			chanid: '',
 			dataFlownum: 0,
 			dataFlownum2: 0,
 			vadio_page: 0,
 			unitdata: 'B',
 			totalp2p: '0B',
-            totalcdn: '0B',
-            tableflow:[],
+			totalcdn: '0B',
+			tableflow: [],
 			p2parr: [],
 			cdnarr: [],
 			tab3arr: [],
 			flow4_data: [],
 			flow4_time: [],
+			iosp2parray: [],
+			ioscdnarray: [],
+			andriodp2parray: [],
+			andriodcdnarray: [],
+			zhanbitimearray: [],
 		};
 	},
 	filters: {
@@ -813,11 +829,11 @@ export default {
 		gettol(pagetol) {
 			this.pagesize = pagetol;
 			// this.getuserlist();
-        },
-        //获取页码
+		},
+		//获取页码
 		flowgetpage(pages) {
 			this.flowcurrentPage = pages;
-			this.getbot();
+			this.gettable3();
 		},
 		//获取每页数量
 		flowgettol(pagetol) {
@@ -826,6 +842,7 @@ export default {
 		},
 		getdata() {
 			this.currentPage = 1;
+			this.flowcurrentPage = 1;
 			if (this.activeName == 'first') {
 				this.gettable1();
 			} else if (this.activeName == 'second') {
@@ -1068,14 +1085,28 @@ export default {
 		},
 		//流量占比图表
 		getflow3() {
+			this.zhanbitimearray = [];
 			let parmas = new Object();
-			parmas.chanid = this.chanid;
-			parmas.terminalName = '*';
-			parmas.domain = this.value1;
-			parmas.urlName = this.value_url;
+			// parmas.chanid = this.chanid;
+			parmas.chanid = '*';
+			if (this.terminalName == '') {
+				parmas.terminalName = 0;
+			} else {
+				parmas.terminalName = this.terminalName * 1;
+			}
+			if (this.value1 == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value1;
+			}
+			if (this.value_url == '') {
+				parmas.urlName = '*';
+			} else {
+				parmas.urlName = this.value_url;
+			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
-			if ((parmas.endTs = parmas.settimes > 86400)) {
+			if (parmas.endTs - parmas.startTs > 86400) {
 				parmas.timeUnit = 1440;
 			} else {
 				parmas.timeUnit = 60;
@@ -1083,16 +1114,15 @@ export default {
 			sdk_flow(parmas)
 				.then((res) => {
 					if (res.status == 0) {
-						this.totalp2p = updatabkb(res.data.totalp2p);
-						this.totalcdn = updatabkb(res.data.totalcdn);
-						//              p2parr:[],
-						// cdnarr:[],
-						// tab3arr:[],
-
+						this.totalp2p = formatBorb(res.data.totalp2p);
+						this.totalcdn = formatBorb(res.data.totalcdn);
+						this.cdnarr = res.data.cdnarray;
+						this.p2parr = res.data.p2parray;
 						res.data.timearray.forEach((item, index) => {
-							this.timearray.push(getlocaltimes(item));
+							this.zhanbitimearray.push(getlocaltimes(item));
 						});
 						this.gettable3();
+						this.drawLine2();
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1103,13 +1133,25 @@ export default {
 		gettable3() {
 			let parmas = new Object();
 			parmas.chanid = this.chanid;
-			parmas.page = this.pagenum;
-			parmas.terminalName = '*';
-			parmas.domain = this.value1;
-			parmas.urlName = this.value_url;
+			parmas.pageNo = this.flowcurrentPage;
+			if (this.terminalName == '') {
+				parmas.terminalName = 0;
+			} else {
+				parmas.terminalName = this.terminalName * 1;
+			}
+			if (this.value1 == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value1;
+			}
+			if (this.value_url == '') {
+				parmas.urlName = '*';
+			} else {
+				parmas.urlName = this.value_url;
+			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
-			if ((parmas.endTs = parmas.settimes > 86400)) {
+			if (parmas.endTs - parmas.startTs > 86400) {
 				parmas.timeUnit = 1440;
 			} else {
 				parmas.timeUnit = 60;
@@ -1117,8 +1159,8 @@ export default {
 			sdk_flow_table(parmas)
 				.then((res) => {
 					if (res.status == 0) {
-                        this.tableflow=res.data;
-						this.drawLine2();
+						this.tableflow = res.data.list;
+						this.flowtotal_cnt = res.data.totalCnt;
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1127,22 +1169,33 @@ export default {
 		},
 		//流量监控图表
 		getflow4() {
+			this.flow4_time = [];
 			let parmas = new Object();
 			parmas.chanid = this.chanid;
-			parmas.domain = '';
-			parmas.terminal_type = '*';
+			if (this.value1 == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value1;
+			}
+			if (this.terminalName == '') {
+				parmas.terminalName = 0;
+			} else {
+				parmas.terminalName = this.terminalName * 1;
+			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
 			parmas.timeUnit = this.timeUnit;
 			sdk_flow_control(parmas)
 				.then((res) => {
 					if (res.status == 0) {
-						this.flow4_time = res.data.timearray;
-						this.Iospstreamarray = res.data.Iospstreamarray;
-						this.Ioscstreamarray = res.data.Iospstreamarray;
-						this.andriodpstreamarray = res.data.Iospstreamarray;
-						this.andriodcstreamarray = res.data.Iospstreamarray;
-						this.gettable4();
+						this.iosp2parray = res.data.iospstreamarray;
+						this.ioscdnarray = res.data.ioscstreamarray;
+						this.andriodp2parray = res.data.andriodpstreamarray;
+						this.andriodcdnarray = res.data.andriodcstreamarray;
+						res.data.timeArray.forEach((item, index) => {
+							this.flow4_time.push(getlocaltimes(item));
+						});
+						this.drawLine3();
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1239,6 +1292,8 @@ export default {
 			this.sele_time();
 		},
 		sele_time() {
+			this.currentPage = 1;
+			this.flowcurrentPage = 1;
 			if (this.radio1 == 1) {
 				this.shoudzyx = false;
 				this.val2 = '';
@@ -1339,6 +1394,9 @@ export default {
 				this.endtime = dateToMs(this.val2[1]);
 			}
 			this.settimeunit(this.starttime, this.endtime);
+			console.log(this.starttime);
+			console.log(this.endtime);
+			console.log(this.settimeunit(this.starttime, this.endtime));
 			if (this.activeName == 'first') {
 				this.gettable1();
 			} else if (this.activeName == 'second') {
@@ -1384,14 +1442,14 @@ export default {
 				this.gettable2();
 			} else if (tab.index == 2) {
 				this.getflow3();
-				setTimeout(() => {
-					this.drawLine2();
-				}, 1500);
+				// setTimeout(() => {
+				// 	this.drawLine2();
+				// }, 1500);
 			} else {
 				this.getflow4();
-				setTimeout(() => {
-					this.drawLine3();
-				}, 1500);
+				// setTimeout(() => {
+				// 	this.drawLine3();
+				// }, 1500);
 			}
 		},
 		drawLine() {
@@ -1682,16 +1740,23 @@ export default {
 			myChart.setOption(options);
 		},
 		drawLine2() {
-			var data1 = [55, 207, 36, 100, 10, 260];
-			var data2 = [330, 22, 181, 35, 442, 40];
+			var data1 = [];
+			var data2 = [];
+			this.cdnarr.map((item) => {
+				data1.push((item * 100).toFixed(1));
+			});
+			this.p2parr.map((item) => {
+				data2.push((item * 100).toFixed(1));
+			});
 			var data3 = (function() {
 				var datas = [];
 				for (var i = 0; i < data1.length; i++) {
-					datas.push(data1[i] + data2[i]);
+					datas.push(data1[i] * 1 + data2[i] * 1);
 				}
 				return datas;
 			})();
-			let _this = this;
+			var time = this.zhanbitimearray;
+			var _this = this;
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('liuliang_echarts')
@@ -1746,27 +1811,32 @@ export default {
 					bottom: 100, // 默认60
 				},
 				xAxis: {
-					data: [
-						'1:00:00',
-						'2:00:00',
-						'3:00:00',
-						'4:00:00',
-						'5:00:00',
-						'6:00:00',
-					],
+					data: time,
 					splitLine: {
 						show: false,
 					},
 				},
-				yAxis: {
-					splitLine: {
+				yAxis: [
+					{
+						type: 'value',
+						axisLabel: {
+							show: true,
+							interval: 'auto',
+							formatter: '{value} %',
+						},
 						show: true,
 					},
-					axisTick: {
-						//y轴刻度线
-						show: true,
+					{
+						splitLine: {
+							show: true,
+						},
+						axisTick: {
+							//y轴刻度线
+							show: true,
+						},
 					},
-				},
+				],
+
 				series: [
 					{
 						name: 'CDN流量',
@@ -1846,47 +1916,12 @@ export default {
 			myChart.setOption(options);
 		},
 		drawLine3() {
-			var dataCount = 100;
-			var data = generateData(dataCount);
-			var data1 = generateData(dataCount);
-			var data2 = generateData(dataCount);
-			var data3 = generateData(dataCount);
-			var data4 = generateData(dataCount);
+			let datatime = this.flow4_time;
+			let data1 = this.iosp2parray;
+			let data2 = this.ioscdnarray;
+			let data3 = this.andriodp2parray;
+			let data4 = this.andriodcdnarray;
 			let _this = this;
-			function generateData(count) {
-				var baseValue = Math.random() * 1000;
-				var time = +new Date(2011, 0, 1);
-				var smallBaseValue;
-
-				function next(idx) {
-					smallBaseValue =
-						idx % 30 === 0
-							? Math.random() * 700
-							: smallBaseValue + Math.random() * 500 - 250;
-					baseValue += Math.random() * 20 - 10;
-					return Math.max(
-						0,
-						Math.round(baseValue + smallBaseValue) + 3000
-					);
-				}
-
-				var categoryData = [];
-				var valueData = [];
-
-				for (var i = 0; i < count; i++) {
-					categoryData.push(
-						echarts.format.formatTime('yyyy-MM-dd\nhh:mm:ss', time)
-					);
-					valueData.push(next(i).toFixed(2));
-					time += 1000;
-				}
-
-				return {
-					categoryData: categoryData,
-					valueData: valueData,
-				};
-			}
-
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
 				document.getElementById('jiankong_echarts')
@@ -1919,7 +1954,7 @@ export default {
 					bottom: 100, // 默认60
 				},
 				xAxis: {
-					data: data.categoryData,
+					data: datatime,
 					splitLine: {
 						show: false,
 					},
@@ -1937,7 +1972,7 @@ export default {
 					{
 						name: 'IOS-P2P',
 						type: 'line',
-						data: data1.valueData,
+						data: data1,
 						smooth: false,
 						// symbol: 'star', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -1953,10 +1988,7 @@ export default {
 								color: '#E8505B',
 								fontSize: 18,
 								formatter: (params) => {
-									if (
-										data1.valueData.length - 1 ==
-										params.dataIndex
-									) {
+									if (data1.length - 1 == params.dataIndex) {
 										return 'IOS-P2P';
 									} else {
 										return '';
@@ -1968,7 +2000,7 @@ export default {
 					{
 						name: 'IOS-CDN',
 						type: 'line',
-						data: data2.valueData,
+						data: data2,
 						smooth: false,
 						// symbol: 'triangle', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -1982,10 +2014,7 @@ export default {
 								color: '#14B1AB',
 								fontSize: 18,
 								formatter: (params) => {
-									if (
-										data2.valueData.length - 1 ==
-										params.dataIndex
-									) {
+									if (data2.length - 1 == params.dataIndex) {
 										return 'IOS-CDN';
 									} else {
 										return '';
@@ -1997,7 +2026,7 @@ export default {
 					{
 						name: '安卓-P2P',
 						type: 'line',
-						data: data3.valueData,
+						data: data3,
 						smooth: false,
 						// symbol: 'pin', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -2011,10 +2040,7 @@ export default {
 								color: '#F2C33C',
 								fontSize: 18,
 								formatter: (params) => {
-									if (
-										data3.valueData.length - 1 ==
-										params.dataIndex
-									) {
+									if (data3.length - 1 == params.dataIndex) {
 										return '安卓-P2P';
 									} else {
 										return '';
@@ -2026,7 +2052,7 @@ export default {
 					{
 						name: '安卓-CDN',
 						type: 'line',
-						data: data4.valueData,
+						data: data4,
 						smooth: false,
 						itemStyle: {
 							normal: { color: '#5970CC' },
@@ -2038,10 +2064,7 @@ export default {
 								color: '#5970CC',
 								fontSize: 18,
 								formatter: (params) => {
-									if (
-										data4.valueData.length - 1 ==
-										params.dataIndex
-									) {
+									if (data4.length - 1 == params.dataIndex) {
 										return '安卓-CDN';
 									} else {
 										return '';

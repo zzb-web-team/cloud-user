@@ -1089,14 +1089,14 @@ export default {
 				parmas.terminalName = this.terminalName * 1;
 			}
 			if (this.value1 == '') {
-				parmas.domain = '*';
-			} else {
-				parmas.domain = this.value1;
-			}
-			if (this.value_url == '') {
 				parmas.urlName = '*';
 			} else {
-				parmas.urlName = this.value_url;
+				parmas.urlName = this.value1;
+			}
+			if (this.value_url == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value_url;
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -1134,14 +1134,14 @@ export default {
 				parmas.terminalName = this.terminalName * 1;
 			}
 			if (this.value1 == '') {
-				parmas.domain = '*';
-			} else {
-				parmas.domain = this.value1;
-			}
-			if (this.value_url == '') {
 				parmas.urlName = '*';
 			} else {
-				parmas.urlName = this.value_url;
+				parmas.urlName = this.value1;
+			}
+			if (this.value_url == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value_url;
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -1167,9 +1167,9 @@ export default {
 			let parmas = new Object();
 			parmas.channelId = this.chanid;
 			if (this.value1 == '') {
-				parmas.domain = '*';
+				parmas.urlName = '*';
 			} else {
-				parmas.domain = this.value1;
+				parmas.urlName = this.value1;
 			}
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
@@ -1297,14 +1297,14 @@ export default {
 				parmas.terminalName = this.terminalName * 1;
 			}
 			if (this.value1 == '') {
-				parmas.domain = '*';
-			} else {
-				parmas.domain = this.value1;
-			}
-			if (this.value_url == '') {
 				parmas.urlName = '*';
 			} else {
-				parmas.urlName = this.value_url;
+				parmas.urlName = this.value1;
+			}
+			if (this.value_url == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value_url;
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -1327,9 +1327,9 @@ export default {
 			let parmas = new Object();
 			parmas.channelId = this.chanid;
 			if (this.value1 == '') {
-				parmas.domain = '*';
+				parmas.urlName = '*';
 			} else {
-				parmas.domain = this.value1;
+				parmas.urlName = this.value1;
 			}
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;

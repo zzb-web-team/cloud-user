@@ -359,14 +359,14 @@ export default {
             params.channelId = arr;
             // params.channelId = [];
 			if (this.urlname) {
-				params.urlName = this.urlname;
-			} else {
-				params.urlName = '*';
-			}
-			if (this.mvitem) {
-				params.domain = this.mvitem;
+				params.domain = this.urlname;
 			} else {
 				params.domain = '*';
+			}
+			if (this.mvitem) {
+				params.urlName = this.mvitem;
+			} else {
+				params.urlName = '*';
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
@@ -429,14 +429,14 @@ export default {
             params.channelId = arr;
             //  params.channelId = [];
 			if (this.urlname) {
-				params.urlName = this.urlname;
-			} else {
-				params.urlName = '*';
-			}
-			if (this.mvitem) {
-				params.domain = this.mvitem;
+				params.domain = this.urlname;
 			} else {
 				params.domain = '*';
+			}
+			if (this.mvitem) {
+				params.urlName = this.mvitem;
+			} else {
+				params.urlName = '*';
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {

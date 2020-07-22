@@ -351,10 +351,12 @@ export default {
 		gettu() {
 			this.dataFlowArray = [];
 			this.timeArray = [];
+			let arr = [];
+			arr.push(this.chanid + '');
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			params.channelId = this.chanid + '';
+			params.channelId = arr;
 			if (this.urlname) {
 				params.urlName = this.urlname;
 			} else {
@@ -426,10 +428,12 @@ export default {
 		//请求数据--表格
 		getdtable() {
 			this.tablecdn = [];
+			let arr = [];
+			arr.push(this.chanid + '');
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			params.channelId = this.chanid + '';
+			params.channelId = arr;
 			if (this.urlname) {
 				params.urlName = this.urlname;
 			} else {
@@ -465,7 +469,7 @@ export default {
 				})
 				.catch((err) => {});
 		},
-		
+
 		exportant_dataflow() {
 			let params = new Object();
 			params.start_ts = this.starttime;

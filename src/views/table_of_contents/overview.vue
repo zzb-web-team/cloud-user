@@ -86,11 +86,12 @@ export default {
             // params.acce = '*';
             
 
-
+            let arr=[];
+           	arr.push(this.chanid + '');
             let params = new Object();
 			params.startTs = starttime;
-			params.endTs = endtime;
-			params.channelId = this.chanid + '';
+            params.endTs = endtime;
+			params.channelId = arr;
 			params.urlName = '*';
 			params.domain = '*';
 			params.timeUnit = 1440;

@@ -279,7 +279,7 @@
 										<el-table-column label="加速内容名称">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.urlnam }}
+													{{ scope.row.urlname }}
 												</div>
 											</template>
 										</el-table-column>
@@ -1133,7 +1133,7 @@ export default {
 		gettable3() {
 			let parmas = new Object();
 			parmas.chanid = this.chanid;
-			parmas.pageNo = this.flowcurrentPage;
+			parmas.pageNo = this.flowcurrentPage-1;
 			if (this.terminalName == '') {
 				parmas.terminalName = -1;
 			} else {
@@ -1320,7 +1320,7 @@ export default {
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times;
 			this.endtime = Date.parse(new Date()) / 1000;
-			this.settimeunit(this.starttime, this.endtime);
+			this.timeUnit = 5;
 			if (this.activeName == 'first') {
 				this.gettable1();
 			} else if (this.activeName == 'second') {
@@ -1337,7 +1337,7 @@ export default {
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 1;
 			this.endtime = times - 1;
-			this.settimeunit(this.starttime, this.endtime);
+			this.timeUnit = 5;
 			if (this.activeName == 'first') {
 				this.gettable1();
 			} else if (this.activeName == 'second') {
@@ -1353,7 +1353,7 @@ export default {
 			let times =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 6;
-			this.endtime = Date.parse(new Date()) / 1000;
+			this.timeUnit = 60;
 			this.settimeunit(this.starttime, this.endtime);
 			if (this.activeName == 'first') {
 				this.gettable1();
@@ -1371,7 +1371,7 @@ export default {
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.starttime = times - 24 * 60 * 60 * 29;
 			this.endtime = Date.parse(new Date()) / 1000;
-			this.settimeunit(this.starttime, this.endtime);
+			this.timeUnit = 1440;
 			if (this.activeName == 'first') {
 				this.gettable1();
 			} else if (this.activeName == 'second') {

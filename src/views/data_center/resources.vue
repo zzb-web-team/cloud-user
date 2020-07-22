@@ -39,7 +39,7 @@
 						<span
 							style="margin-right:10px;margin-left:15px;"
 							v-show="
-								activeName == 'first' || activeName == 'second'
+								activeName == 'first'
 							"
 							>终端:</span
 						>
@@ -49,7 +49,7 @@
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
 							v-show="
-								activeName == 'first' || activeName == 'second'
+								activeName == 'first'
 							"
 						>
 							<el-option label="全部" value="*"></el-option>
@@ -106,7 +106,7 @@
 						<span
 							style="margin-right:10px;margin-left:15px;"
 							v-show="
-								activeName == 'third' || activeName == 'fourth'
+								activeName == 'third'
 							"
 							>终端类型：</span
 						>
@@ -1013,7 +1013,7 @@ export default {
 				params.isp = '*';
 			}
 			params.time_unit = this.timeUnit;
-			params.acce = this.acce;
+			params.acce = '*';
 			backsource_flow(params)
 				.then((res) => {
 					if (res.status == 0) {

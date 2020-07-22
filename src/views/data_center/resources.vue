@@ -38,9 +38,7 @@
 						</el-input>
 						<span
 							style="margin-right:10px;margin-left:15px;"
-							v-show="
-								activeName == 'first'
-							"
+							v-show="activeName == 'first'"
 							>终端:</span
 						>
 						<el-select
@@ -48,9 +46,7 @@
 							placeholder="终端"
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
-							v-show="
-								activeName == 'first'
-							"
+							v-show="activeName == 'first'"
 						>
 							<el-option label="全部" value="*"></el-option>
 							<el-option
@@ -105,15 +101,11 @@
 						</el-select>
 						<span
 							style="margin-right:10px;margin-left:15px;"
-							v-show="
-								activeName == 'third'
-							"
+							v-show="activeName == 'third'"
 							>终端类型：</span
 						>
 						<el-select
-							v-show="
-								activeName == 'third'
-							"
+							v-show="activeName == 'third'"
 							v-model="terminalName"
 							placeholder="终端类型"
 							style="width: 10%;margin-right: 10px;"
@@ -1133,7 +1125,7 @@ export default {
 		gettable3() {
 			let parmas = new Object();
 			parmas.chanid = this.chanid;
-			parmas.pageNo = this.flowcurrentPage-1;
+			parmas.pageNo = this.flowcurrentPage - 1;
 			if (this.terminalName == '') {
 				parmas.terminalName = -1;
 			} else {
@@ -1179,8 +1171,8 @@ export default {
 			}
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
-            parmas.startTs = this.starttime;
-            if (parmas.endTs - parmas.startTs > 2505600) {
+			parmas.startTs = this.starttime;
+			if (parmas.endTs - parmas.startTs > 2505600) {
 				parmas.timeUnit = 1440;
 			} else {
 				parmas.timeUnit = 30;
@@ -1772,7 +1764,8 @@ export default {
 						color: '#333333',
 						fontSize: 16,
 					},
-				},
+                },
+                animation:false,
 				legend: {
 					// orient: 'vertical',
 					x: 'center', //可设定图例在左、右、居中
@@ -2015,7 +2008,19 @@ export default {
 								color: '#14B1AB',
 								fontSize: 18,
 								formatter: (params) => {
-									if (data2.length - 1 == params.dataIndex) {
+									if (data2.length > 2) {
+										if (
+											data2.length - 2 ==
+											params.dataIndex
+										) {
+											return 'IOS-CDN';
+										} else {
+											return '';
+										}
+									} else if (
+										data2.length - 1 ==
+										params.dataIndex
+									) {
 										return 'IOS-CDN';
 									} else {
 										return '';
@@ -2041,7 +2046,19 @@ export default {
 								color: '#F2C33C',
 								fontSize: 18,
 								formatter: (params) => {
-									if (data3.length - 1 == params.dataIndex) {
+									if (data3.length > 3) {
+										if (
+											data3.length - 3 ==
+											params.dataIndex
+										) {
+											return '安卓-P2P';
+										} else {
+											return '';
+										}
+									} else if (
+										data3.length - 1 ==
+										params.dataIndex
+									) {
 										return '安卓-P2P';
 									} else {
 										return '';
@@ -2065,7 +2082,19 @@ export default {
 								color: '#5970CC',
 								fontSize: 18,
 								formatter: (params) => {
-									if (data4.length - 1 == params.dataIndex) {
+									if (data4.length > 4) {
+										if (
+											data4.length - 4 ==
+											params.dataIndex
+										) {
+											return '安卓-CDN';
+										} else {
+											return '';
+										}
+									} else if (
+										data4.length - 1 ==
+										params.dataIndex
+									) {
 										return '安卓-CDN';
 									} else {
 										return '';

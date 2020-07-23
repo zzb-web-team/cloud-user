@@ -41,7 +41,7 @@
 							v-show="activeName == 'first'"
 							>终端:</span
 						>
-						<el-select
+						<!-- <el-select
 							v-model="acce"
 							placeholder="终端"
 							style="width: 10%;margin-right: 10px;"
@@ -55,6 +55,18 @@
 								:label="item.label"
 								:value="item.label"
 							></el-option>
+						</el-select> -->
+						<el-select
+							v-show="activeName == 'first'"
+							v-model="acce"
+							placeholder="终端类型"
+							style="width: 10%;margin-right: 10px;"
+							@change="getdata()"
+						>
+							<el-option label="全部" value="-1"></el-option>
+							<el-option label="android" value="0"></el-option>
+							<el-option label="ios" value="1"></el-option>
+							<el-option label="其他" value="2"></el-option>
 						</el-select>
 						<span
 							style="margin-right:10px;margin-left:15px;"
@@ -402,7 +414,7 @@ export default {
 			flowtotal_cnt: 0,
 			shoudzyx: false,
 			showzdyz: false,
-			acce: '*',
+			acce: '',
 			pagenum: 0,
 			accelist: [],
 			options1: [],
@@ -902,7 +914,12 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			params.acce = this.acce;
+			if (this.acc == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.acce;
+			}
+
 			params.time_unit = this.timeUnit;
 			accelerate_flow(params)
 				.then((res) => {
@@ -966,7 +983,11 @@ export default {
 			}
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
-			params.acce = this.acce;
+			if (this.acc == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.acce;
+			}
 			accelerate_flow_table(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1250,7 +1271,11 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			params.acce = this.acce;
+			if (this.acc == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.acce;
+			}
 			params.time_unit = this.timeUnit;
 			export_accelerate_flow_file(params)
 				.then((res) => {
@@ -1286,7 +1311,11 @@ export default {
 				params.isp = '*';
 			}
 			params.time_unit = this.timeUnit;
-			params.acce = this.acce;
+			if (this.acc == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.acce;
+			}
 			export_backsource_flow_file(params)
 				.then((res) => {
 					if (res.status == 0) {

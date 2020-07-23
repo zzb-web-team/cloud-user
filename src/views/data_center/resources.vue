@@ -914,7 +914,7 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			if (this.acc == '') {
+			if (this.acce == '') {
 				params.acce = -1;
 			} else {
 				params.acce = this.acce;
@@ -983,7 +983,7 @@ export default {
 			}
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
-			if (this.acc == '') {
+			if (this.acce == '') {
 				params.acce = -1;
 			} else {
 				params.acce = this.acce;
@@ -1030,7 +1030,11 @@ export default {
 				params.isp = '*';
 			}
 			params.time_unit = this.timeUnit;
-			params.acce = '*';
+			if (this.acce == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.acce;
+			}
 			backsource_flow(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1271,7 +1275,7 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			if (this.acc == '') {
+			if (this.acce == '') {
 				params.acce = -1;
 			} else {
 				params.acce = this.acce;
@@ -1311,7 +1315,7 @@ export default {
 				params.isp = '*';
 			}
 			params.time_unit = this.timeUnit;
-			if (this.acc == '') {
+			if (this.acce == '') {
 				params.acce = -1;
 			} else {
 				params.acce = this.acce;

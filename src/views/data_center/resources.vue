@@ -1288,7 +1288,7 @@ export default {
 				});
 		},
 		export_tab3() {
-            let parmas = new Object();
+			let parmas = new Object();
 			parmas.channelId = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
@@ -1315,7 +1315,7 @@ export default {
 			}
 			export_sdk_flow_table_user_file(parmas)
 				.then((res) => {
-                    console.log(res)
+					console.log(res);
 					if (res.status == 0) {
 						window.open(res.msg, '_blank');
 					} else {
@@ -1822,10 +1822,10 @@ export default {
 			var data1 = [];
 			var data2 = [];
 			this.cdnarr.map((item) => {
-				data1.push((item * 100).toFixed(1));
+				data1.push((item * 100).toFixed(2));
 			});
 			this.p2parr.map((item) => {
-				data2.push((item * 100).toFixed(1));
+				data2.push((item * 100).toFixed(2));
 			});
 			var data3 = (function() {
 				var datas = [];
@@ -1932,8 +1932,9 @@ export default {
 						label: {
 							normal: {
 								show: true,
-								position: 'insideLeft',
+								position: 'inside',
 								color: '#ffffff',
+                                fontSize: 10,
 							},
 						},
 					},
@@ -1967,30 +1968,31 @@ export default {
 						label: {
 							normal: {
 								show: true,
-								position: 'insideLeft',
+								position: 'inside',
 								color: '#333333',
+                                fontSize: 10,
 							},
 						},
 					},
-					{
-						name: '总计',
-						type: 'line',
-						stack: '总量',
-						symbol: 'none',
-						label: {
-							normal: {
-								show: true,
-								formatter: '{c}',
-								textStyle: { color: '#333333' },
-							},
-						},
-						itemStyle: {
-							normal: {
-								color: 'rgba(128, 128, 128, 0)',
-							},
-						},
-						data: data3,
-					},
+					// {
+					// 	name: '总计',
+					// 	type: 'line',
+					// 	stack: '总量',
+					// 	symbol: 'none',
+					// 	label: {
+					// 		normal: {
+					// 			show: true,
+					// 			formatter: '{c}',
+					// 			textStyle: { color: '#333333', },
+					// 		},
+					// 	},
+					// 	itemStyle: {
+					// 		normal: {
+					// 			color: 'rgba(128, 128, 128, 0)',
+					// 		},
+					// 	},
+					// 	data: data3,
+					// },
 				],
 			};
 			myChart.setOption(options);
@@ -2059,8 +2061,7 @@ export default {
 					data: datatime,
 					splitLine: {
 						show: false,
-                    },
-                    
+					},
 				},
 				yAxis: {
 					splitLine: {
@@ -2069,16 +2070,16 @@ export default {
 					axisTick: {
 						//y轴刻度线
 						show: true,
-                    },
-                    name:_this.unitdata
+					},
+					name: _this.unitdata,
 				},
 				series: [
 					{
 						name: 'IOS-P2P',
 						type: 'line',
-						data: data1.map((item)=>{
-                            return formatBkb(item,_this.unitdata);
-                        }),
+						data: data1.map((item) => {
+							return formatBkb(item, _this.unitdata);
+						}),
 						smooth: false,
 						// symbol: 'star', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -2106,9 +2107,9 @@ export default {
 					{
 						name: 'IOS-CDN',
 						type: 'line',
-						data: data2.map((item)=>{
-                            return formatBkb(item,_this.unitdata);
-                        }),
+						data: data2.map((item) => {
+							return formatBkb(item, _this.unitdata);
+						}),
 						smooth: false,
 						// symbol: 'triangle', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -2146,9 +2147,9 @@ export default {
 					{
 						name: '安卓-P2P',
 						type: 'line',
-						data: data3.map((item)=>{
-                            return formatBkb(item,_this.unitdata);
-                        }),
+						data: data3.map((item) => {
+							return formatBkb(item, _this.unitdata);
+						}),
 						smooth: false,
 						// symbol: 'pin', //拐点样式
 						// symbolSize: 8, //拐点大小
@@ -2186,9 +2187,9 @@ export default {
 					{
 						name: '安卓-CDN',
 						type: 'line',
-						data: data4.map((item)=>{
-                            return formatBkb(item,_this.unitdata);
-                        }),
+						data: data4.map((item) => {
+							return formatBkb(item, _this.unitdata);
+						}),
 						smooth: false,
 						itemStyle: {
 							normal: { color: '#5970CC' },

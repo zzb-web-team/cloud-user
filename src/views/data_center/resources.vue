@@ -720,6 +720,8 @@ export default {
 			andriodp2parray: [],
 			andriodcdnarray: [],
 			zhanbitimearray: [],
+			cdataArray: [],
+			cdataArray: [],
 		};
 	},
 	filters: {
@@ -1112,6 +1114,16 @@ export default {
 						this.totalcdn = formatBorb(res.data.totalcdn);
 						this.cdnarr = res.data.cdnarray;
 						this.p2parr = res.data.p2parray;
+
+						let maxnum = Math.max(...res.data.cdataArray);
+						if (maxnum != 0) {
+							this.unitdata = formatBytes(maxnum);
+						} else {
+							this.unitdat = 'B';
+						}
+
+						this.cdataArray = res.data.cdataArray;
+						this.pdataArray = res.data.pdataArray;
 						res.data.timearray.forEach((item, index) => {
 							this.zhanbitimearray.push(getlocaltimes(item));
 						});
@@ -1830,7 +1842,8 @@ export default {
 			var data3 = (function() {
 				var datas = [];
 				for (var i = 0; i < data1.length; i++) {
-					datas.push(data1[i] * 1 + data2[i] * 1);
+					// datas.push(data1[i] * 1 + data2[i] * 1);
+					datas.push(158200);
 				}
 				return datas;
 			})();
@@ -1861,6 +1874,20 @@ export default {
 				},
 				tooltip: {
 					trigger: 'axis',
+					formatter: function(params) {
+						var num = params[0].dataIndex;
+						return (
+							params[0].axisValue +
+							'</br>' +
+							'CDN流量' +
+							formatBkb(_this.cdataArray[num], _this.unitdata) +
+							_this.unitdata +
+							'</br>' +
+							'P2P流量' +
+							formatBkb(_this.pdataArray[num], _this.unitdata) +
+							_this.unitdata
+						);
+					},
 				},
 				toolbox: {
 					//show: true,
@@ -1925,7 +1952,7 @@ export default {
 								show: true,
 								position: 'inside',
 								color: '#ffffff',
-                                fontSize: 10,
+								fontSize: 10,
 							},
 						},
 					},
@@ -1961,7 +1988,7 @@ export default {
 								show: true,
 								position: 'inside',
 								color: '#333333',
-                                fontSize: 10,
+								fontSize: 10,
 							},
 						},
 					},

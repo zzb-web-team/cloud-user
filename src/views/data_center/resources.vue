@@ -1906,15 +1906,6 @@ export default {
 						},
 						show: true,
 					},
-					{
-						splitLine: {
-							show: true,
-						},
-						axisTick: {
-							//y轴刻度线
-							show: true,
-						},
-					},
 				],
 
 				series: [

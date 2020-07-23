@@ -292,7 +292,7 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="PCDN加速流量">
+										<el-table-column label="CDN加速流量">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -1315,6 +1315,7 @@ export default {
 			}
 			export_sdk_flow_table_user_file(parmas)
 				.then((res) => {
+                    console.log(res)
 					if (res.status == 0) {
 						window.open(res.msg, '_blank');
 					} else {

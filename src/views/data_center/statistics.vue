@@ -24,9 +24,9 @@
 								></i>
 							</el-input>
 							<span style="margin-right:10px;margin-left:15px;"
-								>终端:</span
+								>终端类型:</span
 							>
-							<el-select
+							<!-- <el-select
 								v-model="accval1"
 								placeholder="终端"
 								style="width: 10%;margin-right: 10px;"
@@ -39,6 +39,20 @@
 									:label="item.label"
 									:value="item.label"
 								></el-option>
+							</el-select> -->
+							<el-select
+								v-model="accval1"
+								placeholder="终端类型"
+								style="width: 10%;margin-right: 10px;"
+								@change="getdata()"
+							>
+								<el-option label="全部" value="-1"></el-option>
+								<el-option
+									label="android"
+									value="0"
+								></el-option>
+								<el-option label="ios" value="1"></el-option>
+								<el-option label="其他" value="2"></el-option>
 							</el-select>
 							<!-- <el-select
                 v-model="value_a2"
@@ -191,9 +205,9 @@
 								></i>
 							</el-input>
 							<span style="margin-right:10px;margin-left:15px;"
-								>终端:</span
+								>终端类型:</span
 							>
-							<el-select
+							<!-- <el-select
 								v-model="accval2"
 								placeholder="终端"
 								style="width: 10%;margin-right: 10px;"
@@ -206,6 +220,20 @@
 									:label="item.label"
 									:value="item.label"
 								></el-option>
+							</el-select> -->
+							<el-select
+								v-model="accval2"
+								placeholder="终端类型"
+								style="width: 10%;margin-right: 10px;"
+								@change="getdata1()"
+							>
+								<el-option label="全部" value="-1"></el-option>
+								<el-option
+									label="android"
+									value="0"
+								></el-option>
+								<el-option label="ios" value="1"></el-option>
+								<el-option label="其他" value="2"></el-option>
 							</el-select>
 							<!-- <el-select
 								v-model="value_b3"
@@ -344,8 +372,8 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														
-															scope.row.dataFlow |updatabkb
+														scope.row.dataFlow
+															| updatabkb
 													}}
 												</div>
 											</template>
@@ -387,15 +415,15 @@
 									</el-table>
 								</el-col>
 							</el-row>
-                            <fenye
-                            v-show="tablecdn.length>0"
-							style="text-align:right;margin:10px 0 20px 0;"
-							@fatherMethod="f_getpage"
-							@fathernum="f_gettol"
-							:pagesa="f_total_cnt"
-							:currentPage="f_currentPage"
-						>
-						</fenye>
+							<fenye
+								v-show="tablecdn.length > 0"
+								style="text-align:right;margin:10px 0 20px 0;"
+								@fatherMethod="f_getpage"
+								@fathernum="f_gettol"
+								:pagesa="f_total_cnt"
+								:currentPage="f_currentPage"
+							>
+							</fenye>
 						</div>
 						<!-- 运营商 -->
 						<div class="devide_table" v-show="!region_show">
@@ -474,17 +502,16 @@
 									</el-table>
 								</el-col>
 							</el-row>
-                            <fenye
-                            v-show="tablecdn.length>0"
-							style="text-align:right;margin:10px 0 20px 0;"
-							@fatherMethod="f_getpage"
-							@fathernum="f_gettol"
-							:pagesa="f_total_cnt"
-							:currentPage="f_currentPage"
-						>
-						</fenye>
+							<fenye
+								v-show="tablecdn.length > 0"
+								style="text-align:right;margin:10px 0 20px 0;"
+								@fatherMethod="f_getpage"
+								@fathernum="f_gettol"
+								:pagesa="f_total_cnt"
+								:currentPage="f_currentPage"
+							>
+							</fenye>
 						</div>
-                       
 					</el-tab-pane>
 					<el-tab-pane label="热门加速内容" name="there">
 						<div
@@ -507,7 +534,7 @@
 							<span style="margin-right:10px;margin-left:15px;"
 								>终端:</span
 							>
-							<el-select
+							<!-- <el-select
 								v-model="accval3"
 								placeholder="终端"
 								style="width: 10%;margin-right: 10px;"
@@ -520,6 +547,20 @@
 									:label="item.label"
 									:value="item.label"
 								></el-option>
+							</el-select> -->
+							<el-select
+								v-model="accval3"
+								placeholder="终端类型"
+								style="width: 10%;margin-right: 10px;"
+								@change="getdata2()"
+							>
+								<el-option label="全部" value="-1"></el-option>
+								<el-option
+									label="android"
+									value="0"
+								></el-option>
+								<el-option label="ios" value="1"></el-option>
+								<el-option label="其他" value="2"></el-option>
 							</el-select>
 							<!-- <el-cascader
 								style="width: 10%;margin-right: 10px;line-height: 36px;"
@@ -643,8 +684,8 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														
-															scope.row.dataFlow |updatabkb
+														scope.row.dataFlow
+															| updatabkb
 													}}
 												</div>
 											</template>
@@ -662,16 +703,16 @@
 										<el-table-column label="加速次数">
 											<template slot-scope="scope">
 												<div>
-													{{ scope.row.totalAccelCnt }}
+													{{
+														scope.row.totalAccelCnt
+													}}
 												</div>
 											</template>
 										</el-table-column>
 										<el-table-column label="访问次数">
 											<template slot-scope="scope">
 												<div>
-													{{
-														scope.row.totalCnt
-													}}
+													{{ scope.row.totalCnt }}
 												</div>
 											</template>
 										</el-table-column>
@@ -687,7 +728,7 @@
 										</el-table-column>
 									</el-table>
 									<fenye
-                                    v-show="tablecdn2.length>0"
+										v-show="tablecdn2.length > 0"
 										style="float:right;margin:10px 0 20px 0;"
 										@fatherMethod="getpage"
 										@fathernum="gettol"
@@ -755,9 +796,9 @@ export default {
 			optionsc1: [],
 			optionsc2: [],
 			optionsc3: [],
-			accval1: '*',
-			accval2: '*',
-			accval3: '*',
+			accval1: '',
+			accval2: '',
+			accval3: '',
 			value_a1: '',
 			value_a2: '',
 			value_a3: '',
@@ -1114,15 +1155,14 @@ export default {
 			this.getcure(0);
 		},
 		getdata1() {
-            if(this.radio_tab==1){
-                this.getcure(1);
-            }else{
-                this.getcure(2);
-            }
-			
+			if (this.radio_tab == 1) {
+				this.getcure(1);
+			} else {
+				this.getcure(2);
+			}
 		},
 		getdata2() {
-            this.currentPage=1;
+			this.currentPage = 1;
 			this.getcure(3);
 		},
 		//请求数据--曲线图
@@ -1148,7 +1188,11 @@ export default {
 				} else {
 					params.isp = '*';
 				}
-				params.acce = this.accval1;
+				if (this.accval1 == '') {
+					params.acce = -1;
+				} else {
+					params.acce = this.accval1 * 1;
+				}
 				this.uvArray = [];
 				this.pvArray = [];
 				this.timeArray = [];
@@ -1170,11 +1214,10 @@ export default {
 							res.data.timeArray.forEach((item, index) => {
 								this.timeArray.push(getymdtime(item));
 							});
-							
 						} else {
 							this.$message.error(res.err_msg);
-                        }
-                        this.drawLine();
+						}
+						this.drawLine();
 					})
 					.catch((err) => {});
 			} else if (data == 1 || data == 2) {
@@ -1195,7 +1238,12 @@ export default {
 					params.isp = '*';
 				}
 				params.top = 10;
-				params.acce = this.accval2;
+
+				if (this.accval2 == '') {
+					params.acce = -1;
+				} else {
+					params.acce = this.accval2 * 1;
+				}
 				params.pageNo = this.f_currentPage;
 				params.pageSize = this.f_pageSize;
 				if (data == 1) {
@@ -1207,13 +1255,13 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.regionArray;
-								
+
 								this.tablecdn = res.data.accessCntTable;
 								this.f_total_cnt = res.data.totalPage;
 							} else {
 								this.$message.error(res.err_msg);
-                            }
-                            this.drawLine1();
+							}
+							this.drawLine1();
 						})
 						.catch((err) => {});
 				} else {
@@ -1225,12 +1273,12 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.ispArray;
-								
+
 								this.tablecdn = res.data.accessCntTable;
 							} else {
 								this.$message.error(res.err_msg);
-                            }
-                            this.drawLine1();
+							}
+							this.drawLine1();
 						})
 						.catch((err) => {});
 				}
@@ -1250,7 +1298,11 @@ export default {
 				} else {
 					params.isp = '*';
 				}
-				params.acce = this.accval3;
+				if (this.accval3 == '') {
+					params.acce = -1;
+				} else {
+					params.acce = this.accval3 * 1;
+				}
 				this.playTimesArray2 = [];
 				this.timeArray2 = [];
 				query_playtimes_curve(params)
@@ -1278,7 +1330,11 @@ export default {
 			params.end_ts = this.endtime;
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
-			params.acce = this.accval3;
+			if (this.accval3 == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.accval3 * 1;
+			}
 			params.fileName = '*';
 			params.time_unit = this.timeUnit;
 			query_playdata_table(params)
@@ -1340,7 +1396,11 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			params.acce = this.accval1;
+			if (this.accval1 == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.accval1 * 1;
+			}
 			export_pv_uv_curve_file(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1412,7 +1472,11 @@ export default {
 				params.isp = '*';
 			}
 			params.top = 10;
-			params.acce = this.accval2;
+			if (this.accval2 == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.accval2 * 1;
+			}
 			export_topisp_accesscnt_curve_file(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1447,7 +1511,11 @@ export default {
 			} else {
 				params.isp = '*';
 			}
-			params.acce = this.accval3;
+			if (this.accval3 == '') {
+				params.acce = -1;
+			} else {
+				params.acce = this.accval3 * 1;
+			}
 			export_playtimes_curve_file(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -1637,8 +1705,8 @@ export default {
 				this.timeUnit = 60;
 			} else if (this.endtime - this.starttime >= 86400) {
 				this.timeUnit = 60 * 24;
-            }
-            this.currentPage=1;
+			}
+			this.currentPage = 1;
 			this.getcure(3);
 		},
 
@@ -1655,7 +1723,7 @@ export default {
 			this.getcure(2);
 		},
 		sele_tab() {
-            this.f_currentPage=1;
+			this.f_currentPage = 1;
 			if (this.radio_tab == 1) {
 				this.region_show = true;
 				this.twob = false;
@@ -1677,7 +1745,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-            this.timeUnit=5;
+			this.timeUnit = 5;
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.radio1 = '1';
 			this.val2 = [];

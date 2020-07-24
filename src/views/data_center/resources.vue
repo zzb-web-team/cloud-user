@@ -316,16 +316,88 @@
 										</el-table-column>
 										<el-table-column label="P2P流量占比">
 											<template slot-scope="scope">
-												<div v-if="scope.row.p2ppercent *100>=100">{{(scope.row.p2ppercent *100).toFixed(0)}}%</div>
-                                                <div v-else-if="scope.row.p2ppercent *100==0">{{(scope.row.p2ppercent *100).toFixed(0)}}%</div>
-                                                <div v-else>{{(scope.row.p2ppercent *100).toFixed(2)}}%</div>
+												<div
+													v-if="
+														scope.row.p2ppercent *
+															100 >=
+															100
+													"
+												>
+													{{
+														(
+															scope.row
+																.p2ppercent *
+															100
+														).toFixed(0)
+													}}%
+												</div>
+												<div
+													v-else-if="
+														scope.row.p2ppercent *
+															100 ==
+															0
+													"
+												>
+													{{
+														(
+															scope.row
+																.p2ppercent *
+															100
+														).toFixed(0)
+													}}%
+												</div>
+												<div v-else>
+													{{
+														(
+															scope.row
+																.p2ppercent *
+															100
+														).toFixed(2)
+													}}%
+												</div>
 											</template>
 										</el-table-column>
 										<el-table-column label="CDN流量占比">
 											<template slot-scope="scope">
-                                                <div v-if="scope.row.cdnpercent *100>=100">{{(scope.row.cdnpercent *100).toFixed(0)}}%</div>
-                                                <div v-else-if="scope.row.cdnpercent *100==0">{{(scope.row.cdnpercent *100).toFixed(0)}}%</div>
-												<div v-else>{{(scope.row.cdnpercent *100).toFixed(2)}}%</div>
+												<div
+													v-if="
+														scope.row.cdnpercent *
+															100 >=
+															100
+													"
+												>
+													{{
+														(
+															scope.row
+																.cdnpercent *
+															100
+														).toFixed(0)
+													}}%
+												</div>
+												<div
+													v-else-if="
+														scope.row.cdnpercent *
+															100 ==
+															0
+													"
+												>
+													{{
+														(
+															scope.row
+																.cdnpercent *
+															100
+														).toFixed(0)
+													}}%
+												</div>
+												<div v-else>
+													{{
+														(
+															scope.row
+																.cdnpercent *
+															100
+														).toFixed(2)
+													}}%
+												</div>
 											</template>
 										</el-table-column>
 										<el-table-column
@@ -1861,7 +1933,7 @@ export default {
 				}
 			});
 			this.p2parr.map((item) => {
-                if (item * 100 >= 100 || item * 100 == 0) {
+				if (item * 100 >= 100 || item * 100 == 0) {
 					data2.push((item * 100).toFixed(0));
 				} else {
 					data2.push((item * 100).toFixed(2));
@@ -1908,12 +1980,10 @@ export default {
 							params[0].axisValue +
 							'</br>' +
 							'CDN流量' +
-							formatBkb(_this.cdataArray[num], _this.unitdata) +
-							_this.unitdata +
+							formatBorb(_this.cdataArray[num], _this.unitdata) +
 							'</br>' +
 							'P2P流量' +
-							formatBkb(_this.pdataArray[num], _this.unitdata) +
-							_this.unitdata
+							formatBorb(_this.pdataArray[num], _this.unitdata)
 						);
 					},
 				},
@@ -2096,6 +2166,29 @@ export default {
 				},
 				tooltip: {
 					trigger: 'axis',
+					formatter: function(params) {
+						let str = '';
+						params.forEach((item, index) => {
+							if (index == 0) {
+								str +=
+									item.axisValue +
+									'</br>' +
+									item.seriesName +
+									'：' +
+									item.value +
+									_this.unitdata +
+									'</br>';
+							} else {
+								str +=
+									item.seriesName +
+									'：' +
+									item.value +
+									_this.unitdata +
+									'</br>';
+							}
+						});
+						return str;
+					},
 				},
 				grid: {
 					left: '6%', // 默认10%，给24就挺合适的。

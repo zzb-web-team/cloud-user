@@ -316,28 +316,16 @@
 										</el-table-column>
 										<el-table-column label="P2P流量占比">
 											<template slot-scope="scope">
-												<div>
-													{{
-														(
-															scope.row
-																.p2ppercent *
-															100
-														).toFixed(2)
-													}}%
-												</div>
+												<div v-if="scope.row.p2ppercent *100>=100">{{(scope.row.p2ppercent *100).toFixed(0)}}%</div>
+                                                <div v-else-if="scope.row.p2ppercent *100==0">{{(scope.row.p2ppercent *100).toFixed(0)}}%</div>
+                                                <div v-else>{{(scope.row.p2ppercent *100).toFixed(2)}}%</div>
 											</template>
 										</el-table-column>
 										<el-table-column label="CDN流量占比">
 											<template slot-scope="scope">
-												<div>
-													{{
-														(
-															scope.row
-																.cdnpercent *
-															100
-														).toFixed(2)
-													}}%
-												</div>
+                                                <div v-if="scope.row.cdnpercent *100>=100">{{(scope.row.cdnpercent *100).toFixed(0)}}%</div>
+                                                <div v-else-if="scope.row.cdnpercent *100==0">{{(scope.row.cdnpercent *100).toFixed(0)}}%</div>
+												<div v-else>{{(scope.row.cdnpercent *100).toFixed(2)}}%</div>
 											</template>
 										</el-table-column>
 										<el-table-column
@@ -629,8 +617,8 @@ export default {
 			valuea3: '',
 			valuea4: '',
 			tablecdn: [],
-            // activeName: 'first',
-            activeName:'third',
+			// activeName: 'first',
+			activeName: 'third',
 			terminalName: '',
 			minDate: '',
 			maxDate: '',
@@ -789,16 +777,16 @@ export default {
 
 		// this.getseachlabel1();
 		// this.configure()
-        // this.getlabrl2();
-       
+		// this.getlabrl2();
+
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			// if (this.activeName == 'first') {
 			// 	this.gettable1();
 			// } else if (this.activeName == 'second') {
 			// 	this.gettable2();
-            // } else 
-            if (this.activeName == 'third') {
+			// } else
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -887,8 +875,8 @@ export default {
 						} else {
 							this.$message('暂无数据');
 						}
-                        // this.gettable1();
-                        this.getflow3();
+						// this.gettable1();
+						this.getflow3();
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1559,7 +1547,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-            console.log(this.activeName);
+			console.log(this.activeName);
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			// this.starttime =
 			//   new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -1866,19 +1854,27 @@ export default {
 			var data1 = [];
 			var data2 = [];
 			this.cdnarr.map((item) => {
-				data1.push((item * 100).toFixed(2));
+				if (item * 100 >= 100 || item * 100 == 0) {
+					data1.push((item * 100).toFixed(0));
+				} else {
+					data1.push((item * 100).toFixed(2));
+				}
 			});
 			this.p2parr.map((item) => {
-				data2.push((item * 100).toFixed(2));
-			});
-			var data3 = (function() {
-				var datas = [];
-				for (var i = 0; i < data1.length; i++) {
-					// datas.push(data1[i] * 1 + data2[i] * 1);
-					datas.push(158200);
+                if (item * 100 >= 100 || item * 100 == 0) {
+					data2.push((item * 100).toFixed(0));
+				} else {
+					data2.push((item * 100).toFixed(2));
 				}
-				return datas;
-			})();
+			});
+			// var data3 = (function() {
+			// 	var datas = [];
+			// 	for (var i = 0; i < data1.length; i++) {
+			// 		// datas.push(data1[i] * 1 + data2[i] * 1);
+			// 		datas.push(158200);
+			// 	}
+			// 	return datas;
+			// })();
 			var time = this.zhanbitimearray;
 			var _this = this;
 			// 基于准备好的dom，初始化echarts实例

@@ -192,7 +192,7 @@
 						>
 					</div>
 
-					<el-tab-pane label="P2P加速流量" name="first">
+					<!-- <el-tab-pane label="P2P加速流量" name="first">
 						<div class="device_form">
 							<div
 								id="myChart"
@@ -256,7 +256,7 @@
 								:style="{ height: '607px' }"
 							></div>
 						</div>
-					</el-tab-pane>
+					</el-tab-pane> -->
 					<el-tab-pane label="流量占比" name="third">
 						<el-row class="resources_percentage">
 							<el-col :span="4">
@@ -629,7 +629,8 @@ export default {
 			valuea3: '',
 			valuea4: '',
 			tablecdn: [],
-			activeName: 'first',
+            // activeName: 'first',
+            activeName:'third',
 			terminalName: '',
 			minDate: '',
 			maxDate: '',
@@ -788,14 +789,16 @@ export default {
 
 		// this.getseachlabel1();
 		// this.configure()
-		this.getlabrl2();
+        // this.getlabrl2();
+       
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			// if (this.activeName == 'first') {
+			// 	this.gettable1();
+			// } else if (this.activeName == 'second') {
+			// 	this.gettable2();
+            // } else 
+            if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -884,7 +887,8 @@ export default {
 						} else {
 							this.$message('暂无数据');
 						}
-						this.gettable1();
+                        // this.gettable1();
+                        this.getflow3();
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1555,25 +1559,20 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
+            console.log(this.activeName);
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			// this.starttime =
 			//   new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			// this.endtime = Date.parse(new Date()) / 1000;
 			// this.settimeunit(this.starttime, this.endtime);
-			if (tab.index == 0) {
+			if (this.activeName == 'first') {
 				this.gettable1();
-			} else if (tab.index == 1) {
+			} else if (this.activeName == 'second') {
 				this.gettable2();
-			} else if (tab.index == 2) {
+			} else if (this.activeName == 'third') {
 				this.getflow3();
-				// setTimeout(() => {
-				// 	this.drawLine2();
-				// }, 1500);
 			} else {
 				this.getflow4();
-				// setTimeout(() => {
-				// 	this.drawLine3();
-				// }, 1500);
 			}
 		},
 		drawLine() {

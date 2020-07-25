@@ -1441,7 +1441,8 @@ export default {
 			} else {
 				parmas.urlName = this.value1;
 			}
-			parmas.terminalName = -1;
+            parmas.terminalName = -1;
+            parmas.domain = '*';
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
 			if (parmas.endTs - parmas.startTs > 2505600) {

@@ -1441,8 +1441,8 @@ export default {
 			} else {
 				parmas.urlName = this.value1;
 			}
-            parmas.terminalName = -1;
-            parmas.domain = '*';
+			parmas.terminalName = -1;
+			parmas.domain = '*';
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
 			if (parmas.endTs - parmas.startTs > 2505600) {
@@ -1974,18 +1974,48 @@ export default {
 					data: ['P2P流量', 'CDN流量'],
 				},
 				tooltip: {
-					trigger: 'axis',
+                    trigger: 'axis',
+                    textStyle: {
+						align: 'left',
+					},
 					formatter: function(params) {
-						var num = params[0].dataIndex;
-						return (
-							params[0].axisValue +
-							'</br>' +
-							'CDN流量' +
-							formatBorb(_this.cdataArray[num], _this.unitdata) +
-							'</br>' +
-							'P2P流量' +
-							formatBorb(_this.pdataArray[num], _this.unitdata)
-						);
+                        // var num = params[0].dataIndex;
+                        let str='';
+                        params.forEach((item, index) => {
+                            
+							if (index == 0) {
+								str +=
+									item.axisValue +
+									'</br>' +
+									item.marker +
+									item.seriesName +
+									'：' +
+									item.value +
+									_this.unitdata +
+									'</br>';
+							} else {
+                                console.log(item.marker);
+								str +=
+									item.marker +
+									item.seriesName +
+									'：' +
+									item.value +
+									_this.unitdata +
+									'</br>';
+							}
+                        });
+                        return str;
+						// return (
+						// 	params[0].axisValue +
+                        //     '</br>' +
+                        //     params[0].marker+
+						// 	'CDN流量' +
+						// 	formatBorb(_this.cdataArray[num], _this.unitdata) +
+                        //     '</br>' +
+                        //     params[1].marker+
+						// 	'P2P流量' +
+						// 	formatBorb(_this.pdataArray[num], _this.unitdata)
+						// );
 					},
 				},
 				toolbox: {
@@ -2064,16 +2094,16 @@ export default {
 						itemStyle: {
 							normal: {
 								color: '#64A7FC', //柱形图圆角，初始化效果
-								color: new echarts.graphic.LinearGradient(
-									0,
-									1,
-									0,
-									0,
-									[
-										{ offset: 0, color: '#3977E6' },
-										{ offset: 1, color: '#37BBF8' },
-									]
-								),
+								// color: new echarts.graphic.LinearGradient(
+								// 	0,
+								// 	1,
+								// 	0,
+								// 	0,
+								// 	[
+								// 		{ offset: 0, color: '#3977E6' },
+								// 		{ offset: 1, color: '#37BBF8' },
+								// 	]
+								// ),
 								barBorderRadius: [4, 4, 0, 0],
 							},
 
@@ -2167,6 +2197,9 @@ export default {
 				},
 				tooltip: {
 					trigger: 'axis',
+					textStyle: {
+						align: 'left',
+					},
 					formatter: function(params) {
 						let str = '';
 						params.forEach((item, index) => {
@@ -2174,6 +2207,7 @@ export default {
 								str +=
 									item.axisValue +
 									'</br>' +
+									item.marker +
 									item.seriesName +
 									'：' +
 									item.value +
@@ -2181,6 +2215,7 @@ export default {
 									'</br>';
 							} else {
 								str +=
+									item.marker +
 									item.seriesName +
 									'：' +
 									item.value +

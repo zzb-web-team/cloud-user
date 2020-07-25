@@ -1424,7 +1424,6 @@ export default {
 			}
 			export_sdk_flow_table_user_file(parmas)
 				.then((res) => {
-					console.log(res);
 					if (res.status == 0) {
 						window.open(res.msg, '_blank');
 					} else {
@@ -1573,7 +1572,6 @@ export default {
 		},
 		//自定义时间
 		gettimes(cal) {
-			console.log(this.val2, cal);
 			if (this.val2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -1583,9 +1581,6 @@ export default {
 				this.endtime = dateToMs(this.val2[1]);
 			}
 			this.settimeunit(this.starttime, this.endtime);
-			console.log(this.starttime);
-			console.log(this.endtime);
-			console.log(this.settimeunit(this.starttime, this.endtime));
 			if (this.activeName == 'first') {
 				this.gettable1();
 			} else if (this.activeName == 'second') {
@@ -1597,7 +1592,6 @@ export default {
 			}
 		},
 		gettimes_host(cal) {
-			console.log(this.val2, cal);
 			if (this.val2 == null) {
 				this.starttime =
 					new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -1620,7 +1614,6 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-			console.log(this.activeName);
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			// this.starttime =
 			//   new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -1994,7 +1987,6 @@ export default {
 									_this.unitdata +
 									'</br>';
 							} else {
-                                console.log(item.marker);
 								str +=
 									item.marker +
 									item.seriesName +

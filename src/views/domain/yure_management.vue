@@ -721,45 +721,45 @@ export default {
 					// if (localStorage.getItem('yure_url_name')) {
 					// 	let old_url_name = JSON.parse(
 					// 		localStorage.getItem('yure_url_name')
-                    //     );
-                    //      console.log(old_url_name)
+					//     );
+					//      console.log(old_url_name)
 					// 	res.data.res_data.forEach((item) => {
 					// 		if (item[1] == true) {
 					// 			let obj = {};
-                    //             obj.url_name=item[0];
-                    //             obj.creatte_time = nowtime;
-                    //             obj.area = parmas.area;
-                    //             obj.type = parmas.type;
-                    //             arr.push(obj);
+					//             obj.url_name=item[0];
+					//             obj.creatte_time = nowtime;
+					//             obj.area = parmas.area;
+					//             obj.type = parmas.type;
+					//             arr.push(obj);
 					// 		}
-                    //     });
-                    //      if(arr.length>0){
-                    //          arr = old_url_name.concat(arr);
-                    //          console.log(arr);
-                    //          localStorage.setItem(
-                    //              'yure_url_name',
-                    //              JSON.stringify(arr)
-                    //          );
-                    //     }
+					//     });
+					//      if(arr.length>0){
+					//          arr = old_url_name.concat(arr);
+					//          console.log(arr);
+					//          localStorage.setItem(
+					//              'yure_url_name',
+					//              JSON.stringify(arr)
+					//          );
+					//     }
 					// } else {
-                    //      console.log('*****');
+					//      console.log('*****');
 					// 	res.data.res_data.forEach((item) => {
 					// 		if (item[1] == true) {
-                    //             let obj = {};
-                    //             obj.url_name=item[0];
-                    //             obj.creatte_time = nowtime;
-                    //             obj.area = parmas.area;
-                    //             obj.type = parmas.type;
-                    //             arr.push(obj);
-                    //         }
-                    //     });
-                    //     if(arr.length>0){
-                    //         localStorage.setItem(
-                    //             'yure_url_name',
-                    //             JSON.stringify(arr)
-                    //         );
-                           
-                    //     }
+					//             let obj = {};
+					//             obj.url_name=item[0];
+					//             obj.creatte_time = nowtime;
+					//             obj.area = parmas.area;
+					//             obj.type = parmas.type;
+					//             arr.push(obj);
+					//         }
+					//     });
+					//     if(arr.length>0){
+					//         localStorage.setItem(
+					//             'yure_url_name',
+					//             JSON.stringify(arr)
+					//         );
+
+					//     }
 					// }
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
@@ -827,8 +827,21 @@ export default {
 									);
 								}
 							});
+							var errmsg = '';
+							if (res.data.success_count == 0) {
+								errmsg = this.errarr + '操作失败';
+							} else if (res.data.failed_count == 0) {
+								errmsg = this.successarr + '操作成功';
+							} else {
+								errmsg =
+									this.errarr +
+									'操作失败' +
+									'</br>' +
+									this.successarr +
+									'操作成功';
+							}
 							this.$alert(
-								`${this.errarr}操作失败,${this.successarr}操作成功`,
+								errmsg,
 								res.data.failed_count +
 									'条操作失败' +
 									res.data.success_count +

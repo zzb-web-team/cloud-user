@@ -10,7 +10,7 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else {
     var userUrl = 'http://zzb.onezen.net';
 }
-// var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
+// var userUrl = 'http://service.kclgames.com'; //PHP服务URL
 export const uploadurl = userUrl;
 //用户管理
 //忘记密码--重置密码

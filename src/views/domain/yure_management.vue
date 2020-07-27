@@ -210,7 +210,7 @@
 						</el-table-column>
 						<el-table-column prop="schedule" label="进度">
 							<template slot-scope="scope">
-								<div
+								<!-- <div
 									v-if="scope.row.state == 0"
 									style="color:#297AFF"
 								>
@@ -218,6 +218,9 @@
 								</div>
 								<el-progress
 									v-else
+									:percentage="scope.row.progress"
+								></el-progress> -->
+                                <el-progress
 									:percentage="scope.row.progress"
 								></el-progress>
 							</template>
@@ -604,7 +607,7 @@ export default {
 		},
 		//请求数据---预热刷新
 		getrefresh(datas) {
-			let nowtime = (Date.parse(new Date()) / 1000).toFixed(0);
+			let nowtime = (Date.parse(new Date()) / 1000).toFixed(0)-5;
 			let parmas = new Object();
 			parmas.buser_id = this.chanid + '';
 			if (datas == 0) {
@@ -718,49 +721,46 @@ export default {
 					this.citylabel1 = '';
 					this.textarea2 = '';
 					let arr = [];
-					// if (localStorage.getItem('yure_url_name')) {
-					// 	let old_url_name = JSON.parse(
-					// 		localStorage.getItem('yure_url_name')
-					//     );
-					//      console.log(old_url_name)
-					// 	res.data.res_data.forEach((item) => {
-					// 		if (item[1] == true) {
-					// 			let obj = {};
-					//             obj.url_name=item[0];
-					//             obj.creatte_time = nowtime;
-					//             obj.area = parmas.area;
-					//             obj.type = parmas.type;
-					//             arr.push(obj);
-					// 		}
-					//     });
-					//      if(arr.length>0){
-					//          arr = old_url_name.concat(arr);
-					//          console.log(arr);
-					//          localStorage.setItem(
-					//              'yure_url_name',
-					//              JSON.stringify(arr)
-					//          );
-					//     }
-					// } else {
-					//      console.log('*****');
-					// 	res.data.res_data.forEach((item) => {
-					// 		if (item[1] == true) {
-					//             let obj = {};
-					//             obj.url_name=item[0];
-					//             obj.creatte_time = nowtime;
-					//             obj.area = parmas.area;
-					//             obj.type = parmas.type;
-					//             arr.push(obj);
-					//         }
-					//     });
-					//     if(arr.length>0){
-					//         localStorage.setItem(
-					//             'yure_url_name',
-					//             JSON.stringify(arr)
-					//         );
+					if (localStorage.getItem('yure_url_name')) {
+						let old_url_name = JSON.parse(
+							localStorage.getItem('yure_url_name')
+					    );
+						res.data.res_data.forEach((item) => {
+							if (item[1] == true) {
+								let obj = {};
+					            obj.url_name=item[0];
+					            obj.creatte_time = nowtime;
+					            obj.area = parmas.area;
+					            obj.type = parmas.type;
+					            arr.push(obj);
+							}
+					    });
+					     if(arr.length>0){
+					         arr = old_url_name.concat(arr);
+					         localStorage.setItem(
+					             'yure_url_name',
+					             JSON.stringify(arr)
+					         );
+					    }
+					} else {
+						res.data.res_data.forEach((item) => {
+							if (item[1] == true) {
+					            let obj = {};
+					            obj.url_name=item[0];
+					            obj.creatte_time = nowtime;
+					            obj.area = parmas.area;
+					            obj.type = parmas.type;
+					            arr.push(obj);
+					        }
+					    });
+					    if(arr.length>0){
+					        localStorage.setItem(
+					            'yure_url_name',
+					            JSON.stringify(arr)
+					        );
 
-					//     }
-					// }
+					    }
+					}
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {
 							this.$message({

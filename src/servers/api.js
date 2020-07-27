@@ -1,18 +1,18 @@
 // import { get, post } from './http'
 import axios from 'axios';
 import {get, post } from './request';
-var href = window.location.href;
+// var href = window.location.href;
 
-if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
-    var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
-} else if (href.indexOf('service.kclgames.com') >= 0) {
-    var userUrl = 'http://service.kclgames.com'; //PHP服务URL
-} else {
-    var userUrl = 'http://zzb.onezen.net';
-}
+// if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
+//     var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
+// } else if (href.indexOf('service.kclgames.com') >= 0) {
+//     var userUrl = 'http://service.kclgames.com'; //PHP服务URL
+// } else {
+//     var userUrl = 'http://zzb.onezen.net';
+// }
 
 
-// var userUrl = 'http://service.kclgames.com'; //PHP服务URL
+var userUrl = 'http://service.kclgames.com'; //PHP服务URL
 export const uploadurl = userUrl;
 //用户管理
 //忘记密码--重置密码

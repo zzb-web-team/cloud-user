@@ -808,7 +808,7 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
-		// this.chanid = '158000000032';
+		// this.chanid = '158000000002';
 		if (this.$route.query.urldata) {
 			this.value1 = this.$route.query.urldata.url_name;
 		}
@@ -1991,7 +1991,7 @@ export default {
 					x: 'center', //可设定图例在左、右、居中
 					y: 'bottom', //可设定图例在上、下、居中
 					padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
-					data: ['P2P流量', 'CDN有源流量', 'CDN无源流量'],
+					data: ['P2P流量', 'CDN无源流量','CDN有源流量'],
 				},
 				tooltip: {
 					trigger: 'axis',
@@ -1999,49 +1999,22 @@ export default {
 						align: 'left',
 					},
 					formatter: function(params) {
-						// console.log(params);
-						let str = '';
-						params.forEach((item, index) => {
-							if (index == 0) {
-								str +=
-									item.axisValue +
-									'</br>' +
-									item.marker +
-									item.seriesName +
-									'：' +
-									item.value +
-									_this.unitdata +
-									'(' +
-									item.value +
-									'%' +
-									')' +
-									'</br>';
-							} else {
-								str +=
-									item.marker +
-									item.seriesName +
-									'：' +
-									item.value +
-									_this.unitdata +
-									'(' +
-									item.value +
-									'%' +
-									')' +
-									'</br>';
-							}
-						});
-						return str;
-						// return (
-						// 	params[0].axisValue +
-						//     '</br>' +
-						//     params[0].marker+
-						// 	'CDN流量' +
-						// 	formatBorb(_this.cdataArray[num], _this.unitdata) +
-						//     '</br>' +
-						//     params[1].marker+
-						// 	'P2P流量' +
-						// 	formatBorb(_this.pdataArray[num], _this.unitdata)
-						// );
+                        let num = params[0].seriesIndex;
+						return (
+							params[0].axisValue +
+						    '</br>' +
+						    params[0].marker+
+							params[0].seriesName +
+							formatBorb(_this.cdnaactivearray[num], _this.unitdata) +'('+ params[0].value+"%"+")"+
+                            '</br>' +
+                             params[1].marker+
+							params[1].seriesName +
+							formatBorb(_this.cdnpassivearray[num], _this.unitdata) +'('+ params[1].value+"%"+")"+
+						    '</br>' +
+						    params[2].marker+
+							params[2].seriesName +
+							formatBorb(_this.pdataArray[num], _this.unitdata)+'('+ params[2].value+"%"+")"
+						);
 					},
 				},
 				toolbox: {
@@ -2091,47 +2064,7 @@ export default {
 				],
 
 				series: [
-					{
-						name: 'CDN有源流量',
-						type: 'bar',
-						stack: '使用情况',
-						data: data1,
-						barMaxWidth: 30, //柱图宽度
-						itemStyle: {
-							normal: {
-								color: '#66B3FF',
-							},
-						},
-						label: {
-							normal: {
-								show: true,
-								position: 'inside',
-								color: '#ffffff',
-								fontSize: 10,
-							},
-						},
-					},
-					{
-						name: 'CDN无源流量',
-						type: 'bar',
-						stack: '使用情况',
-						data: data3,
-						barMaxWidth: 30, //柱图宽度
-						itemStyle: {
-							normal: {
-								color: '#2894FF',
-							},
-						},
-						label: {
-							normal: {
-								show: true,
-								position: 'inside',
-								color: '#ffffff',
-								fontSize: 10,
-							},
-						},
-					},
-					{
+                    {
 						name: 'P2P流量',
 						type: 'bar',
 						stack: '使用情况',
@@ -2139,24 +2072,14 @@ export default {
 						barMaxWidth: 30, //柱图宽度
 						itemStyle: {
 							normal: {
-								color: '#97CBFF', //柱形图圆角，初始化效果
-								// color: new echarts.graphic.LinearGradient(
-								// 	0,
-								// 	1,
-								// 	0,
-								// 	0,
-								// 	[
-								// 		{ offset: 0, color: '#3977E6' },
-								// 		{ offset: 1, color: '#37BBF8' },
-								// 	]
-								// ),
-								barBorderRadius: [4, 4, 0, 0],
+								color: '#D2E9FF', //柱形图圆角，初始化效果
+								//barBorderRadius: [4, 4, 0, 0],
 							},
 
 							//柱形图圆角，鼠标移上去效果
-							emphasis: {
-								barBorderRadius: [4, 4, 0, 0],
-							},
+							// emphasis: {
+							// 	barBorderRadius: [4, 4, 0, 0],
+							// },
 						},
 						label: {
 							normal: {
@@ -2167,6 +2090,55 @@ export default {
 							},
 						},
 					},
+					
+					{
+						name: 'CDN无源流量',
+						type: 'bar',
+						stack: '使用情况',
+						data: data3,
+						barMaxWidth: 30, //柱图宽度
+						itemStyle: {
+							normal: {
+                                color: '#84C1FF',
+                               
+                            },
+                           
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'inside',
+								color: '#ffffff',
+								fontSize: 10,
+							},
+						},
+                    },
+                    {
+						name: 'CDN有源流量',
+						type: 'bar',
+						stack: '使用情况',
+						data: data1,
+						barMaxWidth: 30, //柱图宽度
+						itemStyle: {
+							normal: {
+                                color: '#2894FF',
+                                 barBorderRadius: [4, 4, 0, 0],
+                            },
+                             //柱形图圆角，鼠标移上去效果
+							emphasis: {
+								barBorderRadius: [4, 4, 0, 0],
+							},
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'inside',
+								color: '#ffffff',
+								fontSize: 10,
+							},
+						},
+					},
+					
 				],
 			};
 			myChart.setOption(options);

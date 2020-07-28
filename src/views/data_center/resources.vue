@@ -872,7 +872,7 @@ export default {
 						},
 					},
 					[
-						column.label == '有源CDN加速流量(%)'
+						column.label == '节点有资源时CDN加速流量(%)'
 							? serviceContent
 							: paymentContent,
 						h('i', {
@@ -1225,10 +1225,15 @@ export default {
 						} else {
 							this.unitdat = 'B';
 						}
-
-						res.data.timearray.forEach((item, index) => {
-							this.zhanbitimearray.push(getlocaltimes(item));
-						});
+						if (parmas.timeUnit == 60) {
+							res.data.timearray.forEach((item, index) => {
+								this.zhanbitimearray.push(getymdtime(item));
+							});
+						} else {
+							res.data.timearray.forEach((item, index) => {
+								this.zhanbitimearray.push(getymdtime(item, 1));
+							});
+						}
 						this.gettable3();
 						this.drawLine2();
 					} else {
@@ -1953,8 +1958,8 @@ export default {
 				} else {
 					data3.push((item * 100).toFixed(2));
 				}
-            });
-            
+			});
+
 			// var data3 = (function() {
 			// 	var datas = [];
 			// 	for (var i = 0; i < data1.length; i++) {
@@ -1994,7 +1999,7 @@ export default {
 						align: 'left',
 					},
 					formatter: function(params) {
-						console.log(params);
+						// console.log(params);
 						let str = '';
 						params.forEach((item, index) => {
 							if (index == 0) {

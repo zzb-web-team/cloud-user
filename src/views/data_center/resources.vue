@@ -192,7 +192,7 @@
 						>
 					</div>
 
-					<!-- <el-tab-pane label="P2P加速流量" name="first">
+					<el-tab-pane label="P2P加速流量" name="first">
 						<div class="device_form">
 							<div
 								id="myChart"
@@ -256,7 +256,7 @@
 								:style="{ height: '607px' }"
 							></div>
 						</div>
-					</el-tab-pane> -->
+					</el-tab-pane>
 					<el-tab-pane label="流量占比" name="third">
 						<el-row class="resources_percentage">
 							<el-col :span="4">
@@ -689,8 +689,8 @@ export default {
 			valuea3: '',
 			valuea4: '',
 			tablecdn: [],
-			// activeName: 'first',
-			activeName: 'third',
+			activeName: 'first',
+			// activeName: 'third',
 			terminalName: '',
 			minDate: '',
 			maxDate: '',
@@ -853,12 +853,11 @@ export default {
 
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
-			// if (this.activeName == 'first') {
-			// 	this.gettable1();
-			// } else if (this.activeName == 'second') {
-			// 	this.gettable2();
-			// } else
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
+				this.gettable1();
+			} else if (this.activeName == 'second') {
+				this.gettable2();
+			} else if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -947,8 +946,8 @@ export default {
 						} else {
 							this.$message('暂无数据');
 						}
-						// this.gettable1();
-						this.getflow3();
+						this.gettable1();
+						//this.getflow3();
 					} else {
 						this.$message.error(res.msg);
 					}

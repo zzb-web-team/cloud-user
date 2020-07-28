@@ -249,7 +249,7 @@
 							</el-row>
 						</div>
 					</el-tab-pane>
-					<el-tab-pane label="P2P回源流量" name="second">
+					<el-tab-pane label="回源流量" name="second">
 						<div class="device_form" style>
 							<div
 								id="myChart1"
@@ -294,109 +294,74 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="P2P加速流量">
+										<el-table-column label="P2P加速流量(%)">
 											<template slot-scope="scope">
 												<div>
 													{{
 														scope.row.p2pflow
 															| updatabkb
-													}}
+													}}({{
+														(
+															scope.row
+																.p2ppercent *
+															100
+														).toFixed(2)
+													}}%)
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="CDN加速流量">
+										<el-table-column label="CDN加速流量(%)">
 											<template slot-scope="scope">
 												<div>
 													{{
 														scope.row.cdnflow
 															| updatabkb
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="P2P流量占比">
-											<template slot-scope="scope">
-												<div
-													v-if="
-														scope.row.p2ppercent *
-															100 >=
-															100
-													"
-												>
-													{{
-														(
-															scope.row
-																.p2ppercent *
-															100
-														).toFixed(0)
-													}}%
-												</div>
-												<div
-													v-else-if="
-														scope.row.p2ppercent *
-															100 ==
-															0
-													"
-												>
-													{{
-														(
-															scope.row
-																.p2ppercent *
-															100
-														).toFixed(0)
-													}}%
-												</div>
-												<div v-else>
-													{{
-														(
-															scope.row
-																.p2ppercent *
-															100
-														).toFixed(2)
-													}}%
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="CDN流量占比">
-											<template slot-scope="scope">
-												<div
-													v-if="
-														scope.row.cdnpercent *
-															100 >=
-															100
-													"
-												>
-													{{
-														(
-															scope.row
-																.cdnpercent *
-															100
-														).toFixed(0)
-													}}%
-												</div>
-												<div
-													v-else-if="
-														scope.row.cdnpercent *
-															100 ==
-															0
-													"
-												>
-													{{
-														(
-															scope.row
-																.cdnpercent *
-															100
-														).toFixed(0)
-													}}%
-												</div>
-												<div v-else>
-													{{
+													}}({{
 														(
 															scope.row
 																.cdnpercent *
 															100
 														).toFixed(2)
-													}}%
+													}}%)
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column
+											:render-header="renderHeader"
+											label="节点有资源时CDN加速流量(%)"
+										>
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row.cdnactiveflow
+															| updatabkb
+													}}({{
+														(
+															scope.row
+																.cdnactivepercent *
+															100
+														).toFixed(2)
+													}}%)
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column
+											:render-header="renderHeader"
+											label="节点无资源时CDN加速流量(%)"
+										>
+											<template slot-scope="scope">
+												<div>
+													{{
+														scope.row
+															.cdnpassiveflow
+															| updatabkb
+													}}({{
+														(
+															scope.row
+																.cdnpassivepercent *
+															100
+														).toFixed(2)
+													}}%)
 												</div>
 											</template>
 										</el-table-column>
@@ -795,6 +760,10 @@ export default {
 			zhanbitimearray: [],
 			cdataArray: [],
 			cdataArray: [],
+			cdnpassivearray: [],
+			cdnaactivearray: [],
+			cdnpassivepercent: [],
+			cdnpassivepercent: [],
 		};
 	},
 	filters: {
@@ -839,6 +808,7 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
+		// this.chanid = '158000000032';
 		if (this.$route.query.urldata) {
 			this.value1 = this.$route.query.urldata.url_name;
 		}
@@ -874,6 +844,45 @@ export default {
 		this.chart = null;
 	},
 	methods: {
+		renderHeader(h, { column }) {
+			const serviceContent = [
+				h(
+					'div',
+					{
+						slot: 'content',
+						style: 'margin-bottom:5px',
+					},
+					'加速节点有拟加速资源缓存时产生的流量'
+				),
+			];
+			const paymentContent = h(
+				'div',
+				{
+					slot: 'content',
+				},
+				'加速节点无拟加速资源缓存时产生的流量'
+			);
+			return h('div', [
+				h('span', column.label),
+				h(
+					'el-tooltip',
+					{
+						props: {
+							placement: 'top',
+						},
+					},
+					[
+						column.label == '有源CDN加速流量(%)'
+							? serviceContent
+							: paymentContent,
+						h('i', {
+							class: 'el-icon-warning-outline',
+							style: 'color:orange;margin-left:5px;',
+						}),
+					]
+				),
+			]);
+		},
 		//设置时间粒度
 		settimeunit(sratime, endtime) {
 			if (endtime - sratime <= 86400) {
@@ -1200,18 +1209,23 @@ export default {
 					if (res.status == 0) {
 						this.totalp2p = formatBorb(res.data.totalp2p);
 						this.totalcdn = formatBorb(res.data.totalcdn);
-						this.cdnarr = res.data.cdnarray;
+						//this.cdnarr = res.data.cdnarray;
 						this.p2parr = res.data.p2parray;
+						//this.cdataArray = res.data.cdataArray;
+						this.pdataArray = res.data.pdataArray;
 
-						let maxnum = Math.max(...res.data.cdataArray);
+						this.cdnpassivearray = res.data.cdnpassivearray;
+						this.cdnaactivearray = res.data.cdnaactivearray;
+						this.cdnaactivepercent = res.data.cdnaactivepercent;
+						this.cdnpassivepercent = res.data.cdnpassivepercent;
+
+						let maxnum = Math.max(...res.data.cdnaactivearray);
 						if (maxnum != 0) {
 							this.unitdata = formatBytes(maxnum);
 						} else {
 							this.unitdat = 'B';
 						}
 
-						this.cdataArray = res.data.cdataArray;
-						this.pdataArray = res.data.pdataArray;
 						res.data.timearray.forEach((item, index) => {
 							this.zhanbitimearray.push(getlocaltimes(item));
 						});
@@ -1918,7 +1932,8 @@ export default {
 		drawLine2() {
 			var data1 = [];
 			var data2 = [];
-			this.cdnarr.map((item) => {
+			var data3 = [];
+			this.cdnaactivepercent.map((item) => {
 				if (item * 100 >= 100 || item * 100 == 0) {
 					data1.push((item * 100).toFixed(0));
 				} else {
@@ -1932,6 +1947,14 @@ export default {
 					data2.push((item * 100).toFixed(2));
 				}
 			});
+			this.cdnpassivepercent.map((item) => {
+				if (item * 100 >= 100 || item * 100 == 0) {
+					data3.push((item * 100).toFixed(0));
+				} else {
+					data3.push((item * 100).toFixed(2));
+				}
+            });
+            
 			// var data3 = (function() {
 			// 	var datas = [];
 			// 	for (var i = 0; i < data1.length; i++) {
@@ -1963,18 +1986,17 @@ export default {
 					x: 'center', //可设定图例在左、右、居中
 					y: 'bottom', //可设定图例在上、下、居中
 					padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
-					data: ['P2P流量', 'CDN流量'],
+					data: ['P2P流量', 'CDN有源流量', 'CDN无源流量'],
 				},
 				tooltip: {
-                    trigger: 'axis',
-                    textStyle: {
+					trigger: 'axis',
+					textStyle: {
 						align: 'left',
 					},
 					formatter: function(params) {
-                        // var num = params[0].dataIndex;
-                        let str='';
-                        params.forEach((item, index) => {
-                            
+						console.log(params);
+						let str = '';
+						params.forEach((item, index) => {
 							if (index == 0) {
 								str +=
 									item.axisValue +
@@ -1984,6 +2006,10 @@ export default {
 									'：' +
 									item.value +
 									_this.unitdata +
+									'(' +
+									item.value +
+									'%' +
+									')' +
 									'</br>';
 							} else {
 								str +=
@@ -1992,18 +2018,22 @@ export default {
 									'：' +
 									item.value +
 									_this.unitdata +
+									'(' +
+									item.value +
+									'%' +
+									')' +
 									'</br>';
 							}
-                        });
-                        return str;
+						});
+						return str;
 						// return (
 						// 	params[0].axisValue +
-                        //     '</br>' +
-                        //     params[0].marker+
+						//     '</br>' +
+						//     params[0].marker+
 						// 	'CDN流量' +
 						// 	formatBorb(_this.cdataArray[num], _this.unitdata) +
-                        //     '</br>' +
-                        //     params[1].marker+
+						//     '</br>' +
+						//     params[1].marker+
 						// 	'P2P流量' +
 						// 	formatBorb(_this.pdataArray[num], _this.unitdata)
 						// );
@@ -2057,14 +2087,34 @@ export default {
 
 				series: [
 					{
-						name: 'CDN流量',
+						name: 'CDN有源流量',
 						type: 'bar',
 						stack: '使用情况',
 						data: data1,
 						barMaxWidth: 30, //柱图宽度
 						itemStyle: {
 							normal: {
-								color: '#394989',
+								color: '#66B3FF',
+							},
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'inside',
+								color: '#ffffff',
+								fontSize: 10,
+							},
+						},
+					},
+					{
+						name: 'CDN无源流量',
+						type: 'bar',
+						stack: '使用情况',
+						data: data3,
+						barMaxWidth: 30, //柱图宽度
+						itemStyle: {
+							normal: {
+								color: '#2894FF',
 							},
 						},
 						label: {
@@ -2084,7 +2134,7 @@ export default {
 						barMaxWidth: 30, //柱图宽度
 						itemStyle: {
 							normal: {
-								color: '#64A7FC', //柱形图圆角，初始化效果
+								color: '#97CBFF', //柱形图圆角，初始化效果
 								// color: new echarts.graphic.LinearGradient(
 								// 	0,
 								// 	1,
@@ -2112,25 +2162,6 @@ export default {
 							},
 						},
 					},
-					// {
-					// 	name: '总计',
-					// 	type: 'line',
-					// 	stack: '总量',
-					// 	symbol: 'none',
-					// 	label: {
-					// 		normal: {
-					// 			show: true,
-					// 			formatter: '{c}',
-					// 			textStyle: { color: '#333333', },
-					// 		},
-					// 	},
-					// 	itemStyle: {
-					// 		normal: {
-					// 			color: 'rgba(128, 128, 128, 0)',
-					// 		},
-					// 	},
-					// 	data: data3,
-					// },
 				],
 			};
 			myChart.setOption(options);

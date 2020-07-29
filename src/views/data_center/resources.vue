@@ -808,7 +808,7 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
-		// this.chanid = '158000000002';
+		// this.chanid = '158000000032';
 		if (this.$route.query.urldata) {
 			this.value1 = this.$route.query.urldata.url_name;
 		}
@@ -852,7 +852,7 @@ export default {
 						slot: 'content',
 						style: 'margin-bottom:5px',
 					},
-					'加速节点有拟加速资源缓存时产生的流量'
+					'节点有资源缓存时，切换至CDN加速通道所产生的CDN加速流量'
 				),
 			];
 			const paymentContent = h(
@@ -860,7 +860,7 @@ export default {
 				{
 					slot: 'content',
 				},
-				'加速节点无拟加速资源缓存时产生的流量'
+				'节点无资源缓存时，切换至CDN加速通道所产生的的CDN加速流量'
 			);
 			return h('div', [
 				h('span', column.label),

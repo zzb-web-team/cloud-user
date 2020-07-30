@@ -1999,13 +1999,14 @@ export default {
 						align: 'left',
 					},
 					formatter: function(params) {
-                        let num = params[0].seriesIndex;
+                        console.log(params);
+                        let num = params[0].dataIndex;
 						return (
 							params[0].axisValue +
 						    '</br>' +
 						    params[0].marker+
 							params[0].seriesName +
-							formatBorb(_this.cdnaactivearray[num], _this.unitdata) +'('+ params[0].value+"%"+")"+
+							formatBorb(_this.pdataArray[num], _this.unitdata) +'('+ params[0].value+"%"+")"+
                             '</br>' +
                              params[1].marker+
 							params[1].seriesName +
@@ -2013,7 +2014,7 @@ export default {
 						    '</br>' +
 						    params[2].marker+
 							params[2].seriesName +
-							formatBorb(_this.pdataArray[num], _this.unitdata)+'('+ params[2].value+"%"+")"
+							formatBorb(_this.cdnaactivearray[num], _this.unitdata)+'('+ params[2].value+"%"+")"
 						);
 					},
 				},

@@ -416,7 +416,7 @@
 								</el-col>
 							</el-row>
 							<fenye
-								v-show="tablecdn.length > 0"
+								v-show="tablecdn.length != 0"
 								style="text-align:right;margin:10px 0 20px 0;"
 								@fatherMethod="f_getpage"
 								@fathernum="f_gettol"
@@ -503,7 +503,7 @@
 								</el-col>
 							</el-row>
 							<fenye
-								v-show="tablecdn.length > 0"
+								v-show="tablecdn.length != 0"
 								style="text-align:right;margin:10px 0 20px 0;"
 								@fatherMethod="f_getpage"
 								@fathernum="f_gettol"
@@ -728,7 +728,7 @@
 										</el-table-column>
 									</el-table>
 									<fenye
-										v-show="tablecdn2.length > 0"
+										v-show="tablecdn2.length != 0"
 										style="float:right;margin:10px 0 20px 0;"
 										@fatherMethod="getpage"
 										@fathernum="gettol"
@@ -1255,8 +1255,7 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.regionArray;
-
-								this.tablecdn = res.data.accessCntTable;
+								this.tablecdn = res.data.accessCntTable==null?[]:res.data.accessCntTable;
 								this.f_total_cnt = res.data.totalPage;
 							} else {
 								this.$message.error(res.err_msg);
@@ -1273,8 +1272,7 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.ispArray;
-
-								this.tablecdn = res.data.accessCntTable;
+								this.tablecdn = res.data.accessCntTable==null?[]:res.data.accessCntTable;
 							} else {
 								this.$message.error(res.err_msg);
 							}
@@ -1283,42 +1281,43 @@ export default {
 						.catch((err) => {});
 				}
 			} else {
-				if (this.value_c1) {
-					params.fileName = this.value_c1;
-				} else {
-					params.fileName = '*';
-				}
-				if (this.value_c2[1]) {
-					params.region = this.value_c2[1];
-				} else {
-					params.region = '*';
-				}
-				if (this.value_c3) {
-					params.isp = this.value_c3;
-				} else {
-					params.isp = '*';
-				}
-				if (this.accval3 == '') {
-					params.acce = -1;
-				} else {
-					params.acce = this.accval3 * 1;
-				}
-				this.playTimesArray2 = [];
-				this.timeArray2 = [];
-				query_playtimes_curve(params)
-					.then((res) => {
-						if (res.status == 0) {
-							this.playTimesArray2 = res.data.playTimesArray;
-							res.data.timeArray.forEach((item, index) => {
-								this.timeArray2.push(getymdtime(item));
-							});
-							this.gettable();
-							// this.drawLine2();
-						} else {
-							this.$message.error(res.err_msg);
-						}
-					})
-					.catch((err) => {});
+				this.gettable();
+				// if (this.value_c1) {
+				// 	params.fileName = this.value_c1;
+				// } else {
+				// 	params.fileName = '*';
+				// }
+				// if (this.value_c2[1]) {
+				// 	params.region = this.value_c2[1];
+				// } else {
+				// 	params.region = '*';
+				// }
+				// if (this.value_c3) {
+				// 	params.isp = this.value_c3;
+				// } else {
+				// 	params.isp = '*';
+				// }
+				// if (this.accval3 == '') {
+				// 	params.acce = -1;
+				// } else {
+				// 	params.acce = this.accval3 * 1;
+				// }
+				// this.playTimesArray2 = [];
+				// this.timeArray2 = [];
+				// query_playtimes_curve(params)
+				// 	.then((res) => {
+				// 		if (res.status == 0) {
+				// 			this.playTimesArray2 = res.data.playTimesArray;
+				// 			res.data.timeArray.forEach((item, index) => {
+				// 				this.timeArray2.push(getymdtime(item));
+				// 			});
+				// 			this.gettable();
+				// 			// this.drawLine2();
+				// 		} else {
+				// 			this.$message.error(res.err_msg);
+				// 		}
+				// 	})
+				// 	.catch((err) => {});
 			}
 		},
 		//请求数据--表格

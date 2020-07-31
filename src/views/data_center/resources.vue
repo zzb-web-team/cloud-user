@@ -1999,22 +1999,21 @@ export default {
 						align: 'left',
 					},
 					formatter: function(params) {
-                        console.log(params);
                         let num = params[0].dataIndex;
 						return (
 							params[0].axisValue +
 						    '</br>' +
 						    params[0].marker+
 							params[0].seriesName +
-							formatBorb(_this.pdataArray[num], _this.unitdata) +'('+ params[0].value+"%"+")"+
+							formatBkb(_this.pdataArray[num], _this.unitdata) +'('+ params[0].value+"%"+")"+
                             '</br>' +
                              params[1].marker+
 							params[1].seriesName +
-							formatBorb(_this.cdnpassivearray[num], _this.unitdata) +'('+ params[1].value+"%"+")"+
+							formatBkb(_this.cdnpassivearray[num], _this.unitdata) +'('+ params[1].value+"%"+")"+
 						    '</br>' +
 						    params[2].marker+
 							params[2].seriesName +
-							formatBorb(_this.cdnaactivearray[num], _this.unitdata)+'('+ params[2].value+"%"+")"
+							formatBkb(_this.cdnaactivearray[num], _this.unitdata)+'('+ params[2].value+"%"+")"
 						);
 					},
 				},

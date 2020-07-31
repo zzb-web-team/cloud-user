@@ -32,7 +32,7 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else {
     var userUrl = 'http://zzb.onezen.net';
 }
-// var userUrl = 'http://service.kclgames.com'; //PHP服务URL
+// var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 // 加载动画
 //loading对象
 var loading;
@@ -63,6 +63,17 @@ function hideLoading() {
         toHideLoading();
     }
 }
+
+function fnThrottle(fn, wait) {
+    let timeout = null
+    return function() {
+        if (timeout !== null) clearTimeout(timeout)
+        timeout = setTimeout(fn, wait);
+    }
+}
+
+
+
 //防抖：将 300ms 间隔内的关闭 loading 便合并为一次。防止连续请求时， loading闪烁的问题。
 var toHideLoading = _.debounce(() => {
     /**
@@ -81,7 +92,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // 请求拦截器
 axios.interceptors.request.use(
     (config) => {
-
         var checkwithout = [
             userUrl + '/clouduser/loginbyphone',
             userUrl + '/clouduser/login',
@@ -94,36 +104,42 @@ axios.interceptors.request.use(
         ];
         if (checkwithout.indexOf(config.url) < 0) {
             if (!VueCookies.get('id')) {
-                alert('登录已过期');
+                // fnThrottle(alert('登录已过期'), 3000)
+                // alert('登录已过期');
                 alert_is_present();
                 router.push('/');
                 return false;
             }
-            http.request({
-                url: userUrl + '/clouduser/checktoken',
-                method: 'post',
-                data: {
-                    id: VueCookies.get('id'),
-                    token: VueCookies.get('token'),
-                },
-                async: true,
-                success: function(data) {
-                    data = JSON.parse(data);
-                    if (data.status != 0) {
-                        VueCookies.set('id', '', 0);
-                        VueCookies.set('token', '', 0);
-                        VueCookies.set('user', '', 0);
-                        v.$alert(data.msg, '通知', {
-                            confirmButtonText: '确定',
-                            showClose: false,
-                            center: true,
-                            callback: (action) => {
-                                router.push('/');
-                            },
-                        });
-                    }
-                },
-            });
+            fnThrottle(
+                http.request({
+                    url: userUrl + '/clouduser/checktoken',
+                    method: 'post',
+                    data: {
+                        id: VueCookies.get('id'),
+                        token: VueCookies.get('token'),
+                    },
+                    async: true,
+                    success: function(data) {
+                        data = JSON.parse(data);
+                        if (data.status != 0) {
+                            VueCookies.set('id', '', 0);
+                            VueCookies.set('token', '', 0);
+                            VueCookies.set('user', '', 0);
+                            v.$alert(data.msg, '通知', {
+                                confirmButtonText: '确定',
+                                showClose: false,
+                                center: true,
+                                callback: (action) => {
+                                    router.push('/');
+                                    return false;
+                                },
+
+                            });
+                        }
+                    },
+                }), 3000
+            )
+
         }
         if (config.headers.showLoading !== false && config.url.indexOf('refresh_state') < 0) {
             showLoading(config.headers.loadingTarget);

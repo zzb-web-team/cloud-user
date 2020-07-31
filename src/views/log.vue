@@ -87,11 +87,11 @@ export default {
 			if (value === '') {
 				callback(new Error('请输入账号'));
 			} else {
-				if(value.replace(/\s*/g,"")==''){
-                    callback(new Error('请输入账号'));
-                }else{
-                    callback();
-                }
+				if (value.replace(/\s*/g, '') == '') {
+					callback(new Error('请输入账号'));
+				} else {
+					callback();
+				}
 			}
 		};
 		return {
@@ -158,8 +158,8 @@ export default {
 				if (valid) {
 					this.logining = true;
 					var loginParams = {
-						username: this.ruleForm2.account.replace(/\s*/g,""),
-						password: this.ruleForm2.checkPass.replace(/\s*/g,""),
+						username: this.ruleForm2.account.replace(/\s*/g, ''),
+						password: this.ruleForm2.checkPass.replace(/\s*/g, ''),
 					};
 					// this.$router.push({
 					//   path: "/user"

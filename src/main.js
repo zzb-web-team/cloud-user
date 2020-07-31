@@ -37,9 +37,14 @@ Router.prototype.push = function push(location) {
 };
 /** */
 
+
+
 Vue.prototype.$echarts = echarts;
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
+
+import { message } from './components/onlyMessag.js';
+Vue.prototype.$messages = message
 
 router.beforeEach((to, from, next) => {
     next();

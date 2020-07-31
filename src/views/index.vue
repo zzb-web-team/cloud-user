@@ -55,6 +55,7 @@
 										:class="item.icon"
 										style="margin-right: 10px;margin-left: 10px;"
 									></i>
+                                   
 									<span>{{ item.name }}</span>
 								</template>
 
@@ -102,9 +103,21 @@
 										:key="itemChild.path"
 									>
 										<i :class="itemChild.icon"></i>
-										<span slot="title">{{
-											itemChild.name
-										}}</span>
+										<el-badge
+											:is-dot=false
+											class="item"
+											v-show="
+												itemChild.name == '刷新预热'
+											"
+											>{{ itemChild.name }}</el-badge
+										>
+										<span
+											slot="title"
+											v-show="
+												itemChild.name != '刷新预热'
+											"
+											>{{ itemChild.name }}</span
+										>
 									</el-menu-item>
 								</template>
 							</el-submenu>
@@ -126,7 +139,8 @@
 									:class="item.icon"
 									style="margin-right: 10px;margin-left: 5px;"
 								></i>
-								<span slot="title">{{ item.name }}</span>
+								<el-badge :is-dot=false class="item" v-if="item.path=='/terminal_management'">{{ item.name }}</el-badge>
+								<span slot="title" v-else>{{ item.name }}</span>
 							</el-menu-item>
 						</template>
 					</el-menu>
@@ -422,6 +436,9 @@ export default {
 
 <style scoped lang="scss">
 // @import "../assets/css/style/newstyle";
+.item {
+	line-height: 12px;
+}
 .container {
 	position: absolute;
 	top: 0px;

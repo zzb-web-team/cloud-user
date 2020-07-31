@@ -590,3 +590,14 @@ body {
 .add_url .el-form-item__label {
     text-align: left;
 }
+
+.el-badge__content.is-dot {
+    width: 10px;
+    height: 11px;
+    border: radius 50%;
+    margin-left: 2px;
+}
+
+.el-badge__content.is-fixed.is-dot {
+    right: 0;
+}

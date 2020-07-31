@@ -38,6 +38,7 @@ import log_download from '@/views/data_center/log_download.vue';
 import resources from '@/views/data_center/resources.vue';
 import statistics from '@/views/data_center/statistics.vue';
 import accelerated_log from '@/views/data_center/accelerated_log.vue';
+import node_flow from '@/views/data_center/node_flow.vue';
 
 
 import word_map from '@/views/distributed/word_map.vue';
@@ -91,19 +92,6 @@ const router = new Router({
                     component: overview,
                     icon: 'iconfont icon-dian',
                 },
-                // }, {
-                //     path: '/home_six',
-                //     name: '目录',
-                //     component: home_six,
-                //     hidden: true,
-                //     children: [{
-                //         path: '/overview',
-                //         name: '概览',
-                //         component: overview,
-                //         icon: 'iconfont icon-dian',
-
-                //     }]
-                //}
             ],
         },
         {
@@ -217,6 +205,19 @@ const router = new Router({
                 },
                 {
                     path: '/geswg',
+                    name: '节点流量监控',
+                    component: node_flow,
+                    hidden: true,
+                    icon: 'iconfont icon-dian',
+                    children: [{
+                        path: '/node_flow',
+                        name: '节点流量监控',
+                        component: node_flow,
+                        icon: 'iconfont icon-dian',
+                    }]
+                },
+                {
+                    path: '/geswg',
                     name: '监控统计',
                     component: home_five,
                     hidden: true,
@@ -239,14 +240,10 @@ const router = new Router({
                             component: log_download,
                             icon: 'iconfont icon-dian',
                         },
-                        // {
-                        //     path: '/accelerated_log',
-                        //     name: '点播加速日志',
-                        //     component: accelerated_log,
-                        //     icon: 'iconfont icon-dian',
-                        // },
+
                     ],
                 },
+
             ],
         },
         {
@@ -254,6 +251,12 @@ const router = new Router({
             name: '用量查询',
             component: dosage_query,
             icon: 'iconfont icon-tongjichaxun_',
+        },
+        {
+            path: '/node_flow',
+            name: '节点流量监控',
+            component: node_flow,
+            icon: 'iconfont icon-dian',
         },
         {
             path: '/geswg',
@@ -303,6 +306,9 @@ const router = new Router({
                 name: '终端管理',
                 component: terminal_management,
                 icon: 'iconfont icon-dian',
+                meta: {
+                    dot: true
+                }
             }, ],
         },
         {

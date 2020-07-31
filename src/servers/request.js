@@ -92,6 +92,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 // 请求拦截器
 axios.interceptors.request.use(
     (config) => {
+
         var checkwithout = [
             userUrl + '/clouduser/loginbyphone',
             userUrl + '/clouduser/login',
@@ -144,6 +145,7 @@ axios.interceptors.request.use(
         if (config.headers.showLoading !== false && config.url.indexOf('refresh_state') < 0) {
             showLoading(config.headers.loadingTarget);
         }
+
         return config;
         // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
         // 即使本地存在token，也有可能token是过期的，所以在响应拦截器中要对返回状态进行判断
@@ -162,16 +164,14 @@ axios.interceptors.request.use(
 // 响应拦截器
 axios.interceptors.response.use(
     (response) => {
-
         if (response.config.headers.showLoading !== false) {
             hideLoading();
         }
-        //console.log(response.status)
         if (response.status === 200) {
             //console.log(Promise.resolve(response));
-            if (response.data.status == -5) {
-                Message.error('服务器响应超时!');
-            }
+            // if (response.data.status == -5) {
+            //     Message.error('服务器响应超时!');
+            // }
             // if (response.data.status == -900) {
             //     alert(response.data.msg);
             //     router.push('/');

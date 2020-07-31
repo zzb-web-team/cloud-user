@@ -44,7 +44,7 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
 import { message } from './components/onlyMessag.js';
-Vue.prototype.$messages = message
+Vue.prototype.$message = message;
 
 router.beforeEach((to, from, next) => {
     next();

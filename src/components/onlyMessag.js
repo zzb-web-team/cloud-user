@@ -1,22 +1,22 @@
-import {
-    Message
-} from 'element-ui';
+import { Message } from "element-ui";
 let messageInstance = null;
-const resetMessage = (options) => {
+let mainMessage = function DoneMessage(options) {
+    //如果弹窗已存在先关闭
     if (messageInstance) {
-        messageInstance.close()
+        messageInstance.close();
     }
-    messageInstance = Message(options)
-};
-['error', 'success', 'info', 'warning'].forEach(type => {
-    resetMessage[type] = options => {
+    messageInstance = Message(options);
+}
+let arr = ['success', 'warning', 'info', 'error'];
+arr.forEach(function(type) {
+    mainMessage[type] = function(options) {
         if (typeof options === 'string') {
             options = {
                 message: options
-            }
+            };
         }
-        options.type = type
-        return resetMessage(options)
-    }
-})
-export const message = resetMessage
+        options.type = type;
+        return mainMessage(options);
+    };
+});
+export const message = mainMessage;

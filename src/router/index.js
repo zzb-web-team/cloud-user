@@ -182,90 +182,34 @@ const router = new Router({
             component: index,
             bgc: false,
         },
-
         {
             path: '/home_fosdr',
-            name: '数据中心',
+            name: '节点流量统计',
             component: index,
-            hidden: true,
-            icon: 'iconfont icon-jiankongtongji',
-            children: [{
-                    path: '/gewsrg',
-                    name: '用量查询',
-                    component: home_two,
-                    hidden: true,
-                    icon: 'iconfont icon-dian',
-                    children: [{
-                        path: '/dosage_query',
-                        name: '用量查询',
-                        component: dosage_query,
-                        hidden: true,
-                        icon: 'iconfont icon-dian',
-                    }, ],
-                },
+            icon: 'iconfont icon-tongjichaxun_',
+            children: [
                 {
-                    path: '/geswg',
+                    path: '/dosage_query',
+                    name: '节点流量用量',
+                    component: dosage_query,
+                    icon: 'iconfont icon-dian',
+                }, 
+                {
+                    path: '/node_flow',
                     name: '节点流量监控',
                     component: node_flow,
-                    hidden: true,
                     icon: 'iconfont icon-dian',
-                    children: [{
-                        path: '/node_flow',
-                        name: '节点流量监控',
-                        component: node_flow,
-                        icon: 'iconfont icon-dian',
-                    }]
                 },
-                {
-                    path: '/geswg',
-                    name: '监控统计',
-                    component: home_five,
-                    hidden: true,
-                    icon: 'iconfont icon-dian',
-                    children: [{
-                            path: '/resources',
-                            name: '资源监控',
-                            component: resources,
-                            icon: 'iconfont icon-dian',
-                        },
-                        {
-                            path: '/statistics',
-                            name: '统计分析',
-                            component: statistics,
-                            icon: 'iconfont icon-dian',
-                        },
-                        {
-                            path: '/log_download',
-                            name: '点播加速日志',
-                            component: log_download,
-                            icon: 'iconfont icon-dian',
-                        },
-
-                    ],
-                },
-
             ],
         },
         {
-            path: '/dosage_query',
-            name: '用量查询',
-            component: dosage_query,
-            icon: 'iconfont icon-tongjichaxun_',
-        },
-        {
-            path: '/node_flow',
-            name: '节点流量监控',
-            component: node_flow,
-            icon: 'iconfont icon-dian',
-        },
-        {
             path: '/geswg',
-            name: '监控统计',
-            component: home_five,
+            name: '播放统计',
+            component: index,
             icon: 'iconfont icon-jiankongtongji',
             children: [{
                     path: '/resources',
-                    name: '资源监控',
+                    name: '播放流量',
                     component: resources,
                     icon: 'iconfont icon-dian',
                 },
@@ -281,12 +225,6 @@ const router = new Router({
                     component: log_download,
                     icon: 'iconfont icon-dian',
                 },
-                // {
-                //     path: '/accelerated_log',
-                //     name: '点播加速日志',
-                //     component: accelerated_log,
-                //     icon: 'iconfont icon-dian',
-                // },
             ],
         },
         {

@@ -10,6 +10,20 @@
 							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
 							<el-input
+								placeholder="请输入加速域名"
+								v-model="valueDomain"
+								class="input-with-select"
+								maxlength="70"
+								@keyup.enter.native="getdata1"
+								style="width:15%;margin-right:10px;"
+							>
+								<i
+									slot="prefix"
+									class="el-input__icon el-icon-search"
+									@click="getdata1()"
+								></i>
+							</el-input>
+							<el-input
 								placeholder="请输入加速内容名称"
 								v-model="value_a1"
 								class="input-with-select"
@@ -26,20 +40,6 @@
 							<span style="margin-right:10px;margin-left:15px;"
 								>终端类型:</span
 							>
-							<!-- <el-select
-								v-model="accval1"
-								placeholder="终端"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata()"
-							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									v-for="(item, index) in terminallist"
-									:key="index + '_a'"
-									:label="item.label"
-									:value="item.label"
-								></el-option>
-							</el-select> -->
 							<el-select
 								v-model="accval1"
 								placeholder="终端类型"
@@ -54,43 +54,6 @@
 								<el-option label="ios" value="1"></el-option>
 								<el-option label="其他" value="2"></el-option>
 							</el-select>
-							<!-- <el-select
-                v-model="value_a2"
-                placeholder="区域"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="(item, index) in optionsa2"
-                  :key="index + '_b'"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select> -->
-							<!-- <el-cascader
-                style="width: 10%;margin-right: 10px;line-height: 36px;"
-                placeholder="区域"
-                :options="optionsa2"
-                ref="cascaderAddr"
-                :show-all-levels="false"
-                v-model="value_a2"
-                @change="getdata"
-              ></el-cascader>
-              <el-select
-                v-model="value_a3"
-                placeholder="运营商"
-                style="width: 10%;margin-right: 10px;"
-                @change="getdata()"
-              >
-                <el-option label="全部" value="*"></el-option>
-                <el-option
-                  v-for="(item, index) in optionsa3"
-                  :key="index + '_c'"
-                  :label="item.label"
-                  :value="item.label"
-                ></el-option>
-              </el-select> -->
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
@@ -117,28 +80,6 @@
 									>
 								</el-radio-group>
 							</div>
-							<!-- <el-button-group>
-								<el-button v-show="!shoudzy" @click="today(0)"
-									>今天</el-button
-								>
-								<el-button
-									v-show="!shoudzy"
-									@click="yesterday(0)"
-									>昨天</el-button
-								>
-								<el-button
-									v-show="!shoudzy"
-									@click="sevendat(0)"
-									>近7天</el-button
-								>
-								<el-button
-									v-show="!shoudzy"
-									@click="thirtyday(0)"
-									>近30天</el-button
-								><el-button @click="showzdy"
-									>自定义<i class="el-icon-date"></i
-								></el-button>
-							</el-button-group> -->
 							<el-date-picker
 								v-show="shoudzy"
 								style="margin-left:10px;"
@@ -151,12 +92,6 @@
 								align="left"
 								@change="gettimes_pvpu"
 							></el-date-picker>
-							<!-- <el-button
-                style="margin-left:10px;"
-                type="primary"
-                @click="seachtu(0)"
-                >查询</el-button
-              > -->
 						</div>
 
 						<div class="user_item">
@@ -179,17 +114,26 @@
 								:style="{ height: '607px' }"
 							></div>
 						</div>
-						<!-- <div class="devide_table">
-              <el-row type="flex" class="row_active">
-                <el-col :span="24" style="text-align:left;    font-weight: bold;">IP流量平均利用率表</el-col>
-              </el-row>
-            </div>-->
 					</el-tab-pane>
 
 					<el-tab-pane label="访问用户分布" name="second">
 						<div
 							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
+							<el-input
+								placeholder="请输入加速域名"
+								v-model="valueDomain1"
+								class="input-with-select"
+								maxlength="70"
+								@keyup.enter.native="getdata1"
+								style="width:15%;margin-right:10px;"
+							>
+								<i
+									slot="prefix"
+									class="el-input__icon el-icon-search"
+									@click="getdata1()"
+								></i>
+							</el-input>
 							<el-input
 								placeholder="请输入加速内容名称"
 								v-model="value_b1"
@@ -204,23 +148,6 @@
 									@click="getdata1()"
 								></i>
 							</el-input>
-							<span style="margin-right:10px;margin-left:15px;"
-								>终端类型:</span
-							>
-							<!-- <el-select
-								v-model="accval2"
-								placeholder="终端"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata1()"
-							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									v-for="(item, index) in terminallist"
-									:key="'1' + index"
-									:label="item.label"
-									:value="item.label"
-								></el-option>
-							</el-select> -->
 							<el-select
 								v-model="accval2"
 								placeholder="终端类型"
@@ -235,20 +162,6 @@
 								<el-option label="ios" value="1"></el-option>
 								<el-option label="其他" value="2"></el-option>
 							</el-select>
-							<!-- <el-select
-								v-model="value_b3"
-								placeholder="运营商"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata1()"
-							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									v-for="(item, index) in optionsa3"
-									:key="'2' + index"
-									:label="item.label"
-									:value="item.label"
-								></el-option>
-							</el-select> -->
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
@@ -273,28 +186,6 @@
 									>自定义</el-radio-button
 								>
 							</el-radio-group>
-							<!-- <el-button-group>
-								<el-button v-show="!shoudzyx" @click="today(1)"
-									>今天</el-button
-								>
-								<el-button
-									v-show="!shoudzyx"
-									@click="yesterday(1)"
-									>昨天</el-button
-								>
-								<el-button
-									v-show="!shoudzyx"
-									@click="sevendat(1)"
-									>近7天</el-button
-								>
-								<el-button
-									v-show="!shoudzyx"
-									@click="thirtyday(1)"
-									>近30天</el-button
-								><el-button @click="showzdyx"
-									>自定义<i class="el-icon-date"></i
-								></el-button>
-							</el-button-group> -->
 							<el-date-picker
 								v-show="shoudzyx"
 								style="margin-left:10px;"
@@ -307,22 +198,8 @@
 								align="left"
 								@change="gettimes_option"
 							></el-date-picker>
-							<!-- <el-button
-                style="margin-left:10px;"
-                type="primary"
-                @click="seachtu(1)"
-                >确定</el-button
-              > -->
 						</div>
 						<div class="device_form" style>
-							<!-- <el-button-group>
-								<el-button :autofocus="true" @click="goarea()"
-									>地区</el-button
-								>
-								<el-button @click="gosupplier()"
-									>运营商</el-button
-								>
-							</el-button-group> -->
 							<el-radio-group
 								v-model="radio_tab"
 								size="medium"
@@ -372,7 +249,7 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.dataFlow
+														scope.row.dataflow
 															| updatabkb
 													}}
 												</div>
@@ -458,7 +335,7 @@
 											<template slot-scope="scope">
 												<div>
 													{{
-														scope.row.dataFlow
+														scope.row.dataflow
 															| updatabkb
 													}}
 												</div>
@@ -513,41 +390,15 @@
 							</fenye>
 						</div>
 					</el-tab-pane>
-					<el-tab-pane label="热门加速内容" name="there">
+					<!-- <el-tab-pane label="热门加速内容" name="there">
 						<div
 							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
-							<!-- <el-input
-								placeholder="加速内容名称"
-								v-model="value_c1"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata2"
-								style="width:15%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata2()"
-								></i>
-							</el-input> -->
+							
 							<span style="margin-right:10px;margin-left:15px;"
 								>终端:</span
 							>
-							<!-- <el-select
-								v-model="accval3"
-								placeholder="终端"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata2()"
-							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									v-for="(item, index) in terminallist"
-									:key="index + 'a'"
-									:label="item.label"
-									:value="item.label"
-								></el-option>
-							</el-select> -->
+							
 							<el-select
 								v-model="accval3"
 								placeholder="终端类型"
@@ -562,75 +413,11 @@
 								<el-option label="ios" value="1"></el-option>
 								<el-option label="其他" value="2"></el-option>
 							</el-select>
-							<!-- <el-cascader
-								style="width: 10%;margin-right: 10px;line-height: 36px;"
-								placeholder="区域"
-								:options="optionsa2"
-								ref="cascaderAddr"
-								:show-all-levels="false"
-								v-model="value_c2"
-								@change="getdata2"
-							></el-cascader>
-							<el-select
-								v-model="value_c3"
-								placeholder="运营商"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata2()"
-							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									v-for="(item, index) in optionsa3"
-									:key="index + '_label'"
-									:label="item.label"
-									:value="item.label"
-								></el-option>
-							</el-select> -->
+							
 							<span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
 							>
-							<!-- <el-radio-group
-								v-model="radio1"
-								size="medium"
-								@change="sele_time(3)"
-							>
-								<el-radio-button label="1"
-									>今天</el-radio-button
-								>
-								<el-radio-button label="2"
-									>昨天</el-radio-button
-								>
-								<el-radio-button label="3"
-									>近7天</el-radio-button
-								>
-								<el-radio-button label="4"
-									>近30天</el-radio-button
-								>
-								<el-radio-button label="5"
-									>自定义</el-radio-button
-								>
-							</el-radio-group> -->
-							<!-- <el-button-group>
-								<el-button v-show="!shoudzyz" @click="today(2)"
-									>今天</el-button
-								>
-								<el-button
-									v-show="!shoudzyz"
-									@click="yesterday(2)"
-									>昨天</el-button
-								>
-								<el-button
-									v-show="!shoudzyz"
-									@click="sevendat(2)"
-									>近7天</el-button
-								>
-								<el-button
-									v-show="!shoudzyz"
-									@click="thirtyday(2)"
-									>近30天</el-button
-								><el-button @click="showzdyz"
-									>自定义<i class="el-icon-date"></i
-								></el-button>
-							</el-button-group> -->
+							
 							<el-date-picker
 								style="margin-left:10px;"
 								v-model="val2"
@@ -641,28 +428,9 @@
 								end-placeholder="结束日期"
 								align="left"
 								@change="gettimes"
-							></el-date-picker>
-							<!-- <el-button
-                style="margin-left:10px;"
-                type="primary"
-                @click="seachtu(2)"
-                >确定</el-button
-              > -->
-						</div>
-						<!-- <div class="device_form" style>
-							<div
-								id="myChart2"
-								:style="{ height: '607px' }"
-							></div>
-						</div> -->
+							></el-date-picker>							
+						</div>						
 						<div class="devide_table">
-							<!-- <el-row type="flex" class="row_active">
-								<el-col
-									:span="24"
-									style="text-align:left;font-weight: bold;padding-left:10px;"
-									>IP流量平均利用率表</el-col
-								>
-							</el-row> -->
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
 									<el-table
@@ -738,7 +506,7 @@
 								</el-col>
 							</el-row>
 						</div>
-					</el-tab-pane>
+					</el-tab-pane> -->
 				</el-tabs>
 			</div>
 		</div>
@@ -808,6 +576,8 @@ export default {
 			value_c1: '',
 			value_c2: '',
 			value_c3: '',
+			valueDomain: '',
+			valueDomain1: '',
 			pageSize: 10, //煤业
 			pageNo: 1, //页码
 			total_cnt: 1, //数据总量
@@ -1104,7 +874,7 @@ export default {
 		this.starttime =
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
-		this.getlabrl2();
+		// this.getlabrl2();
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
 			if (this.activeName == 'first') {
@@ -1193,6 +963,11 @@ export default {
 				} else {
 					params.acce = this.accval1 * 1;
 				}
+				if(this.valueDomain == ''){
+					params.domain = '*';
+				}else{
+					params.domain = this.valueDomain;
+				}
 				this.uvArray = [];
 				this.pvArray = [];
 				this.timeArray = [];
@@ -1243,6 +1018,11 @@ export default {
 					params.acce = -1;
 				} else {
 					params.acce = this.accval2 * 1;
+				}
+				if(this.valueDomain1 == ''){
+					params.domain = '*';
+				}else{
+					params.domain = this.valueDomain1;
 				}
 				params.pageNo = this.f_currentPage;
 				params.pageSize = this.f_pageSize;
@@ -1347,32 +1127,32 @@ export default {
 				})
 				.catch((err) => {});
 		},
-		//获取视频终端
-		getlabrl2() {
-			let parmas = new Object();
-			parmas.chanid = this.chanid;
-			parmas.page = this.page;
-			getterminal(parmas)
-				.then((res) => {
-					if (res.status == 0) {
-						res.result.cols.forEach((item) => {
-							let sdf = new Object();
-							sdf.value = item.id;
-							sdf.label = item.name;
-							sdf.chanid = item.chanid;
-							sdf.type = item.type;
-							this.terminallist.push(sdf);
-						});
-						if (res.result.les_count == 0) {
-							return false;
-						} else {
-							this.page++;
-							this.getlabrl2();
-						}
-					}
-				})
-				.catch((error) => {});
-		},
+		// //获取视频终端
+		// getlabrl2() {
+		// 	let parmas = new Object();
+		// 	parmas.chanid = this.chanid;
+		// 	parmas.page = this.page;
+		// 	getterminal(parmas)
+		// 		.then((res) => {
+		// 			if (res.status == 0) {
+		// 				res.result.cols.forEach((item) => {
+		// 					let sdf = new Object();
+		// 					sdf.value = item.id;
+		// 					sdf.label = item.name;
+		// 					sdf.chanid = item.chanid;
+		// 					sdf.type = item.type;
+		// 					this.terminallist.push(sdf);
+		// 				});
+		// 				if (res.result.les_count == 0) {
+		// 					return false;
+		// 				} else {
+		// 					this.page++;
+		// 					this.getlabrl2();
+		// 				}
+		// 			}
+		// 		})
+		// 		.catch((error) => {});
+		// },
 		//导出pupv
 		exoprtant_pupv() {
 			let params = new Object();

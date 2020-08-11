@@ -123,6 +123,42 @@ export const dataflow_curve = (params) =>
 export const dataflow_table = (params) =>
     post(`${userUrl}/resource_usage/dataflow_table`, params);
 
+/**节点流量 */
+//节点流量图
+export const node_traffic_curve = params => {
+    return post(`${userUrl}/resource_manage/ipfs_flow_curve`, params)
+};
+
+//节点流量统计表
+export const node_traffic_table = params => {
+    return post(`${userUrl}/resource_manage/ipfs_flow_table`, params)
+};
+
+//节点流量监控下载
+export const node_traffic_download = params => {
+    return post(`${userUrl}/file_download/export_ipfs_flow_table_file`, params)
+};
+
+//TOP加速次数排行
+export const top_accelcnt_ranking = params => {
+    return post(`${userUrl}/resource_manage/query_accelcnt_ranking`, params)
+};
+
+//TOP加速流量排行
+export const top_dataflow_ranking = params => {
+    return post(`${userUrl}/resource_manage/query_dataflow_ranking`, params)
+};
+
+//TOP加速次数排行下载接口
+export const export_accelcnt_ranking_table_file = params => {
+    return post(`${userUrl}/file_download/export_accelcnt_ranking_table_file`, params)
+};
+
+//TOP加速流量排行下载接口
+export const export_dataflow_ranking_table_file = params => {
+    return post(`${userUrl}/file_download/export_dataflow_ranking_table_file`, params)
+};
+
 /**资源用量 */
 //加速流量加载查询条件
 export const accelerate_flow_query_conditions = (params) =>

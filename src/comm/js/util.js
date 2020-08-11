@@ -153,6 +153,54 @@ export default {
         return size;
     },
 
+    //统一单位数据
+   formatByteNum: function(num,unit) {
+    if(unit=="B"){
+      return num
+    }else if(unit=="KB"){
+      return (num/1024).toFixed(2)
+    }else if(unit=="MB"){
+     return (num/1024/1024).toFixed(2)
+    }else if(unit=="GB"){
+     return (num/1024/1024/1024).toFixed(2)
+    }else if(unit=="TB"){
+     return (num/1024/1024/1024/1024).toFixed(4)
+    }else if(unit=="PB"){
+     return (num/1024/1024/1024/1024/1024).toFixed(4)
+    }
+  
+ },
+  //得到最大值单位
+  formatByteActiveunit: function(cellValue, index) {
+   var limit = parseInt(cellValue);
+   var size = "";
+   if (limit <  1024) {
+     //小于0.1KB，则转化成B
+     size = "B";
+   } else if (limit <   1024 * 1024) {
+     //小于0.1MB，则转化成KB
+     size =  "KB";
+   } else if (limit < 1024 * 1024 * 1024) {
+     //小于0.1GB，则转化成MB
+     size =  "MB";
+   }else if(limit <  1024 * 1024 * 1024*1024){
+     size ="GB"
+   }
+    else {
+     //其他转化成GB
+     size = "TB";
+   }
+
+   var sizeStr = size + ""; //转成字符串
+   var index = sizeStr.indexOf("."); //获取小数点处的索引
+   var dou = sizeStr.substr(index + 1, 2); //获取小数点后两位的值
+   // if (dou == "00") {
+   //   //判断后两位是否为00，如果是则删除00
+   //   return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2);
+   // }
+   return size;
+ },
+
     //转化为小时分钟
     formatDays: function(num) {
         if (num < 1000) {

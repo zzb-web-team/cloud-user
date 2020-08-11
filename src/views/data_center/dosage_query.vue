@@ -1,6 +1,6 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">资源用量</div>
+		<div class="top_title">节点流量用量</div>
 		<div
 			class="user-title"
 			style="display: flex;flex-flow: column;margin: auto;margin-left:45px;margin-right:45px;"
@@ -104,7 +104,7 @@
 						<el-col
 							:span="24"
 							style="text-align:left;font-weight: bold;padding-left:10px;"
-							>资源用量表</el-col
+							>节点流量用量表</el-col
 						>
 					</el-row>
 					<el-row type="flex" class="row_active">
@@ -329,10 +329,8 @@ export default {
 		//设置时间粒度
 		settimeunit(sratime, endtime) {
 			if (endtime - sratime <= 86400) {
-				this.timeUnit = 5;
-			} else if (86400 < endtime - sratime <= 2592000) {
-				this.timeUnit = 60;
-			} else if (endtime - sratime > 2592000) {
+				this.timeUnit = 120;
+			} else if (86400 < endtime - sratime) {
 				this.timeUnit = 1440;
 			}
 		},

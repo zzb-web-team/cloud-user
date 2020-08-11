@@ -1,6 +1,6 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">资源监控</div>
+		<div class="top_title">播放流量</div>
 		<div class="user-title" style="display: flex;flex-flow: column;">
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
@@ -14,7 +14,6 @@
 							maxlength="70"
 							@keyup.enter.native="getdata"
 							style="width:10%;margin-right:10px;"
-							v-show="activeName != 'fourth'"
 						>
 							<i
 								slot="prefix"
@@ -36,86 +35,6 @@
 								@click="getdata()"
 							></i>
 						</el-input>
-						<span
-							style="margin-right:10px;margin-left:15px;"
-							v-show="activeName == 'first'"
-							>终端:</span
-						>
-						<!-- <el-select
-							v-model="acce"
-							placeholder="终端"
-							style="width: 10%;margin-right: 10px;"
-							@change="getdata()"
-							v-show="activeName == 'first'"
-						>
-							<el-option label="全部" value="*"></el-option>
-							<el-option
-								v-for="(item, index) in accelist"
-								:key="index + 'vadio'"
-								:label="item.label"
-								:value="item.label"
-							></el-option>
-						</el-select> -->
-						<el-select
-							v-show="activeName == 'first'"
-							v-model="acce"
-							placeholder="终端类型"
-							style="width: 10%;margin-right: 10px;"
-							@change="getdata()"
-						>
-							<el-option label="全部" value="-1"></el-option>
-							<el-option label="android" value="0"></el-option>
-							<el-option label="ios" value="1"></el-option>
-							<el-option label="其他" value="2"></el-option>
-						</el-select>
-						<span
-							style="margin-right:10px;margin-left:15px;"
-							v-show="
-								activeName == 'first' || activeName == 'second'
-							"
-							>区域:</span
-						>
-						<el-cascader
-							v-show="
-								activeName == 'first' || activeName == 'second'
-							"
-							style="width: 10%;margin-right: 10px;line-height: 36px;"
-							placeholder="区域"
-							:options="optionsa2"
-							ref="cascaderAddr"
-							:show-all-levels="false"
-							v-model="value2"
-							@change="getdata"
-						></el-cascader>
-						<span
-							style="margin-right:10px;margin-left:15px;"
-							v-show="
-								activeName == 'first' || activeName == 'second'
-							"
-							>运营商:</span
-						>
-						<el-select
-							v-show="
-								activeName == 'first' || activeName == 'second'
-							"
-							v-model="value3"
-							placeholder="运营商"
-							style="width: 10%;margin-right: 10px;"
-							@change="getdata()"
-						>
-							<el-option label="全部" value="*"></el-option>
-							<el-option
-								v-for="(item, index) in optionsa3"
-								:key="item + index"
-								:label="item.label"
-								:value="item.label"
-							></el-option>
-						</el-select>
-						<span
-							style="margin-right:10px;margin-left:15px;"
-							v-show="activeName == 'third'"
-							>终端类型：</span
-						>
 						<el-select
 							v-show="activeName == 'third'"
 							v-model="terminalName"
@@ -127,6 +46,17 @@
 							<el-option label="android" value="0"></el-option>
 							<el-option label="ios" value="1"></el-option>
 							<el-option label="其他" value="2"></el-option>
+						</el-select>
+						<el-select
+							v-model="valueChanel"
+							placeholder="全部节点渠道"
+							style="width: 10%;margin-right: 10px;"
+							@change="getdata()"
+							>
+							<el-option label="全部" value="-1"></el-option>
+							<el-option label="云链" value="1"></el-option>
+							<el-option label="西柚机" value="2"></el-option>
+							<el-option label="其他" value="3"></el-option>
 						</el-select>
 						<span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
@@ -150,24 +80,6 @@
 							@click="setshoudzyx"
 							>自定义</el-button
 						>
-						<!-- <el-button-group>
-							<el-button v-show="!shoudzyx" @click="today()"
-								>今天</el-button
-							>
-							<el-button v-show="!shoudzyx" @click="yesterday()"
-								>昨天</el-button
-							>
-							<el-button v-show="!shoudzyx" @click="sevendat()"
-								>近7天</el-button
-							>
-							<el-button v-show="!shoudzyx" @click="thirtyday()"
-								>近30天</el-button
-							>
-							<el-button @click="showzdyx">
-								自定义
-								<i class="el-icon-date"></i>
-							</el-button>
-						</el-button-group> -->
 						<el-date-picker
 							v-show="shoudzyx"
 							style="margin-left:10px;"
@@ -191,73 +103,7 @@
 							>查询</el-button
 						>
 					</div>
-
-					<el-tab-pane label="P2P加速流量" name="first">
-						<div class="device_form">
-							<div
-								id="myChart"
-								:style="{ height: '607px' }"
-							></div>
-						</div>
-						<div class="devide_table">
-							<el-row type="flex" class="row_active">
-								<el-col
-									:span="24"
-									style="text-align:left;font-weight: bold;padding-left: 10px;"
-									>加速流量</el-col
-								>
-							</el-row>
-							<el-row type="flex" class="row_active">
-								<el-col :span="24">
-									<el-table
-										:data="tablecdn"
-										border
-										height="600"
-										style="width: 98%;margin:10px;"
-										:cell-style="rowClass"
-										:header-cell-style="headClass"
-									>
-										<el-table-column label="时间">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.timeStamp
-															| settimes
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="总流量">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dataFlow
-															| updatabkb
-													}}
-												</div>
-											</template>
-										</el-table-column>
-									</el-table>
-									<fenye
-										style="float:right;margin:10px 0 20px 0;"
-										@fatherMethod="getpage"
-										@fathernum="gettol"
-										:pagesa="total_cnt"
-										:currentPage="currentPage"
-									></fenye>
-								</el-col>
-							</el-row>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="回源流量" name="second">
-						<div class="device_form" style>
-							<div
-								id="myChart1"
-								:style="{ height: '607px' }"
-							></div>
-						</div>
-					</el-tab-pane>
-					<el-tab-pane label="流量占比" name="third">
+					<el-tab-pane label="播放流量占比" name="third">
 						<el-row class="resources_percentage">
 							<el-col :span="4">
 								<p>{{ totalp2p }}</p>
@@ -275,7 +121,7 @@
 									<el-table
 										:data="tableflow"
 										border
-										height="600"
+										max-height="600"
 										style="width: 98%;margin:10px;"
 										:cell-style="rowClass"
 										:header-cell-style="headClass"
@@ -393,7 +239,7 @@
 							</el-row>
 						</div>
 					</el-tab-pane>
-					<el-tab-pane label="流量监控" name="fourth">
+					<el-tab-pane label="播放流量终端" name="fourth">
 						<div id="jiankong_echarts"></div>
 					</el-tab-pane>
 				</el-tabs>
@@ -441,221 +287,11 @@ export default {
 			showzdyz: false,
 			acce: '',
 			pagenum: 0,
-			accelist: [],
-			options1: [],
-			options2: [],
-			options3: [],
-			options4: [],
-			optionsa1: [],
-			optionsa2: [
-				{
-					value: -1,
-					label: '全部',
-				},
-				{
-					value: '华北',
-					label: '华北',
-					children: [
-						{
-							value: '北京',
-							label: '北京',
-						},
-						{
-							value: '内蒙古',
-							label: '内蒙古',
-						},
-						{
-							value: '山西',
-							label: '山西',
-						},
-						{
-							value: '河北',
-							label: '河北',
-						},
-						{
-							value: '天津',
-							label: '天津',
-						},
-					],
-				},
-				{
-					value: '西北',
-					label: '西北',
-					children: [
-						{
-							value: '宁夏',
-							label: '宁夏',
-						},
-						{
-							value: '陕西',
-							label: '陕西',
-						},
-						{
-							value: '甘肃',
-							label: '甘肃',
-						},
-						{
-							value: '青海',
-							label: '青海',
-						},
-						{
-							value: '新疆',
-							label: '新疆',
-						},
-					],
-				},
-				{
-					value: '东北',
-					label: '东北',
-					children: [
-						{
-							value: '黑龙江',
-							label: '黑龙江',
-						},
-						{
-							value: '吉林',
-							label: '吉林',
-						},
-						{
-							value: '辽宁',
-							label: '辽宁',
-						},
-					],
-				},
-				{
-					value: '华东',
-					label: '华东',
-					children: [
-						{
-							value: '福建',
-							label: '福建',
-						},
-						{
-							value: '江苏',
-							label: '江苏',
-						},
-						{
-							value: '安徽',
-							label: '安徽',
-						},
-						{
-							value: '山东',
-							label: '山东',
-						},
-						{
-							value: '上海',
-							label: '上海',
-						},
-						{
-							value: '浙江',
-							label: '浙江',
-						},
-					],
-				},
-				{
-					value: '华中',
-					label: '华中',
-					children: [
-						{
-							value: '河南',
-							label: '河南',
-						},
-						{
-							value: '湖北',
-							label: '湖北',
-						},
-						{
-							value: '江西',
-							label: '江西',
-						},
-						{
-							value: '湖南',
-							label: '湖南',
-						},
-					],
-				},
-				{
-					value: '西南',
-					label: '西南',
-					children: [
-						{
-							value: '贵州',
-							label: '贵州',
-						},
-						{
-							value: '云南',
-							label: '云南',
-						},
-						{
-							value: '重庆',
-							label: '重庆',
-						},
-						{
-							value: '四川',
-							label: '四川',
-						},
-						{
-							value: '西藏',
-							label: '西藏',
-						},
-					],
-				},
-				{
-					value: '华南',
-					label: '华南',
-					children: [
-						{
-							value: '广东',
-							label: '广东',
-						},
-						{
-							value: '广西',
-							label: '广西',
-						},
-						{
-							value: '海南',
-							label: '海南',
-						},
-					],
-				},
-				{
-					value: '其他',
-					label: '其他',
-					children: [
-						{
-							value: '香港',
-							label: '香港',
-						},
-						{
-							value: '澳门',
-							label: '澳门',
-						},
-						{
-							value: '台湾',
-							label: '台湾',
-						},
-					],
-				},
-			],
-			optionsa3: [
-				{ value: 0, label: '移动' },
-				{ value: 1, label: '联通' },
-				{ value: 2, label: '电信' },
-				{ value: 3, label: '其他' },
-			],
-			optionsa4: [],
+			valueChanel: '',
 			value1: '',
 			value_url: '',
-			value2: -1,
-			value3: '*',
-			value4: '',
-			valuea1: '',
-			valuea2: '',
-			valuea3: '',
-			valuea4: '',
 			tablecdn: [],
-			activeName: 'first',
-			// activeName: 'third',
+			activeName: 'third',
 			terminalName: '',
 			minDate: '',
 			maxDate: '',
@@ -682,60 +318,11 @@ export default {
 					);
 				},
 			},
-			// value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
 			val2: [],
-			rowHeader: [
-				{
-					prop: 'time',
-					label: '节点ID',
-				},
-				{
-					prop: 'totals',
-					label: '使用流量',
-				},
-				{
-					prop: 'online_devices',
-					label: '传输次数',
-				},
-				{
-					prop: 'average_online',
-					label: '日期',
-				},
-			],
-			rowHeader1: [
-				{
-					prop: 'time',
-					label: '节点ID',
-				},
-				{
-					prop: 'totals',
-					label: '存储容量',
-				},
-				{
-					prop: 'online_devices',
-					label: '存储次数',
-				},
-				{
-					prop: 'average_online',
-					label: '日期',
-				},
-			],
-			tableData: [
-				{
-					time: '测试数据1',
-					totals: '测试数据1',
-					online_devices: '测试数据1',
-					average_online: '测试数据1',
-					new_percent: '测试数据1',
-				},
-			],
-			timeUnit: 1,
+			timeUnit: 120,
 			starttime: '',
 			endtime: '',
-			dataFlowArray: [], //图1
 			timeArray: [], //图1
-			dataFlowArray2: [], //图2
-			timeArray2: [], //图2
 			pageSize: 10, //每页数量
 			pageNo: 1, //当前页码
 			total_cnt: 0, //数据总量3
@@ -823,17 +410,13 @@ export default {
 
 		if (sessionStorage.getItem('tab_name')) {
 			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
 			}
 		} else {
-			this.getseachlabel1();
+			this.getflow3();
 		}
 	},
 	beforeDestroy() {
@@ -886,10 +469,8 @@ export default {
 		//设置时间粒度
 		settimeunit(sratime, endtime) {
 			if (endtime - sratime <= 86400) {
-				this.timeUnit = 5;
-			} else if (86400 < endtime - sratime <= 2592000) {
-				this.timeUnit = 60;
-			} else if (endtime - sratime > 2592000) {
+				this.timeUnit = 120;
+			} else  {
 				this.timeUnit = 1440;
 			}
 		},
@@ -922,259 +503,11 @@ export default {
 		getdata() {
 			this.currentPage = 1;
 			this.flowcurrentPage = 1;
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
 			}
-		},
-		getdata1() {
-			this.gettable2();
-		},
-
-		/** 请求数据 */
-		//加速流量加载查询条件
-		getseachlabel1() {
-			let params = new Object();
-			params.chanid = this.chanid + '';
-			accelerate_flow_query_conditions(params)
-				.then((res) => {
-					if (res.status == 0) {
-						if (res.data.ispSet.length > 0) {
-							this.optionsa3 = [];
-							res.data.ispSet.forEach((item, index) => {
-								let obj = {};
-								obj.value = index;
-								obj.label = item;
-								this.optionsa3.push(obj);
-							});
-						} else {
-							this.$message('暂无数据');
-						}
-						this.gettable1();
-						//this.getflow3();
-					} else {
-						this.$message.error(res.msg);
-					}
-				})
-				.catch((Error) => {});
-		},
-		//请求数据--加速流量条形图
-		gettable1() {
-			this.dataFlowArray = [];
-			this.timeArray = [];
-			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.value1) {
-				params.fileName = this.value1;
-			} else {
-				params.fileName = '*';
-			}
-			if (this.value2[1] && this.value2 != -1) {
-				params.region = this.value2[1];
-			} else {
-				params.region = '*';
-			}
-			if (this.value3) {
-				params.isp = this.value3;
-			} else {
-				params.isp = '*';
-			}
-			if (this.acce == '') {
-				params.acce = -1;
-			} else {
-				params.acce = this.acce;
-			}
-
-			params.time_unit = this.timeUnit;
-			accelerate_flow(params)
-				.then((res) => {
-					if (res.status == 0) {
-						// this.dataFlowArray = res.data.streamArray;
-						let maxnum = Math.max(...res.data.streamArray);
-						if (maxnum == 0) {
-							this.unitdata = 'B';
-						} else {
-							this.unitdata = formatBytes(maxnum);
-						}
-						res.data.streamArray.forEach((item, index) => {
-							this.dataFlowArray.push(
-								formatBkb(item, this.unitdata)
-							);
-						});
-						this.dataFlownum = res.data.streamArray.length - 1;
-						let upcli = Math.floor(this.dataFlownum / 12);
-						res.data.timeArray.forEach((item, index) => {
-							this.timeArray.push(getlocaltimes(item));
-							// if (
-							// 	index == 0 ||
-							// 	index == this.dataFlownum ||
-							// 	(index % upcli == 0 && index < upcli * 11)
-							// ) {
-							// 	this.timeArray.push(getlocaltimes(item));
-							// } else {
-							// 	this.timeArray.push('');
-							// }
-						});
-					} else if (res.status == -1) {
-						this.$message('暂无数据');
-					} else {
-						this.$message.error(res.msg);
-					}
-					this.getbot();
-					this.drawLine();
-				})
-				.catch((err) => {});
-		},
-		//请求数据--加速流量表格
-		getbot() {
-			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.value1) {
-				params.fileName = this.value1;
-			} else {
-				params.fileName = '*';
-			}
-			if (this.value2[1] && this.value2 != -1) {
-				params.region = this.value2[1];
-			} else {
-				params.region = '*';
-			}
-			if (this.value3) {
-				params.isp = this.value3;
-			} else {
-				params.isp = '*';
-			}
-			params.pageNo = this.currentPage - 1;
-			params.pageSize = this.pageSize;
-			if (this.acce == '') {
-				params.acce = -1;
-			} else {
-				params.acce = this.acce;
-			}
-			accelerate_flow_table(params)
-				.then((res) => {
-					if (res.status == 0) {
-						this.total_cnt = res.data.totalCnt;
-						this.tablecdn = [];
-						if (res.data.timeArray.length > 0) {
-							res.data.timeArray.forEach((item, index) => {
-								let obj = {};
-								obj.timeStamp = item;
-								obj.dataFlow = res.data.streamArray[index];
-								this.tablecdn.push(obj);
-							});
-						}
-					} else {
-						this.$message.error(res.msg);
-					}
-				})
-				.catch((err) => {});
-		},
-		gettable2() {
-			this.dataFlowArray2 = [];
-			this.timeArray2 = [];
-			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.value1) {
-				params.fileName = this.value1;
-			} else {
-				params.fileName = '*';
-			}
-			if (this.value2[1] && this.value2 != -1) {
-				params.region = this.value2[1];
-			} else {
-				params.region = '*';
-			}
-			if (this.value3) {
-				params.isp = this.value3;
-			} else {
-				params.isp = '*';
-			}
-			params.time_unit = this.timeUnit;
-			if (this.acce == '') {
-				params.acce = -1;
-			} else {
-				params.acce = this.acce;
-			}
-			backsource_flow(params)
-				.then((res) => {
-					if (res.status == 0) {
-						let maxnum = Math.max(...res.data.streamArray);
-						if (maxnum == 0) {
-							this.unitdata = 'B';
-						} else {
-							this.unitdata = formatBytes(maxnum);
-						}
-						res.data.streamArray.forEach((item, index) => {
-							this.dataFlowArray2.push(
-								formatBkb(item, this.unitdata)
-							);
-						});
-						this.dataFlownum2 = res.data.streamArray.length - 1;
-						let upcli = Math.floor(this.dataFlownum2 / 12);
-						res.data.timeArray.forEach((item, index) => {
-							this.timeArray2.push(
-								getlocaltimes(item, this.unitdata)
-							);
-							// if (
-							// 	index == 0 ||
-							// 	index == this.dataFlownum2 ||
-							// 	(index % upcli == 0 && index < upcli * 11)
-							// ) {
-							// 	this.timeArray2.push(getlocaltimes(item));
-							// } else {
-							// 	this.timeArray2.push('');
-							// }
-						});
-					} else if (res.status == -1) {
-						this.$message('暂无数据');
-						this.dataFlowArray2 = this.dataFlowArray;
-						this.timeArray2 = this.timeArray;
-					} else {
-						this.$message.error(res.msg);
-					}
-					this.drawLine1();
-				})
-				.catch((err) => {});
-		},
-		//获取视频终端
-		getlabrl2() {
-			let parmas = new Object();
-			parmas.chanid = this.chanid;
-			parmas.page = this.pagenum;
-			getterminal(parmas)
-				.then((res) => {
-					if (res.status == 0) {
-						res.result.cols.forEach((item) => {
-							let sdf = new Object();
-							sdf.value = item.id;
-							sdf.label = item.name;
-							sdf.chanid = item.chanid;
-							sdf.type = item.type;
-							this.accelist.push(sdf);
-						});
-						if (res.result.les_count == 0) {
-							return false;
-						} else {
-							this.pagenum++;
-							this.getlabrl2();
-						}
-					} else {
-						this.$message.error(res.msg);
-					}
-				})
-				.catch((error) => {});
 		},
 		//流量占比图表
 		getflow3() {
@@ -1197,12 +530,17 @@ export default {
 			} else {
 				parmas.domain = this.value_url;
 			}
+			if(this.valueChanel == ''){
+				parmas.ipfschanel = -1
+			}else{
+				parmas.ipfschanel = this.valueChanel*1
+			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
 			if (parmas.endTs - parmas.startTs > 86400) {
 				parmas.timeUnit = 1440;
 			} else {
-				parmas.timeUnit = 60;
+				parmas.timeUnit = 2*60;
 			}
 			sdk_flow(parmas)
 				.then((res) => {
@@ -1262,6 +600,11 @@ export default {
 			} else {
 				parmas.domain = this.value_url;
 			}
+			if(this.valueChanel == ''){
+				parmas.ipfschanel = -1
+			}else{
+				parmas.ipfschanel = this.valueChanel*1
+			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
 			if (parmas.endTs - parmas.startTs > 86400) {
@@ -1285,10 +628,20 @@ export default {
 			this.flow4_time = [];
 			let parmas = new Object();
 			parmas.channelId = this.chanid;
+			if (this.value_url == '') {
+				parmas.domain = '*';
+			} else {
+				parmas.domain = this.value_url;
+			}
 			if (this.value1 == '') {
 				parmas.urlName = '*';
 			} else {
 				parmas.urlName = this.value1;
+			}
+			if(this.valueChanel == ''){
+				parmas.ipfschanel = -1
+			}else{
+				parmas.ipfschanel = this.valueChanel*1
 			}
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
@@ -1336,84 +689,7 @@ export default {
 				})
 				.catch((error) => {});
 		},
-		//加速流量导出
-		export_accelerate() {
-			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.value1) {
-				params.fileName = this.value1;
-			} else {
-				params.fileName = '*';
-			}
-			if (this.value2[1] && this.value2 != -1) {
-				params.region = this.value2[1];
-			} else {
-				params.region = '*';
-			}
-			if (this.value3) {
-				params.isp = this.value3;
-			} else {
-				params.isp = '*';
-			}
-			if (this.acce == '') {
-				params.acce = -1;
-			} else {
-				params.acce = this.acce;
-			}
-			params.time_unit = this.timeUnit;
-			export_accelerate_flow_file(params)
-				.then((res) => {
-					if (res.status == 0) {
-						window.open(res.msg, '_blank');
-					} else {
-						this.$message.error('导出失败');
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		},
-		//回源统计导出
-		export_backsource() {
-			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.chanId = this.chanid + '';
-			if (this.value1) {
-				params.fileName = this.value1;
-			} else {
-				params.fileName = '*';
-			}
-			if (this.value2[1] && this.value2 != -1) {
-				params.region = this.value2[1];
-			} else {
-				params.region = '*';
-			}
-			if (this.value3) {
-				params.isp = this.value3;
-			} else {
-				params.isp = '*';
-			}
-			params.time_unit = this.timeUnit;
-			if (this.acce == '') {
-				params.acce = -1;
-			} else {
-				params.acce = this.acce;
-			}
-			export_backsource_flow_file(params)
-				.then((res) => {
-					if (res.status == 0) {
-						window.open(res.msg, '_blank');
-					} else {
-						this.$message.error('导出失败');
-					}
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		},
+		
 		export_tab3() {
 			let parmas = new Object();
 			parmas.channelId = this.chanid;
@@ -1478,11 +754,7 @@ export default {
 				.catch((error) => {});
 		},
 		seachtu(data) {
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -1526,11 +798,7 @@ export default {
 			this.starttime = times;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 5;
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -1543,11 +811,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 1;
 			this.endtime = times - 1;
 			this.timeUnit = 5;
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -1561,11 +825,7 @@ export default {
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 60;
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -1578,11 +838,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 29;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 1440;
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -1599,11 +855,7 @@ export default {
 				this.endtime = dateToMs(this.val2[1]);
 			}
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -1633,306 +885,20 @@ export default {
 		//选项卡
 		handleClick(tab, event) {
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
-			// this.starttime =
-			//   new Date(new Date().toLocaleDateString()).getTime() / 1000;
-			// this.endtime = Date.parse(new Date()) / 1000;
-			// this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName == 'first') {
-				this.gettable1();
-			} else if (this.activeName == 'second') {
-				this.gettable2();
-			} else if (this.activeName == 'third') {
+			this.starttime =
+			  new Date(new Date().toLocaleDateString()).getTime() / 1000;
+			this.endtime = Date.parse(new Date()) / 1000;
+			this.settimeunit(this.starttime, this.endtime);
+			this.value_url = "";
+			this.value1 = "";
+			this.terminalName = "";
+			this.radio1 = 1;
+			this.valueChanel = "";
+			if (this.activeName == 'third') {
 				this.getflow3();
 			} else {
 				this.getflow4();
 			}
-		},
-		drawLine() {
-			let _this = this;
-			// 基于准备好的dom，初始化echarts实例
-			let myChart = this.$echarts.init(
-				document.getElementById('myChart')
-			);
-			window.onresize = myChart.resize;
-			// 绘制图表
-			let options = {
-				title: {
-					text: '流量',
-				},
-				toolbox: {
-					//show: true,
-					itemSize: 20,
-					itemGap: 30,
-					right: 50,
-					feature: {
-						// mark: { show: true },
-						// dataView: { show: true, readOnly: false },
-						// magicType: { show: true, type: ['line', 'bar'] },
-						// restore: { show: true },
-						// saveAsImage: { show: false },
-						mydow: {
-							show: true,
-							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
-							onclick: function() {
-								_this.export_accelerate();
-							},
-						},
-					},
-				},
-				grid: {
-					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。
-					left: '8%', // 默认10%，给24就挺合适的。
-					top: 60, // 默认60
-					right: 35, // 默认10%
-					bottom: 60, // 默认60
-					// width: "100%", // grid 组件的宽度。默认自适应。
-					// height: "100%",
-					// containLabel:true, // grid 区域是否包含坐标轴的刻度标签。(如果true的时候，上下左右可以为0了)
-					// show:true, // 是否显示直角坐标系网格。是否显示grid，grid:show后，下面的一些参数生效。
-					// backgroundColor:'#ccac62',
-					// borderColor:"#000",
-				},
-				color: '#297AFF',
-				tooltip: {
-					trigger: 'axis',
-					axisPointer: {
-						type: 'shadow',
-						label: {
-							backgroundColor: '#6a7985',
-						},
-						shadowStyle: {
-							// 阴影指示器样式设置
-							// width: '30px', // 阴影大小
-							color: 'rgba(150,150,150,0.3)', // 阴影颜色
-						},
-					},
-					formatter: function(params) {
-						return (
-							params[0].name +
-							'<br>' +
-							params[0].seriesName +
-							':' +
-							params[0].data +
-							_this.unitdata
-						);
-					},
-				},
-				xAxis: {
-					type: 'category',
-					boundaryGap: false,
-					data: this.timeArray,
-					axisTick: {
-						show: false,
-					},
-					axisLabel: {
-						// interval: 0, //代表显示所有x轴标签
-						// rotate: -30, //代表逆时针旋转45度
-						textStyle: {
-							color: '#999',
-						},
-					},
-				},
-				yAxis: {
-					name: _this.unitdata,
-				},
-				series: [
-					{
-						name: '流量',
-						type: 'bar',
-						barMaxWidth: 30, //柱图宽度
-						data: this.dataFlowArray,
-						itemStyle: {
-							normal: {
-								lineStyle: {
-									color: '#297AFF', //线的颜色
-								},
-								//每根柱子颜色设置
-								// color: function(params) {
-								// 	let colorList = ['#297AFF', '#297AFF00'];
-								// 	let upcli = Math.floor(
-								// 		_this.dataFlownum / 12
-								// 	);
-								// 	let data_index = params.dataIndex;
-								// 	if (
-								// 		(data_index % upcli == 0 &&
-								// 			data_index < upcli * 11) ||
-								// 		data_index == 0 ||
-								// 		data_index == _this.dataFlownum
-								// 	) {
-								// 		return colorList[0];
-								// 	} else {
-								// 		return colorList[1];
-								// 	}
-								// },
-							},
-						},
-						showBackground: true,
-						backgroundStyle: {
-							color: 'rgba(220, 220, 220, 0.8)',
-						},
-					},
-					// {
-					//     type: 'bar',
-					//     itemStyle:{normal:{color:"#e8e8e8"}},
-					//     barGap:"-100%",
-					//     // barGategoryGap:30,
-					//     data:[300,300,300,300,300,300,300,300,300,300,300,300,],
-					//     animation:false,
-
-					// }
-				],
-				//   dataZoom : [
-				// 	{
-				//           type: 'slider',
-				//           show: true,
-				//           start: 94,
-				//           end: 100,
-				//           handleSize: 8
-				//       },
-				//       {
-				//           type: 'inside',
-				//           start: 94,
-				//           end: 100
-				//       },
-				//       {
-				//           type: 'slider',
-				//           show: true,
-				//           yAxisIndex: 0,
-				//           filterMode: 'empty',
-				//           width: 12,
-				//           height: '70%',
-				//           handleSize: 8,
-				//           showDataShadow: false,
-				//           left: '93%'
-				//       }
-				// ]
-			};
-			myChart.setOption(options);
-		},
-		drawLine1() {
-			let _this = this;
-			// 基于准备好的dom，初始化echarts实例
-			let myChart = this.$echarts.init(
-				document.getElementById('myChart1')
-			);
-			window.onresize = myChart.resize;
-			// 绘制图表
-			let options = {
-				title: {
-					text: '流量',
-				},
-				toolbox: {
-					//show: true,
-					itemSize: 20,
-					itemGap: 30,
-					right: 50,
-					feature: {
-						// mark: { show: true },
-						// dataView: { show: true, readOnly: false },
-						// magicType: { show: true, type: ['line', 'bar'] },
-						// restore: { show: true },
-						// saveAsImage: { show: false },
-						mydow: {
-							show: true,
-							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
-							onclick: function() {
-								_this.export_backsource();
-							},
-						},
-					},
-				},
-				grid: {
-					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。
-					left: '8%', // 默认10%，给24就挺合适的。
-					top: 60, // 默认60
-					right: 35, // 默认10%
-					bottom: 60, // 默认60
-					// width: "100%", // grid 组件的宽度。默认自适应。
-					// height: "100%",
-					// containLabel:true, // grid 区域是否包含坐标轴的刻度标签。(如果true的时候，上下左右可以为0了)
-					// show:true, // 是否显示直角坐标系网格。是否显示grid，grid:show后，下面的一些参数生效。
-					// backgroundColor:'#ccac62',
-					// borderColor:"#000",
-				},
-				color: '#297AFF',
-				tooltip: {
-					trigger: 'axis',
-					axisPointer: {
-						type: 'shadow',
-						label: {
-							backgroundColor: '#6a7985',
-						},
-						shadowStyle: {
-							// 阴影指示器样式设置
-							// width: '30px', // 阴影大小
-							color: 'rgba(150,150,150,0.3)', // 阴影颜色
-						},
-					},
-					formatter: function(params) {
-						return (
-							params[0].name +
-							'<br>' +
-							params[0].seriesName +
-							':' +
-							params[0].data +
-							_this.unitdata
-						);
-					},
-				},
-				xAxis: {
-					type: 'category',
-					boundaryGap: false,
-					data: this.timeArray2,
-					// axisLabel: {
-					// 	interval: 0, //代表显示所有x轴标签
-					// },
-					axisTick: {
-						show: false,
-					},
-				},
-				yAxis: {
-					name: _this.unitdata,
-				},
-				series: [
-					{
-						name: '流量',
-						type: 'bar',
-						// barWidth: 30, //柱图宽度
-						barMaxWidth: 30,
-						data: this.dataFlowArray2,
-						itemStyle: {
-							normal: {
-								lineStyle: {
-									color: '#297AFF', //线的颜色
-								},
-								//每根柱子颜色设置
-								// color: function(params) {
-								// 	let colorList = ['#297AFF', '#297AFF00'];
-								// 	let upcli = Math.floor(
-								// 		_this.dataFlownum2 / 12
-								// 	);
-								// 	let data_index = params.dataIndex;
-								// 	if (
-								// 		(data_index % upcli == 0 &&
-								// 			data_index < upcli * 11) ||
-								// 		data_index == 0 ||
-								// 		data_index == _this.dataFlownum2
-								// 	) {
-								// 		return colorList[0];
-								// 	} else {
-								// 		return colorList[1];
-								// 	}
-								// },
-							},
-						},
-					},
-				],
-			};
-			myChart.setOption(options);
 		},
 		drawLine2() {
 			var data1 = [];

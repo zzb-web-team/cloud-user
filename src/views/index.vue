@@ -220,7 +220,7 @@ export default {
 						this.processing_arr = [];
 					}
 				}, 0);
-			}, 6000);
+			}, 10000);
 		},
 		get_yun_statue(page, url_name) {
 			var _this = this;
@@ -245,7 +245,8 @@ export default {
 							this.yu_error = '';
 							this.yu_success = '';
 							this.shua_error = '';
-							this.shua_success = '';
+                            this.shua_success = '';
+                            console.log(this.processing_arr);
 							this.processing_arr.forEach((item, index) => {
 								if (item.state == 1) {
 									arr.push(item);
@@ -262,10 +263,8 @@ export default {
 									} else {
 										this.shua_error += item.url_name + ',';
 									}
-								} else {
 								}
 							});
-
 							if (
 								this.yu_success != '' &&
 								this.shua_success != ''
@@ -285,7 +284,9 @@ export default {
                                     ${this.shua_success}刷新成功
                                     `,
 									type: 'success',
-								});
+                                });   
+							this.yu_success = '';
+							this.shua_success = '';
 							} else if (
 								this.yu_success != '' &&
 								this.shua_success == ''
@@ -300,7 +301,8 @@ export default {
                                     ${this.yu_success}预热成功
                                     `,
 									type: 'success',
-								});
+                                });
+                                this.yu_success='';
 							} else if (
 								this.yu_success == '' &&
 								this.shua_success != ''
@@ -315,8 +317,10 @@ export default {
                                     ${this.shua_success}刷新成功
                                     `,
 									type: 'success',
-								});
-							}
+                                });
+                                this.shua_success='';
+                            }
+                            
 
 							if (this.yu_error != '' && this.shua_error != '') {
 								this.yu_error = this.yu_error.slice(
@@ -334,7 +338,9 @@ export default {
                                      ${this.shua_error}刷新失败
                                     `,
 									type: 'warning',
-								});
+                                });
+                                this.yu_error='';
+                                this.shua_error='';
 							} else if (
 								this.yu_error != '' &&
 								this.shua_error == ''
@@ -349,7 +355,8 @@ export default {
                                      ${this.yu_error}预热失败
                                     `,
 									type: 'warning',
-								});
+                                });
+                                this.yu_error='';
 							} else if (
 								this.yu_error == '' &&
 								this.shua_error != ''
@@ -364,11 +371,12 @@ export default {
                                      ${this.shua_error}刷新失败
                                     `,
 									type: 'warning',
-								});
+                                });
+                                this.shua_error='';
 							}
 							if (arr.length > 0) {
 								this.testing(arr, url_name);
-							}
+                            }
 							return false;
 						} else {
 							page++;
@@ -379,7 +387,6 @@ export default {
 				.catch((err) => {});
 		},
 		testing(arr, url_list) {
-			var localaarr = url_list;
 			arr.forEach((item) => {
 				url_list.forEach((xtime, index) => {
 					if (xtime.url_name == item.url_name) {

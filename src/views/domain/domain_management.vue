@@ -108,6 +108,8 @@
 								ref="multipleTable"
 								:data="tableData"
 								stripe
+								border
+								row-key="url_name"
 								tooltip-effect="dark"
 								style="width: 100%"
 								:cell-style="rowClass"
@@ -341,12 +343,16 @@
 							</div>
 						</div>
 					</el-tab-pane>
+                            <!-- @expand-change="toggleRowExpansion"
+								:tree-props="{
+									children: 'children',
+									hasChildren: 'hasChildren',
+								}" -->
 					<el-tab-pane label="点播回源" name="second">
-						<div
-							style="margin: auto;margin-left: 45px;margin-right: 45px;"
-						>
+						<div class="con_lable host_table">
 							<el-table
 								:data="demotableData"
+								:span-method="arraySpanMethod"
 								style="width: 100%;margin-bottom: 20px;"
 								row-key="id"
 								border
@@ -354,33 +360,82 @@
 								:header-cell-style="headClass"
 							>
 								<el-table-column type="expand">
-									<template slot-scope="props">
+									<template slot-scope="scope">
 										<el-table
-											:data="demotableData"
+											:data="scope.row.childrens"
 											border
 											style="width: 100%"
 											:cell-style="rowClass"
 											:header-cell-style="headClass"
 										>
 											<el-table-column
-												prop="moduleName"
-												label="涉及模块"
-												width="180"
+												prop="acce"
+												label="操作内容"
 											></el-table-column>
 											<el-table-column
-												prop="evaluatorName"
-												label="评估人员"
-												width="180"
+												prop="start_time"
+												label="回源开始时间"
+											></el-table-column>
+											<el-table-column
+												prop="end_time"
+												label="回源结束时间"
 											></el-table-column>
 											<el-table-column
 												prop="state"
 												label="状态"
+											>
+												<template slot-scope="scope">
+													<span
+														v-if="
+															scope.row.state == 0
+														"
+														>进行中</span
+													>
+													<span
+														v-else-if="
+															scope.row.state == 1
+														"
+														style="color:#E54545;"
+														>已关闭</span
+													>
+													<span
+														v-else-if="
+															scope.row.state == 2
+														"
+														style="color:#E54545;"
+														>回源失败</span
+													>
+													<span
+														v-else-if="
+															scope.row.state == 3
+														"
+														style="color:#0abf5b;"
+														>完成</span
+													>
+												</template>
+											</el-table-column>
+											<el-table-column
+												prop="jingdu"
+												label="进度"
+											>
+												<template slot-scope="scope">
+													<el-progress
+														:percentage="
+															scope.row.jingdu
+														"
+													></el-progress> </template
 											></el-table-column>
 											<el-table-column label="操作">
 												<template slot-scope="scope">
 													<el-button
 														type="text"
 														size="small"
+														:disabled="
+															scope.row.state ==
+																1 ||
+																scope.row
+																	.state == 2
+														"
 													>
 														关闭回源
 													</el-button>
@@ -388,6 +443,8 @@
 											</el-table-column>
 										</el-table>
 									</template>
+								</el-table-column>
+								<el-table-column type="selection" width="55">
 								</el-table-column>
 								<el-table-column
 									prop="acce"
@@ -420,23 +477,65 @@
 										<span v-if="scope.row.state == 0"
 											>进行中</span
 										>
-										<span v-else-if="scope.row.state == 1"
+										<span
+											v-else-if="scope.row.state == 1"
+											style="color:#E54545;"
 											>已关闭</span
 										>
-										<span v-else-if="scope.row.state == 2"
+										<span
+											v-else-if="scope.row.state == 2"
+											style="color:#E54545;"
 											>回源失败</span
 										>
-										<span v-else>完成</span>
+										<span
+											v-else-if="scope.row.state == 3"
+											style="color:#0abf5b;"
+											>完成</span
+										>
 									</template>
 								</el-table-column>
 								<el-table-column prop="jingdu" label="回源进度">
+									<template slot-scope="scope">
+										<el-progress
+											:percentage="scope.row.jingdu"
+										></el-progress>
+									</template>
 								</el-table-column>
 								<el-table-column label="操作">
-									<el-button type="text" size="small">
-										关闭回源
-									</el-button>
+									<template slot-scope="scope">
+										<el-button
+											type="text"
+											size="small"
+											:disabled="
+												scope.row.state == 1 ||
+													scope.row.state == 2
+											"
+											@click="closehost(scope.row)"
+										>
+											关闭回源
+										</el-button>
+									</template>
 								</el-table-column>
 							</el-table>
+							<div
+								style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+							>
+								<div>
+									<el-button
+										type="text"
+										size="small"
+										@click="closehost"
+										>关闭回源</el-button
+									>
+								</div>
+								<fenye
+									style="float:right;margin:10px 0 20px 0;"
+									@fatherMethod="getpage"
+									@fathernum="gettol"
+									:pagesa="host_total_cnt"
+									:currentPage="host_currentPage"
+								></fenye>
+							</div>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -498,6 +597,8 @@ export default {
 			sadioes: 1,
 			pagesize: 10,
 			total_cnt: 1,
+			host_total_cnt: 1,
+			host_currentPage: 0,
 			dynamicValidateForm: {
 				account: '',
 				nickname: '',
@@ -595,41 +696,42 @@ export default {
 					hui_url: 'http://www.gogogo.com',
 					ip: '39.27.10.36',
 					state: 3,
-					jingdu: 56,
-					// child: [
-					// 	{
-					// 		id: 103,
-					// 		acce_name: 'eos fjid nfn nfdjs',
-					// 		start_time: '2016-05-02',
-					// 		end_time: '2019-06-30',
-					// 		state: 3,
-					// 		jingdu: 56,
-					// 	},
-					// 	{
-					// 		id: 103,
-					// 		acce_name: 'eos fjid nfn nfdjs',
-					// 		start_time: '2016-05-02',
-					// 		end_time: '2019-06-30',
-					// 		state: 3,
-					// 		jingdu: 56,
-					// 	},
-					// 	{
-					// 		id: 103,
-					// 		acce_name: 'eos fjid nfn nfdjs',
-					// 		start_time: '2016-05-02',
-					// 		end_time: '2019-06-30',
-					// 		state: 3,
-					// 		jingdu: 56,
-					// 	},
-					// 	{
-					// 		id: 103,
-					// 		acce_name: 'eos fjid nfn nfdjs',
-					// 		start_time: '2016-05-02',
-					// 		end_time: '2019-06-30',
-					// 		state: 3,
-					// 		jingdu: 56,
-					// 	},
-					// ],
+					jingdu: 99,
+					hasChildren: false,
+					childrens: [
+						{
+							id: 103,
+							acce: 'eos fjid nfn nfdjs',
+							start_time: '2016-05-02',
+							end_time: '2019-06-30',
+							state: 3,
+							jingdu: 0,
+						},
+						{
+							id: 104,
+							acce: 'eos fjid nfn nfdjs',
+							start_time: '2016-05-02',
+							end_time: '2019-06-30',
+							state: 3,
+							jingdu: 89,
+						},
+						{
+							id: 105,
+							acce: 'eos fjid nfn nfdjs',
+							start_time: '2016-05-02',
+							end_time: '2019-06-30',
+							state: 3,
+							jingdu: 3,
+						},
+						{
+							id: 106,
+							acce: 'eos fjid nfn nfdjs',
+							start_time: '2016-05-02',
+							end_time: '2019-06-30',
+							state: 3,
+							jingdu: 0,
+						},
+					],
 				},
 				{
 					id: 2,
@@ -639,7 +741,7 @@ export default {
 					hui_url: 'http://www.gogogo.com',
 					ip: '39.27.10.36',
 					state: 2,
-					jingdu: 56,
+					jingdu: 5,
 				},
 				{
 					id: 3,
@@ -649,7 +751,7 @@ export default {
 					hui_url: 'http://www.gogogo.com',
 					ip: '39.27.10.36',
 					state: 0,
-					jingdu: 56,
+					jingdu: 27,
 				},
 				{
 					id: 4,
@@ -659,9 +761,10 @@ export default {
 					hui_url: 'http://www.gogogo.com',
 					ip: '39.27.10.36',
 					state: 1,
-					jingdu: 56,
+					jingdu: 100,
 				},
 			],
+			expands: [],
 		};
 	},
 	filters: {
@@ -688,6 +791,27 @@ export default {
 		this.getuserlist();
 	},
 	methods: {
+		//展开
+		toggleRowExpansion(row) {
+			// console.log(row);
+			this.expands = [];
+			this.expands.push(row.id); //展开当前行的信息
+		},
+		//合并
+		arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+			// console.log(row, column, rowIndex, columnIndex);
+			if (row.id > 100) {
+				if (columnIndex === 2) {
+					return [1, 3];
+				} else if (columnIndex === 3 || columnIndex === 4) {
+					return [0, 0];
+				}
+			}
+		},
+		//关闭回源按钮
+		closehost(row) {
+			if (row) console.log(row);
+		},
 		//获去token列表
 		gettoken() {
 			this.tableData = [];
@@ -1349,6 +1473,9 @@ export default {
 		border-radius: 2px;
 		padding: 8px 37px 0;
 		margin: 0 45px;
+	}
+	.host_table {
+		padding-top: 25px;
 	}
 }
 </style>

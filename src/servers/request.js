@@ -30,9 +30,10 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else if (href.indexOf('service.kclgames.com') >= 0) {
     var userUrl = 'http://service.kclgames.com'; //PHP服务URL
 } else {
-    var userUrl = 'http://zzb.onezen.net';
+    // var userUrl = 'http://zzb.onezen.net';
+    var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 }
-// var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
+
 // 加载动画
 //loading对象
 var loading;

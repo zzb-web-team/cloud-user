@@ -222,6 +222,7 @@ const router = new Router({
                 {
                     path: '/log_download',
                     name: '点播加速日志',
+                    hidden: true,
                     component: log_download,
                     icon: 'iconfont icon-dian',
                 },

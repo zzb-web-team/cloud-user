@@ -147,6 +147,9 @@
                   <el-radio-button label="2">TOP加速流量排行</el-radio-button>
                 </el-radio-group>
               </div>
+              <div style="display: flex;justify-content: flex-end;margin-right: 6px;">
+                <el-button type="primary" @click="toExportExcel">导出</el-button>
+              </div>
               <el-row type="flex" class="row_active" v-show="radio_top == 1">
                 <el-col :span="24">
                   <el-table
@@ -161,12 +164,10 @@
                     <el-table-column label="加速域名" prop="domain"></el-table-column>
                     <el-table-column label="加速次数" prop="accelCnt"></el-table-column>
                     <el-table-column label="加速次数占比">
-						<template slot-scope="scope">
-							<div>
-								{{scope.row.accelCntpercent | percentss}}
-							</div>
-                      	</template>
-					</el-table-column>
+                      <template slot-scope="scope">
+                        <div>{{scope.row.accelCntpercent | percentss}}</div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                   <fenye
                     style="float:right;margin:10px 0 20px 0;"
@@ -190,19 +191,15 @@
                     <el-table-column label="加速内容名称" prop="urlname"></el-table-column>
                     <el-table-column label="加速域名" prop="domain"></el-table-column>
                     <el-table-column label="加速流量">
-						<template slot-scope="scope">
-							<div>
-								{{scope.row.dataflow | setbytes}}
-							</div>
+                      <template slot-scope="scope">
+                        <div>{{scope.row.dataflow | setbytes}}</div>
                       </template>
-					</el-table-column>
-                    <el-table-column label="流量占比" >
-						<template slot-scope="scope">
-							<div>
-								{{scope.row.dataflowpercent | percentss}}
-							</div>
-                      	</template>
-					</el-table-column>
+                    </el-table-column>
+                    <el-table-column label="流量占比">
+                      <template slot-scope="scope">
+                        <div>{{scope.row.dataflowpercent | percentss}}</div>
+                      </template>
+                    </el-table-column>
                   </el-table>
                   <fenye
                     style="float:right;margin:10px 0 20px 0;"
@@ -229,7 +226,7 @@ import {
   formatBytes,
   formatBkb,
   formatBorb,
-  getymdtime1
+  getymdtime1,
 } from "../../servers/sevdate";
 import {
   node_traffic_curve,
@@ -237,6 +234,8 @@ import {
   node_traffic_download,
   top_accelcnt_ranking,
   top_dataflow_ranking,
+  export_accelcnt_ranking_table_file,
+  export_dataflow_ranking_table_file
 } from "../../servers/api";
 import fenye from "@/components/fenye";
 import echarts from "echarts";
@@ -267,8 +266,8 @@ export default {
           return time.getTime() > Date.now() || time.getTime() < twoyear;
         },
       },
-	  shoudzyx: false,
-	  valueDomain: "",
+      shoudzyx: false,
+      valueDomain: "",
       valueChannelId: "",
       valueContent: "",
       valueChanel: "",
@@ -281,12 +280,12 @@ export default {
       tablecdn: [],
       total_cnt: 0,
       currentPage: 1,
-	  pagesize: 10,
-	  flowunit: '',
-	  timeArrayZb: '',
-	  dataAry: '',
-	  dataAry1: '',
-	  dataAry2: '',
+      pagesize: 10,
+      flowunit: "",
+      timeArrayZb: "",
+      dataAry: "",
+      dataAry1: "",
+      dataAry2: "",
     };
   },
   filters: {
@@ -306,33 +305,33 @@ export default {
   },
   components: { fenye },
   mounted() {
-	if (this.$cookies.get('id')) {
-		this.valueChannelId = String(this.$cookies.get('id') * 1);
-	} else {
-		this.$router.push({ path: '/' });
-	}
+    if (this.$cookies.get("id")) {
+      this.valueChannelId = String(this.$cookies.get("id") * 1);
+    } else {
+      this.$router.push({ path: "/" });
+    }
     this.get_node_flow();
   },
   methods: {
     //节点流量
     get_node_flow() {
       let params = new Object();
-      params.start_ts = this.starttime;
-      params.end_ts = this.endtime;
+      params.startTs = this.starttime;
+      params.endTs = this.endtime;
       if (this.valueContent) {
         params.urlName = this.valueContent;
       } else {
         params.urlName = "*";
       }
       if (this.valueChannelId !== "") {
-        params.channelid = this.valueChannelId;
+        params.channelId = this.valueChannelId;
       } else {
-        params.channelid = "*";
+        params.channelId = "*";
       }
       if (this.valueChanel != "") {
-        params.ipfschanel = parseInt(this.valueChanel);
+        params.ipfsChannel = parseInt(this.valueChanel);
       } else {
-        params.ipfschanel = -1;
+        params.ipfsChannel = -1;
       }
 
       if (this.valueDomain !== "") {
@@ -341,7 +340,7 @@ export default {
         params.domain = "*";
       }
 
-      params.timeUnit = this.timeUnit
+      params.timeUnit = this.timeUnit;
 
       node_traffic_curve(params)
         .then((res) => {
@@ -382,37 +381,37 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-		});
-		
-		node_traffic_table(params)
-        .then(res => {
+        });
+
+      node_traffic_table(params)
+        .then((res) => {
           if (res.status == 0) {
             this.tablecdn = [];
             this.tablecdn = res.data.list;
             this.total_cnt = res.data.totalCnt;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
     //TOP加速流量排行
     get_top_flow_table() {
-		let params = new Object();
-      params.start_ts = this.starttime;
-      params.end_ts = this.endtime;
+      let params = new Object();
+      params.startTs = this.starttime;
+      params.endTs = this.endtime;
       params.pageNo = this.currentPage - 1;
       params.pageSize = this.pagesize;
       if (this.valueContent) {
-        params.urlname = this.valueContent;
+        params.urlName = this.valueContent;
       } else {
-        params.urlname = "*";
+        params.urlName = "*";
       }
-      
+
       if (this.valueChannelId !== "") {
-        params.channelid = this.valueChannelId;
+        params.channelId = this.valueChannelId;
       } else {
-        params.channelid = "*";
+        params.channelId = "*";
       }
 
       if (this.valueDomain !== "") {
@@ -421,37 +420,37 @@ export default {
         params.domain = "*";
       }
 
-      params.timeUnit =  this.timeUnit;
+      params.timeUnit = this.timeUnit;
 
       top_dataflow_ranking(params)
-        .then(res => {
+        .then((res) => {
           if (res.status == 0) {
             this.tablecdn = res.data.data;
             this.total_cnt = res.data.totalCnt;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
-	},
+    },
     //TOP加速次数排行
     get_top_flow_num() {
-		 let params = new Object();
-      params.start_ts = this.starttime;
-      params.end_ts = this.endtime;
+      let params = new Object();
+      params.startTs = this.starttime;
+      params.endTs = this.endtime;
       params.pageNo = this.currentPage - 1;
       params.pageSize = this.pagesize;
       // params.chanId = this.chanid + "";
       if (this.valueContent) {
-        params.urlname = this.valueContent;
+        params.urlName = this.valueContent;
       } else {
-        params.urlname = "*";
+        params.urlName = "*";
       }
-      
+
       if (this.valueChannelId !== "") {
-        params.channelid = this.valueChannelId;
+        params.channelId = this.valueChannelId;
       } else {
-        params.channelid = "*";
+        params.channelId = "*";
       }
 
       if (this.valueDomain !== "") {
@@ -460,19 +459,134 @@ export default {
         params.domain = "*";
       }
 
-      params.timeUnit = this.timeUnit
+      params.timeUnit = this.timeUnit;
 
       top_accelcnt_ranking(params)
-        .then(res => {
+        .then((res) => {
           if (res.status == 0) {
             this.tablecdn = res.data.data;
             this.total_cnt = res.data.totalCnt;
           }
         })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //下载节点流量图表
+    exoprtNodeTraffic() {
+      let params = new Object();
+      params.startTs = this.starttime;
+      params.endTs = this.endtime;
+      // params.chanId = this.chanid + "";
+      if (this.valueContent) {
+        params.urlName = this.valueContent;
+      } else {
+        params.urlName = "*";
+      }
+      if (this.valueChannelId !== "") {
+        params.channelId = this.valueChannelId;
+      } else {
+        params.channelId = "*";
+      }
+      if (this.valueChanel != "") {
+        params.ipfsChanel = parseInt(this.valueChanel);
+      } else {
+        params.ipfsChanel = -1;
+      }
+
+      if (this.valueDomain !== "") {
+        params.domain = this.valueDomain;
+      } else {
+        params.domain = "*";
+      }
+
+      params.timeUnit = this.timeUnit;
+
+      node_traffic_download(params)
+        .then((res) => {
+          if (res.status == 0) {
+            window.open(res.msg, "_blank");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    toExportExcel() {
+      if(this.radio_top == 1){
+        this.toExportAccelcntExcel()
+      }else{
+        this.toExportDataflowExcel();
+      }
+    },
+
+    toExportAccelcntExcel() {
+      let params = new Object();
+      params.startTs = this.starttime;
+      params.endTs = this.endtime;
+      params.pageNo = this.pageNo1 - 1;
+      params.pageSize = this.pageSize1;
+      if (this.valueContent1) {
+        params.urlName = this.valueContent1;
+      } else {
+        params.urlName = "*";
+      }
+      
+      if (this.valueChannelId1 !== "") {
+        params.channelId = this.valueChannelId1;
+      } else {
+        params.channelId = "*";
+      }
+
+      if (this.valueDomain1 !== "") {
+        params.domain = this.valueDomain1;
+      } else {
+        params.domain = "*";
+      }
+
+      params.timeUnit = this.timeUnit;
+      export_accelcnt_ranking_table_file(params).then(res => {
+          if (res.status == 0) {
+           window.open(res.msg, "_blank");
+          }
+        })
         .catch(error => {
           console.log(error);
         });
-	},
+    },
+
+    toExportDataflowExcel() {
+      let params = new Object();
+      params.startTs = this.starttime;
+      params.endTs = this.endtime;
+      params.pageNo = this.pageNo1 - 1;
+      params.pageSize = this.pageSize1;
+      if (this.valueContent1) {
+        params.urlName = this.valueContent1;
+      } else {
+        params.urlName = "*";
+      }
+      if (this.valueChannelId1 !== "") {
+        params.channelId = this.valueChannelId1;
+      } else {
+        params.channelId = "*";
+      }
+      if (this.valueDomain1 !== "") {
+        params.domain = this.valueDomain1;
+      } else {
+        params.domain = "*";
+      }
+      params.timeUnit = this.timeUnit;
+      export_dataflow_ranking_table_file(params).then(res => {
+          if (res.status == 0) {
+            window.open(res.msg, "_blank");
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     //tab切换
     handleClick() {
       sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage
@@ -627,7 +741,7 @@ export default {
     settimeunit(sratime, endtime) {
       if (endtime - sratime <= 86400) {
         this.timeUnit = 120;
-      }  else  {
+      } else {
         this.timeUnit = 1440;
       }
     },
@@ -640,7 +754,7 @@ export default {
       return "text-align: center;";
     },
     drawLine2(x, y, z, a) {
-	  let _this = this;
+      let _this = this;
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById("myChart1"));
       window.onresize = myChart.resize;
@@ -665,7 +779,7 @@ export default {
               title: "导出",
               icon:
                 "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
-              onclick: function() {
+              onclick: function () {
                 _this.exoprtNodeTraffic();
               },
             },
@@ -676,28 +790,30 @@ export default {
           x: "center", //可设定图例在左、右、居中
           y: "bottom", //可设定图例在上、下、居中
           padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
-          data: ['P2P播放流量', '下行节点回源流量','下行CDN回源流量'],
+          data: ["P2P播放流量", "下行节点回源流量", "下行CDN回源流量"],
         },
         tooltip: {
           trigger: "axis",
           // backgroundColor: "#FFF",
-          formatter: function(params) {
+          formatter: function (params) {
             return (
-              params[0].axisValue + "</br>" +
-              "P2P播放流量:"+
-                _this.dataAry2[params[0].dataIndex] + _this.flowunit +
+              params[0].axisValue +
               "</br>" +
-              "<div style='backgroundColor: rgba(0, 0, 0, 0.5); height: 20px;'></div>"+
+              "P2P播放流量:" +
+              _this.dataAry2[params[0].dataIndex] +
+              _this.flowunit +
+              "</br>" +
+              "<div style='backgroundColor: rgba(0, 0, 0, 0.5); height: 20px;'></div>" +
               params[0].axisValue +
               "</br>" +
               "下行CDN回源流量:" +
-                _this.dataAry[params[0].dataIndex] + _this.flowunit
-               +
+              _this.dataAry[params[0].dataIndex] +
+              _this.flowunit +
               "</br>" +
               "下行节点回源流量:" +
-                _this.dataAry1[params[0].dataIndex] + _this.flowunit
-              +
-              "<br>" 
+              _this.dataAry1[params[0].dataIndex] +
+              _this.flowunit +
+              "<br>"
             );
           },
         },
@@ -714,13 +830,13 @@ export default {
           },
         },
         yAxis: {
-          type: 'value',
+          type: "value",
           name: _this.flowunit,
           axisLable: {
-            formatter:  (value, index) => {
+            formatter: (value, index) => {
               return _this.common.formatByteNum(value, _this.flowunit);
-            }
-          }
+            },
+          },
         },
         series: [
           {
@@ -729,18 +845,18 @@ export default {
             data: a,
             barMaxWidth: 30, //柱图宽度
             itemStyle: {
-              normal: {  color: '#8FC0FF' },
-            }
+              normal: { color: "#8FC0FF" },
+            },
           },
           {
             name: "下行节点回源流量",
             type: "bar",
             stack: "使用情况",
             data: z,
-             barMaxWidth: 30, //柱图宽度
+            barMaxWidth: 30, //柱图宽度
             itemStyle: {
               normal: {
-                color: '#FFB430',
+                color: "#FFB430",
               },
             },
             label: {
@@ -757,10 +873,10 @@ export default {
             type: "bar",
             stack: "使用情况",
             data: y,
-           barMaxWidth: 30, //柱图宽度
+            barMaxWidth: 30, //柱图宽度
             itemStyle: {
               normal: {
-                color: '#FFD800',
+                color: "#FFD800",
               },
             },
             label: {

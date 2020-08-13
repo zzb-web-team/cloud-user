@@ -36,19 +36,19 @@
 						@click="changmvitem()"
 					></i>
 				</el-input>
-				<span style="margin-right:10px;margin-left:15px;"
+				<!-- <span style="margin-right:10px;margin-left:15px;"
 					>终端类型:</span
-				>
+				> -->
 				<el-select
 					v-model="acc"
-					placeholder="请选择终端类型"
+					placeholder="请选择节点渠道"
 					style="margin-right: 10px;"
 					@change="changmvitem"
 				>
 					<el-option label="全部" value="-1"></el-option>
-					<el-option label="android" value="0"></el-option>
-					<el-option label="ios" value="1"></el-option>
-					<el-option label="其他" value="2"></el-option>
+					<el-option label="云链" value="1"></el-option>
+					<el-option label="西柚机" value="2"></el-option>
+					<el-option label="其他" value="3"></el-option>
 				</el-select>
 				<span style="margin-right:10px;margin-left:15px;">日期:</span>
 				<!-- <el-button-group>
@@ -165,7 +165,7 @@ import {
 	dataflow_table,
 	getvideo,
 	getterminal,
-	export_dataflow_curve_file,
+	export_manage_dataflow_table_file,
 	manage_dataflow_curve,
 	manage_dataflow_table,
 } from '../../servers/api';
@@ -368,9 +368,9 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.terminalName = -1;
+				params.ipfsChannel = -1;
 			} else {
-				params.terminalName = this.acc * 1;
+				params.ipfsChannel = this.acc * 1;
 			}
 			params.pageNo = 0;
 			params.pageSize = 10;
@@ -438,9 +438,9 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.terminalName = -1;
+				params.ipfsChannel = -1;
 			} else {
-				params.terminalName = this.acc * 1;
+				params.ipfsChannel = this.acc * 1;
 			}
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
@@ -454,9 +454,9 @@ export default {
 
 		exportant_dataflow() {
 			let params = new Object();
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.channelId = this.chanid + '';
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			params.channelId = this.chanid + ",";
 			if (this.mvitem) {
 				params.domain = this.mvitem;
 			} else {
@@ -468,8 +468,14 @@ export default {
 				params.urlName = '*';
 			}
 			params.timeUnit = this.timeUnit;
-			params.acce = this.acc;
-			export_dataflow_curve_file(params)
+			if (this.acc == '') {
+				params.ipfsChannel = -1;
+			} else {
+				params.ipfsChannel = this.acc * 1;
+			}
+			params.pageNo = this.currentPage - 1;
+			params.pageSize = this.pageSize;
+			export_manage_dataflow_table_file(params)
 				.then((res) => {
 					if (res.status == 0) {
 						window.open(res.msg, '_blank');

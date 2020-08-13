@@ -293,3 +293,6 @@ export const manage_dataflow_curve = (params) =>
 //用量查询表格
 export const manage_dataflow_table = (params) =>
     post(`${userUrl}/resource_usage/manage_dataflow_table`, params);
+//用量导出
+export const export_manage_dataflow_table_file = (params) =>
+    post(`${userUrl}/file_download/export_manage_dataflow_table_file`, params);

@@ -531,9 +531,9 @@ export default {
 				parmas.domain = this.value_url;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfschanel = -1
+				parmas.ipfsChannel = -1
 			}else{
-				parmas.ipfschanel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel*1
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -601,9 +601,9 @@ export default {
 				parmas.domain = this.value_url;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfschanel = -1
+				parmas.ipfsChannel = -1
 			}else{
-				parmas.ipfschanel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel*1
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -639,9 +639,9 @@ export default {
 				parmas.urlName = this.value1;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfschanel = -1
+				parmas.ipfsChannel = -1
 			}else{
-				parmas.ipfschanel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel*1
 			}
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
@@ -709,6 +709,11 @@ export default {
 			} else {
 				parmas.domain = this.value_url;
 			}
+			if(this.valueChanel == ''){
+				parmas.ipfsChannel = -1
+			}else{
+				parmas.ipfsChannel = this.valueChanel*1
+			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
 			if (parmas.endTs - parmas.startTs > 86400) {
@@ -742,6 +747,11 @@ export default {
 				parmas.timeUnit = 1440;
 			} else {
 				parmas.timeUnit = 5;
+			}
+			if(this.valueChanel == ''){
+				parmas.ipfsChannel = -1
+			}else{
+				parmas.ipfsChannel = this.valueChanel*1
 			}
 			export_sdk_flow_control_user_file(parmas)
 				.then((res) => {
@@ -1124,7 +1134,7 @@ export default {
 			// 绘制图表
 			let options = {
 				title: {
-					text: '流量监控',
+					text: '',
 					left: '12px',
 					textStyle: {
 						color: '#333333',

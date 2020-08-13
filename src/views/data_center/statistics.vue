@@ -939,9 +939,9 @@ export default {
 		getcure(data) {
 			let params = new Object();
 			params.chanId = this.chanid + '';
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.time_unit = this.timeUnit;
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			params.timeUnit = this.timeUnit;
 			if (data == 0) {
 				if (this.value_a1) {
 					params.fileName = this.value_a1;
@@ -958,15 +958,20 @@ export default {
 				} else {
 					params.isp = '*';
 				}
-				if (this.accval1 == '') {
-					params.acce = -1;
-				} else {
-					params.acce = this.accval1 * 1;
-				}
+				// if (this.accval1 == '') {
+				// 	params.acce = -1;
+				// } else {
+				// 	params.acce = this.accval1 * 1;
+				// }
 				if(this.valueDomain == ''){
 					params.domain = '*';
 				}else{
 					params.domain = this.valueDomain;
+				}
+				if (this.accval1 !== "") {
+					params.terminalName = this.accval1;
+				} else {
+					params.terminalName = "-1";
 				}
 				this.uvArray = [];
 				this.pvArray = [];
@@ -1014,10 +1019,15 @@ export default {
 				}
 				params.top = 10;
 
-				if (this.accval2 == '') {
-					params.acce = -1;
+				// if (this.accval2 == '') {
+				// 	params.acce = -1;
+				// } else {
+				// 	params.acce = this.accval2 * 1;
+				// }
+				if (this.accval2 !== "") {
+					params.terminalName = this.accval2;
 				} else {
-					params.acce = this.accval2 * 1;
+					params.terminalName = "-1";
 				}
 				if(this.valueDomain1 == ''){
 					params.domain = '*';
@@ -1157,9 +1167,9 @@ export default {
 		exoprtant_pupv() {
 			let params = new Object();
 			params.chanId = this.chanid + '';
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.time_unit = this.timeUnit;
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			params.timeUnit = this.timeUnit;
 			if (this.value_a1) {
 				params.fileName = this.value_a1;
 			} else {
@@ -1176,9 +1186,9 @@ export default {
 				params.isp = '*';
 			}
 			if (this.accval1 == '') {
-				params.acce = -1;
+				params.terminalName = -1;
 			} else {
-				params.acce = this.accval1 * 1;
+				params.terminalName = this.accval1 * 1;
 			}
 			export_pv_uv_curve_file(params)
 				.then((res) => {
@@ -1196,9 +1206,9 @@ export default {
 		exoprtant_topregion() {
 			let params = new Object();
 			params.chanId = this.chanid + '';
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.time_unit = this.timeUnit;
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			params.timeUnit = this.timeUnit;
 			if (this.value_b1) {
 				params.fileName = this.value_b1;
 			} else {
@@ -1213,6 +1223,11 @@ export default {
 				params.isp = this.value_b3;
 			} else {
 				params.isp = '*';
+			}
+			if (this.accval1 == '') {
+				params.terminalName = -1;
+			} else {
+				params.terminalName = this.accval1 * 1;
 			}
 			params.top = 10;
 			params.acce = this.accval2;
@@ -1232,9 +1247,9 @@ export default {
 		exoprtant_topisp() {
 			let params = new Object();
 			params.chanId = this.chanid + '';
-			params.start_ts = this.starttime;
-			params.end_ts = this.endtime;
-			params.time_unit = this.timeUnit;
+			params.startTs = this.starttime;
+			params.endTs = this.endtime;
+			params.timeUnit = this.timeUnit;
 			if (this.value_b1) {
 				params.fileName = this.value_b1;
 			} else {
@@ -1252,9 +1267,9 @@ export default {
 			}
 			params.top = 10;
 			if (this.accval2 == '') {
-				params.acce = -1;
+				params.terminalName = -1;
 			} else {
-				params.acce = this.accval2 * 1;
+				params.terminalName = this.accval2 * 1;
 			}
 			export_topisp_accesscnt_curve_file(params)
 				.then((res) => {
@@ -1531,6 +1546,8 @@ export default {
 			this.shoudzy = false;
 			this.shoudzyx = false;
 			this.shoudzyz = false;
+			this.accval1 = "";
+			this.accval2 = "";
 			//切换时重置时间为当前时间
 			this.starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;

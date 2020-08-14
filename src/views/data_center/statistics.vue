@@ -37,9 +37,9 @@
 									@click="getdata()"
 								></i>
 							</el-input>
-							<span style="margin-right:10px;margin-left:15px;"
+							<!-- <span style="margin-right:10px;margin-left:15px;"
 								>终端类型:</span
-							>
+							> -->
 							<el-select
 								v-model="accval1"
 								placeholder="终端类型"
@@ -54,9 +54,9 @@
 								<el-option label="ios" value="1"></el-option>
 								<el-option label="其他" value="2"></el-option>
 							</el-select>
-							<span style="margin-right:10px;margin-left:15px;"
+							<!-- <span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
-							>
+							> -->
 							<div>
 								<el-radio-group
 									v-model="radio1"
@@ -162,9 +162,9 @@
 								<el-option label="ios" value="1"></el-option>
 								<el-option label="其他" value="2"></el-option>
 							</el-select>
-							<span style="margin-right:10px;margin-left:15px;"
+							<!-- <span style="margin-right:10px;margin-left:15px;"
 								>日期:</span
-							>
+							> -->
 							<el-radio-group
 								v-model="radio1"
 								size="medium"
@@ -245,47 +245,24 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="总流量">
+										<el-table-column label="访问用户总数">
 											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dataflow
-															| updatabkb
-													}}
+												<div>{{scope.row.sumCnt}}</div>
+											</template>
+										</el-table-column>
+										 <el-table-column label="有效访问用户数（%）">
+											<template slot-scope="scope">
+												<div style="display: flex;justify-content: center;">
+												<div>{{ scope.row.validCnt }}</div>
+												<div>({{ scope.row.validPercent | percentss }})</div>
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="流量占比">
+										<el-table-column label="无效访问用户数（%）">
 											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dataFlowPercnt
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="独立访问IP数">
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.accessCnt }}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="独立访问IP占比">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.accessPercent
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column
-											label="平均响应时间(s)"
-										>
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.avgTime }}
+												<div style="display: flex;justify-content: center;">
+												<div>{{ scope.row.invalidCnt }}</div>
+												<div>({{ scope.row.invalidPercent | percentss }})</div>
 												</div>
 											</template>
 										</el-table-column>
@@ -331,48 +308,24 @@
 												</div>
 											</template></el-table-column
 										>
-										<el-table-column label="总流量">
+										<el-table-column label="访问用户总数">
 											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dataflow
-															| updatabkb
-													}}
+												<div>{{scope.row.sumCnt}}</div>
+											</template>
+										</el-table-column>
+										 <el-table-column label="有效访问用户数（%）">
+											<template slot-scope="scope">
+												<div style="display: flex;justify-content: center;">
+												<div>{{ scope.row.validCnt }}</div>
+												<div>({{ scope.row.validPercent | percentss }})</div>
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="流量占比">
+										<el-table-column label="无效访问用户数（%）">
 											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dataFlowPercnt
-													}}
-												</div>
-											</template>
-										</el-table-column>
-
-										<el-table-column label="访问用户">
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.accessCnt }}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="占比">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.accessPercent
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column
-											label="平均响应时间(s)"
-										>
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.avgTime }}
+												<div style="display: flex;justify-content: center;">
+												<div>{{ scope.row.invalidCnt }}</div>
+												<div>({{ scope.row.invalidPercent | percentss }})</div>
 												</div>
 											</template>
 										</el-table-column>
@@ -860,6 +813,12 @@ export default {
 				}
 				return formatB(data);
 			}
+		},
+		percentss(data) {
+			if (data == 0) {
+				return 0 + "%";
+			}
+			return (data * 100).toFixed(2) + "%";
 		},
 	},
 	components: {

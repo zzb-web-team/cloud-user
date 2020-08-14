@@ -58,9 +58,9 @@
 							<el-option label="西柚机" value="2"></el-option>
 							<el-option label="其他" value="3"></el-option>
 						</el-select>
-						<span style="margin-right:10px;margin-left:15px;"
+						<!-- <span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
-						>
+						> -->
 						<el-radio-group
 							v-model="radio1"
 							size="medium"
@@ -96,12 +96,12 @@
 							align="left"
 							@change="gettimes"
 						></el-date-picker>
-						<el-button
+						<!-- <el-button
 							style="margin-left:10px;"
 							type="primary"
 							@click="getdata()"
 							>查询</el-button
-						>
+						> -->
 					</div>
 					<el-tab-pane label="播放流量占比" name="third">
 						<el-row class="resources_percentage">
@@ -212,8 +212,7 @@
 											</template>
 										</el-table-column>
 										<el-table-column
-											label="统计时间"
-											width="300px"
+											label="时间"
 										>
 											<template slot-scope="scope">
 												<div>
@@ -416,6 +415,7 @@ export default {
 				this.getflow4();
 			}
 		} else {
+			this.activeName = 'third';
 			this.getflow3();
 		}
 	},

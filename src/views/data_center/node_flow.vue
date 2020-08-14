@@ -27,7 +27,7 @@
             >
               <i slot="prefix" class="el-input__icon el-icon-search" @click="getdata()"></i>
             </el-input>
-            <span style="margin-right:10px;margin-left:15px;" v-show="activeName == 'first'">节点渠道：</span>
+            <!-- <span style="margin-right:10px;margin-left:15px;" v-show="activeName == 'first'">节点渠道：</span> -->
             <el-select
               v-show="activeName == 'first'"
               v-model="valueChanel"
@@ -40,7 +40,7 @@
               <el-option label="西柚机" value="2"></el-option>
               <el-option label="其他" value="3"></el-option>
             </el-select>
-            <span style="margin-right:10px;margin-left:15px;">日期:</span>
+            <!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
             <el-radio-group v-model="radio" size="medium" @change="sele_time()" v-show="!shoudzyx">
               <el-radio-button label="1">今天</el-radio-button>
               <el-radio-button label="2">昨天</el-radio-button>
@@ -70,7 +70,7 @@
               align="left"
               @change="gettimes"
             ></el-date-picker>
-            <el-button style="margin-left:10px;" type="primary" @click="getdata()">查询</el-button>
+            <!-- <el-button style="margin-left:10px;" type="primary" @click="getdata()">查询</el-button> -->
           </div>
           <el-tab-pane label="节点流量" name="first">
             <div class="device_form">

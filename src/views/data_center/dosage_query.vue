@@ -50,7 +50,7 @@
 					<el-option label="西柚机" value="2"></el-option>
 					<el-option label="其他" value="3"></el-option>
 				</el-select>
-				<span style="margin-right:10px;margin-left:15px;">日期:</span>
+				<!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
 				<!-- <el-button-group>
 					<el-button @click="today()">今天</el-button>
 					<el-button @click="yesterday()">昨天</el-button>

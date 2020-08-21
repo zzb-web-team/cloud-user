@@ -59,9 +59,9 @@
               style="margin-left:10px;"
               v-model="val2"
               :type="
-				activeName == 'third'
-					? 'daterange'
-					: 'datetimerange'
+				activeName == 'first'
+					? 'datetimerange'
+					: 'daterange'
 				"
               :picker-options="pickerOptions"
               range-separator="至"
@@ -119,12 +119,8 @@
                     </el-table-column>
                     <el-table-column label="时间">
                       <template slot-scope="scope">
-                        <div>
-                          {{
-                          scope.row.stime
-                          | settimes
-                          }}
-                        </div>
+                        <div>{{ scope.row.stime | settimes }}</div>
+                        <div>{{ scope.row.etime | settimes }}</div>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -235,7 +231,7 @@ import {
   top_accelcnt_ranking,
   top_dataflow_ranking,
   export_accelcnt_ranking_table_file,
-  export_dataflow_ranking_table_file
+  export_dataflow_ranking_table_file,
 } from "../../servers/api";
 import fenye from "@/components/fenye";
 import echarts from "echarts";
@@ -276,7 +272,7 @@ export default {
       val2: "",
       starttime: 0,
       endtime: 0,
-      timeUnit: 5,
+      timeUnit: 120,
       tablecdn: [],
       total_cnt: 0,
       currentPage: 1,
@@ -514,9 +510,9 @@ export default {
     },
 
     toExportExcel() {
-      if(this.radio_top == 1){
-        this.toExportAccelcntExcel()
-      }else{
+      if (this.radio_top == 1) {
+        this.toExportAccelcntExcel();
+      } else {
         this.toExportDataflowExcel();
       }
     },
@@ -532,7 +528,7 @@ export default {
       } else {
         params.urlName = "*";
       }
-      
+
       if (this.valueChannelId1 !== "") {
         params.channelId = this.valueChannelId1;
       } else {
@@ -546,12 +542,13 @@ export default {
       }
 
       params.timeUnit = this.timeUnit;
-      export_accelcnt_ranking_table_file(params).then(res => {
+      export_accelcnt_ranking_table_file(params)
+        .then((res) => {
           if (res.status == 0) {
-           window.open(res.msg, "_blank");
+            window.open(res.msg, "_blank");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -578,12 +575,13 @@ export default {
         params.domain = "*";
       }
       params.timeUnit = this.timeUnit;
-      export_dataflow_ranking_table_file(params).then(res => {
+      export_dataflow_ranking_table_file(params)
+        .then((res) => {
           if (res.status == 0) {
             window.open(res.msg, "_blank");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -656,7 +654,7 @@ export default {
       let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
       this.starttime = times;
       this.endtime = Date.parse(new Date()) / 1000;
-      this.timeUnit = 5;
+      this.timeUnit = 120;
       if (this.activeName == "first") {
         this.get_node_flow();
       } else {
@@ -672,7 +670,7 @@ export default {
       let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
       this.starttime = times - 24 * 60 * 60 * 1;
       this.endtime = times - 1;
-      this.timeUnit = 5;
+      this.timeUnit = 120;
       if (this.activeName == "first") {
         this.get_node_flow();
       } else {
@@ -688,7 +686,7 @@ export default {
       let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
       this.starttime = times - 24 * 60 * 60 * 6;
       this.endtime = Date.parse(new Date()) / 1000;
-      this.timeUnit = 60;
+      this.timeUnit = 1440;
       this.settimeunit(this.starttime, this.endtime);
       if (this.activeName == "first") {
         this.get_node_flow();

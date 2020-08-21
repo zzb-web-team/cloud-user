@@ -125,8 +125,8 @@ export default {
 						this.$message.error(res.msg);
 					}
 				})
-				.catch(err => {
-					console.log(err)
+				.catch(error => {
+					console.log(error)
 					this.loading = false;
 					this.getyzmcode = false;
 				});

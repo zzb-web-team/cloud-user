@@ -75,7 +75,7 @@
 					v-show="showdate"
 					style="margin-left:10px;"
 					v-model="value2"
-					type="datetimerange"
+					type="daterange"
 					:picker-options="pickerOptions"
 					range-separator="至"
 					start-placeholder="开始日期"
@@ -117,13 +117,13 @@
 								:cell-style="rowClass"
 								:header-cell-style="headClass"
 							>
-								<el-table-column label="时间">
-									<template slot-scope="scope">
+								<el-table-column label="时间" prop="time" :formatter="timeFormatter">
+									<!-- <template slot-scope="scope">
 										<div>
 											{{ scope.row.time | settimes }}
 										</div>
-									</template></el-table-column
-								>
+									</template> -->
+								</el-table-column>
 								<el-table-column label="总流量">
 									<template slot-scope="scope">
 										<div>
@@ -158,6 +158,7 @@ import {
 	getlocaltimes,
 	formatBytes,
 	formatBkb,
+	getymdtime1
 } from '../../servers/sevdate';
 import {
 	query_conditions,
@@ -326,6 +327,16 @@ export default {
 		this.chart = null;
 	},
 	methods: {
+		//统计时间段
+		timeFormatter(row, column){
+			if(this.timeUnit == 120){
+				let startTime = row.time * 1000;
+				let endTime = (row.time + 2*60*60 -1) * 1000
+				return this.common.getTimes(startTime) + '-' + this.common.getTimes(endTime)
+			}else{
+				return this.common.getTimess(row.time * 1000)
+			}
+		},
 		//设置时间粒度
 		settimeunit(sratime, endtime) {
 			if (endtime - sratime <= 86400) {
@@ -405,7 +416,7 @@ export default {
 
 						// let upcli = Math.floor(this.dataFlownum / 12);
 						res.data.data[0].timeArray.forEach((item, index) => {
-							this.timeArray.push(getlocaltimes(item));
+							this.timeArray.push(getymdtime1(item));
                         });
                         console.log('************');
 						this.getdtable();
@@ -554,7 +565,7 @@ export default {
 				this.endtime = Date.parse(new Date()) / 1000 - 1;
 			} else {
 				this.starttime = dateToMs(this.value2[0]);
-				this.endtime = dateToMs(this.value2[1]);
+				this.endtime = dateToMs(this.value2[1]) + (24*60*60-1);
 				this.settimeunit(this.starttime, this.endtime);
 			}
 

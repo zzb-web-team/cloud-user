@@ -993,7 +993,7 @@ export default {
 				}else{
 					params.domain = this.valueDomain1;
 				}
-				params.pageNo = this.f_currentPage;
+				params.pageNo = this.f_currentPage - 1;
 				params.pageSize = this.f_pageSize;
 				if (data == 1) {
 					this.datatype = 1;

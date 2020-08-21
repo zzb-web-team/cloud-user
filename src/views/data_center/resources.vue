@@ -36,7 +36,7 @@
 							></i>
 						</el-input>
 						<el-select
-							v-show="activeName == 'third'"
+							v-show="activeName == 'first'"
 							v-model="terminalName"
 							placeholder="终端类型"
 							style="width: 10%;margin-right: 10px;"
@@ -85,7 +85,7 @@
 							style="margin-left:10px;"
 							v-model="val2"
 							:type="
-								activeName == 'third'
+								activeName == 'first'
 									? 'daterange'
 									: 'datetimerange'
 							"
@@ -103,7 +103,7 @@
 							>查询</el-button
 						> -->
 					</div>
-					<el-tab-pane label="播放流量占比" name="third">
+					<el-tab-pane label="播放流量占比" name="first">
 						<el-row class="resources_percentage">
 							<el-col :span="4">
 								<p>{{ totalp2p }}</p>
@@ -211,10 +211,19 @@
 												</div>
 											</template>
 										</el-table-column>
+										<el-table-column label="加速播放次数">
+											<template slot-scope="scope">
+												<div>
+													{{ scope.row.times }}
+												</div>
+											</template>
+										</el-table-column>
 										<el-table-column
 											label="时间"
+											prop="stime"
+											:formatter="timeFormatter"
 										>
-											<template slot-scope="scope">
+											<!-- <template slot-scope="scope">
 												<div>
 													{{
 														scope.row.stime
@@ -224,7 +233,7 @@
 															| settimes
 													}}
 												</div>
-											</template>
+											</template> -->
 										</el-table-column>
 									</el-table>
 									<fenye
@@ -238,7 +247,7 @@
 							</el-row>
 						</div>
 					</el-tab-pane>
-					<el-tab-pane label="播放流量终端" name="fourth">
+					<el-tab-pane label="播放流量终端" name="second">
 						<div id="jiankong_echarts"></div>
 					</el-tab-pane>
 				</el-tabs>
@@ -256,6 +265,7 @@ import {
 	formatBytes,
 	formatBkb,
 	formatBorb,
+	getymdtime1
 } from '../../servers/sevdate';
 import fenye from '@/components/fenye';
 import {
@@ -290,7 +300,7 @@ export default {
 			value1: '',
 			value_url: '',
 			tablecdn: [],
-			activeName: 'third',
+			activeName: 'first',
 			terminalName: '',
 			minDate: '',
 			maxDate: '',
@@ -408,14 +418,15 @@ export default {
 		// this.getlabrl2();
 
 		if (sessionStorage.getItem('tab_name')) {
+			console.log(sessionStorage.getItem('tab_name'));
 			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
 			}
 		} else {
-			this.activeName = 'third';
+			this.activeName = 'first';
 			this.getflow3();
 		}
 	},
@@ -427,6 +438,15 @@ export default {
 		this.chart = null;
 	},
 	methods: {
+		//时间处理
+		timeFormatter(row){
+			console.log(row)
+			if(this.timeUnit == 120){
+				return this.common.getTimess(row.stime * 1000)
+			}else{
+				return this.common.getTimess(row.stime * 1000) + '~' + this.common.getTimess(row.etime * 1000)
+			}
+    	},
 		renderHeader(h, { column }) {
 			const serviceContent = [
 				h(
@@ -503,7 +523,7 @@ export default {
 		getdata() {
 			this.currentPage = 1;
 			this.flowcurrentPage = 1;
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -563,13 +583,13 @@ export default {
 						} else {
 							this.unitdat = 'B';
 						}
-						if (parmas.timeUnit == 60) {
+						if (parmas.timeUnit == 120) {
 							res.data.timearray.forEach((item, index) => {
-								this.zhanbitimearray.push(getymdtime(item));
+								this.zhanbitimearray.push(getymdtime1(item));
 							});
 						} else {
 							res.data.timearray.forEach((item, index) => {
-								this.zhanbitimearray.push(getymdtime(item, 1));
+								this.zhanbitimearray.push(getymdtime1(item, 1));
 							});
 						}
 						this.gettable3();
@@ -585,6 +605,7 @@ export default {
 			let parmas = new Object();
 			parmas.channelId = this.chanid;
 			parmas.pageNo = this.flowcurrentPage - 1;
+			parmas.pageSize = this.flowpagesize;
 			if (this.terminalName == '') {
 				parmas.terminalName = -1;
 			} else {
@@ -764,7 +785,7 @@ export default {
 				.catch((error) => {});
 		},
 		seachtu(data) {
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -808,7 +829,7 @@ export default {
 			this.starttime = times;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 5;
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -821,7 +842,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 1;
 			this.endtime = times - 1;
 			this.timeUnit = 5;
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -835,7 +856,7 @@ export default {
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 60;
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -848,7 +869,7 @@ export default {
 			this.starttime = times - 24 * 60 * 60 * 29;
 			this.endtime = Date.parse(new Date()) / 1000;
 			this.timeUnit = 1440;
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -865,7 +886,7 @@ export default {
 				this.endtime = dateToMs(this.val2[1]);
 			}
 			this.settimeunit(this.starttime, this.endtime);
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();
@@ -904,7 +925,7 @@ export default {
 			this.terminalName = "";
 			this.radio1 = 1;
 			this.valueChanel = "";
-			if (this.activeName == 'third') {
+			if (this.activeName == 'first') {
 				this.getflow3();
 			} else {
 				this.getflow4();

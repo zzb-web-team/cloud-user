@@ -53,10 +53,13 @@
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
 							>
-							<el-option label="全部" value="-1"></el-option>
-							<el-option label="云链" value="1"></el-option>
-							<el-option label="西柚机" value="2"></el-option>
-							<el-option label="其他" value="3"></el-option>
+							<el-option label="全部" value="*"></el-option>
+							<el-option
+								v-for="(item, index) in hashidSets"
+								:key="index"
+								:label="item.label"
+								:value="item.value"
+							></el-option>
 						</el-select>
 						<!-- <span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
@@ -283,6 +286,7 @@ import {
 	sdk_flow_control,
 	export_sdk_flow_table_user_file,
 	export_sdk_flow_control_user_file,
+	get_nodetype_enum,
 } from '../../servers/api';
 import echarts from 'echarts';
 export default {
@@ -360,6 +364,7 @@ export default {
 			cdnaactivearray: [],
 			cdnpassivepercent: [],
 			cdnpassivepercent: [],
+			hashidSets: []
 		};
 	},
 	filters: {
@@ -408,6 +413,7 @@ export default {
 		if (this.$route.query.urldata) {
 			this.value1 = this.$route.query.urldata.url_name;
 		}
+		this.getNodeType();
 		this.starttime =
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
@@ -520,6 +526,24 @@ export default {
 			this.flowpagesize = pagetol;
 			// this.getuserlist();
 		},
+		//获取节点渠道
+		getNodeType(){
+			let param = {}
+			get_nodetype_enum(param).then(
+				(res) => {
+				let data = res.data.firstchan;
+				let list = data.map((item)=>{
+					let obj = {};
+					obj.label = item.name;
+					obj.value = item.value;
+					return obj
+				})
+				this.hashidSets = list;
+				})
+				.catch((err)=>{
+				console.log(err)
+				})
+		},
 		getdata() {
 			this.currentPage = 1;
 			this.flowcurrentPage = 1;
@@ -551,9 +575,9 @@ export default {
 				parmas.domain = this.value_url;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfsChannel = -1
+				parmas.ipfsChannel = "*"
 			}else{
-				parmas.ipfsChannel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -622,9 +646,9 @@ export default {
 				parmas.domain = this.value_url;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfsChannel = -1
+				parmas.ipfsChannel = "*";
 			}else{
-				parmas.ipfsChannel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel;
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -660,9 +684,9 @@ export default {
 				parmas.urlName = this.value1;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfsChannel = -1
+				parmas.ipfsChannel = "*"
 			}else{
-				parmas.ipfsChannel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel;
 			}
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
@@ -731,9 +755,9 @@ export default {
 				parmas.domain = this.value_url;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfsChannel = -1
+				parmas.ipfsChannel = "*";
 			}else{
-				parmas.ipfsChannel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel;
 			}
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
@@ -770,9 +794,9 @@ export default {
 				parmas.timeUnit = 5;
 			}
 			if(this.valueChanel == ''){
-				parmas.ipfsChannel = -1
+				parmas.ipfsChannel = "*";
 			}else{
-				parmas.ipfsChannel = this.valueChanel*1
+				parmas.ipfsChannel = this.valueChanel;
 			}
 			export_sdk_flow_control_user_file(parmas)
 				.then((res) => {

@@ -8,7 +8,7 @@
 		>
 			<!-- 搜索 -->
 			<div class="resources_con">
-				<el-tabs v-model="activeName" style="margin-top:10px;">
+				<el-tabs v-model="activeName" style="margin-top:10px;" ref="tabs">
 					<div class="seach">
 						<div class="seach_top">
 							<el-input
@@ -787,6 +787,9 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
+		this.$nextTick(function () {
+			this.$refs.tabs.$children[0].$refs.tabs[1].style.display="none";
+		})
 		this.gettoken();
 		this.getuserlist();
 	},

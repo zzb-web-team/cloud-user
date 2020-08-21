@@ -45,10 +45,13 @@
 					style="margin-right: 10px;"
 					@change="changmvitem"
 				>
-					<el-option label="全部" value="-1"></el-option>
-					<el-option label="云链" value="1"></el-option>
-					<el-option label="西柚机" value="2"></el-option>
-					<el-option label="其他" value="3"></el-option>
+					<el-option label="全部" value="*"></el-option>
+					<el-option
+						v-for="(item, index) in hashidSets"
+						:key="index"
+						:label="item.label"
+						:value="item.value"
+					></el-option>
 				</el-select>
 				<!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
 				<!-- <el-button-group>
@@ -169,6 +172,7 @@ import {
 	export_manage_dataflow_table_file,
 	manage_dataflow_curve,
 	manage_dataflow_table,
+	get_nodetype_enum
 } from '../../servers/api';
 export default {
 	data() {
@@ -186,6 +190,7 @@ export default {
 			showdate: false,
 			activeName: 'first',
 			mvlist: [],
+			hashidSets: [],
 			mvitem: '',
 			urlname: '',
 			dataL: 0,
@@ -311,6 +316,7 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
+		this.getNodeType();
 		this.starttime =
 			new Date(new Date().toLocaleDateString()).getTime() / 1000;
 		this.endtime = Date.parse(new Date()) / 1000;
@@ -356,6 +362,24 @@ export default {
 			this.pagesize = pagetol;
 			// this.getuserlist();
 		},
+		//获取节点渠道
+		getNodeType(){
+			let param = {}
+			get_nodetype_enum(param).then(
+				(res) => {
+				let data = res.data.firstchan;
+				let list = data.map((item)=>{
+					let obj = {};
+					obj.label = item.name;
+					obj.value = item.value;
+					return obj
+				})
+				this.hashidSets = list;
+				})
+				.catch((err)=>{
+				console.log(err)
+				})
+		},
 		//请求数据--柱形图
 		gettu() {
 			this.dataFlowArray = [];
@@ -379,9 +403,9 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.ipfsChannel = -1;
+				params.ipfsChannel = "*";
 			} else {
-				params.ipfsChannel = this.acc * 1;
+				params.ipfsChannel = this.acc;
 			}
 			params.pageNo = 0;
 			params.pageSize = 10;
@@ -449,9 +473,9 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.ipfsChannel = -1;
+				params.ipfsChannel = "*";
 			} else {
-				params.ipfsChannel = this.acc * 1;
+				params.ipfsChannel = this.acc;
 			}
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;
@@ -480,9 +504,9 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.ipfsChannel = -1;
+				params.ipfsChannel = "*";
 			} else {
-				params.ipfsChannel = this.acc * 1;
+				params.ipfsChannel = this.acc;
 			}
 			params.pageNo = this.currentPage - 1;
 			params.pageSize = this.pageSize;

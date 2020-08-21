@@ -161,6 +161,11 @@ export const export_dataflow_ranking_table_file = params => {
     return post(`${userUrl}/file_download/export_dataflow_ranking_table_file`, params)
 };
 
+//获取节点渠道node_mgmt/get_nodetype_enum
+export const get_nodetype_enum = params => {
+    return post(`${userUrl}/node_mgmt/get_nodetype_enum`, params)
+};
+
 /**资源用量 */
 //加速流量加载查询条件
 export const accelerate_flow_query_conditions = (params) =>

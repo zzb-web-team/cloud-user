@@ -769,12 +769,8 @@ export default {
 	},
 	filters: {
 		settimes(data) {
-			if (data) {
-				var stat = getymdtime(data);
-				return stat;
-			} else {
-				return data;
-			}
+			console.log(data)
+			return String(data).length == 10 ? getymdtime(data) : getymdtime(data/1000)
 		},
 	},
 	components: {

@@ -8,7 +8,7 @@
 						style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 					>
 						<el-input
-							placeholder="请输入加速域名"
+							placeholder="请输入域名"
 							v-model="value_url"
 							class="input-with-select"
 							maxlength="70"
@@ -49,7 +49,7 @@
 						</el-select>
 						<el-select
 							v-model="valueChanel"
-							placeholder="全部节点渠道"
+							placeholder="节点渠道"
 							style="width: 10%;margin-right: 10px;"
 							@change="getdata()"
 							>
@@ -110,11 +110,11 @@
 						<el-row class="resources_percentage">
 							<el-col :span="4">
 								<p>{{ totalp2p }}</p>
-								<p>P2P流量</p>
+								<p>P2P播放流量</p>
 							</el-col>
 							<el-col :span="4">
 								<p>{{ totalcdn }}</p>
-								<p>CDN流量</p>
+								<p>CDN播放流量</p>
 							</el-col>
 						</el-row>
 						<div id="liuliang_echarts"></div>
@@ -143,7 +143,7 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="P2P加速流量(%)">
+										<el-table-column label="P2P播放流量(%)">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -159,7 +159,7 @@
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="CDN加速流量(%)">
+										<el-table-column label="CDN播放流量">
 											<template slot-scope="scope">
 												<div>
 													{{
@@ -177,7 +177,7 @@
 										</el-table-column>
 										<el-table-column
 											:render-header="renderHeader"
-											label="节点有资源时CDN加速流量(%)"
+											label="节点有资源时CDN播放流量(%)"
 										>
 											<template slot-scope="scope">
 												<div>
@@ -196,7 +196,7 @@
 										</el-table-column>
 										<el-table-column
 											:render-header="renderHeader"
-											label="节点无资源时CDN加速流量(%)"
+											label="节点无资源时CDN播放流量(%)"
 										>
 											<template slot-scope="scope">
 												<div>
@@ -268,7 +268,8 @@ import {
 	formatBytes,
 	formatBkb,
 	formatBorb,
-	getymdtime1
+	getymdtime1,
+	splitTimes
 } from '../../servers/sevdate';
 import fenye from '@/components/fenye';
 import {
@@ -289,6 +290,9 @@ import {
 	get_nodetype_enum,
 } from '../../servers/api';
 import echarts from 'echarts';
+import _ from 'lodash';
+import  common  from '../../comm/js/util';
+
 export default {
 	data() {
 		return {
@@ -345,6 +349,7 @@ export default {
 			dataFlownum2: 0,
 			vadio_page: 0,
 			unitdata: 'B',
+			unitdat: 'B',
 			totalp2p: '0B',
 			totalcdn: '0B',
 			tableflow: [],
@@ -591,31 +596,54 @@ export default {
 					if (res.status == 0) {
 						this.totalp2p = formatBorb(res.data.totalp2p);
 						this.totalcdn = formatBorb(res.data.totalcdn);
-						//this.cdnarr = res.data.cdnarray;
-						this.p2parr = res.data.p2parray;
-						//this.cdataArray = res.data.cdataArray;
-						this.pdataArray = res.data.pdataArray;
-
-						this.cdnpassivearray = res.data.cdnpassivearray;
-						this.cdnaactivearray = res.data.cdnaactivearray;
-						this.cdnaactivepercent = res.data.cdnaactivepercent;
-						this.cdnpassivepercent = res.data.cdnpassivepercent;
-
-						let maxnum = Math.max(...res.data.cdnaactivearray);
-						if (maxnum != 0) {
-							this.unitdata = formatBytes(maxnum);
-						} else {
-							this.unitdat = 'B';
-						}
-						if (parmas.timeUnit == 120) {
-							res.data.timearray.forEach((item, index) => {
-								this.zhanbitimearray.push(getymdtime1(item));
-							});
-						} else {
-							res.data.timearray.forEach((item, index) => {
-								this.zhanbitimearray.push(getymdtime1(item, 1));
-							});
-						}
+						if([
+							...res.data.pdataArray,
+							...res.data.cdnpassivearray,
+							...res.data.cdnaactivearray,
+							].length == 0){
+							this.unitdat = 'B'
+						}else{
+							var max = _.max([
+								...res.data.pdataArray,
+								...res.data.cdnpassivearray,
+								...res.data.cdnaactivearray,
+							]);
+							this.unitdat = this.common.formatByteActiveunit(max);
+						};
+						if(res.data.pdataArray.length == 0&&res.data.cdnpassivearray.length == 0&&res.data.cdnaactivearray.length == 0){
+							let arr = splitTimes(this.starttime, this.endtime, parmas.timeUnit);
+							if (parmas.timeUnit == 120) {
+								arr.forEach((item, index) => {
+									this.zhanbitimearray.push(getymdtime1(item));
+								});
+							} else {
+								arr.forEach((item, index) => {
+									this.zhanbitimearray.push(getymdtime1(item, 1));
+								});
+							}
+							this.p2parr = _.fill(Array(arr.length), 0);
+							this.pdataArray = _.fill(Array(arr.length), 0);
+							this.cdnpassivearray = _.fill(Array(arr.length), 0);
+							this.cdnaactivearray = _.fill(Array(arr.length), 0);
+							this.cdnaactivepercent = _.fill(Array(arr.length), 0);
+							this.cdnpassivepercent = _.fill(Array(arr.length), 0);
+						}else{
+							if (parmas.timeUnit == 120) {
+								res.data.timearray.forEach((item, index) => {
+									this.zhanbitimearray.push(getymdtime1(item));
+								});
+							} else {
+								res.data.timearray.forEach((item, index) => {
+									this.zhanbitimearray.push(getymdtime1(item, 1));
+								});
+							}
+							this.p2parr = res.data.p2parray;
+							this.pdataArray = res.data.pdataArray;
+							this.cdnpassivearray = res.data.cdnpassivearray;
+							this.cdnaactivearray = res.data.cdnaactivearray;
+							this.cdnaactivepercent = res.data.cdnaactivepercent;
+							this.cdnpassivepercent = res.data.cdnpassivepercent;
+						};
 						this.gettable3();
 						this.drawLine2();
 					} else {
@@ -655,7 +683,7 @@ export default {
 			if (parmas.endTs - parmas.startTs > 86400) {
 				parmas.timeUnit = 1440;
 			} else {
-				parmas.timeUnit = 60;
+				parmas.timeUnit = 2*60;
 			}
 			sdk_flow_table(parmas)
 				.then((res) => {
@@ -691,42 +719,61 @@ export default {
 			parmas.terminalName = -1;
 			parmas.endTs = this.endtime;
 			parmas.startTs = this.starttime;
-			if (parmas.endTs - parmas.startTs > 2505600) {
+			if (parmas.endTs - parmas.startTs > 86400) {
 				parmas.timeUnit = 1440;
 			} else {
-				parmas.timeUnit = 5;
+				parmas.timeUnit = 2*60;
 			}
 			//parmas.timeUnit = this.timeUnit;
 			sdk_flow_control(parmas)
 				.then((res) => {
 					if (res.status == 0) {
-						let iosmaxnum = Math.max(...res.data.iospstreamarray);
-						let ioscmaxnum = Math.max(...res.data.ioscstreamarray);
-						let andriodmaxnum = Math.max(
-							...res.data.andriodpstreamarray
-						);
-						let andriodcmaxnum = Math.max(
+						if([
+							...res.data.iospstreamarray,
+							...res.data.ioscstreamarray,
+							...res.data.andriodpstreamarray,
 							...res.data.andriodcstreamarray
-						);
-						if (iosmaxnum != 0) {
-							this.unitdata = formatBytes(iosmaxnum);
-						} else if (ioscmaxnum != 0) {
-							this.unitdata = formatBytes(ioscmaxnum);
-						} else if (andriodmaxnum != 0) {
-							this.unitdata = formatBytes(andriodmaxnum);
-						} else if (andriodcmaxnum != 0) {
-							this.unitdata = formatBytes(andriodcmaxnum);
-						} else {
-							this.unitdat = 'B';
+							].length == 0){
+							this.unitdata = 'B'
+						}else{
+							var max = _.max([
+								...res.data.iospstreamarray,
+								...res.data.ioscstreamarray,
+								...res.data.andriodpstreamarray,
+								...res.data.andriodcstreamarray
+							]);
+							this.unitdata = this.common.formatByteActiveunit(max);
 						}
-						this.iosp2parray = res.data.iospstreamarray;
-						this.ioscdnarray = res.data.ioscstreamarray;
-						this.andriodp2parray = res.data.andriodpstreamarray;
-						this.andriodcdnarray = res.data.andriodcstreamarray;
 
-						res.data.timeArray.forEach((item, index) => {
-							this.flow4_time.push(getlocaltimes(item));
-						});
+						if(res.data.iospstreamarray.length == 0 && res.data.ioscstreamarray.length == 0 && res.data.andriodpstreamarray.length == 0 && res.data.andriodcstreamarray.length == 0){
+							let arr = splitTimes(this.starttime, this.endtime, parmas.timeUnit);
+							if (parmas.timeUnit == 120) {
+								arr.forEach((item, index) => {
+									this.flow4_time.push(getymdtime1(item));
+								});
+							} else {
+								arr.forEach((item, index) => {
+									this.flow4_time.push(getymdtime1(item, 1));
+								});
+							}
+							// arr.forEach((item, index) => {
+							// 	this.flow4_time.push(getymdtime1(item));
+							// });
+							this.iosp2parray = _.fill(Array(arr.length), 0);
+							this.ioscdnarray = _.fill(Array(arr.length), 0);
+							this.andriodp2parray = _.fill(Array(arr.length), 0);
+							this.andriodcdnarray = _.fill(Array(arr.length), 0);
+						}else{
+							this.iosp2parray = res.data.iospstreamarray;
+							this.ioscdnarray = res.data.ioscstreamarray;
+							this.andriodp2parray = res.data.andriodpstreamarray;
+							this.andriodcdnarray = res.data.andriodcstreamarray;
+
+							res.data.timeArray.forEach((item, index) => {
+								this.flow4_time.push(getlocaltimes(item));
+							});
+						}
+						
 						this.drawLine3();
 					} else {
 						this.$message.error(res.msg);
@@ -999,7 +1046,7 @@ export default {
 			// 绘制图表
 			let options = {
 				title: {
-					text: 'P2P流量/CDN流量占比图',
+					text: 'P2P播放流量/CDN播放流量占比图',
 					left: 'center',
 					textStyle: {
 						color: '#333333',
@@ -1012,7 +1059,7 @@ export default {
 					x: 'center', //可设定图例在左、右、居中
 					y: 'bottom', //可设定图例在上、下、居中
 					padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
-					data: ['P2P流量', 'CDN无源流量','CDN有源流量'],
+					data: ['P2P播放流量', 'CDN播放有源流量', 'CDN播放无源流量'],
 				},
 				tooltip: {
 					trigger: 'axis',
@@ -1025,16 +1072,16 @@ export default {
 							params[0].axisValue +
 						    '</br>' +
 						    params[0].marker+
-							params[0].seriesName +
-							formatBkb(_this.pdataArray[num], _this.unitdata) +'('+ params[0].value+"%"+")"+
+							params[0].seriesName +": "+
+							common.formatByteActive(_this.pdataArray[num]) + ' ('+ params[0].value+"%"+")"+
                             '</br>' +
                              params[1].marker+
-							params[1].seriesName +
-							formatBkb(_this.cdnpassivearray[num], _this.unitdata) +'('+ params[1].value+"%"+")"+
+							params[1].seriesName +": "+
+							common.formatByteActive(_this.cdnpassivearray[num]) + '('+ params[1].value+"%"+")"+
 						    '</br>' +
 						    params[2].marker+
-							params[2].seriesName +
-							formatBkb(_this.cdnaactivearray[num], _this.unitdata)+'('+ params[2].value+"%"+")"
+							params[2].seriesName +": "+
+							common.formatByteActive(_this.cdnaactivearray[num]) + '('+ params[2].value+"%"+")"
 						);
 					},
 				},
@@ -1086,7 +1133,7 @@ export default {
 
 				series: [
                     {
-						name: 'P2P流量',
+						name: 'P2P播放流量',
 						type: 'bar',
 						stack: '使用情况',
 						data: data2,
@@ -1111,38 +1158,15 @@ export default {
 							},
 						},
 					},
-					
 					{
-						name: 'CDN无源流量',
-						type: 'bar',
-						stack: '使用情况',
-						data: data3,
-						barMaxWidth: 30, //柱图宽度
-						itemStyle: {
-							normal: {
-                                color: '#84C1FF',
-                               
-                            },
-                           
-						},
-						label: {
-							normal: {
-								show: true,
-								position: 'inside',
-								color: '#ffffff',
-								fontSize: 10,
-							},
-						},
-                    },
-                    {
-						name: 'CDN有源流量',
+						name: 'CDN播放有源流量',
 						type: 'bar',
 						stack: '使用情况',
 						data: data1,
 						barMaxWidth: 30, //柱图宽度
 						itemStyle: {
 							normal: {
-                                color: '#2894FF',
+                                color: '#84C1FF',
                                  barBorderRadius: [4, 4, 0, 0],
                             },
                              //柱形图圆角，鼠标移上去效果
@@ -1159,7 +1183,28 @@ export default {
 							},
 						},
 					},
-					
+					{
+						name: 'CDN播放无源流量',
+						type: 'bar',
+						stack: '使用情况',
+						data: data3,
+						barMaxWidth: 30, //柱图宽度
+						itemStyle: {
+							normal: {
+                                color: '#2894FF',
+                               
+                            },
+                           
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'inside',
+								color: '#ffffff',
+								fontSize: 10,
+							},
+						},
+                    },																	
 				],
 			};
 			myChart.setOption(options);

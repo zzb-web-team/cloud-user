@@ -8,7 +8,7 @@
             style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
           >
             <el-input
-              placeholder="请输入加速域名"
+              placeholder="请输入域名"
               v-model="valueDomain"
               class="input-with-select"
               maxlength="70"
@@ -31,7 +31,7 @@
             <el-select
               v-show="activeName == 'first'"
               v-model="valueChanel"
-              placeholder="全部节点渠道"
+              placeholder="节点渠道"
               style="width: 10%;margin-right: 10px;"
               @change="getdata()"
             >
@@ -160,7 +160,7 @@
                     :header-cell-style="headClass"
                   >
                     <el-table-column label="加速内容名称" prop="urlname"></el-table-column>
-                    <el-table-column label="加速域名" prop="domain"></el-table-column>
+                    <el-table-column label="域名" prop="domain"></el-table-column>
                     <el-table-column label="加速次数" prop="accelCnt"></el-table-column>
                     <el-table-column label="加速次数占比">
                       <template slot-scope="scope">
@@ -188,7 +188,7 @@
                     :header-cell-style="headClass"
                   >
                     <el-table-column label="加速内容名称" prop="urlname"></el-table-column>
-                    <el-table-column label="加速域名" prop="domain"></el-table-column>
+                    <el-table-column label="域名" prop="domain"></el-table-column>
                     <el-table-column label="加速流量">
                       <template slot-scope="scope">
                         <div>{{scope.row.dataflow | setbytes}}</div>
@@ -226,6 +226,7 @@ import {
   formatBkb,
   formatBorb,
   getymdtime1,
+  splitTimes
 } from "../../servers/sevdate";
 import {
   node_traffic_curve,
@@ -310,7 +311,9 @@ export default {
       this.valueChannelId = String(this.$cookies.get("id") * 1);
     } else {
       this.$router.push({ path: "/" });
-    }
+    };
+    this.starttime = new Date(new Date().toLocaleDateString()).getTime() / 1000;
+		this.endtime = Date.parse(new Date()) / 1000;
     this.getNodeType();
     this.get_node_flow();
   },
@@ -365,32 +368,62 @@ export default {
       node_traffic_curve(params)
         .then((res) => {
           if (res.status == 0) {
-            var max = _.max([
+            if([
               ...res.data.p2parray,
               ...res.data.downbackarray,
               ...res.data.downcdnarray,
-            ]);
-            this.flowunit = this.common.formatByteActiveunit(max);
-            this.timeArrayZb = [];
-            if (params.timeUnit == 120) {
-              res.data.timearray.forEach((item, index) => {
-                this.timeArrayZb.push(getymdtime1(item));
-              });
-            } else {
-              res.data.timearray.forEach((item, index) => {
-                this.timeArrayZb.push(getymdtime1(item, 11));
-              });
+            ].length == 0){
+              this.flowunit = 'B'
+            }else{
+              var max = _.max([
+                ...res.data.p2parray,
+                ...res.data.downbackarray,
+                ...res.data.downcdnarray,
+              ]);
+              this.flowunit = this.common.formatByteActiveunit(max);
             }
+            
+            this.timeArrayZb = [];
 
-            this.dataAry = res.data.downcdnarray.map((item) =>
-              this.common.formatByteNum(item, this.flowunit)
-            );
-            this.dataAry1 = res.data.downbackarray.map((item) =>
-              this.common.formatByteNum(item, this.flowunit)
-            );
-            this.dataAry2 = res.data.p2parray.map((item) =>
-              this.common.formatByteNum(item, this.flowunit)
-            );
+            if(res.data.p2parray.length == 0 && res.data.downbackarray.length ==0 && res.data.downcdnarray.length == 0){
+              let arr = splitTimes(this.starttime, this.endtime, this.timeUnit);
+              if (params.timeUnit == 120) {
+                arr.forEach((item, index) => {
+                  this.timeArrayZb.push(getymdtime1(item));
+                });
+              } else {
+                arr.forEach((item, index) => {
+                  this.timeArrayZb.push(getymdtime1(item, 11));
+                });
+              }
+
+              this.dataAry = _.fill(Array(arr.length), 0);
+              this.dataAry1 = _.fill(Array(arr.length), 0);
+              this.dataAry2 = _.fill(Array(arr.length), 0);
+            }else{
+              if (params.timeUnit == 120) {
+                res.data.timearray.forEach((item, index) => {
+                  this.timeArrayZb.push(getymdtime1(item));
+                });
+              } else {
+                res.data.timearray.forEach((item, index) => {
+                  this.timeArrayZb.push(getymdtime1(item, 11));
+                });
+              }
+
+              this.dataAry = res.data.downcdnarray.map((item) =>
+                this.common.formatByteNum(item, this.flowunit)
+              );
+              this.dataAry1 = res.data.downbackarray.map((item) =>
+                this.common.formatByteNum(item, this.flowunit)
+              );
+              this.dataAry2 = res.data.p2parray.map((item) =>
+                this.common.formatByteNum(item, this.flowunit)
+              );
+            }
+            
+
+
             this.drawLine2(
               this.timeArrayZb,
               this.dataAry,
@@ -545,22 +578,22 @@ export default {
       let params = new Object();
       params.startTs = this.starttime;
       params.endTs = this.endtime;
-      params.pageNo = this.pageNo1 - 1;
-      params.pageSize = this.pageSize1;
+      params.pageNo = this.currentPage - 1;
+      params.pageSize = this.pagesize;
       if (this.valueContent1) {
         params.urlName = this.valueContent1;
       } else {
         params.urlName = "*";
       }
 
-      if (this.valueChannelId1 !== "") {
-        params.channelId = this.valueChannelId1;
+      if (this.valueChannelId !== "") {
+        params.channelId = this.valueChannelId;
       } else {
         params.channelId = "*";
       }
 
-      if (this.valueDomain1 !== "") {
-        params.domain = this.valueDomain1;
+      if (this.valueDomain !== "") {
+        params.domain = this.valueDomain;
       } else {
         params.domain = "*";
       }
@@ -581,20 +614,20 @@ export default {
       let params = new Object();
       params.startTs = this.starttime;
       params.endTs = this.endtime;
-      params.pageNo = this.pageNo1 - 1;
-      params.pageSize = this.pageSize1;
+      params.pageNo = this.currentPage - 1;
+      params.pageSize = this.pagesize;
       if (this.valueContent1) {
         params.urlName = this.valueContent1;
       } else {
         params.urlName = "*";
       }
-      if (this.valueChannelId1 !== "") {
-        params.channelId = this.valueChannelId1;
+      if (this.valueChannelId !== "") {
+        params.channelId = this.valueChannelId;
       } else {
         params.channelId = "*";
       }
-      if (this.valueDomain1 !== "") {
-        params.domain = this.valueDomain1;
+      if (this.valueDomain !== "") {
+        params.domain = this.valueDomain;
       } else {
         params.domain = "*";
       }
@@ -824,9 +857,6 @@ export default {
               "P2P播放流量:" +
               _this.dataAry2[params[0].dataIndex] +
               _this.flowunit +
-              "</br>" +
-              "<div style='backgroundColor: rgba(0, 0, 0, 0.5); height: 20px;'></div>" +
-              params[0].axisValue +
               "</br>" +
               "下行CDN回源流量:" +
               _this.dataAry[params[0].dataIndex] +

@@ -119,3 +119,26 @@ export function formatBkb(a, b) {
     }
 
 };
+
+//时间段分割
+export function splitTimes(startTime, endTime, unit){
+    let diff = endTime - startTime;
+    let arr = [];
+    // if(unit == 60 * 2){
+        let split = Math.ceil(diff / (unit*60));
+        for(var i = 0; i < split; i++){
+            arr.push(startTime + 60 * unit * i)
+        }
+    // }else{
+    //     console.log(startTime, endTime, unit)
+    //     let split = Math.ceil(diff / (unit*60));
+    //     console.log(split)
+    //     for(var i = 0; i < split; i++){
+    //         console.log(startTime + 60 * unit * i)
+    //         arr.push(startTime + 60 * unit * i)
+    //     }
+    //     console.log(arr)
+    // }
+    console.log(arr)
+    return arr
+};

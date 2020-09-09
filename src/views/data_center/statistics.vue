@@ -10,7 +10,7 @@
 							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
 							<el-input
-								placeholder="请输入加速域名"
+								placeholder="请输入域名"
 								v-model="valueDomain"
 								class="input-with-select"
 								maxlength="70"
@@ -121,7 +121,7 @@
 							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
 							<el-input
-								placeholder="请输入加速域名"
+								placeholder="请输入域名"
 								v-model="valueDomain1"
 								class="input-with-select"
 								maxlength="70"
@@ -468,7 +468,7 @@
 
 <script>
 var _this;
-import { dateToMs, getymdtime } from '../../servers/sevdate';
+import { dateToMs, getymdtime, splitTimes } from '../../servers/sevdate';
 
 import mtImg from '../../assets/img/dowload.png';
 import fenye from '@/components/fenye';
@@ -932,6 +932,7 @@ export default {
 				} else {
 					params.terminalName = "-1";
 				}
+				params.timeUnit = 60;
 				this.uvArray = [];
 				this.pvArray = [];
 				this.timeArray = [];
@@ -940,19 +941,25 @@ export default {
 						if (res.status == 0) {
 							this.totalPV = res.data.totalPV;
 							this.totalUV = res.data.totalUV;
-							if (res.data.uvArray) {
+							if(res.data.uvArray.length == 0 && res.data.pvArray.length == 0){
+								let arr = splitTimes(this.starttime, this.endtime, 60);
+								arr.forEach((item, index) => {
+									this.timeArray.push(getymdtime(item));
+								});
+								this.uvArray = _.fill(Array(arr.length), 0);
+              					this.pvArray = _.fill(Array(arr.length), 0);
+
+							}else{
 								res.data.uvArray.forEach((item, index) => {
 									this.uvArray.push(Math.floor(item));
 								});
-							}
-							if (res.data.pvArray) {
 								res.data.pvArray.forEach((item, index) => {
 									this.pvArray.push(Math.floor(item));
 								});
-							}
-							res.data.timeArray.forEach((item, index) => {
-								this.timeArray.push(getymdtime(item));
-							});
+								res.data.timeArray.forEach((item, index) => {
+									this.timeArray.push(getymdtime(item));
+								});
+							}			
 						} else {
 							this.$message.error(res.err_msg);
 						}

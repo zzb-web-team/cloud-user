@@ -9,7 +9,7 @@
 				style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
 			>
 				<el-input
-					placeholder="请输入加速域名"
+					placeholder="请输入域名"
 					v-model="urlname"
 					class="input-with-select"
 					maxlength="70"
@@ -41,7 +41,7 @@
 				> -->
 				<el-select
 					v-model="acc"
-					placeholder="请选择节点渠道"
+					placeholder="节点渠道"
 					style="margin-right: 10px;"
 					@change="changmvitem"
 				>
@@ -161,7 +161,8 @@ import {
 	getlocaltimes,
 	formatBytes,
 	formatBkb,
-	getymdtime1
+	getymdtime1,
+	splitTimes
 } from '../../servers/sevdate';
 import {
 	query_conditions,
@@ -367,17 +368,17 @@ export default {
 			let param = {}
 			get_nodetype_enum(param).then(
 				(res) => {
-				let data = res.data.firstchan;
-				let list = data.map((item)=>{
-					let obj = {};
-					obj.label = item.name;
-					obj.value = item.value;
-					return obj
-				})
-				this.hashidSets = list;
+					let data = res && res.data && res.data.firstchan || [];
+					let list = data.map((item)=>{
+						let obj = {};
+						obj.label = item.name;
+						obj.value = item.value;
+						return obj
+					})
+					this.hashidSets = list;
 				})
 				.catch((err)=>{
-				console.log(err)
+					console.log(err)
 				})
 		},
 		//请求数据--柱形图
@@ -424,25 +425,31 @@ export default {
 								this.allunitdata
 							);
 						}
-						let maxnum = Math.max(...res.data.data[0].dataflowArray);
-						if (maxnum == 0) {
+						// let maxnum = Math.max(...res.data.data[0].dataflowArray);
+						if (res.data.data[0].dataflowArray.length == 0) {
 							this.unitdata = 'B';
 						} else {
+							let maxnum = _.max(res.data.data[0].dataflowArray);
 							this.unitdata = formatBytes(maxnum);
 						}
-						res.data.data[0].dataflowArray.forEach((item, index) => {
-							this.dataFlowArray.push(
-								formatBkb(item, this.unitdata)
-							);
-						});
-						// this.dataflowarray = res.data.data[0].dataflowArray.;
-						this.dataFlownum = res.data.data[0].dataflowArray.length - 1;
-
-						// let upcli = Math.floor(this.dataFlownum / 12);
-						res.data.data[0].timeArray.forEach((item, index) => {
-							this.timeArray.push(getymdtime1(item));
-                        });
-                        console.log('************');
+						if(res.data.data[0].dataflowArray.length == 0){
+							let arr = splitTimes(this.starttime, this.endtime, this.timeUnit);							
+							arr.forEach((item, index) => {
+								this.timeArray.push(getymdtime1(item));
+							});
+							this.dataFlowArray = _.fill(Array(arr.length), 0);
+						}else{
+							res.data.data[0].dataflowArray.forEach((item, index) => {
+								this.dataFlowArray.push(
+									formatBkb(item, this.unitdata)
+								);
+							});
+							this.dataFlownum = res.data.data[0].dataflowArray.length - 1;
+							res.data.data[0].timeArray.forEach((item, index) => {
+								this.timeArray.push(getymdtime1(item));
+							});
+						}
+						
 						this.getdtable();
 						this.drawLine();
 					} else {

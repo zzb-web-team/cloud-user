@@ -44,6 +44,8 @@ import {
 	formatBkb,
 	getlocaltimes,
 	formatBytes,
+	splitTimes,
+	getymdtime1
 } from '../../servers/sevdate';
 import echarts from 'echarts';
 export default {
@@ -111,14 +113,32 @@ export default {
 								this.unitdata
 							);
 						}
-						res.data.data[0].dataflowArray.forEach((item) => {
-							this.dataFlowArray.push(
-								formatBkb(item, this.unitdata)
-							);
-						});
-						res.data.data[0].timeArray.forEach((item, index) => {
-							this.timeArray.push(getlocaltimes(item));
-						});
+						if(res.data.data[0].dataflowArray.length == 0){
+							let arr = splitTimes(starttime, endtime, 1440);	
+							console.log(arr)						
+							arr.forEach((item, index) => {
+								this.timeArray.push(getymdtime1(item));
+							});
+							this.dataFlowArray = _.fill(Array(arr.length), 0);
+						}else{
+							res.data.data[0].dataflowArray.forEach((item, index) => {
+								this.dataFlowArray.push(
+									formatBkb(item, this.unitdata)
+								);
+							});
+							this.dataFlownum = res.data.data[0].dataflowArray.length - 1;
+							res.data.data[0].timeArray.forEach((item, index) => {
+								this.timeArray.push(getymdtime1(item));
+							});
+						}
+						// res.data.data[0].dataflowArray.forEach((item) => {
+						// 	this.dataFlowArray.push(
+						// 		formatBkb(item, this.unitdata)
+						// 	);
+						// });
+						// res.data.data[0].timeArray.forEach((item, index) => {
+						// 	this.timeArray.push(getlocaltimes(item));
+						// });
 
 						this.configure();
 					} else {

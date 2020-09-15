@@ -44,6 +44,7 @@
               ></el-option>
             </el-select>
             <!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
+            <div v-show="activeName == 'first'">
             <el-radio-group v-model="radio" size="medium" @change="sele_time()" v-show="!shoudzyx">
               <el-radio-button label="1">今天</el-radio-button>
               <el-radio-button label="2">昨天</el-radio-button>
@@ -61,11 +62,7 @@
               v-show="shoudzyx"
               style="margin-left:10px;"
               v-model="val2"
-              :type="
-				activeName == 'first'
-					? 'datetimerange'
-					: 'daterange'
-				"
+              type="datetimerange"
               :picker-options="pickerOptions"
               range-separator="至"
               start-placeholder="开始日期"
@@ -73,6 +70,8 @@
               align="left"
               @change="gettimes"
             ></el-date-picker>
+            </div>
+            <el-date-picker v-show="activeName == 'second'" style="margin-left:10px;" v-model="val3" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="left" @change="gettimes"></el-date-picker>
             <!-- <el-button style="margin-left:10px;" type="primary" @click="getdata()">查询</el-button> -->
           </div>
           <el-tab-pane label="节点流量" name="first">
@@ -275,6 +274,7 @@ export default {
       radio: 1,
       radio_top: 1,
       val2: "",
+      val3: [],
       starttime: 0,
       endtime: 0,
       timeUnit: 120,
@@ -646,8 +646,20 @@ export default {
     handleClick() {
       sessionStorage.setItem("tab_name", this.activeName); //添加到sessionStorage
       if (this.activeName == "first") {
+        this.val2= [];
+        let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
+        this.starttime = times;
+        this.endtime = Date.parse(new Date()) / 1000;
+        this.settimeunit(this.starttime, this.endtime);
         this.get_node_flow();
       } else {
+        this.val3 = [];
+        let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
+        this.starttime = times;
+        this.endtime = Date.parse(new Date()) / 1000;
+        this.val3[0] = this.common.getTimes(this.starttime * 1000);
+        this.val3[1] = this.common.getTimes(this.endtime * 1000);
+        this.settimeunit(this.starttime, this.endtime);
         if (this.radio_top == 1) {
           this.get_top_flow_num();
         } else {
@@ -656,6 +668,12 @@ export default {
       }
     },
     topClick() {
+      let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
+      this.starttime = times;
+      this.endtime = Date.parse(new Date()) / 1000;
+      this.val3[0] = this.common.getTimes(this.starttime * 1000);
+      this.val3[1] = this.common.getTimes(this.endtime * 1000);
+      this.settimeunit(this.starttime, this.endtime);
       if (this.radio_top == 1) {
         this.get_top_flow_num();
       } else {
@@ -773,14 +791,14 @@ export default {
     },
     //自定义时间
     gettimes(cal) {
-      if (this.val2 == null) {
-        this.starttime =
-          new Date(new Date().toLocaleDateString()).getTime() / 1000;
-        this.endtime = Date.parse(new Date()) / 1000 - 1;
-      } else {
-        this.starttime = dateToMs(this.val2[0]);
-        this.endtime = dateToMs(this.val2[1]);
+      if(cal == 0){
+        this.starttime = this.val2 ? dateToMs(this.val2[0]) : new Date(new Date().toLocaleDateString()).getTime() / 1000;
+        this.endtime = this.val2 ? dateToMs(this.val2[1]) : Date.parse(new Date()) / 1000;
+      }else{
+        this.starttime = this.val3 ? dateToMs(this.val3[0]) : new Date(new Date().toLocaleDateString()).getTime() / 1000;
+        this.endtime = this.val3 ? dateToMs(this.val3[1]) + (24*60*60-1) : Date.parse(new Date()) / 1000;
       }
+
       this.settimeunit(this.starttime, this.endtime);
       if (this.activeName == "first") {
         this.get_node_flow();

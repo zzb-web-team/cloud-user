@@ -18,10 +18,10 @@
 					:active="actives"
 					finish-status="success"
 					simple
-					style="margin-top: 20px;width:50%;"
+					style="margin-top: 20px;width:75%;"
 				>
 					<el-step
-						title="选择配置项"
+						title="确定配置项"
 						description="这是一段很长很长很长的描述性文字"
 					></el-step>
 					<el-step
@@ -45,13 +45,12 @@
 					:cell-style="rowClass"
 					:header-cell-style="headClass"
 					:row-key="getRowKeysfirst"
-					@selection-change="handleSelectionChange"
 				>
-					<el-table-column
+					<!-- <el-table-column
 						type="selection"
 						width="55"
 						:reserve-selection="true"
-					></el-table-column>
+					></el-table-column> -->
 					<el-table-column
 						prop="configuration"
 						label="配置项"
@@ -209,9 +208,9 @@
 				<el-button style="margin-top: 2px;" type="primary" @click="next"
 					>下一步</el-button
 				>
-				<el-button style="margin-top: 2px;" @click="fureset(2)"
+				<!-- <el-button style="margin-top: 2px;" @click="fureset(2)"
 					>取消</el-button
-				>
+				> -->
 			</div>
 		</div>
 	</div>
@@ -256,20 +255,20 @@ export default {
 					tabnum: 'there',
 					index: 1,
 				},
-				{
-					configuration: '缓存过期时间',
-					nowconfiguration: '已配置',
-					pname: 'expire_time',
-					tabnum: 'second',
-					index: 2,
-				},
-				{
-					configuration: '自定义页面',
-					nowconfiguration: '',
-					pname: 'custom_page',
-					tabnum: 'four',
-					index: 3,
-				},
+				// {
+				// 	configuration: '缓存过期时间',
+				// 	nowconfiguration: '已配置',
+				// 	pname: 'expire_time',
+				// 	tabnum: 'second',
+				// 	index: 2,
+				// },
+				// {
+				// 	configuration: '自定义页面',
+				// 	nowconfiguration: '',
+				// 	pname: 'custom_page',
+				// 	tabnum: 'four',
+				// 	index: 3,
+				// },
 			],
 			//配置信息
 			datalist: {
@@ -403,28 +402,28 @@ export default {
 		},
 		//配置项
 		seturlconfig() {
-			this.multipleSelection.forEach((item, index) => {
-				// if (item.pname == "host_url") {
-				//   this.configuration[item.pname] = JSON.parse(
-				//     JSON.stringify(this.copydatalist[item.pname])
-				//   );
-				// } else
-				if (item.pname == 'cache_config') {
+			// this.multipleSelection.forEach((item, index) => {
+			// 	// if (item.pname == "host_url") {
+			// 	//   this.configuration[item.pname] = JSON.parse(
+			// 	//     JSON.stringify(this.copydatalist[item.pname])
+			// 	//   );
+			// 	// } else
+			// 	if (item.pname == 'cache_config') {
 					let dataarr = {};
 					dataarr.cache_config = {};
 					dataarr.cache_config.data = this.copydatalist.cache_config.data;
 					dataarr.cache_config.valid = this.copydatalist.cache_config.valid;
 					this.configuration.cache_config = dataarr;
-				} else if (item.pname == 'expire_time') {
-					this.configuration.cache_config = JSON.parse(
-						JSON.stringify(this.copydatalist.cache_config)
-					);
-				} else if (item.pname == 'custom_page') {
-					this.configuration.custom_page = JSON.parse(
-						JSON.stringify(this.copydatalist.custom_page)
-					);
-				}
-			});
+			// 	} else if (item.pname == 'expire_time') {
+			// 		this.configuration.cache_config = JSON.parse(
+			// 			JSON.stringify(this.copydatalist.cache_config)
+			// 		);
+			// 	} else if (item.pname == 'custom_page') {
+			// 		this.configuration.custom_page = JSON.parse(
+			// 			JSON.stringify(this.copydatalist.custom_page)
+			// 		);
+			// 	}
+			// });
 		},
 		//复制配置
 		copyconfig() {
@@ -483,12 +482,12 @@ export default {
 		next() {
 			console.log(this.actives);
 			if (this.actives == 1) {
-				if (this.multipleSelection.length <= 0) {
-					this.$message.error('请至少勾选一个配置项');
-					return false;
-				} else {
+				// if (this.multipleSelection.length <= 0) {
+				// 	this.$message.error('请至少勾选一个配置项');
+				// 	return false;
+				// } else {
 					this.seturlconfig();
-				}
+				// }
 			}
 			if (this.actives == 2) {
 				if (this.urldisable.length <= 0) {
@@ -650,7 +649,7 @@ export default {
 		padding: 45px 37px;
 		.copy_prompt {
 			text-align: left;
-			width: 632px;
+			// width: 632px;
 			height: 50px;
 			line-height: 50px;
 			background: #f0f0ff;

@@ -40,6 +40,7 @@
 				v-model="oneName"
 				@tab-click="handleClick"
 				v-loading="loading"
+				ref="tabs"
 			>
 				<el-tab-pane label="基础配置" name="one">
 					<div
@@ -244,7 +245,53 @@
 				</el-tab-pane> -->
 
 				<el-tab-pane label="缓存配置" name="there">
-					<el-tabs v-model="activeName" tab-position="left">
+					<div class="talb_title_tio">
+						<div style="display: flex;"><p class="talb_title_p"></p>缓存自动刷新</div>
+						<div style="display: flex">
+						<p style="margin-left: 25px;margin-top: 10px;">{{valueh ? '开启' : '未开启'}}</p>
+						<div style="margin-left: 25px;margin-top: 10px;">
+							<el-switch v-model="valueh" active-color="#13ce66" inactive-color="#EEEEEE" @change="changeSwitch2"></el-switch>
+							<p style="margin-top: 12px;">开启后，能够自动发现加速节点的同名缓存刷新，并自动同步最新缓存</p>
+						</div>
+						</div>
+					</div>
+					<div class="talb_title_tio" style="margin-top: 28px;">
+						<div style="display: flex;"><p class="talb_title_p"></p>缓存过期时间</div>
+						<div style="display: flex; align-items: center;">
+						<p style="margin-left: 25px;">过期时间</p>
+						<div style="margin-left: 25px;display: flex; align-items: center;">
+							<p style="margin-right: 25px;" v-if="expireTime&&!valueh">{{expireTime | settimes}}</p>
+							<p style="margin-right: 25px;" v-else>默认自动过期</p>
+							<el-button type="text" :disabled="valueh" @click="huanVisible = true;">设置</el-button>
+						</div>
+						</div>
+					</div>
+					<el-dialog title="配置缓存过期时间" :visible.sync="huanVisible">
+						<el-form :model="huanform">
+						<el-form-item label="过期类型:" style="text-align:left;" :label-width="formLabelWidth">
+							<el-radio-group v-model="radio1" @change="selecttime()" class="huandan">
+							<el-radio-button label="自动过期"></el-radio-button>
+							<el-radio-button label="自定义时间"></el-radio-button>
+							</el-radio-group>
+
+							<p v-if="automatic_time == true" style="font-size: 12px;color: #676767;height: 18px;">
+							当加速内容失去热度时缓存将自动过期
+							</p>
+						</el-form-item>
+						<el-form-item class="huancuntime" label="过期时间:" :label-width="formLabelWidth" style="text-align:left;" v-if="automatic_time == false">
+							<el-date-picker v-model="huanfo" type="datetime" style="width:100%;" align="right" placeholder="选择日期时间" :picker-options="pickerOptions0">
+							</el-date-picker>
+							<p style="font-size: 12px;color: #676767;height: 18px;">
+							最长过期时间为三年
+							</p>
+						</el-form-item>
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+						<el-button @click="huanno">取 消</el-button>
+						<el-button type="primary" @click="huanVisib()">确 定</el-button>
+						</div>
+					</el-dialog>
+					<!-- <el-tabs v-model="activeName" tab-position="left">
 						<el-tab-pane label="缓存设置" name="first">
 							<div class="talb_title_tio">
 								<span>缓存自动刷新</span>
@@ -262,7 +309,6 @@
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="缓存过期时间" name="second">
-							<!--  -->
 							<div class="batch_huan">
 								<div style="text-align:left;padding: 10px 0">
 									<el-button
@@ -279,7 +325,6 @@
 										<span class="el-icon-plus"></span>配置
 									</el-button>
 								</div>
-								<!-- 缓存添加弹窗 -->
 								<el-dialog
 									title="配置缓存过期时间"
 									:visible.sync="huanVisible"
@@ -415,7 +460,7 @@
 								</el-table>
 							</div>
 						</el-tab-pane>
-					</el-tabs>
+					</el-tabs> -->
 				</el-tab-pane>
 				<el-tab-pane label="自定义页面" name="four">
 					<div
@@ -839,6 +884,7 @@ export default {
 			chanid: '',
 			huanfo: '',
 			automatic_time: true,
+			expireTime: '',
 			pickerOptions0: {
 				shortcuts: [
 					{
@@ -918,6 +964,9 @@ export default {
 		},
 	},
 	mounted() {
+		this.$nextTick(function () {
+			this.$refs.tabs.$children[0].$refs.tabs[2].style.display="none";
+		})
 		if (this.$cookies.get('id')) {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
@@ -1116,6 +1165,7 @@ export default {
 						this.datalist.cache_con =
 							res.data.data.cache_config.data;
 						this.datalist.custom_page = res.data.data.custom_page;
+						this.expireTime = res.data.data.cache_config.data[0].expire;
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -1625,7 +1675,14 @@ export default {
 	}
 	.talb_title_tio {
 		text-align: left;
-		display: flex;
+		margin-left: 40px;
+    	margin-top: 20px;
+		.talb_title_p{
+			width: 4px;
+			height:20px;
+			background-color:#297aff;
+			margin-right: 8px
+		}
 		span {
 			margin-right: 45px;
 		}

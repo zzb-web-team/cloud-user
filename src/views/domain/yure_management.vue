@@ -13,13 +13,16 @@
 					<span style="color: #666666;font-size:14px;"
 						>刷新区域：</span
 					>
-					<el-cascader
-						:options="citylist1"
-						ref="cascaderAddr"
-						:show-all-levels="false"
+					<el-select
 						v-model="citylabel"
-						@change="handleChange"
-					></el-cascader>
+					>
+						<el-option
+							v-for="item in citylist1"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value">
+						</el-option>
+					</el-select>
 					<p
 						style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
 					>
@@ -48,11 +51,16 @@
             <el-radio v-model="radio2" label="2">域名刷新</el-radio>
           </div> -->
 					<span>预热区域：</span>
-					<el-cascader
-						:options="citylist1"
+					<el-select
 						v-model="citylabel1"
-						:show-all-levels="false"
-					></el-cascader>
+					>
+						<el-option
+							v-for="item in citylist1"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value">
+						</el-option>
+					</el-select>
 					<p
 						style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
 					>
@@ -308,39 +316,39 @@ export default {
 			tableData: [],
 			citylist1: [
 				{
-					value: 0,
+					value: '全部',
 					label: '全部',
 				},
 				{
-					value: 1,
+					value: '华北',
 					label: '华北',
 				},
 				{
-					value: 2,
+					value: '西北',
 					label: '西北',
 				},
 				{
-					value: 3,
+					value: '东北',
 					label: '东北',
 				},
 				{
-					value: 4,
+					value: '华东',
 					label: '华东',
 				},
 				{
-					value: 5,
+					value: '华中',
 					label: '华中',
 				},
 				{
-					value: 6,
+					value: '西南',
 					label: '西南',
 				},
 				{
-					value: 7,
+					value: '华南',
 					label: '华南',
 				},
 				{
-					value: 8,
+					value: '其他',
 					label: '其他',
 				},
 			],
@@ -506,11 +514,11 @@ export default {
 						}
 					}
 				}
-				if (this.citylabel == '' || this.citylabel.length < 2) {
+				if (this.citylabel == '') {
 					this.$message.error('请选择刷新区域');
 					return false;
 				} else {
-					parmas.area = this.citylabel[1];
+					parmas.area = this.citylabel;
 				}
 			} else {
 				parmas.type = 1;
@@ -554,11 +562,11 @@ export default {
 						}
 					}
 				}
-				if (this.citylabel1 == '' || this.citylabel1.length < 2) {
+				if (this.citylabel1 == '') {
 					this.$message.error('请选择预热区域');
 					return false;
 				} else {
-					parmas.area = this.citylabel1[1];
+					parmas.area = this.citylabel1;
 				}
 			}
 			parmas.buser_id = this.chanid + '';

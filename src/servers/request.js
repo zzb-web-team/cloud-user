@@ -32,8 +32,8 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else if (href.indexOf('zzb.onezen.net') >= 0) {
     var userUrl = 'http://zzb.onezen.net'; //PHP服务URL
 } else {
-    var userUrl = 'http://service.kclgames.com'; 
-    // var userUrl = 'http://zzb.onezen.net';
+    // var userUrl = 'http://service.kclgames.com'; 
+    var userUrl = 'http://zzb.onezen.net';
     // var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 }
 

@@ -10,8 +10,8 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else if (href.indexOf('zzb.onezen.net') >= 0) {
     var userUrl = 'http://zzb.onezen.net'; //PHP服务URL
 } else {
-    // var userUrl = 'http://zzb.onezen.net';
-    var userUrl = 'http://service.kclgames.com'; 
+    var userUrl = 'http://zzb.onezen.net';
+    // var userUrl = 'http://service.kclgames.com'; 
     // var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 }
 
@@ -184,6 +184,14 @@ export const backsource_flow_query_conditions = (params) =>
 //回源流量柱状图
 export const backsource_flow = (params) =>
     post(`${userUrl}/resource_manage/backsource_flow`, params);
+/**播放流量地区分布表*/
+export const query_dataflow_location_table = params => {
+    return post(`${userUrl}/resource_manage/query_dataflow_location_table`, params)
+};
+/**播放流量地区分布表*/
+export const query_dataflow_location_curve = params => {
+    return post(`${userUrl}/resource_manage/query_dataflow_location_curve`, params)
+};
 
 /**统计分析 */
 //PV/UV 查询条件

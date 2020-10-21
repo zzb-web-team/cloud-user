@@ -262,7 +262,7 @@
 						<div style="margin-left: 25px;display: flex; align-items: center;">
 							<p style="margin-right: 25px;" v-if="expireTime&&!valueh">{{expireTime | settimes}}</p>
 							<p style="margin-right: 25px;" v-else>默认自动过期</p>
-							<el-button type="text" :disabled="valueh" @click="huanVisible = true;">设置</el-button>
+							<el-button type="text" :disabled="valueh" @click="huanVisible = true;radio1='自动过期';automatic_time=true;automatic()">设置</el-button>
 						</div>
 						</div>
 					</div>
@@ -1447,12 +1447,12 @@ export default {
 			} else {
 				this.huanform.expire = dateToMs(this.huanfo);
 			}
-			if (this.citylabel.length < 2) {
-				this.$message.error('请选择区域');
-				return false;
-			}
-			this.huanform.area = this.citylabel[0];
-			this.huanform.province = this.citylabel[1];
+			// if (this.citylabel.length < 2) {
+			// 	this.$message.error('请选择区域');
+			// 	return false;
+			// }
+			this.huanform.area = this.datalist.cache_con[0].area;;
+			this.huanform.province = this.datalist.cache_con[0].province;
 			if (this.edit == 1) {
 				//添加缓存配置
 				if (this.huanform.type == 0) {

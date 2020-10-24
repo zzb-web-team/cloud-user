@@ -1451,8 +1451,8 @@ export default {
 			// 	this.$message.error('请选择区域');
 			// 	return false;
 			// }
-			this.huanform.area = this.datalist.cache_con[0].area;;
-			this.huanform.province = this.datalist.cache_con[0].province;
+			this.huanform.area = this.datalist.cache_con.length == 0 ? '' : this.datalist.cache_con[0].area;
+			this.huanform.province = this.datalist.cache_con.length == 0 ? '' : this.datalist.cache_con[0].province;
 			if (this.edit == 1) {
 				//添加缓存配置
 				if (this.huanform.type == 0) {

@@ -2,9 +2,23 @@
 	<div class="myownStyle">
 		<el-row class="container">
 			<el-col :span="24" class="header">
-				<!-- <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-          <div style="fontSize:20px;color:#000">云点播管理平台</div>
-        </el-col>-->
+				<el-col :span="10">
+          			<span style="fontSize:20px;color:#000">总览</span>
+					<el-dropdown trigger="hover">
+						<span class="el-dropdown-link userinfo-inner">
+							产品
+						</span>
+						<el-dropdown-menu slot="dropdown">
+							<!-- <el-dropdown-item>我的消息</el-dropdown-item> -->
+							<el-dropdown-item @click.native="goinfo"
+								>点播加速</el-dropdown-item
+							>
+							<el-dropdown-item divided @click.native="logout"
+								>直播加速</el-dropdown-item
+							>
+						</el-dropdown-menu>
+					</el-dropdown>
+        		</el-col>
 				<el-col :span="4" class="userinfo">
 					<el-dropdown trigger="hover">
 						<span class="el-dropdown-link userinfo-inner">
@@ -23,6 +37,7 @@
 					</el-dropdown>
 				</el-col>
 			</el-col>
+
 			<el-col :span="24" class="main">
 				<aside :class="collapsed ? 'menu-collapsed' : 'menu-expanded'">
 					<div

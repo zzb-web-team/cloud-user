@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import VueCookies from 'vue-cookies';
 
 import index from '@/views/index';
+import view from '@/views/view';
 import log from '@/views/log';
 import registered from '@/views/registered';
 import phone_log from '@/views/phone_log';
@@ -46,10 +47,246 @@ import word_map from '@/views/distributed/word_map.vue';
 //终端管理
 import terminal_management from '@/views/terminal/terminal_management.vue';
 
+//
+import live_content from "@/views/live/live_content";
+import live_info from "@/views/live/live_info";
+
 Vue.use(Router);
 
+// const router = new Router({
+//     routes: [{ 
+//             path: '/',
+//             name: '登录',
+//             component: log,
+//             hidden: true,
+//         },
+//         {
+//             path: '/phone_log',
+//             name: '手机号登录',
+//             component: phone_log,
+//             hidden: true,
+//         },
+//         {
+//             path: '/forget_password',
+//             name: '忘记密码',
+//             component: forget_password,
+//             hidden: true,
+//         },
+//         {
+//             path: '/registered',
+//             name: '注册',
+//             component: registered,
+//             hidden: true,
+//         },
+//         {
+//             path: '/index',
+//             name: '总览',
+//             component: view,
+//             hidden: true,
+//         },
+//         {
+//             path: '/overview',
+//             name: '预览',
+//             component: index,
+//             hidden: true,
+//             icon: 'iconfont icon-shujutongji',
+//             children: [{
+//                     path: '/information',
+//                     name: '账号信息',
+//                     component: information,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//                 {
+//                     path: '/overview',
+//                     name: '概览',
+//                     component: overview,
+//                     icon: 'iconfont icon-dian',
+//                 },
+//             ],
+//         },
+//         {
+//             path: '/overview',
+//             name: '概览',
+//             component: overview,
+//             bsgc: true,
+//             icon: 'iconfont icon-shujutongji',
+//         },
+//         {
+//             path: '/gerg',
+//             name: '配置管理',
+//             component: index,
+//             bgc: false,
+//         },
+//         {
+//             path: '/home_four',
+//             name: '分发加速配置',
+//             component: index,
+//             icon: 'iconfont icon-jiasu',
+//             children: [{
+//                     path: '/accelerate_management',
+//                     name: '域名管理',
+//                     component: accelerate_management,
+//                     icon: 'iconfont icon-dian',
+//                     alias: 'Dibble'
+//                     // hidden: true
+//                 }, {
+//                     path: '/domain_management',
+//                     name: '点播加速管理',
+//                     component: domain_management,
+//                     icon: 'iconfont icon-dian',
+//                     // hidden: true
+//                 },
+//                 {
+//                     path: '/upload',
+//                     name: '上传文件',
+//                     component: upload,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//                 {
+//                     path: '/simple',
+//                     name: '上传',
+//                     component: simple,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//                 {
+//                     path: '/batch_management',
+//                     name: '配置',
+//                     component: batch_management,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//                 {
+//                     path: '/yure_management',
+//                     name: '刷新预热',
+//                     component: yure_management,
+//                     icon: 'iconfont icon-dian',
+//                     // hidden: true
+//                 },
+//                 {
+//                     path: '/add_url',
+//                     name: '添加URL',
+//                     component: add_url,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//                 {
+//                     path: '/lot_operating',
+//                     name: '批量操作',
+//                     component: lot_operating,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//                 {
+//                     path: '/copy_configuration',
+//                     name: '复制配置',
+//                     component: copy_configuration,
+//                     icon: 'iconfont icon-dian',
+//                     hidden: true,
+//                 },
+//             ],
+//         },
+//         {
+//             path: '/fsd156',
+//             name: '数据中心',
+//             component: index,
+//             bgc: false,
+//         },
+//         {
+//             path: '/home_fosdr',
+//             name: '节点流量统计',
+//             component: index,
+//             icon: 'iconfont icon-tongjichaxun_',
+//             children: [
+//                 {
+//                     path: '/dosage_query',
+//                     name: '节点流量用量',
+//                     component: dosage_query,
+//                     icon: 'iconfont icon-dian',
+//                 }, 
+//                 {
+//                     path: '/node_flow',
+//                     name: '节点流量监控',
+//                     component: node_flow,
+//                     icon: 'iconfont icon-dian',
+//                 },
+//             ],
+//         },
+//         {
+//             path: '/geswg',
+//             name: '播放统计',
+//             component: index,
+//             icon: 'iconfont icon-jiankongtongji',
+//             children: [{
+//                     path: '/resources',
+//                     name: '播放流量',
+//                     component: resources,
+//                     icon: 'iconfont icon-dian',
+//                 },
+//                 {
+//                     path: '/statistics',
+//                     name: '统计分析',
+//                     component: statistics,
+//                     icon: 'iconfont icon-dian',
+//                 },
+//                 {
+//                     path: '/log_download',
+//                     name: '点播加速日志',
+//                     hidden: true,
+//                     component: log_download,
+//                     icon: 'iconfont icon-dian',
+//                 },
+//             ],
+//         },
+//         {
+//             path: '/fsfg',
+//             name: '终端管理',
+//             component: index,
+//             bgc: false,
+//         },
+//         {
+//             path: '/fdsf',
+//             name: '终端管理',
+//             component: index,
+//             hidden: true,
+//             icon: 'iconfont icon-zhongduanguanli',
+//             children: [{
+//                 path: '/terminal_management',
+//                 name: '终端管理',
+//                 component: terminal_management,
+//                 icon: 'iconfont icon-dian',
+//                 meta: {
+//                     dot: true
+//                 }
+//             }, ],
+//         },
+//         {
+//             path: '/terminal_management',
+//             name: '终端管理',
+//             component: terminal_management,
+//             icon: 'iconfont icon-zhongduanguanli',
+//         },
+//         {
+//             path: '/word_map',
+//             name: 'IP分布',
+//             component: index,
+//             hidden: true,
+//             icon: 'iconfont icon-zhongduanguanli',
+//             children: [{
+//                 path: '/word_map',
+//                 name: 'IP分布',
+//                 component: word_map,
+//                 hidden: false,
+//             }]
+//         }
+//     ],
+// });
+
 const router = new Router({
-    routes: [{
+    routes: [
+        { 
             path: '/',
             name: '登录',
             component: log,
@@ -74,12 +311,22 @@ const router = new Router({
             hidden: true,
         },
         {
-            path: '/overview',
-            name: '预览',
-            component: index,
+            path: '/view',
+            name: '总览',
+            component: view,
             hidden: true,
-            icon: 'iconfont icon-shujutongji',
-            children: [{
+        },
+        {
+            path: "/index",
+            component: index,
+            children: [
+                // {
+                //     path: '/index',
+                //     name: '概览',
+                //     component: index,
+                //     icon: 'iconfont icon-dian',
+                // },
+                {
                     path: '/information',
                     name: '账号信息',
                     component: information,
@@ -92,33 +339,28 @@ const router = new Router({
                     component: overview,
                     icon: 'iconfont icon-dian',
                 },
-            ],
-        },
-        {
-            path: '/overview',
-            name: '概览',
-            component: overview,
-            bsgc: true,
-            icon: 'iconfont icon-shujutongji',
-        },
-        {
-            path: '/gerg',
-            name: '配置管理',
-            component: index,
-            bgc: false,
-        },
-        {
-            path: '/home_four',
-            name: '分发加速配置',
-            component: index,
-            icon: 'iconfont icon-jiasu',
-            children: [{
+                {
+                    path: '/overview',
+                    name: '概览',
+                    component: overview,
+                    bsgc: true,
+                    icon: 'iconfont icon-shujutongji',
+                },
+                {
+                    path: '/gerg',
+                    name: '配置管理',
+                    component: index,
+                    bgc: false,
+                },
+                {
                     path: '/accelerate_management',
                     name: '域名管理',
                     component: accelerate_management,
                     icon: 'iconfont icon-dian',
+                    alias: 'Dibble'
                     // hidden: true
-                }, {
+                }, 
+                {
                     path: '/domain_management',
                     name: '点播加速管理',
                     component: domain_management,
@@ -174,20 +416,12 @@ const router = new Router({
                     icon: 'iconfont icon-dian',
                     hidden: true,
                 },
-            ],
-        },
-        {
-            path: '/fsd156',
-            name: '数据中心',
-            component: index,
-            bgc: false,
-        },
-        {
-            path: '/home_fosdr',
-            name: '节点流量统计',
-            component: index,
-            icon: 'iconfont icon-tongjichaxun_',
-            children: [
+                {
+                    path: '/fsd156',
+                    name: '数据中心',
+                    component: index,
+                    bgc: false,
+                },
                 {
                     path: '/dosage_query',
                     name: '节点流量用量',
@@ -200,14 +434,7 @@ const router = new Router({
                     component: node_flow,
                     icon: 'iconfont icon-dian',
                 },
-            ],
-        },
-        {
-            path: '/geswg',
-            name: '播放统计',
-            component: index,
-            icon: 'iconfont icon-jiankongtongji',
-            children: [{
+                {
                     path: '/resources',
                     name: '播放流量',
                     component: resources,
@@ -226,50 +453,35 @@ const router = new Router({
                     component: log_download,
                     icon: 'iconfont icon-dian',
                 },
-            ],
-        },
-        {
-            path: '/fsfg',
-            name: '终端管理',
-            component: index,
-            bgc: false,
-        },
-        {
-            path: '/fdsf',
-            name: '终端管理',
-            component: index,
-            hidden: true,
-            icon: 'iconfont icon-zhongduanguanli',
-            children: [{
-                path: '/terminal_management',
-                name: '终端管理',
-                component: terminal_management,
-                icon: 'iconfont icon-dian',
-                meta: {
-                    dot: true
+                {
+                    path: '/terminal_management',
+                    name: '终端管理',
+                    component: terminal_management,
+                    icon: 'iconfont icon-zhongduanguanli',
+                },
+                {
+                    path: '/word_map',
+                    name: 'IP分布',
+                    component: word_map,
+                    hidden: false,
+                },
+                {
+                    path: '/live_content',
+                    name: '直播加速内容',
+                    hidden: true,
+                    component: live_content,
+                    icon: 'iconfont icon-dian',
+                },
+                {
+                    path: '/live_info',
+                    name: '直播流信息',
+                    hidden: true,
+                    component: live_info,
+                    icon: 'iconfont icon-dian',
                 }
-            }, ],
-        },
-        {
-            path: '/terminal_management',
-            name: '终端管理',
-            component: terminal_management,
-            icon: 'iconfont icon-zhongduanguanli',
-        },
-        {
-            path: '/word_map',
-            name: 'IP分布',
-            component: index,
-            hidden: true,
-            icon: 'iconfont icon-zhongduanguanli',
-            children: [{
-                path: '/word_map',
-                name: 'IP分布',
-                component: word_map,
-                hidden: false,
-            }]
-        }
-    ],
+            ]
+        } 
+    ]
 });
 
 router.beforeEach((to, from, next) => {

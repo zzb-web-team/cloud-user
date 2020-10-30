@@ -7,11 +7,11 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
     var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 } else if (href.indexOf('service.kclgames.com') >= 0) {
     var userUrl = 'http://service.kclgames.com'; //PHP服务URL
-} else if (href.indexOf('zzb.onezen.net') >= 0) {
-    var userUrl = 'http://zzb.onezen.net'; //PHP服务URL
+} else if (href.indexOf('zzb.stguarantee.com') >= 0) {
+    var userUrl = 'http://zzb.stguarantee.com'; //PHP服务URL
 } else {
-    // var userUrl = 'http://zzb.onezen.net';
-    var userUrl = 'http://service.kclgames.com'; 
+    var userUrl = 'http://zzb.stguarantee.com';
+    // var userUrl = 'http://service.kclgames.com'; 
     // var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 }
 
@@ -167,6 +167,15 @@ export const export_dataflow_ranking_table_file = params => {
 export const get_nodetype_enum = params => {
     return post(`${userUrl}/node_mgmt/get_nodetype_enum`, params)
 };
+
+//直播加速内容信息
+export const query_liveinfo = params => {
+    return post(`${userUrl}/livebackmgmt_srv/query_liveinfo`, params)
+}
+//直播流信息
+export const query_streaminfo = params => {
+    return post(`${userUrl}/livebackmgmt_srv/query_streaminfo`, params)
+}
 
 /**资源用量 */
 //加速流量加载查询条件

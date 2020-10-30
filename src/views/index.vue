@@ -2,22 +2,9 @@
 	<div class="myownStyle">
 		<el-row class="container">
 			<el-col :span="24" class="header">
-				<el-col :span="10">
-          			<span style="fontSize:20px;color:#000">总览</span>
-					<el-dropdown trigger="hover">
-						<span class="el-dropdown-link userinfo-inner">
-							产品
-						</span>
-						<el-dropdown-menu slot="dropdown">
-							<!-- <el-dropdown-item>我的消息</el-dropdown-item> -->
-							<el-dropdown-item @click.native="goinfo"
-								>点播加速</el-dropdown-item
-							>
-							<el-dropdown-item divided @click.native="logout"
-								>直播加速</el-dropdown-item
-							>
-						</el-dropdown-menu>
-					</el-dropdown>
+				<el-col :span="8">
+          			<span style="fontSize:18px;color:#fff;" @click="gotoIndex">总览</span>					
+					<span style="fontSize:22px;color:#fff;margin-left:15px;">产品</span>
         		</el-col>
 				<el-col :span="4" class="userinfo">
 					<el-dropdown trigger="hover">
@@ -43,7 +30,7 @@
 					<div
 						style="color: #333;font-size: 20px;background: #fff;height: 60px;line-height: 60px;position: relative;z-index: 1;"
 					>
-						点播控制台
+						{{this.type == 'dibble' ? '云点播控制台' : '直播控制台'}}
 					</div>
 					<el-menu
 						:default-active="$route.path"
@@ -52,10 +39,11 @@
 						@close="handleclose"
 						@select="handleselect"
 						unique-opened
-						router
+						width="200px" 
+						
 					>
-						<!-- 一级菜单 -->
-						<template
+
+						<!-- <template
 							v-for="item in $router.options.routes"
 							v-if="!item.hidden"
 						>
@@ -74,7 +62,7 @@
 									<span>{{ item.name }}</span>
 								</template>
 
-								<!-- 二级菜单 -->
+
 								<template
 									v-for="itemChild in item.children"
 									v-if="!itemChild.hidden"
@@ -95,12 +83,12 @@
 											<span>{{ itemChild.name }}</span>
 										</template>
 
-										<!-- 三级菜单 -->
+
 										<el-menu-item
 											v-for="itemChild_Child in itemChild.children"
 											:index="itemChild_Child.path"
 											:key="itemChild_Child.path"
-											v-if="!itemChild_Child.hidden"
+											v-if="!itemChild_Child.hidden && itemChild_Child.alias == 'Dibble'"
 										>
 											<i
 												:class="itemChild_Child.icon"
@@ -157,7 +145,113 @@
 								<el-badge :is-dot=false class="item" v-if="item.path=='/terminal_management'">{{ item.name }}</el-badge>
 								<span slot="title" v-else>{{ item.name }}</span>
 							</el-menu-item>
-						</template>
+						</template> -->
+						<el-submenu index="1">
+							<template slot="title">
+								<router-link to="/overview" >
+									<i class="iconfont icon-shujutongji"></i>
+									<span>概览</span>
+								</router-link>
+							</template>
+						</el-submenu>
+						<el-submenu index="2">
+							<template slot="title">
+								<i class="iconfont icon-jiasu"></i>
+								<span>分发加速配置</span>
+							</template>
+							<el-menu-item index="2-1" v-if="type=='dibble'">
+								<!-- <template slot="title"> -->
+									<router-link to="/accelerate_management" >
+										<i class="iconfont icon-dian"></i>
+										<span>域名管理</span>
+									</router-link>
+								<!-- </template> -->
+							</el-menu-item>
+							<el-menu-item index="2-2" v-if="type=='dibble'">
+								<!-- <template slot="title"> -->
+									<router-link to="/domain_management" >
+										<i class="iconfont icon-dian"></i>
+										<span>点播加速管理</span>
+									</router-link>
+								<!-- </template> -->
+							</el-menu-item>
+							<el-menu-item index="2-3" v-if="type=='dibble'">
+								<!-- <template slot="title"> -->
+									<router-link to="/yure_management" >
+										<i class="iconfont icon-dian"></i>
+										<span>刷新预热</span>
+									</router-link>
+								<!-- </template> -->
+							</el-menu-item>
+							<el-menu-item index="2-4" v-if="type=='live'">
+								<!-- <template slot="title"> -->
+									<router-link to="/live_content" >
+										<i class="iconfont icon-dian"></i>
+										<span>直播加速内容</span>
+									</router-link>
+								<!-- </template> -->
+							</el-menu-item>
+							<el-menu-item index="2-4" v-if="type=='live'">
+								<!-- <template slot="title"> -->
+									<router-link to="/live_info" >
+										<i class="iconfont icon-dian"></i>
+										<span>直播流信息</span>
+									</router-link>
+								<!-- </template> -->
+							</el-menu-item>
+						</el-submenu>
+						<el-submenu index="3">
+							<template slot="title">
+								<i class="iconfont icon-tongjichaxun_"></i>
+								<span>节点流量统计</span>
+							</template>
+							<el-menu-item index="3-1">
+								<template slot="title">
+									<router-link to="/dosage_query" >
+										<i class="iconfont icon-dian"></i>
+										<span>节点流量用量</span>
+									</router-link>
+								</template>
+							</el-menu-item>
+							<el-menu-item index="3-2">
+								<template slot="title">
+									<router-link to="/node_flow" >
+										<i class="iconfont icon-dian"></i>
+										<span>节点流量监控</span>
+									</router-link>
+								</template>
+							</el-menu-item>
+						</el-submenu>
+						<el-submenu index="4">
+							<template slot="title">
+								<i class="iconfont icon-jiankongtongji"></i>
+								<span>播放统计</span>
+							</template>
+							<el-menu-item index="4-1">
+								<template slot="title">
+									<router-link to="/resources" >
+										<i class="iconfont icon-dian"></i>
+										<span>播放流量</span>
+									</router-link>
+								</template>
+							</el-menu-item>
+							<el-menu-item index="4-2">
+								<template slot="title">
+									<router-link to="/statistics" >
+										<i class="iconfont icon-dian"></i>
+										<span>统计分析</span>
+									</router-link>
+								</template>
+							</el-menu-item>
+						</el-submenu>
+						<el-submenu index="5">
+							<template slot="title">
+								<router-link to="/terminal_management" >
+									<i class="iconfont icon-zhongduanguanli"></i>
+									<span>终端管理</span>
+								</router-link>
+							</template>
+						</el-submenu>
 					</el-menu>
 				</aside>
 				<section class="content-container">
@@ -179,6 +273,7 @@ import { refresh_state } from '../servers/api';
 export default {
 	data() {
 		return {
+			type: 'dibble',
 			sysName: '云点播',
 			collapsed: false,
 			sysUserName: '',
@@ -201,7 +296,11 @@ export default {
 			shua_success: '',
 		};
 	},
+	created () {
+		this.type = localStorage.getItem('type');
+	},
 	mounted() {
+		this.type = localStorage.getItem('type');
 		if (this.$cookies.get('user')) {
 			var user = this.$cookies.get('user');
 			sessionStorage.setItem(
@@ -422,6 +521,10 @@ export default {
 			//console.log('handleclose');
 		},
 		handleselect: function(a, b) {},
+		//返回总览
+		gotoIndex() {
+			this.$router.push({ path: '/view' });
+		},
 		//跳转个人信息
 		goinfo() {
 			this.$router.push({ path: '/information' });

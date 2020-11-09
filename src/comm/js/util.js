@@ -255,6 +255,47 @@ export default {
         let endTime = `${year}-${month}-${day}`;
         return endTime;
     },
+    //时间粒度公共函数
+    timeUnit: function(startTime, endTime) {
+        let tempTime = endTime - startTime;
+        if (tempTime <= 24 * 60 * 60) {
+            return 60;
+        } else if (24 * 60 * 60 < tempTime && tempTime <= 24 * 60 * 60 * 7) {
+            return 240;
+        } else if (tempTime > 24 * 60 * 60 * 7) {
+            return 24 * 60;
+        }
+    },
+    timeUnitActive: function(startTime,endTime) {
+    
+        let tempTime = endTime - startTime;
+        if (tempTime <= 86400) {
+          return  2 * 60;
+        } else if (86400 < tempTime) {
+          return 24 * 60;
+        } 
+      },
+      timeUnitActive1: function(startTime,endTime) {
+        
+        let tempTime = endTime - startTime;
+        if (tempTime <= 86400) {
+          return  60;
+        } else if (86400 < tempTime ) {
+          return 1440;
+        }
+      },
+      timeUnitActive2: function(startTime,endTime) {
+        
+        // let tempTime = endTime - startTime;
+        // if (tempTime <= 24 * 60 * 60) {
+        //   return 5;
+        // } else if (24 * 60 * 60 < tempTime && tempTime <= 24 * 60 * 60 * 31) {
+        //   return 60;
+        // } else if (tempTime > 24 * 60 * 60 * 31) {
+        //   return 24 * 60;
+        // }
+        return 60;
+      },
 
     //错误提示码返回
 

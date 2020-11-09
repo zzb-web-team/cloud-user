@@ -23,11 +23,11 @@
 				<span @click="godosage" class="astyle">更多数据</span>
 			</div>
 			<div
-				style="height: 483px;padding: 43px 54px;background: #ffffff;box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);"
+				style="padding: 43px 54px;background: #ffffff;box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);"
 			>
 				<div
 					id="myChart3"
-					:style="{ height: '397px', fontSize: '16px' }"
+					:style="{ height: '450px', fontSize: '16px' }"
 				></div>
 			</div>
 		</div>
@@ -255,19 +255,17 @@ export default {
 		// border: 1px solid #000;
 		.content_top_title {
 			margin: auto;
-			margin-right: 45px;
-			margin-left: 45px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			line-height: 75px;
 			span:nth-child(1) {
-				color: #202020;
+				color: #333;
 				font-weight: 400;
 				font-size: 16px;
 			}
 			span:nth-child(2) {
-				color: #297aff;
+				color: #644CF7;
 				font-weight: 400;
 				font-size: 14px;
 			}
@@ -276,8 +274,6 @@ export default {
 			height: 116px;
 			background: #ffffff;
 			margin: auto;
-			margin-right: 45px;
-			margin-left: 45px;
 			box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
 			border-radius: 2px;
 			text-align: left;
@@ -296,28 +292,25 @@ export default {
 	.content_bottom {
 		margin-top: 70px;
 		margin: auto;
-		margin-left: 45px;
-		margin-right: 45px;
 		.content_bottom_title {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			line-height: 75px;
 			span:nth-child(1) {
-				color: #202020;
+				color: #333;
 				font-weight: 400;
 				font-size: 16px;
 			}
 			span:nth-child(2) {
-				color: #297aff;
+				color: #644CF7;
 				font-weight: 400;
 				font-size: 14px;
 			}
 		}
-		// padding: 10px;
 		p {
 			text-align: right;
-			color: #1296db;
+			color: #644CF7;
 		}
 	}
 	.astyle:hover {

@@ -22,6 +22,7 @@ import home_eight from '@/views/menu/home_eight';
 //用户中心
 import information from '@/views/table_of_contents/information.vue';
 import overview from '@/views/table_of_contents/overview.vue';
+import live_overview from '@/views/table_of_contents/live_overview.vue';
 
 //URL管理
 import domain_management from '@/views/domain/domain_management.vue';
@@ -50,6 +51,10 @@ import terminal_management from '@/views/terminal/terminal_management.vue';
 //
 import live_content from "@/views/live/live_content";
 import live_info from "@/views/live/live_info";
+import live_dosage_query from "@/views/live/live_dosage_query";
+import live_node_flow from "@/views/live/live_node_flow";
+import live_resources from "@/views/live/live_resources";
+import live_statistics from "@/views/live/live_statistics";
 
 Vue.use(Router);
 
@@ -320,12 +325,6 @@ const router = new Router({
             path: "/index",
             component: index,
             children: [
-                // {
-                //     path: '/index',
-                //     name: '概览',
-                //     component: index,
-                //     icon: 'iconfont icon-dian',
-                // },
                 {
                     path: '/information',
                     name: '账号信息',
@@ -337,12 +336,12 @@ const router = new Router({
                     path: '/overview',
                     name: '概览',
                     component: overview,
-                    icon: 'iconfont icon-dian',
+                    icon: 'iconfont icon-shujutongji',
                 },
                 {
-                    path: '/overview',
+                    path: '/live_overview',
                     name: '概览',
-                    component: overview,
+                    component: live_overview,
                     bsgc: true,
                     icon: 'iconfont icon-shujutongji',
                 },
@@ -428,10 +427,22 @@ const router = new Router({
                     component: dosage_query,
                     icon: 'iconfont icon-dian',
                 }, 
+                {                            //直播
+                    path: '/live_dosage_query',
+                    name: '节点流量用量',
+                    component: live_dosage_query,
+                    icon: 'iconfont icon-dian',
+                }, 
                 {
                     path: '/node_flow',
                     name: '节点流量监控',
                     component: node_flow,
+                    icon: 'iconfont icon-dian',
+                },
+                {                                 //直播
+                    path: '/live_node_flow',
+                    name: '节点流量监控',
+                    component: live_node_flow,
                     icon: 'iconfont icon-dian',
                 },
                 {
@@ -440,10 +451,22 @@ const router = new Router({
                     component: resources,
                     icon: 'iconfont icon-dian',
                 },
+                {                            //直播
+                    path: '/live_resources',
+                    name: '播放流量',
+                    component: live_resources,
+                    icon: 'iconfont icon-dian',
+                },
                 {
                     path: '/statistics',
                     name: '统计分析',
                     component: statistics,
+                    icon: 'iconfont icon-dian',
+                },
+                {                            //直播
+                    path: '/live_statistics',
+                    name: '统计分析',
+                    component: live_statistics,
                     icon: 'iconfont icon-dian',
                 },
                 {

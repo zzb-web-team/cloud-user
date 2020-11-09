@@ -1835,7 +1835,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .btn_active {
 	color: #409eff;
 	border-color: #c6e2ff;

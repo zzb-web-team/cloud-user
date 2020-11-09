@@ -124,7 +124,7 @@ export default {
 	mounted() {
 		if (this.$cookies.get('id')) {
 			this.$router.push({
-				path: '/overview',
+				path: '/view',
 			});
 		}
 	},
@@ -201,7 +201,7 @@ export default {
 								7 * 24 * 60 * 60
 							);
 							this.$router.push({
-								path: '/overview',
+								path: '/view',
 							});
 						}
 					});

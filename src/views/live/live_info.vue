@@ -1,137 +1,119 @@
 <template>
   <section class="myself-container content">
     <div class="top_title">直播流信息</div>
-    <div class="user-title" style="display: flex;flex-flow: column;">
-      <div class="resources_con">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <div style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;">
-              <el-input v-model="values" placeholder="请输入直播流名称、直播流地址、直播间ID" style="width:20%;margin-right: 10px;" @keyup.enter.native="onChanges">
-                <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
-              </el-input>
-              <!-- <el-radio-group
-                v-model="radio"
-                size="medium"
-                @change="select_time()"
-                v-show="!showzdy"
-              >
-                <el-radio-button size = "small" label="1">今天</el-radio-button >
-                <el-radio-button size = "small" label="2">昨天</el-radio-button >
-                <el-radio-button size = "small" label="3">近7天</el-radio-button >
-                <el-radio-button size = "small" label="4">近30天</el-radio-button >
-                <el-radio-button size = "small" label="5">自定义</el-radio-button >
-              </el-radio-group>
-              <el-button
-                type="primary"
-                v-show="showzdy"
-                 size = "small"
-                style="background:#409EFF;border:#409EFF"
-                @click="setZdy"
-                >自定义</el-button
-						  > -->
-              <el-date-picker style="margin-left:10px;" v-model="times" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="left" @change="gettimes(0)"></el-date-picker>
-              <!-- <el-button style="margin-left:10px;" type="primary" @click="seachtu()">确定</el-button> -->
-            </div>
-          <el-tab-pane label="在线流" name="first" :lazy="true">
-            <div class="devide_table">
-              <el-row type="flex" class="row_active">
-                <el-col :span="24">
-                  <div style="display: flex;justify-content: flex-end;">
-                    <el-button type="primary" @click="toExportExcel">导出</el-button>
-                  </div>
-                  <el-table :data="onlineDatas" border max-height="560px" style="width: 100%;margin: 10px 0;" :cell-style="rowClass" :header-cell-style="headClass">
-                    <el-table-column label="直播流名称">
-                      <template slot-scope="scope">
-                        <div>{{ scope.row.streamName }}</div>
-                      </template>
-                    </el-table-column>
+    <div class="content-main">
+      <el-tabs v-model="activeName" @tab-click="handleClick" style="margin">
+        <div class="seach" style="margin-top: 40px;">
+          <el-input v-model="values" placeholder="请输入直播流名称、直播流地址、直播间ID、渠道ID" style="width:24%;margin-right: 10px;" @keyup.enter.native="onChanges">
+            <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
+          </el-input>
+          <el-date-picker style="margin-left:10px;" v-model="times" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="left" @change="gettimes"></el-date-picker>
+          <el-button style="margin-left: 10px;" type="primary" @click="reset">重置</el-button>
+        </div>
+        <el-tab-pane label="在线流" name="first" :lazy="true">
+          <div class="device_table">
+            <el-row type="flex" class="row_active">
+              <el-col :span="24">
+                <el-table :data="onlineDatas" border max-height="560px" style="width: 100%;margin: 10px 0;" :cell-style="rowClass" :header-cell-style="headClass">
+                  <el-table-column label="直播流名称">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.streamName }}</div>
+                    </template>
+                  </el-table-column>
 
-                    <el-table-column label="直播流地址">
-                      <template slot-scope="scope">
-                        <div>{{ scope.row.liveAddr }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="直播间ID">
-                      <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                          <div>{{ scope.row.roomId }}</div>
-                        </div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="终端名称" >
-                      <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                          <div>{{ scope.row.terminalName }}</div>
-                        </div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="拉流开始时间">
-                      <template slot-scope="scope">
-                        <div>{{ scope.row.startTime | settimes }}</div>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <fenye style="float:right;margin:10px 0 0 0;" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :currentPage = "pageNo" :pagesa="total_cnt"></fenye>
-                </el-col>
-              </el-row>
+                  <el-table-column label="直播流地址">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.liveAddr }}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="直播间ID">
+                    <template slot-scope="scope">
+                      <div style="display: flex;justify-content: center;">
+                        <div>{{ scope.row.roomId }}</div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="终端名称" >
+                    <template slot-scope="scope">
+                      <div style="display: flex;justify-content: center;">
+                        <div>{{ scope.row.terminalName }}</div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="渠道ID" >
+                    <template slot-scope="scope">
+                      <div style="display: flex;justify-content: center;">
+                        <div>{{ scope.row.ChanId }}</div>
+                      </div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="拉流开始时间" sortable="true" sort-by="settimes">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.startTime | settimes }}</div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <fenye style="float:right;margin:10px 0 0 0;" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :currentPage = "pageNo" :pagesa="total_cnt"></fenye>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="历史流" name="second" :lazy="true">
+          <div class="device_table">
+            <div class="operating">
+              <el-button style="margin-left: auto;" type="primary">导出</el-button>
             </div>
-          </el-tab-pane>
-          <el-tab-pane label="历史流" name="second" :lazy="true">
-            <div class="devide_table">
-              <div style="display: flex;justify-content: flex-end;">
-                <el-button type="primary" @click="toExportExcel">导出</el-button>
-              </div>
-              <el-row type="flex" class="row_active">
-                <el-col :span="24">
-                  <el-table :data="historyDatas" border max-height = "530px" style="width: 100%; margin: 10px 0;" :cell-style="rowClass" :header-cell-style="headClass">
-                    <el-table-column label="直播流名称">
-                      <template slot-scope="scope">
-                          <div>{{ scope.row.urlname }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="直播流地址">
+            <el-row type="flex" class="row_active">
+              <el-col :span="24">
+                <el-table :data="historyDatas" border max-height = "530px" style="width: 100%; margin: 10px 0;" :cell-style="rowClass" :header-cell-style="headClass">
+                  <el-table-column label="直播流名称">
                     <template slot-scope="scope">
-                        <div>{{ scope.row.channelid }}</div>
+                        <div>{{ scope.row.urlname }}</div>
                     </template>
-                    </el-table-column>
-                    <el-table-column label="直播间ID">
+                  </el-table-column>
+                  <el-table-column label="直播流地址">
+                  <template slot-scope="scope">
+                      <div>{{ scope.row.domain }}</div>
+                  </template>
+                  </el-table-column>
+                  <el-table-column label="直播间ID">
+                  <template slot-scope="scope">
+                      <div style="display: flex;justify-content: center;">
+                        <div>{{ scope.row.RoomId }}</div>
+                      </div>
+                  </template>
+                  </el-table-column>
+                  <el-table-column label="终端名称">
+                  <template slot-scope="scope">
+                      <div style="display: flex;justify-content: center;">
+                        <div>{{ scope.row.accelCnt }}</div>
+                      </div>
+                  </template>
+                  </el-table-column>
+                  <el-table-column label="渠道ID" >
                     <template slot-scope="scope">
                         <div style="display: flex;justify-content: center;">
-                          <div>{{ scope.row.domain }}</div>
+                          <div>{{ scope.row.accelCntpercent  }}</div>
                         </div>
                     </template>
-                    </el-table-column>
-                    <el-table-column label="终端名称">
+                  </el-table-column>
+                  <el-table-column label="拉流开始时间">
                     <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                          <div>{{ scope.row.accelCnt }}</div>
-                        </div>
+                      <div>{{ scope.row.stime | settimes }}</div>
                     </template>
-                    </el-table-column>
-                    <el-table-column label="渠道ID" >
-                      <template slot-scope="scope">
-                          <div style="display: flex;justify-content: center;">
-                            <div>{{ scope.row.accelCntpercent | percentss }}</div>
-                          </div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="拉流开始时间">
-                      <template slot-scope="scope">
-                        <div>{{ scope.row.stime | settimes }}</div>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="拉流结束时间">
-                      <template slot-scope="scope">
-                        <div>{{ scope.row.etime | settimes }}</div>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <fenye style="float:right;margin:10px 0 20px 0;" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :currentPage = "pageNo" :pagesa="total_cnt"></fenye>
-                </el-col>
-              </el-row>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
+                  </el-table-column>
+                  <el-table-column label="拉流结束时间">
+                    <template slot-scope="scope">
+                      <div>{{ scope.row.etime | settimes }}</div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <fenye style="float:right;margin:10px 0 20px 0;" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :currentPage = "pageNo" :pagesa="total_cnt"></fenye>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </section>
 </template>
@@ -153,13 +135,13 @@ export default {
       values: "",
       radio: 1,
       showzdy: false,
-      chanid: '',
       times: [],
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 10,
       total_cnt: 0,
       onlineDatas: [],
-      historyDatas: []
+      historyDatas: [],
+      chanid: '',
     };
   },
   filters: {
@@ -182,22 +164,17 @@ export default {
   },
   created() {
     if (this.$cookies.get('id')) {
-			this.chanid = this.$cookies.get('id');
+			this.chanid = this.$cookies.get('id') ;
 		} else {
 			this.$router.push({ path: '/' });
 		}
     this.starttime = new Date(new Date().toLocaleDateString()).getTime() / 1000;
     this.endtime = Date.parse(new Date()) / 1000;
-    this.times[0] = common.getTimess(this.starttime * 1000);
-    this.times[1] = common.getTimess(this.endtime * 1000);
+    this.times[0] = this.common.getTimes(this.starttime * 1000);
+    this.times[1] = this.common.getTimes(this.endtime * 1000);
     this.getStreamInfo();
   },
   methods: {
-    search(){
-      this.pageNo = 0;
-      this.getStreamInfo();
-      // this.pageSize = 10;
-    },
     //获取加速次数每页数量
     handleSizeChange(pagetol) {
       this.pageSize = pagetol;
@@ -208,43 +185,17 @@ export default {
       this.pageNo = pages;
       this.getStreamInfo();
     },
-    //自定义事件组件
-    select_time() {
-			if (this.radio == 1) {
-				this.showzdy = false;
-				this.today();
-			} else if (this.radio == 2) {
-				this.showzdy = false;
-				this.yesterday();
-			} else if (this.radio == 3) {
-				this.showzdy = false;
-				this.sevendat();
-			} else if (this.radio == 4) {
-				this.showzdy = false;
-				this.thirtyday();
-			} else if (this.radio == 5) {
-				this.showzdy = true;
-			}
-    },
     onChanges() {
-      this.pageNo = 0;
+      this.pageNo = 1;
       this.getStreamInfo();
     },
 
-    setZdy() {
-      this.showzdy = !this.showzdy;
-      this.radio = 1;
-    },
-
-    seachtu(data) {
-      if (this.endtime - this.starttime > 7776000) {
-        this.$message({
-          message: "起始时间和结束时间最大跨度不能超过三个月",
-          type: "error",
-        });
-        return false;
-      }
-      this.pageNo = 0;
+    reset() {
+      this.pageNo = 1;
+      this.values = '';
+      this.starttime = new Date(new Date().toLocaleDateString()).getTime() / 1000;
+      this.endtime = Date.parse(new Date()) / 1000;
+      this.times = [];
       this.getStreamInfo();
     },
 
@@ -252,7 +203,7 @@ export default {
        let params = new Object();
       params.startTime = this.starttime;
       params.endTime = this.endtime;
-      params.page = this.pageNo;
+      params.pageNo = this.pageNo-1;
       params.chanId = this.chanid;
       if(this.values !== ""){
         var roomId = /^\d{8}$/;
@@ -323,17 +274,15 @@ export default {
     },
     //自定义时间
     gettimes(cal) {
-      
       this.starttime = this.times ? dateToMs(this.times[0]) : new Date(new Date().toLocaleDateString()).getTime() / 1000;
       this.endtime = this.times ? dateToMs(this.times[1]) + (24*60*60-1) : Date.parse(new Date()) / 1000;
-      
       this.pageNo = 0;
       this.getStreamInfo();
     },
     
     // 表头样式设置
     headClass() {
-      return "text-align: center;background:#F3F6FB;";
+      return "text-align: center; background: #FDFBFB; font-weight: 500; color: #333";
     },
     // 表格样式设置
     rowClass() {
@@ -364,7 +313,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .myself-container {
   width: 100%;
   //min-width: 1600px;
@@ -405,9 +354,8 @@ export default {
   }
 
   .devide_table {
-    padding: 35px;
+    padding: 0px 35px 35px 35px;
     height: auto;
-    margin-top: 20px;
     background: #ffffff;
     border-radius: 2px;
     box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);

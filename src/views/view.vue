@@ -2,40 +2,63 @@
 	<div class="myownStyle">
 		<el-row class="container">
 			<el-col :span="24" class="header">
-				<el-col :span="8">
-          			<span style="fontSize:18px;color:#fff">总览</span>
-					<el-dropdown trigger="hover" style="margin-left: 15px;">
-						<span style="fontSize:22px;color:#fff">
-							产品
+				<div>
+          			<span style="fontSize:24px; color:#fff; margin-left: 80px;">总览</span>
+					<el-dropdown trigger="hover" style="margin-left: 103px; cursor: pointer">
+						<span style="fontSize:16px;color:#fff">产品
+							<i class="el-icon-caret-bottom"></i>
 						</span>
-						<el-dropdown-menu slot="dropdown">
-							<!-- <el-dropdown-item>我的消息</el-dropdown-item> -->
-							<el-dropdown-item @click.native="dibble"><span style="fontSize:18px;color:#000">点播加速</span></el-dropdown-item>
-							<el-dropdown-item divided @click.native="live"><span style="fontSize:18px;color:#000">直播加速</span></el-dropdown-item>
+						<el-dropdown-menu slot="dropdown" style="margin: -8px 0 0 10px;">
+							<el-dropdown-item @click.native="dibble"><span style="fontSize:16px; color:#000">点播加速</span></el-dropdown-item>
+							<el-dropdown-item divided @click.native="live"><span style="fontSize:16px; color:#000">直播加速</span></el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-        		</el-col>
-				<el-col :span="4" class="userinfo">
+        		</div>
+				<div class="userinfo">
 					<el-dropdown trigger="hover">
 						<span class="el-dropdown-link userinfo-inner">
 							<img src="../assets/download.jpg" />
 							{{ sysUserName }}
 						</span>
 						<el-dropdown-menu slot="dropdown">
-							<!-- <el-dropdown-item>我的消息</el-dropdown-item> -->
-							<el-dropdown-item @click.native="goinfo"
-								>账号信息</el-dropdown-item
-							>
-							<el-dropdown-item divided @click.native="logout"
-								>退出登录</el-dropdown-item
-							>
+							<el-dropdown-item @click.native="goinfo">账号信息</el-dropdown-item>
+							<el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
-				</el-col>
+				</div>
 			</el-col>
-
 			<el-col :span="24" class="main">
-				
+				<div class="wrapper">
+					<div class="topItem">
+						<div class="imgStyle">
+							<img src="../assets/download.jpg" />
+						</div>
+						<div class="infoStyle">
+							<p>{{sysUserName}}</p>
+							<p style="cursor: pointer;" @click="goinfo">
+								更多
+								<img src="../assets/img/jiantou.png" alt="">
+							</p>
+						</div>
+						<div class="descStyle">
+							<p><img width="24" height="22" style="margin-right: 8px;" src="../assets/img/youxiang.png" alt="">  安全邮箱</p>
+							<p><img width="20" height="24" style="margin-right: 8px; margin-left: 80px;" src="../assets/img/shouji.png" alt="">  安全手机</p>
+						</div>
+					</div>
+					<p class="title">产品服务</p>
+					<div class="bottomItem">
+						<div class="itemStyle">
+							<img src="../assets/img/dibble.png" alt="">
+							<p>点播加速</p>
+							<button @click="dibble">立即使用</button>
+						</div>
+						<div class="itemStyle">
+							<img src="../assets/img/live.png" alt="">
+							<p>直播加速</p>
+							<button @click="live">立即使用</button>
+						</div>
+					</div>
+				</div>
 			</el-col>
 		</el-row>
 	</div>
@@ -83,7 +106,7 @@ export default {
         },
         live() {
             localStorage.setItem('type', 'live');
-            this.$router.push({path: '/overview'});
+            this.$router.push({path: '/live_overview'});
         },
 		//跳转个人信息
 		goinfo() {
@@ -106,24 +129,11 @@ export default {
 				})
 				.catch(() => {});
 		},
-		//折叠导航栏
-		collapse: function() {
-			this.collapsed = !this.collapsed;
-		},
-		showMenu(i, status) {
-			this.$refs.menuCollapsed.getElementsByClassName(
-				'submenu-hook-' + i
-			)[0].style.display = status ? 'block' : 'none';
-		},
 	},
 };
 </script>
 
-<style scoped lang="scss">
-// @import "../assets/css/style/newstyle";
-.item {
-	line-height: 12px;
-}
+<style scoped lang="scss" scoped>
 .container {
 	position: absolute;
 	top: 0px;
@@ -132,12 +142,17 @@ export default {
 	right: 0;
 	width: 100%;
 	margin: 0 auto;
+	background: #F9F9F9;
 	.header {
+		position: absolute;
 		height: 60px;
 		line-height: 60px;
-		//	background: $color-primary;
 		color: #000;
-		background: #297aff;
+		background: #644CF7;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
 		.userinfo {
 			text-align: right;
 			padding-right: 35px;
@@ -154,137 +169,93 @@ export default {
 				}
 			}
 		}
-		.logo {
-			//width:230px;
-			height: 60px;
-			font-size: 22px;
-			padding-left: 20px;
-			padding-right: 20px;
-			border-color: #eef1924d;
-			border-right-width: 1px;
-			border-right-style: solid;
-			background: #ffffff;
-			img {
-				width: auto;
-				float: left;
-				margin: 10px 10px 10px 18px;
-			}
-			.txt {
-				color: #fff;
-			}
-		}
-		.logo-width {
-			width: 230px;
-		}
-		.logo-collapse-width {
-			width: 60px;
-		}
-		.tools {
-			padding: 0px 23px;
-			width: 14px;
-			height: 60px;
-			line-height: 60px;
-			cursor: pointer;
-		}
 	}
 	.main {
+		height: 100%;
+		width: 100%;
 		display: flex;
-		// background: #324057;
-		position: absolute;
-		top: 60px;
-		bottom: 0px;
-		overflow: hidden;
-		aside {
-			flex: 0 0 230px;
-			width: 230px;
-			// position: absolute;
-			// top: 0px;
-			// bottom: 0px;
-			.el-menu {
-				height: 100%;
-				text-align: center;
-				box-shadow: 2px 0px 7px 0px rgba(38, 101, 160, 0.08);
-			}
-			.collapsed {
-				width: 60px;
-				.item {
-					position: relative;
+		justify-content: center;
+		align-items: center;
+		background: #F9F9F9;
+		.wrapper{
+			.topItem{
+				position: relative; 
+				width: 804px;
+				height: 160px;
+				border-radius: 32px;
+				background: #fff;
+				box-shadow: 0px 8px 16px 0px rgba(51, 51, 51, 0.06);
+				.imgStyle{
+					position: absolute; 
+					top: -10px;
+					left: -10px;
+					img{
+						width: 112px; 
+						height: 112px;
+						border-radius: 112px;
+					}
 				}
-				.submenu {
-					position: absolute;
-					top: 0px;
-					left: 60px;
-					z-index: 99999;
-					height: auto;
-					display: none;
+				.infoStyle{
+					display: flex;
+					justify-content: space-between;
+					padding: 40px 48px 40px 154px;
 				}
-			}
-		}
-		.menu-collapsed {
-			flex: 0 0 60px;
-			width: 60px;
-		}
-		.menu-expanded {
-			flex: 0 0 280px;
-			width: 280px;
-			//margin-top: -60px;
-		}
-		.content-container {
-			// background: #f1f2f7;
-			flex: 1;
-			// position: absolute;
-			// right: 0px;
-			// top: 0px;
-			// bottom: 0px;
-			// left: 230px;
-			overflow-y: scroll;
-			// padding: 20px;
-			.breadcrumb-container {
-				//margin-bottom: 15px;
-				float: none !important;
-				.title {
-					width: 200px;
-					float: left;
-					color: #ffffff;
-					text-align: left;
-					font-size: 22px;
-				}
-				.breadcrumb-inner {
-					float: right;
+				.descStyle{
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-start;
+					padding: 0px 0px 0px 154px;
+					p{
+						color: #666;
+						font-size: 16px;
+						display: flex;
+						flex-direction: row;
+						justify-content: flex-start;
+						align-items: center;
+					}
 				}
 			}
-			.content-wrapper {
-				// background-color: #272731;
-				box-sizing: border-box;
+			.title{
 				width: 100%;
-				height: 100%;
-				// color: #ffffff;
+				text-align: left;
+				font-size: 18px;
+				color: #333;
+				font-weight: 500;
+				margin: 100px 0 35px;
+			}
+			.bottomItem{
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				.itemStyle{
+					width: 48.5%;
+					height: 350px;
+					background: #fff;
+					border-radius: 32px;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					box-shadow: 0px 8px 16px 0px rgba(51, 51, 51, 0.06);
+					img{
+						width: 110px;
+						height: 110px;
+					}
+					button{
+						width: 144px;
+						height: 56px;
+						background: #F6F4FF;
+						color: #644CF7;
+						border: 1px solid #644CF7;
+						outline: none;
+						border-radius: 28px;
+						margin-top: 47px;
+						cursor: pointer;
+					}
+				}
 			}
 		}
 	}
-}
-.active {
-	background: #297aff;
-	pointer-events: none;
-}
-.textdanger {
-	background: #ffffff;
-	color: #333333;
-	pointer-events: none; //不可点击
-	text-align: left;
-	height: 64px;
-	line-height: 64px;
-	span {
-		font-size: 18px;
-	}
-}
-.onle {
-	span {
-		font-size: 18px;
-	}
-}
-
-el-submenu {
-	text-align: center;
 }
 </style>

@@ -321,3 +321,95 @@ export const manage_dataflow_table = (params) =>
 //用量导出
 export const export_manage_dataflow_table_file = (params) =>
     post(`${userUrl}/file_download/export_manage_dataflow_table_file`, params);
+
+
+// 直播数据中心
+//播放异常信息导出接口
+export const export_live_exception_statistics_file = params => {
+    return post(`${userUrl}/file_download/export_live_exception_statistics_file`, params)
+};
+//播放信息统计导出接口
+export const export_live_info_statistics_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_info_statistics_file`, params)
+};
+//节点流量监控列表导出
+export const export_live_ipfs_flow_table_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_ipfs_flow_table_file`, params)
+};
+//节点流量用量列表导出
+export const export_live_manage_dataflow_table_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_manage_dataflow_table_file`, params)
+};
+//直播加速排行导出
+export const export_live_ranking_table_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_ranking_table_file`, params)
+};
+//播放流量统计列表导出
+export const export_live_sdk_flow_table_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_sdk_flow_table_file`, params)
+};
+//访问IP分布按运营商统计导出
+export const export_live_topisp_accesscnt_curve_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_topisp_accesscnt_curve_file`, params)
+};
+//访问IP分布按区域统计导出
+export const export_live_topregion_accesscnt_curve_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_topregion_accesscnt_curve_file`, params)
+};
+//访问统计导出接口
+export const export_live_visit_statistic_file = (params) => {
+    return post(`${userUrl}/file_download/export_live_visit_statistic_file`, params)
+};
+
+//播放异常统计接口
+export const live_exception_statistics = (params) => {
+    return post(`${userUrl}/resource_manage/live_exception_statistics`, params)
+};
+//播放信息统计接口
+export const live_info_statistics = (params) => {
+    return post(`${userUrl}/resource_manage/live_info_statistics`, params)
+};
+//节点流量监控-柱形图
+export const live_ipfs_flow_curve = (params) => {
+    return post(`${userUrl}/resource_manage/live_ipfs_flow_curve`, params)
+};
+//节点流量监控-列表
+export const live_ipfs_flow_table = (params) => {
+    return post(`${userUrl}/resource_manage/live_ipfs_flow_table`, params)
+};
+//节点流量用量-柱形图
+export const live_manage_dataflow_curve = (params) => {
+    return post(`${userUrl}/resource_manage/live_manage_dataflow_curve`, params)
+};
+//节点流量用量-列表
+export const live_manage_dataflow_table = (params) => {
+    return post(`${userUrl}/resource_manage/live_manage_dataflow_table`, params)
+};
+//播放流量终端统计
+export const live_sdk_flow_control = (params) => {
+    return post(`${userUrl}/resource_manage/live_sdk_flow_control`, params)
+};
+//播放流量统计-图
+export const live_sdk_flow = (params) => {
+    return post(`${userUrl}/resource_manage/live_sdk_flow`, params)
+};
+//播放流量统计-列表
+export const live_sdk_flow_table = (params) => {
+    return post(`${userUrl}/resource_manage/live_sdk_flow_table`, params)
+};
+//直播加速统计
+export const query_live_ranking = (params) => {
+    return post(`${userUrl}/resource_manage/query_live_ranking`, params)
+};
+//访问统计
+export const live_visit_statistic = (params) => {
+    return post(`${userUrl}/videoaccess_statistic/live_visit_statistic`, params)
+};
+//访问IP分布按照运营商统计
+export const query_live_topisp_accesscnt_curve = (params) => {
+    return post(`${userUrl}/videoaccess_statistic/query_live_topisp_accesscnt_curve`, params)
+};
+//访问IP分布按照区域统计
+export const query_live_topregion_accesscnt_curve = (params) => {
+    return post(`${userUrl}/videoaccess_statistic/query_live_topregion_accesscnt_curve`, params)
+};

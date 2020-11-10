@@ -1,13 +1,8 @@
 <template>
 	<section class="myself-container content">
 		<div class="top_title">节点流量用量</div>
-		<div
-			class="user-title"
-			style="display: flex;flex-flow: column;margin: auto;margin-left:45px;margin-right:45px;"
-		>
-			<div
-				style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
-			>
+		<div class="content-main">
+			<div class="seach">
 				<el-input
 					placeholder="请输入域名"
 					v-model="urlname"
@@ -36,9 +31,6 @@
 						@click="changmvitem()"
 					></i>
 				</el-input>
-				<!-- <span style="margin-right:10px;margin-left:15px;"
-					>终端类型:</span
-				> -->
 				<el-select
 					v-model="acc"
 					placeholder="节点渠道"
@@ -53,14 +45,6 @@
 						:value="item.value"
 					></el-option>
 				</el-select>
-				<!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
-				<!-- <el-button-group>
-					<el-button @click="today()">今天</el-button>
-					<el-button @click="yesterday()">昨天</el-button>
-					<el-button @click="sevendat()">近7天</el-button>
-					<el-button @click="thirtyday()">近30天</el-button>
-					<el-button @click="showzi()">自定义</el-button>
-				</el-button-group> -->
 				<div style="min-width: 385px;">
 					<el-radio-group
 						v-model="radio1"
@@ -86,67 +70,61 @@
 					align="left"
 					@change="gettimes"
 				></el-date-picker>
-				<!-- <el-button style="margin-left:10px;" type="primary" @click="seachtu"
-          >查询</el-button
-        > -->
 			</div>
-			<div style="margin-top:20px;">
-				<el-row>
-					<div class="user-item">
-						<div class="item-text">使用流量</div>
-						<div class="item-count">
-							<span>{{ dataL }}&nbsp;{{ allunitdata }}</span>
-						</div>
+			<div class="device_tables">
+				<div class="user-item">
+					<div class="item-text">使用流量</div>
+					<div class="item-count">
+						<span>{{ dataL }}&nbsp;{{ allunitdata }}</span>
 					</div>
+				</div>
+				<el-row type="flex" class="row_active">
+					<el-col
+						:span="24"
+						style="text-align:left;font-weight: bold;padding-left:10px; margin: 30px 0 20px 0;"
+						>节点流量用量表</el-col
+					>
 				</el-row>
-				<div class="device_form_query">
-					<div id="myChart" :style="{ height: '607px' }"></div>
-				</div>
-				<div class="devide_tables">
-					<el-row type="flex" class="row_active">
-						<el-col
-							:span="24"
-							style="text-align:left;font-weight: bold;padding-left:10px;"
-							>节点流量用量表</el-col
+				<el-row type="flex" class="row_active">
+					<el-col :span="24">
+						<el-table
+							:data="tablecdn"
+							border
+							stripe
+							style="width: 100%;"
+							:cell-style="rowClass"
+							:header-cell-style="headClass"
 						>
-					</el-row>
-					<el-row type="flex" class="row_active">
-						<el-col :span="24">
-							<el-table
-								:data="tablecdn"
-								border
-								stripe
-								style="width: 100%;margin:10px;"
-								:cell-style="rowClass"
-								:header-cell-style="headClass"
-							>
-								<el-table-column label="时间" prop="time" :formatter="timeFormatter">
-									<!-- <template slot-scope="scope">
-										<div>
-											{{ scope.row.time | settimes }}
-										</div>
-									</template> -->
-								</el-table-column>
-								<el-table-column label="总流量">
-									<template slot-scope="scope">
-										<div>
-											{{ scope.row.dataFlow | zhuanb }}
-										</div>
-									</template>
-								</el-table-column>
-							</el-table>
-						</el-col>
-					</el-row>
-					<fenye
-						style="float:right;margin:10px 0 20px 0;"
-						@fatherMethod="getpage"
-						@fathernum="gettol"
-						:pagesa="total_cnt"
-						:currentPage="currentPage"
-						ref="fen"
-					></fenye>
-				</div>
+							<el-table-column label="时间" prop="time" :formatter="timeFormatter">
+								<!-- <template slot-scope="scope">
+									<div>
+										{{ scope.row.time | settimes }}
+									</div>
+								</template> -->
+							</el-table-column>
+							<el-table-column label="总流量">
+								<template slot-scope="scope">
+									<div>
+										{{ scope.row.dataFlow | zhuanb }}
+									</div>
+								</template>
+							</el-table-column>
+						</el-table>
+					</el-col>
+				</el-row>
+				<fenye
+					style="text-align: right;margin-top: 20px;"
+					@fatherMethod="getpage"
+					@fathernum="gettol"
+					:pagesa="total_cnt"
+					:currentPage="currentPage"
+					ref="fen"
+				></fenye>
 			</div>
+			
+		</div>
+		<div class="device_form">
+			<div id="myChart" :style="{ height: '607px' }"></div>
 		</div>
 	</section>
 </template>
@@ -854,20 +832,9 @@ export default {
 	}
 }
 
-.addaccout {
-	.el-form--label-left .el-form-item__label {
-		text-align: right;
-		width: 90px;
-	}
-
-	.el-form-item__error {
-		margin-left: 80px;
-	}
-}
 .user-item {
-	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
-	border-radius: 2px;
+	background: #FDFBFB;
+	border-radius: 30px;
 	padding: 31px 31px 31px 67px;
 	display: flex;
 	justify-content: center;

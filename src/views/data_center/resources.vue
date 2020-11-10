@@ -1,12 +1,10 @@
 <template>
-	<section class="myself-container content">
-		<div class="top_title">播放流量</div>
-		<div class="user-title" style="display: flex;flex-flow: column;">
-			<div class="resources_con">
-				<el-tabs v-model="activeName" @tab-click="handleClick">
-					<div
-						style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
-					>
+	<div>
+		<section class="myself-container content">
+			<div class="top_title">播放流量</div>
+			<div class="content-main">
+				<el-tabs v-model="activeName" @tab-click="handleClick" ref="tabs">
+					<div class="seach">
 						<el-input
 							v-show="activeName != 'third'"
 							placeholder="请输入域名"
@@ -120,15 +118,14 @@
 								<p>CDN播放流量</p>
 							</el-col>
 						</el-row>
-						<div id="liuliang_echarts"></div>
-						<div class="devide_table">
+						<div class="device_table">
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
 									<el-table
 										:data="tableflow"
 										border
 										max-height="600"
-										style="width: 98%;margin:10px;"
+										style="width: 100%;"
 										:cell-style="rowClass"
 										:header-cell-style="headClass"
 									>
@@ -317,8 +314,11 @@
 					</el-tab-pane>
 				</el-tabs>
 			</div>
+		</section>
+		<div class="device_form" v-show="activeName == 'first'">
+			<div id="liuliang_echarts" :style="{ height: '650px' }"></div>
 		</div>
-	</section>
+	</div>
 </template>
 
 <script>
@@ -478,6 +478,9 @@ export default {
 		fenye,
 	},
 	mounted() {
+		this.$nextTick(function () {
+			this.$refs.tabs.$children[0].$refs.tabs[1].style.display="none";
+		})
 		if (this.$cookies.get('id')) {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
@@ -1661,88 +1664,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .myself-container {
 	width: 100%;
 	// min-width: 1600px;
-	.device_form {
-		width: auto;
-		height: auto;
-		margin-top: 20px;
-		margin-right: 45px;
-		margin-left: 45px;
-		background: #ffffff;
-		padding: 15px 30px;
-		box-sizing: border-box;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-		border-radius: 2px;
-
-		.bottom {
-			margin-top: 20px;
-		}
-
-		.el-form-item__label {
-			white-space: nowrap;
-		}
-
-		.el-form-item {
-			margin-bottom: 0px;
-			margin-left: 10px;
-		}
-
-		.row_activess {
-			margin-top: 20px;
-			display: flex;
-			justify-content: flex-start;
-		}
-
-		.div_show {
-			width: auto;
-			display: flex;
-			height: 40px;
-			justify-content: center;
-			align-items: center;
-			color: #409eff;
-			cursor: pointer;
-			margin-left: 20px;
-		}
-	}
-
-	.devide_table {
-		padding: 35px;
-		height: auto;
-		margin-left: 45px;
-		margin-right: 45px;
-		margin-top: 20px;
-		background: #ffffff;
-		border-radius: 2px;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-		border-radius: 2px;
-		.el-table td,
-		.el-table th {
-			padding: 6px 0px;
-		}
-	}
-
-	.devide_pageNation {
-		width: 100%;
-		height: auto;
-		// overflow: hidden;
-		margin-top: 20px;
-
-		.devide_pageNation_active {
-			float: right;
-		}
-	}
 	.resources_percentage {
 		background: #ffffff;
-		margin-left: 45px;
 		margin-right: 45px;
-		padding-left: 30px;
-		padding-top: 15px;
-		padding-bottom: 15px;
-		margin-top: 24px;
-		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
+		padding-bottom: 20px;
 		.el-col {
 			height: 100px;
 			background: rgba(247, 247, 251, 1);
@@ -1761,7 +1690,7 @@ export default {
 			margin-right: 24px;
 		}
 	}
-	#liuliang_echarts,
+	// #liuliang_echarts,
 	#jiankong_echarts {
 		margin-top: 24px;
 		margin-left: 45px;
@@ -1769,28 +1698,7 @@ export default {
 		height: 632px;
 		padding-top: 35px;
 		padding-bottom: 20px;
-		background: rgba(255, 255, 255, 1);
 		border-radius: 2px;
-		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
 	}
 }
-
-.addaccout {
-	.el-form--label-left .el-form-item__label {
-		text-align: right;
-		width: 90px;
-	}
-
-	.el-form-item__error {
-		margin-left: 80px;
-	}
-}
-
-// .user-title .user-item {
-//   padding: 25px;
-//   border-radius: 5px;
-//   display: flex;
-//   justify-content: center;
-//   flex-direction: column;
-// }
 </style>

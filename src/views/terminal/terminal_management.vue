@@ -1,70 +1,16 @@
 <template>
-  <div>
+  <div class="content">
     <div class="top_title">终端管理</div>
-    <div class="termail_con">
-      <div>
-        <!-- 修改弹窗 -->
-        <el-dialog
-          title="设置终端名称"
-          :visible.sync="dialogFormVisible"
-          class="terminal_t"
-          @close="handleClose1"
-        >
-          <el-form :model="form" ref="form">
-            <el-form-item
-              label="终端:"
-              prop="name"
-              :label-width="formLabelWidth"
-              :rules="[{ validator: jiotoken, trigger: 'blur' }]"
-            >
-              <el-input v-model="form.name" autocomplete="off"></el-input>
-            </el-form-item>
-            <p>请输入您的终端名称，如爱奇艺、腾讯、土豆等</p>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="srttokensneno">取 消</el-button>
-            <el-button type="primary" @click="srttokensne">确 定</el-button>
-          </div>
-        </el-dialog>
-      </div>
-
+    <div class="content-main">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="终端token" name="first">
-          <div
-            style="background: #ffffff;padding:15px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 45px;margin-right: 45px;box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);border-radius: 2px;"
-          >
-            <el-button type="primary" @click="new_btn" :disabled="tableData.length>0">
-              <span class="el-icon-plus"></span>
-              添加终端
-            </el-button>
-            <!-- 添加弹窗 -->
-
-            <el-dialog title="添加终端" :visible.sync="xzteao" @close="handleClose2">
-              <el-form :model="tokene" ref="tokene">
-                <el-form-item
-                  label="终端："
-                  prop="name"
-                  :label-width="formLabelWidth"
-                  :rules="[
-										{ validator: jiotoken, trigger: 'blur' }
-									]"
-                >
-                  <el-input v-model="tokene.name" placeholder="英文，数字或汉字，30 字符内" autocomplete="off"></el-input>
-                </el-form-item>
-                <!-- <el-form-item label="类型：" :label-width="formLabelWidth">
-                  <el-select v-model="tokene.region" placeholder="请选择终端类型" disabled>
-                    <el-option label="ios/android" value="0"></el-option>
-                    <el-option label="ios" value="1"></el-option>
-                    <el-option label="android" value="2"></el-option>
-                  </el-select>
-                </el-form-item> -->
-              </el-form>
-              <div slot="footer" class="dialog-footer">
-                <el-button @click="quxzteaone">取 消</el-button>
-                <el-button type="primary" @click="quxzteao">确 定</el-button>
-              </div>
-            </el-dialog>
-            <!--  -->
+          <div class="device_table">
+            <div class=" operating">
+              <el-button type="primary" @click="new_btn" :disabled="tableData.length>0">
+                <span class="el-icon-plus"></span>
+                添加终端
+              </el-button>
+            </div>
             <el-table
               :data="tableData"
               border
@@ -131,10 +77,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="SDK下载" name="second">
-          <div
-            class="sdk_tab"
-            style="background: #ffffff;padding:31px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 45px;margin-right: 45px;box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);border-radius: 2px;"
-          >
+          <div class="device_table">
             <el-table
               :data="datadown"
               border
@@ -212,6 +155,48 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <!-- 修改弹窗 -->
+    <el-dialog
+      title="设置终端名称"
+      :visible.sync="dialogFormVisible"
+      class="terminal_t"
+      @close="handleClose1"
+    >
+      <el-form :model="form" ref="form">
+        <el-form-item
+          label="终端:"
+          prop="name"
+          :label-width="formLabelWidth"
+          :rules="[{ validator: jiotoken, trigger: 'blur' }]"
+        >
+          <el-input v-model="form.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <p>请输入您的终端名称，如爱奇艺、腾讯、土豆等</p>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="srttokensneno">取 消</el-button>
+        <el-button type="primary" @click="srttokensne">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 添加弹窗 -->
+    <el-dialog title="添加终端" :visible.sync="xzteao" @close="handleClose2">
+      <el-form :model="tokene" ref="tokene">
+        <el-form-item
+          label="终端："
+          prop="name"
+          :label-width="formLabelWidth"
+          :rules="[
+            { validator: jiotoken, trigger: 'blur' }
+          ]"
+        >
+          <el-input v-model="tokene.name" placeholder="英文，数字或汉字，30 字符内" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="quxzteaone">取 消</el-button>
+        <el-button type="primary" @click="quxzteao">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 

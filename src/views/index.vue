@@ -127,7 +127,13 @@
 								<i class="iconfont icon-dianbokongzhitai"></i>
 								<span style="color: #fff; margin-left: 8px;">概览</span>
 							</template>
-							<el-menu-item index="1-1">
+							<el-menu-item index="1-1" v-if="type=='dibble'">
+									<router-link to="/overview" >
+										<div class="circle"></div>
+										<span style="color: #fff;">概览</span>
+									</router-link>
+							</el-menu-item>
+							<el-menu-item index="1-1" v-if="type=='live'">
 									<router-link to="/overview" >
 										<div class="circle"></div>
 										<span style="color: #fff;">概览</span>

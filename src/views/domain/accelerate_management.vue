@@ -2,94 +2,78 @@
 	<div class="content accelerate_ma">
 		<!-- title -->
 		<div class="top_title">域名管理</div>
-		<div
-			style="margin: auto;margin-left: 45px;margin-right: 45px;"
-			class="acceleerate_con"
-		>
+		<div class="content-main">
 			<!-- 搜索栏 -->
 			<div class="seach">
-				<div class="seach_top">
-					<el-input
-						placeholder="请输入源站域名"
-						v-model="input"
-						class="input-with-select"
-						maxlength="70"
-						@keyup.enter.native="onSubmit"
-					>
-						<i
-							slot="prefix"
-							class="el-input__icon el-icon-search"
-							@click="seachuser()"
-						></i>
-					</el-input>
-					<div
-						class="seach_top_right"
-						@click="option_display()"
-						:class="[rotate ? 'sethui' : 'setwhile']"
-					>
-						筛选
-						<i
-							class="el-icon-caret-bottom"
-							:class="[
-								rotate
-									? 'fa fa-arrow-down go'
-									: 'fa fa-arrow-down aa',
-							]"
-						></i>
-					</div>
-				</div>
-				<div v-if="optiondisplay" class="seach_bottom">
-					<span>状态：</span>
-					<el-select
-						v-model="value"
-						placeholder="请选择"
-						@change="getdata()"
-					>
-						<el-option
-							v-for="(item, index) in options"
-							:key="index + 'reat'"
-							:label="item.label"
-							:value="item.value"
-						></el-option>
-					</el-select>
-					<span style="margin-left: 10px;">日期：</span>
-					<el-date-picker
-						v-model="value1"
-						type="datetimerange"
-						range-separator="至"
-						start-placeholder="开始日期"
-						end-placeholder="结束日期"
-						@change="gettimes"
-						:picker-options="pickerOptions"
-					></el-date-picker>
-					<!-- <el-button
-						type="primary"
-						size="mini"
+				<el-input
+					placeholder="请输入源站域名"
+					v-model="input"
+					class="input-with-select"
+					maxlength="70"
+					@keyup.enter.native="onSubmit"
+				>
+					<i
+						slot="prefix"
+						class="el-input__icon el-icon-search"
 						@click="seachuser()"
-						style="margin-left: 10px;"
-						>确定</el-button
-					> -->
-					<el-button
-						plain
-						size="mini"
-						@click="reset()"
-						style="margin-left: 10px;"
-						>重置</el-button
-					>
-				</div>
+					></i>
+				</el-input>
+				<el-button
+					style="margin-left: 10px;"
+					type="primary"
+					@click="option_display()"
+					
+				>
+					筛选
+					<i
+						class="el-icon-caret-bottom"
+						:class="[
+							rotate
+								? 'fa fa-arrow-down go'
+								: 'fa fa-arrow-down aa',
+						]"
+					></i>
+				</el-button>
+			</div>
+			<div v-if="optiondisplay" class="seach">
+				<span style="margin-top: 10px;">状态：</span>
+				<el-select
+					v-model="value"
+					placeholder="请选择"
+					@change="getdata()"
+				>
+					<el-option
+						v-for="(item, index) in options"
+						:key="index + 'reat'"
+						:label="item.label"
+						:value="item.value"
+					></el-option>
+				</el-select>
+				<span style="margin: 10px 0 0 10px;">日期：</span>
+				<el-date-picker
+					v-model="value1"
+					type="datetimerange"
+					range-separator="至"
+					start-placeholder="开始日期"
+					end-placeholder="结束日期"
+					@change="gettimes"
+					:picker-options="pickerOptions"
+				></el-date-picker>
+				<el-button
+					plain
+					size="mini"
+					@click="reset()"
+					style="margin-left: 10px;"
+					>重置</el-button
+				>
 			</div>
 			<!-- 表格头部按钮 -->
-			<div class="con_lable">
-				<div
-					class="con_lable_top_btn"
-					style="padding:10px 0 18px;display: flex;justify-content: space-between;"
-				>
-					<div>
-						<el-button type="primary" @click="new_btn">
-							<span class="el-icon-plus"></span>
-							添加域名
-						</el-button>
-					</div>
+			<div class="device_table">
+				<div class="operating">
+					<el-button type="primary" @click="new_btn">
+						<span class="el-icon-plus"></span>
+						添加域名
+					</el-button>
 				</div>
 
 				<!-- 主体表格 -->
@@ -897,53 +881,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-	width: 100%;
-	height: 100%;
-	text-align: left;
-	.seach {
-		width: 100%;
-		margin: 30px 0 30px 0;
-		background: #ffffff;
-		border-radius: 2px;
-		padding: 21px 37px;
-		box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
-		.seach_top {
-			width: 100%;
-			height: 60px;
-			line-height: 60px;
-			display: flex;
-			justify-content: flex-start;
-			align-items: center;
-			.input-with-select {
-				width: 15%;
-			}
-			.seach_top_right {
-				width: 80px;
-				text-align: center;
-				height: 36px;
-				line-height: 36px;
-				margin-left: 10px;
-			}
-		}
-		.seach_bottom {
-			height: 72px;
-			background: rgba(242, 246, 250, 1);
-			border-radius: 2px;
-			display: flex;
-			align-items: center;
-			padding-left: 27px;
-		}
-	}
-	.con_lable {
-		width: 100%;
-		background: #ffffff;
-		background: rgba(255, 255, 255, 1);
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-		border-radius: 2px;
-		padding: 8px 37px 0;
-	}
-}
 .el-dialog {
 	margin-top: 25vh;
 	width: 25%;

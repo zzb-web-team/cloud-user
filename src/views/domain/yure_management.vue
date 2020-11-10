@@ -2,27 +2,22 @@
 	<div class="content">
 		<div class="top_title">刷新预热</div>
 		<!-- 主体内容 -->
-		<div class="yure_content">
+		<div class="content-main">
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<el-tab-pane label="刷新缓存" name="first">
-					<!-- <div style="text-align: left;margin: 10px 0;">
-            <span>刷新类型：</span>
-            <el-radio v-model="radio1" label="1">Filed刷新</el-radio>
-            <el-radio v-model="radio1" label="2">域名刷新</el-radio>
-          </div> -->
-					<span style="color: #666666;font-size:14px;"
-						>刷新区域：</span
-					>
-					<el-select
-						v-model="citylabel"
-					>
-						<el-option
-							v-for="item in citylist1"
-							:key="item.value"
-							:label="item.label"
-							:value="item.value">
-						</el-option>
-					</el-select>
+					<div class="seach">
+						<span style="color: #333;font-size:14px;line-height: 40px;">刷新区域：</span>
+						<el-select
+							v-model="citylabel"
+						>
+							<el-option
+								v-for="item in citylist1"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
 					<p
 						style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
 					>
@@ -36,34 +31,28 @@
 						:autosize="{ minRows: 10, maxRows: 20 }"
 						v-model="textarea1"
 					></el-input>
-					<div style="margin: 20px 0;">
+					<div style="margin: 20px 0;text-align: left;">
 						<el-button
 							@click="getrefresh(0)"
-							style="width:96px;-height:40px;background:rgba(41,122,255,1);border-radius:2px;color:#ffffff;"
+							type="primary"
+							style="width:96px;height:40px;"
 							>提交</el-button
 						>
 					</div>
 				</el-tab-pane>
 				<el-tab-pane label="内容预热" name="second">
-					<!-- <div style="text-align: left;margin: 10px 0;">
-            <span>刷新类型：</span>
-            <el-radio v-model="radio2" label="1">Filed刷新</el-radio>
-            <el-radio v-model="radio2" label="2">域名刷新</el-radio>
-          </div> -->
-					<span>预热区域：</span>
-					<el-select
-						v-model="citylabel1"
-					>
-						<el-option
-							v-for="item in citylist1"
-							:key="item.value"
-							:label="item.label"
-							:value="item.value">
-						</el-option>
-					</el-select>
-					<p
-						style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
-					>
+					<div class="seach">
+						<span style="color: #333;font-size:14px;line-height: 40px;">预热区域：</span>
+						<el-select v-model="citylabel1">
+							<el-option
+								v-for="item in citylist1"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value">
+							</el-option>
+						</el-select>
+					</div>
+					<p style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;">
 						Filed预热单次提交最多 10
 						条，使用回车换行输入，预热任务完成时间预计为 10 分钟
 					</p>
@@ -74,10 +63,11 @@
 						:autosize="{ minRows: 10, maxRows: 20 }"
 						v-model="textarea2"
 					></el-input>
-					<div style="margin: 20px 0;">
+					<div style="margin: 20px 0; text-align: left;">
 						<el-button
+							type="primary"
 							@click="getrefresh(1)"
-							style="width:96px;-height:40px;background:rgba(41,122,255,1);border-radius:2px;color:#ffffff;"
+							style="width:96px;height:40px;"
 							>提交</el-button
 						>
 					</div>
@@ -85,36 +75,33 @@
 				<el-tab-pane label="操作记录" name="third">
 					<!-- 搜索 -->
 					<div class="seach">
-						<div class="seach_top">
-							<el-input
-								placeholder="请输入点播加速内容"
-								v-model="input"
-								class="input-with-select"
-								@keyup.enter.native="seachuser"
-							>
-								<i
-									slot="suffix"
-									class="el-input__icon el-icon-search"
-									@click="seachuser()"
-									style="font-size: 23px;line-height: 60px;font-weight: 600;"
-								></i>
-							</el-input>
-							<div
-								class="seach_top_right"
-								@click="option_display()"
-								:class="[rotate ? 'sethui' : 'setwhiles']"
-							>
-								筛选
-								<i
-									class="el-icon-caret-bottom"
-									:class="[
-										rotate
-											? 'fa fa-arrow-down go'
-											: 'fa fa-arrow-down aa',
-									]"
-								></i>
-							</div>
-						</div>
+						<el-input
+							placeholder="请输入点播加速内容"
+							v-model="input"
+							class="input-with-select"
+							@keyup.enter.native="seachuser"
+						>
+							<i
+								slot="suffix"
+								class="el-input__icon el-icon-search"
+								@click="seachuser()"
+							></i>
+						</el-input>
+						<el-button
+							@click="option_display()"
+							type="primary"
+							style="margin-left:15px;"
+						>
+							筛选
+							<i
+								class="el-icon-caret-center"
+								:class="[
+									rotate
+										? 'fa fa-arrow-down go'
+										: 'fa fa-arrow-down aa',
+								]"
+							></i>
+						</el-button>
 						<div v-if="optiondisplay" class="seach_bottom">
 							<span style="width: 88px;">操作类型：</span>
 							<el-select
@@ -817,46 +804,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-	.yure_content {
-		width: 100%;
-		// margin: 15px 0;
-	}
-	width: 100%;
-	height: 100%;
-	text-align: left;
-	.seach {
-		width: 100%;
-		// display: flex;
-		// align-items: center;
-		.seach_top {
-			width: 100%;
-			height: 60px;
-			line-height: 60px;
-			.input-with-select {
-				width: 300px;
-				float: left;
-				margin-right: 10px;
-			}
-		}
-		.seach_bottom {
-			text-align: left;
-			height: 80px;
-			background: #f2f6fa;
-			border-radius: 10px;
-			padding: 10px 15px;
-			display: flex;
-			justify-content: flex-start;
-			align-items: center;
-			margin-bottom: 20px;
-			span {
-				color: #999999;
-				font-size: 14px;
-				margin-left: 10px;
-			}
-		}
-	}
-}
+// .content {
+// 	.yure_content {
+// 		width: 100%;
+// 		// margin: 15px 0;
+// 	}
+// 	width: 100%;
+// 	height: 100%;
+// 	text-align: left;
+// 	.seach {
+// 		width: 100%;
+// 		// display: flex;
+// 		// align-items: center;
+// 		.seach_top {
+// 			width: 100%;
+// 			height: 60px;
+// 			line-height: 60px;
+// 			.input-with-select {
+// 				width: 300px;
+// 				float: left;
+// 				margin-right: 10px;
+// 			}
+// 		}
+// 		.seach_bottom {
+// 			text-align: left;
+// 			height: 80px;
+// 			background: #f2f6fa;
+// 			border-radius: 10px;
+// 			padding: 10px 15px;
+// 			display: flex;
+// 			justify-content: flex-start;
+// 			align-items: center;
+// 			margin-bottom: 20px;
+// 			span {
+// 				color: #999999;
+// 				font-size: 14px;
+// 				margin-left: 10px;
+// 			}
+// 		}
+// 	}
+// }
 //旋转
 .aa {
 	transition: all 1s;

@@ -1,14 +1,11 @@
 <template>
-	<section class="myself-container content">
-		<div class="top_title">统计分析</div>
-		<!-- <div class="user-title" style="display: flex;flex-flow: column;width: 1240px;margin: auto;"> -->
-		<div class="user-title">
-			<div class="statisics_con">
+	<div>
+		<section class="myself-container content">
+			<div class="top_title">统计分析</div>
+			<div class="content-main">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="PV/UV" name="first">
-						<div
-							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
-						>
+						<div class="seach">
 							<el-input
 								placeholder="请输入域名"
 								v-model="valueDomain"
@@ -108,7 +105,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="device_form">
+						<div class="device_curve">
 							<div
 								id="myChart"
 								:style="{ height: '607px' }"
@@ -117,9 +114,7 @@
 					</el-tab-pane>
 
 					<el-tab-pane label="访问用户分布" name="second">
-						<div
-							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
-						>
+						<div class="seach">
 							<el-input
 								placeholder="请输入域名"
 								v-model="valueDomain1"
@@ -199,25 +194,7 @@
 								@change="gettimes_option"
 							></el-date-picker>
 						</div>
-						<div class="device_form" style>
-							<el-radio-group
-								v-model="radio_tab"
-								size="medium"
-								@change="sele_tab()"
-							>
-								<el-radio-button label="1"
-									>地区</el-radio-button
-								>
-								<el-radio-button label="2"
-									>运营商</el-radio-button
-								>
-							</el-radio-group>
-							<div
-								id="myChart1"
-								:style="{ height: '607px' }"
-							></div>
-						</div>
-						<div class="devide_table" v-show="region_show">
+						<div class="device_table" v-show="region_show">
 							<el-row type="flex" class="row_active">
 								<el-col
 									:span="24"
@@ -250,7 +227,7 @@
 												<div>{{scope.row.sumCnt}}</div>
 											</template>
 										</el-table-column>
-										 <el-table-column label="有效访问用户数（%）">
+										<el-table-column label="有效访问用户数（%）">
 											<template slot-scope="scope">
 												<div style="display: flex;justify-content: center;">
 												<div>{{ scope.row.validCnt }}</div>
@@ -313,7 +290,7 @@
 												<div>{{scope.row.sumCnt}}</div>
 											</template>
 										</el-table-column>
-										 <el-table-column label="有效访问用户数（%）">
+										<el-table-column label="有效访问用户数（%）">
 											<template slot-scope="scope">
 												<div style="display: flex;justify-content: center;">
 												<div>{{ scope.row.validCnt }}</div>
@@ -343,127 +320,28 @@
 							</fenye>
 						</div>
 					</el-tab-pane>
-					<!-- <el-tab-pane label="热门加速内容" name="there">
-						<div
-							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
-						>
-							
-							<span style="margin-right:10px;margin-left:15px;"
-								>终端:</span
-							>
-							
-							<el-select
-								v-model="accval3"
-								placeholder="终端类型"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata2()"
-							>
-								<el-option label="全部" value="-1"></el-option>
-								<el-option
-									label="android"
-									value="0"
-								></el-option>
-								<el-option label="ios" value="1"></el-option>
-								<el-option label="其他" value="2"></el-option>
-							</el-select>
-							
-							<span style="margin-right:10px;margin-left:15px;"
-								>日期:</span
-							>
-							
-							<el-date-picker
-								style="margin-left:10px;"
-								v-model="val2"
-								type="datetimerange"
-								:picker-options="pickerOptions"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								align="left"
-								@change="gettimes"
-							></el-date-picker>							
-						</div>						
-						<div class="devide_table">
-							<el-row type="flex" class="row_active">
-								<el-col :span="24">
-									<el-table
-										:data="tablecdn2"
-										border
-										stripe
-										style="width: 100%;margin:10px;"
-										:cell-style="rowClass"
-										:header-cell-style="headClass"
-									>
-										<el-table-column label="加速内容名称"
-											><template slot-scope="scope">
-												<div>
-													{{ scope.row.fileName }}
-												</div>
-											</template></el-table-column
-										>
-										<el-table-column label="流量">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dataFlow
-															| updatabkb
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="流量占比">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.dfPercent
-															| aaa
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="加速次数">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.totalAccelCnt
-													}}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="访问次数">
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.totalCnt }}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="访问占比">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.cntPercent
-															| aaa
-													}}
-												</div>
-											</template>
-										</el-table-column>
-									</el-table>
-									<fenye
-										v-show="tablecdn2.length != 0"
-										style="float:right;margin:10px 0 20px 0;"
-										@fatherMethod="getpage"
-										@fathernum="gettol"
-										:pagesa="total_cnt"
-										:currentPage="currentPage"
-									></fenye>
-								</el-col>
-							</el-row>
-						</div>
-					</el-tab-pane> -->
 				</el-tabs>
 			</div>
+		</section>
+		<div class="device_form">
+			<el-radio-group
+				v-model="radio_tab"
+				size="medium"
+				@change="sele_tab()"
+			>
+				<el-radio-button label="1"
+					>地区</el-radio-button
+				>
+				<el-radio-button label="2"
+					>运营商</el-radio-button
+				>
+			</el-radio-group>
+			<div
+				id="myChart1"
+				:style="{ height: '607px' }"
+			></div>
 		</div>
-	</section>
+	</div>
 </template>
 
 <script>
@@ -1844,49 +1722,14 @@ export default {
 .myself-container {
 	width: 100%;
 	// min-width: 1600px;
-
-	.device_form {
+	.device_curve {
 		width: auto;
 		height: auto;
-		margin-left: 45px;
-		margin-right: 45px;
 		overflow: hidden;
-		margin-top: 20px;
+		margin-top: 60px;
 		background: #ffffff;
-		padding: 15px 30px;
 		box-sizing: border-box;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
 		border-radius: 2px;
-
-		.bottom {
-			margin-top: 20px;
-		}
-
-		.el-form-item__label {
-			white-space: nowrap;
-		}
-
-		.el-form-item {
-			margin-bottom: 0px;
-			margin-left: 10px;
-		}
-
-		.row_activess {
-			margin-top: 20px;
-			display: flex;
-			justify-content: flex-start;
-		}
-
-		.div_show {
-			width: auto;
-			display: flex;
-			height: 40px;
-			justify-content: center;
-			align-items: center;
-			color: #409eff;
-			cursor: pointer;
-			margin-left: 20px;
-		}
 	}
 
 	.devide_table {
@@ -1922,26 +1765,12 @@ export default {
 	}
 }
 
-.addaccout {
-	.el-form--label-left .el-form-item__label {
-		text-align: right;
-		width: 90px;
-	}
-
-	.el-form-item__error {
-		margin-left: 80px;
-	}
-}
-
 .user_item {
 	width: auto;
 	height: 130px;
-	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-	border-radius: 2px;
+	background: #FDFBFB;
+	border-radius: 32px;
 	margin-top: 20px;
-	margin-left: 45px;
-	margin-right: 45px;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;

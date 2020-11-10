@@ -1,12 +1,10 @@
 <template>
-  <section class="myself-container content">
-    <div class="top_title">节点流量监控</div>
-    <div class="user-title" style="display: flex;flex-flow: column;">
-      <div class="resources_con">
+  <div>
+    <section class="myself-container content">
+      <div class="top_title">节点流量监控</div>
+      <div class="content-main">
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <div
-            style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
-          >
+          <div class="seach">
             <el-input
               placeholder="请输入域名"
               v-model="valueDomain"
@@ -45,47 +43,44 @@
             </el-select>
             <!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
             <div v-show="activeName == 'first'">
-            <el-radio-group v-model="radio" size="medium" @change="sele_time()" v-show="!shoudzyx">
-              <el-radio-button label="1">今天</el-radio-button>
-              <el-radio-button label="2">昨天</el-radio-button>
-              <el-radio-button label="3">近7天</el-radio-button>
-              <el-radio-button label="4">近30天</el-radio-button>
-              <el-radio-button label="5">自定义</el-radio-button>
-            </el-radio-group>
-            <el-button
-              type="primary"
-              v-show="shoudzyx"
-              style="background:#409EFF;border:#409EFF"
-              @click="setshoudzyx"
-            >自定义</el-button>
-            <el-date-picker
-              v-show="shoudzyx"
-              style="margin-left:10px;"
-              v-model="val2"
-              type="datetimerange"
-              :picker-options="pickerOptions"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              align="left"
-              @change="gettimes"
-            ></el-date-picker>
-            </div>
+              <el-radio-group v-model="radio" size="medium" @change="sele_time()" v-show="!shoudzyx">
+                <el-radio-button label="1">今天</el-radio-button>
+                <el-radio-button label="2">昨天</el-radio-button>
+                <el-radio-button label="3">近7天</el-radio-button>
+                <el-radio-button label="4">近30天</el-radio-button>
+                <el-radio-button label="5">自定义</el-radio-button>
+              </el-radio-group>
+              <el-button
+                type="primary"
+                v-show="shoudzyx"
+                style="background:#409EFF;border:#409EFF"
+                @click="setshoudzyx"
+              >自定义</el-button>
+              <el-date-picker
+                v-show="shoudzyx"
+                style="margin-left:10px;"
+                v-model="val2"
+                type="datetimerange"
+                :picker-options="pickerOptions"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                align="left"
+                @change="gettimes"
+              ></el-date-picker>
+              </div>
             <el-date-picker v-show="activeName == 'second'" style="margin-left:10px;" v-model="val3" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="left" @change="gettimes"></el-date-picker>
             <!-- <el-button style="margin-left:10px;" type="primary" @click="getdata()">查询</el-button> -->
           </div>
           <el-tab-pane label="节点流量" name="first">
-            <div class="device_form">
-              <div id="myChart1" :style="{ height: '607px' }"></div>
-            </div>
-            <div class="devide_table">
+            <div class="device_table">
               <el-row type="flex" class="row_active">
                 <el-col :span="24">
                   <el-table
                     :data="tablecdn"
                     border
                     max-height="600"
-                    style="width: 98%;margin:10px;"
+                    style="width: 100%;"
                     :cell-style="rowClass"
                     :header-cell-style="headClass"
                   >
@@ -138,15 +133,15 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="TOP加速内容" name="second">
-            <div class="devide_table">
-              <div class="tab_top_btn">
+            <div class="device_table">
+              <div style="text-align: left;">
                 <el-radio-group v-model="radio_top" @change="topClick">
                   <el-radio-button label="1">TOP加速次数排行</el-radio-button>
                   <el-radio-button label="2">TOP加速流量排行</el-radio-button>
                 </el-radio-group>
               </div>
-              <div style="display: flex;justify-content: flex-end;margin-right: 6px;">
-                <el-button type="primary" @click="toExportExcel">导出</el-button>
+              <div class="operating">
+                <el-button type="primary" style="margin-left: auto;" @click="toExportExcel">导出</el-button>
               </div>
               <el-row type="flex" class="row_active" v-show="radio_top == 1">
                 <el-col :span="24">
@@ -154,7 +149,7 @@
                     :data="tablecdn"
                     border
                     max-height="600"
-                    style="width: 98%;margin:10px;"
+                    style="width: 100%;"
                     :cell-style="rowClass"
                     :header-cell-style="headClass"
                   >
@@ -212,8 +207,11 @@
           </el-tab-pane>
         </el-tabs>
       </div>
+    </section>
+    <div class="device_form" v-show="activeName=='first'">
+      <div id="myChart1" :style="{ height: '607px' }"></div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>

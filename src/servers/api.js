@@ -176,6 +176,10 @@ export const query_liveinfo = params => {
 export const query_streaminfo = params => {
     return post(`${userUrl}/livebackmgmt_srv/query_streaminfo`, params)
 }
+//历史流信息
+export const query_live_history = params => {
+    return post(`${userUrl}/resource_manage/query_live_history`, params)
+}
 
 /**资源用量 */
 //加速流量加载查询条件

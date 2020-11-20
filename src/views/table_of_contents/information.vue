@@ -655,14 +655,10 @@ export default {
 .content {
   .info_content {
     margin: auto;
-    margin-left: 45px;
-    margin-right: 45px;
     text-align: left;
-    padding-top: 19px;
     .info_content_on {
       background: #ffffff;
-      box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-      border-radius: 2px;
+      border-radius: 32px;
       margin-top: 20px;
       padding: 30px 40px;
     }

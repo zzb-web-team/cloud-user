@@ -75,6 +75,20 @@
             <!-- <el-button style="margin-left:10px;" type="primary" @click="getdata()">查询</el-button> -->
           </div>
           <el-tab-pane label="节点流量" name="first">
+            <el-row class="resources_percentage">
+							<el-col :span="4">
+								<p>{{ sump2p | setbytes }}</p>
+								<p>P2P播放流量</p>
+							</el-col>
+							<el-col :span="4">
+								<p>{{ sumnode | setbytes }}</p>
+								<p>下行节点扩散流量</p>
+							</el-col>
+              <el-col :span="4">
+								<p>{{ sumcdn | setbytes }}</p>
+								<p>CDN回源流量</p>
+							</el-col>
+						</el-row>
             <div class="device_form">
               <div id="myChart1" :style="{ height: '607px' }"></div>
             </div>
@@ -99,7 +113,7 @@
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column label="下行节点回源流量">
+                    <el-table-column label="下行节点扩散流量">
                       <template slot-scope="scope">
                         <div>
                           {{
@@ -109,7 +123,7 @@
                         </div>
                       </template>
                     </el-table-column>
-                    <el-table-column label="下行CDN回源流量">
+                    <el-table-column label="CDN回源流量">
                       <template slot-scope="scope">
                         <div>
                           {{
@@ -244,6 +258,9 @@ import _ from "lodash";
 export default {
   data() {
     return {
+      sump2p: 0,
+      sumnode: 0,
+      sumcdn: 0,
       activeName: "first",
       pickerOptions: {
         onPick: ({ maxDate, minDate }) => {
@@ -384,7 +401,10 @@ export default {
             }
             
             this.timeArrayZb = [];
-
+            this.sumcdn = res.data.sumcdn;
+            this.sumnode = res.data.sumnode;
+            this.sump2p = res.data.sump2p;
+            
             if(res.data.p2parray.length == 0 && res.data.downbackarray.length ==0 && res.data.downcdnarray.length == 0){
               let arr = splitTimes(this.starttime, this.endtime, this.timeUnit);
               if (params.timeUnit == 120) {
@@ -863,7 +883,7 @@ export default {
           x: "center", //可设定图例在左、右、居中
           y: "bottom", //可设定图例在上、下、居中
           padding: [0, 0, 0, 0], //可设定图例[距上方距离，距右方距离，距下方距离，距左方距离]
-          data: ["P2P播放流量", "下行节点回源流量", "下行CDN回源流量"],
+          data: ["P2P播放流量", "下行节点扩散流量", "CDN回源流量"],
         },
         tooltip: {
           trigger: "axis",
@@ -876,12 +896,12 @@ export default {
               _this.dataAry2[params[0].dataIndex] +
               _this.flowunit +
               "</br>" +
-              "下行CDN回源流量:" +
-              _this.dataAry[params[0].dataIndex] +
+              "下行节点扩散流量:" +
+              _this.dataAry1[params[0].dataIndex] +
               _this.flowunit +
               "</br>" +
-              "下行节点回源流量:" +
-              _this.dataAry1[params[0].dataIndex] +
+              "CDN回源流量:" +
+              _this.dataAry[params[0].dataIndex] +
               _this.flowunit +
               "<br>"
             );
@@ -919,9 +939,9 @@ export default {
             },
           },
           {
-            name: "下行节点回源流量",
+            name: "下行节点扩散流量",
             type: "bar",
-            stack: "使用情况",
+            // stack: "使用情况",
             data: z,
             barMaxWidth: 30, //柱图宽度
             itemStyle: {
@@ -939,9 +959,9 @@ export default {
             },
           },
           {
-            name: "下行CDN回源流量",
+            name: "CDN回源流量",
             type: "bar",
-            stack: "使用情况",
+            // stack: "使用情况",
             data: y,
             barMaxWidth: 30, //柱图宽度
             itemStyle: {
@@ -1011,6 +1031,36 @@ export default {
       margin-left: 20px;
     }
   }
+  .resources_percentage {
+		background: #ffffff;
+		margin-left: 45px;
+		margin-right: 45px;
+		padding-left: 30px;
+		padding-top: 15px;
+		padding-bottom: 15px;
+		margin-top: 24px;
+		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
+		.el-col {
+			height: 100px;
+			background: rgba(247, 247, 251, 1);
+			border-radius: 8px;
+			p:nth-child(1) {
+				color: #333333;
+				font-size: 24px;
+				margin-top: 30px;
+			}
+			p:nth-child(2) {
+				color: #656565;
+				font-size: 14px;
+			}
+		}
+		.el-col:nth-child(1) {
+			margin-right: 24px;
+		}
+    .el-col:nth-child(2) {
+			margin-right: 24px;
+		}
+	}
   .devide_table {
     padding: 35px;
     height: auto;

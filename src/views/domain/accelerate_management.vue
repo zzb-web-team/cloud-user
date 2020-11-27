@@ -6,6 +6,7 @@
 			<!-- 搜索栏 -->
 			<div class="seach">
 				<el-input
+					style="width: 12%;"
 					placeholder="请输入源站域名"
 					v-model="input"
 					class="input-with-select"
@@ -13,31 +14,16 @@
 					@keyup.enter.native="onSubmit"
 				>
 					<i
-						slot="prefix"
+						slot="suffix"
 						class="el-input__icon el-icon-search"
 						@click="seachuser()"
 					></i>
 				</el-input>
-				<el-button
-					style="margin-left: 10px;"
-					type="primary"
-					@click="option_display()"
-					
-				>
-					筛选
-					<i
-						class="el-icon-caret-bottom"
-						:class="[
-							rotate
-								? 'fa fa-arrow-down go'
-								: 'fa fa-arrow-down aa',
-						]"
-					></i>
-				</el-button>
-			</div>
-			<div v-if="optiondisplay" class="seach">
-				<span style="margin-top: 10px;">状态：</span>
+			<!-- </div>
+			<div v-if="optiondisplay" class="seach"> -->
+				<span style="margin: 10px 24px 0 55px;">状态：</span>
 				<el-select
+					style="width: 12%;"
 					v-model="value"
 					placeholder="请选择"
 					@change="getdata()"
@@ -49,8 +35,9 @@
 						:value="item.value"
 					></el-option>
 				</el-select>
-				<span style="margin: 10px 0 0 10px;">日期：</span>
+				<span style="margin: 10px 24px 0 55px;">日期：</span>
 				<el-date-picker
+					style="width: 20%;"
 					v-model="value1"
 					type="datetimerange"
 					range-separator="至"
@@ -60,10 +47,9 @@
 					:picker-options="pickerOptions"
 				></el-date-picker>
 				<el-button
-					plain
-					size="mini"
+					type="primary"
 					@click="reset()"
-					style="margin-left: 10px;"
+					style="margin-left: 55px;"
 					>重置</el-button
 				>
 			</div>
@@ -178,21 +164,18 @@
 				<div
 					style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
 				>
-					<div>
+					<div class="table-bottom">
 						<el-button
-							type="text"
 							size="small"
 							@click="enableuser()"
 							>启用</el-button
 						>
 						<el-button
-							type="text"
 							size="small"
 							@click="disableuser()"
 							>停用</el-button
 						>
 						<el-button
-							type="text"
 							size="small"
 							v-show="del_show"
 							@click="deleateuser()"
@@ -870,7 +853,7 @@ export default {
 		},
 		// 表头样式设置
 		headClass() {
-			return 'text-align: center;background:#F3F6FB;color:#333333;font-size:16px;';
+			return 'text-align: center;background:#FDFBFB;color:#333;font-size:16px;';
 		},
 		// 表格样式设置
 		rowClass() {
@@ -888,5 +871,22 @@ export default {
 }
 .lab_btn {
 	padding: 0;
+}
+.table-bottom{
+	.el-button:nth-child(1){
+		background: #fff;
+		border-color: #644CF7;
+		color: #644CF7;
+	}
+	.el-button:nth-child(2){
+		background: #fff;
+		border-color: #F68E53;
+		color: #F68E53;
+	}
+	.el-button:nth-child(3){
+		background: #fff;
+		border-color: #F85555;
+		color: #F85555;
+	}
 }
 </style>

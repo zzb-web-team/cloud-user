@@ -1,6 +1,6 @@
 <template>
   <section class="myself-container content">
-    <div class="top_title">直播加速管理</div>
+    <div class="top_title">直播加速内容</div>
     <div class="content-main">
       <div class="seach" >
         <el-input v-model="values" placeholder="请输入渠道ID、直播间ID、源站域名" style="width:18%;margin-right: 10px;" @keyup.enter.native="onChanges">

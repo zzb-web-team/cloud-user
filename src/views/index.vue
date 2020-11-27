@@ -127,64 +127,54 @@
 								<i class="iconfont icon-dianbokongzhitai"></i>
 								<span style="color: #fff; margin-left: 8px;">概览</span>
 							</template>
-							<el-menu-item index="1-1" v-if="type=='dibble'">
-									<router-link to="/overview" >
-										<div class="circle"></div>
-										<span style="color: #fff;">概览</span>
-									</router-link>
-							</el-menu-item>
-							<el-menu-item index="1-1" v-if="type=='live'">
-									<router-link to="/overview" >
-										<div class="circle"></div>
-										<span style="color: #fff;">概览</span>
-									</router-link>
-							</el-menu-item>
+							<router-link to="/overview" >
+								<el-menu-item index="1-1" v-if="type=='dibble'">
+									<div class="circle"></div>
+									<span style="color: #fff;">概览</span>
+								</el-menu-item>
+							</router-link>
+							<router-link to="/overview" >
+								<el-menu-item index="1-1" v-if="type=='live'">
+									<div class="circle"></div>
+									<span style="color: #fff;">概览</span>
+								</el-menu-item>
+							</router-link>
 						</el-submenu>
 						<el-submenu index="2">
 							<template slot="title">
 								<i class="iconfont icon-peizhiguanli"></i>
 								<span style="color: #fff;margin-left: 8px;">加速内容管理</span>
 							</template>
-							<el-menu-item index="2-1" v-if="type=='dibble'">
-								<template slot="title">
-									<router-link to="/accelerate_management" >
-										<div class="circle"></div>
-										<span style="color: #fff;">域名管理</span>
-									</router-link>
-								</template>
-							</el-menu-item>
-							<el-menu-item index="2-2" v-if="type=='dibble'">
-								<template slot="title">
-									<router-link to="/domain_management" >
-										<div class="circle"></div>
-										<span style="color: #fff;">点播加速管理</span>
-									</router-link>
-								</template>
-							</el-menu-item>
-							<el-menu-item index="2-3" v-if="type=='dibble'">
-								<template slot="title">
-									<router-link to="/yure_management" >
-										<div class="circle"></div>
-										<span style="color: #fff;">刷新预热</span>
-									</router-link>
-								</template>
-							</el-menu-item>
-							<el-menu-item index="2-4" v-if="type=='live'">
-								<template slot="title">
-									<router-link to="/live_content" >
-										<div class="circle"></div>
-										<span style="color: #fff;">直播加速内容</span>
-									</router-link>
-								</template>
-							</el-menu-item>
-							<el-menu-item index="2-5" v-if="type=='live'">
-								<template slot="title">
-									<router-link to="/live_info" >
-										<div class="circle"></div>
-										<span style="color: #fff;">直播流信息</span>
-									</router-link>
-								</template>
-							</el-menu-item>
+							<router-link to="/accelerate_management" >
+								<el-menu-item index="2-1" v-if="type=='dibble'">
+									<div class="circle"></div>
+									<span style="color: #fff;">域名管理</span>
+								</el-menu-item>
+							</router-link>
+							<router-link to="/domain_management">
+								<el-menu-item index="2-2" v-if="type=='dibble'">
+									<div class="circle"></div>
+									<span style="color: #fff;">点播加速管理</span>
+								</el-menu-item>
+							</router-link>
+							<router-link to="/yure_management" >
+								<el-menu-item index="2-3" v-if="type=='dibble'">
+									<div class="circle"></div>
+									<span style="color: #fff;">刷新预热</span>
+								</el-menu-item>
+							</router-link>
+							<router-link to="/live_content" >
+								<el-menu-item index="2-4" v-if="type=='live'">
+									<div class="circle"></div>
+									<span style="color: #fff;">直播加速内容</span>
+								</el-menu-item>
+							</router-link>
+							<router-link to="/live_info" >
+								<el-menu-item index="2-5" v-if="type=='live'">
+									<div class="circle"></div>
+									<span style="color: #fff;">直播流信息</span>
+								</el-menu-item>
+							</router-link>
 						</el-submenu>
 						<el-submenu index="3">
 							<template slot="title">
@@ -196,68 +186,52 @@
 									<div class="circle"></div>
 									<span style="color: #fff;">节点流量统计</span>
 								</template>
-								<el-menu-item index="3-1-1" v-if="type=='dibble'">
-									<template slot="title">
-										<router-link to="/dosage_query" >
-											<span style="color: #fff;">节点流量用量</span>
-										</router-link>
-									</template>
-								</el-menu-item>
-								<el-menu-item index="3-1-1" v-if="type=='live'">
-									<template slot="title">
-										<router-link to="/live_dosage_query" >
-											<span style="color: #fff;">节点流量用量</span>
-										</router-link>
-									</template>
-								</el-menu-item>
-								<el-menu-item index="3-1-2" v-if="type=='dibble'">
-									<template slot="title">
-										<router-link to="/node_flow" >
-											<span style="color: #fff;">节点流量监控</span>
-										</router-link>
-									</template>
-								</el-menu-item>
-								<el-menu-item index="3-1-2" v-if="type=='live'">
-									<template slot="title">
-										<router-link to="/live_node_flow" >
-											<span style="color: #fff;">节点流量监控</span>
-										</router-link>
-									</template>
-								</el-menu-item>
+								<router-link to="/dosage_query" >
+									<el-menu-item index="" v-if="type=='dibble'">
+										<span style="color: #fff;">节点流量用量</span>
+									</el-menu-item>
+								</router-link>
+								<router-link to="/live_dosage_query" v-if="type=='live'">
+									<el-menu-item index="3-1-1">
+										<span style="color: #fff;">节点流量用量</span>
+									</el-menu-item>
+								</router-link>
+								<router-link to="/node_flow" >
+									<el-menu-item index="3-1-2" v-if="type=='dibble'">
+										<span style="color: #fff;">节点流量监控</span>
+									</el-menu-item>
+								</router-link>
+								<router-link to="/live_node_flow" v-if="type=='live'">
+									<el-menu-item index="3-1-2" >
+										<span style="color: #fff;">节点流量监控</span>
+									</el-menu-item>
+								</router-link>
 							</el-submenu>
 							<el-submenu index="3-2">
 								<template slot="title">
 									<div class="circle"></div>
 									<span style="color: #fff;">播放统计</span>
 								</template>
-								<el-menu-item index="3-2-1" v-if="type=='dibble'">
-									<template slot="title">
-										<router-link to="/resources" >
-											<span style="color: #fff;">播放流量</span>
-										</router-link>
-									</template>
-								</el-menu-item>
-								<el-menu-item index="3-2-1" v-if="type=='live'">
-									<template slot="title">
-										<router-link to="/live_resources" >
-											<span style="color: #fff;">播放流量</span>
-										</router-link>
-									</template>
-								</el-menu-item>
-								<el-menu-item index="3-2-2" v-if="type=='dibble'">
-									<template slot="title">
-										<router-link to="/statistics" >
-											<span style="color: #fff;">统计分析</span>
-										</router-link>
-									</template>
-								</el-menu-item>
-								<el-menu-item index="3-2-2" v-if="type=='live'">
-									<template slot="title">
-										<router-link to="/live_statistics" >
-											<span style="color: #fff;">统计分析</span>
-										</router-link>
-									</template>
-								</el-menu-item>
+								<router-link to="/resources" >
+									<el-menu-item index="3-2-1" v-if="type=='dibble'">					
+										<span style="color: #fff;">播放流量</span>
+									</el-menu-item>
+								</router-link>
+								<router-link to="/live_resources" >
+									<el-menu-item index="3-2-1" v-if="type=='live'">
+										<span style="color: #fff;">播放流量</span>
+									</el-menu-item>
+								</router-link>
+								<router-link to="/statistics" >
+									<el-menu-item index="3-2-2" v-if="type=='dibble'">
+										<span style="color: #fff;">统计分析</span>
+									</el-menu-item>
+								</router-link>
+								<router-link to="/live_statistics" >
+									<el-menu-item index="3-2-2" v-if="type=='live'">
+										<span style="color: #fff;">统计分析</span>
+									</el-menu-item>
+								</router-link>
 							</el-submenu>
 						</el-submenu>
 						<el-submenu index="4">
@@ -265,14 +239,12 @@
 								<i class="iconfont icon-zhongduanguanli"></i>
 								<span style="color: #fff; margin-left: 8px;">终端管理</span>
 							</template>
-							<el-menu-item index="4-1">
-								<template slot="title">
-									<router-link to="/terminal_management" >
+							<router-link to="/terminal_management" >
+								<el-menu-item index="4-1">
 									<div class="circle"></div>
-										<span style="color: #fff;">终端管理</span>
-									</router-link>
-								</template>
-							</el-menu-item>
+									<span style="color: #fff;">终端管理</span>
+								</el-menu-item>
+							</router-link>
 						</el-submenu>
 					</el-menu>
 				</aside>

@@ -1,11 +1,17 @@
 <template>
   <div>
     <section class="myself-container content">
-      <div class="top_title">播放流量</div>
+      <div class="top_title">播放流量
+				<div class="wrapperStyle">
+					<div class="itemStyle" :class="{ isSelected: type == 0 }" @click="handleClick(0)">播放流量统计</div>
+					<div style="display: none;" class="itemStyle" :class="{ isSelected: type == 2}" @click="handleClick(1)">播放流量分布</div>
+					<div class="itemStyle" :class="{ isSelected: type == 1}" @click="handleClick(1)">播放流量终端</div>
+				</div>
+			</div>
       <div class="content-main">
-        <el-tabs v-model="activeName" @tab-click="handleClick" ref="tabs">
-            <el-tab-pane label="播放流量占比" name="threed" :lazy="true">
-            <div class="seach">
+        <!-- <el-tabs v-model="activeName" @tab-click="handleClick" ref="tabs">
+            <el-tab-pane label="播放流量占比" name="threed" :lazy="true"> -->
+            <div v-show="type==0" class="seach">
                 <el-input v-model="valueRoomId" placeholder="请输入直播间ID" style="width: 10%;margin-right: 10px;" @keyup.enter.native="onChanges">
                 <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
                 </el-input>
@@ -22,49 +28,36 @@
                 </el-select>
                 <SelectTime ref="selectTime" @selectTime="selectTime" :type="'daterange'" />
             </div>
-            <div class="user_item">
-                <div class="item_left">
-                <div class="item_count" style="text-align:center;">
-                    <span>{{totalp2p |setbytes}}</span>
+            <div v-show="type==0" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <div class="user_item">
+                <div class="items">
+                  <img width="111px" height="111px" src="../../assets/img/p2pflow.png" alt="">
+                  <div>
+                  <p class="text">P2P播放流量</p>
+                  <p class="count">{{totalp2p |setbytes}}</p>
+                  </div>
                 </div>
-                <div class="item_text" style="text-align:center;">P2P播放流量</div>
+                <div class="items">
+                  <img width="111px" height="111px" src="../../assets/img/accesscnt.png" alt="">
+                  <div>
+                  <p class="text">有效访问次数</p>
+                  <p class="count">{{validCnt}}</p>
+                  </div>
                 </div>
-                <div class="item_right">
-                <div class="item_count" style="text-align:center;">
-                    <span>{{validCnt}}</span>
-                </div>
-                <div class="item_text" style="text-align:center;">有效访问次数</div>
-                </div>
-                <img src="../../assets/img/pic1.png" />
+              </div>
+              <div  style="flex: 1; min-width: 400px;">
+                <div id="myChartMap2" :style="{ height: '500px' }"></div>
+              </div>
             </div>
-            <div class="device_table">
-                <el-row type="flex" class="row_active">
-                <el-col :span="24">
-                    <el-table :data="tableData" border max-height="750" style="width: 100%;" :cell-style="rowClass" :header-cell-style="headClass">
-                    <el-table-column label="直播间ID" prop="roomId"></el-table-column>
-                    <el-table-column label="P2P播放流量">
-                        <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                            <div>{{ scope.row.sumFlow | setbytes }}</div>
-                        </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="有效访问次数" prop="sumCnt"></el-table-column>
-                    <el-table-column label="时间" prop="stime" :formatter="timeFormatter"></el-table-column>
-                    </el-table>
-                    <fenye style="float:right;margin:10px 0 0 0;" :currentPage="pageNo" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :pagesa="total_cnt"></fenye>
-                </el-col>
-                </el-row>
-            </div>
-            </el-tab-pane>
-            <el-tab-pane label="播放流量分布" name="second" :lazy="true">
-            <div style="display: flex;align-items: center; flex-flow: row; margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;">
+            <!-- </el-tab-pane>
+            <el-tab-pane label="播放流量分布" name="second" :lazy="true"> -->
+            <div style="display: none;align-items: center; flex-flow: row; margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;">
                 <el-input v-model="valueChannelId" placeholder="请输入渠道ID" style="width:160px;margin-right: 10px;" @keyup.enter.native="onChanges">
                 <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
                 </el-input>
                 <SelectTime @selectTime="selectTime" :type="'daterange'" />
             </div>
-            <div class="device_form">
+            <div style="display: none;" class="device_form">
                 <el-row type="flex" class="row_active">
                 <el-col :span="24" style="text-align:left;font-weight: bold;margin-bottom:30px;">播放流量地域分布</el-col>
                 </el-row>
@@ -77,7 +70,7 @@
                 <div id="myChartMap1" :style="{ height: '607px' }"></div>
             </div>
             
-            <div class="devide_table">
+            <div style="display: none;" class="devide_table">
                 <el-row type="flex" class="row_active">
                 <el-col :span="24" style="text-align:left;font-weight: bold;margin-bottom:20px;">省/市流量统计</el-col>
                 </el-row>
@@ -121,9 +114,9 @@
                 </el-row>
                 </div>
             </div>
-            </el-tab-pane>
-            <el-tab-pane label="播放流量终端" name="four" :lazy="true">
-            <div class="seach">
+            <!-- </el-tab-pane>
+            <el-tab-pane label="播放流量终端" name="four" :lazy="true"> -->
+            <div v-show="type==1" class="seach">
                 <el-input v-model="valueChannelId" placeholder="请输入渠道ID" @change="onChanges" style="width:160px;margin-right: 10px;">
                 <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
                 </el-input>
@@ -139,15 +132,31 @@
                 </el-select>
                 <SelectTime @selectTime="selectTime" :type="'daterange'" />
             </div>
-            <div>
+            <div v-show="type==1">
                 <div id="myChartMap4" :style="{ height: '607px' }"></div>
             </div>
-            </el-tab-pane>
-        </el-tabs>
+            <!-- </el-tab-pane>
+        </el-tabs> -->
       </div>
     </section>
-    <div class="device_form" v-show="activeName=='threed'">
-      <div id="myChartMap2" :style="{ height: '650px' }"></div>
+    <div v-show="type==0" class="device_tables">
+      <el-row type="flex" class="row_active">
+      <el-col :span="24">
+          <el-table :data="tableData" border max-height="750" style="width: 100%;" :cell-style="rowClass" :header-cell-style="headClass">
+          <el-table-column label="直播间ID" prop="roomId"></el-table-column>
+          <el-table-column label="P2P播放流量">
+              <template slot-scope="scope">
+              <div style="display: flex;justify-content: center;">
+                  <div>{{ scope.row.sumFlow | setbytes }}</div>
+              </div>
+              </template>
+          </el-table-column>
+          <el-table-column label="有效访问次数" prop="sumCnt"></el-table-column>
+          <el-table-column label="时间" prop="stime" :formatter="timeFormatter"></el-table-column>
+          </el-table>
+          <fenye style="float:right;margin:10px 0 0 0;" :currentPage="pageNo" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :pagesa="total_cnt"></fenye>
+      </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -176,6 +185,7 @@ import _ from "lodash";
 export default {
   data() {
     return {
+      type: 0,
       dataAry: [],
       dataAry1: [],
       dataAry2: [],
@@ -254,9 +264,6 @@ export default {
     fenye, SelectTime
   },
   mounted() {
-    this.$nextTick(function () {
-        this.$refs.tabs.$children[0].$refs.tabs[1].style.display="none";
-    })
     if (this.$cookies.get('id')) {
         this.chanid = this.$cookies.get('id');
     } else {
@@ -550,18 +557,19 @@ export default {
       return "text-align: center;";
     },
     //选项卡
-    handleClick(tab, event) {
+    handleClick(val) {
       this.reset();
       this.starttime = new Date(new Date().toLocaleDateString()).getTime() / 1000;
       this.endtime = Date.parse(new Date()) / 1000;
-      if (tab.index == 0) {
+      this.type = val;
+      if (val == 0) {
           this.liveQuerySdkFlow();
-      } else if(tab.index == 1){
+      } else if(val == 2){
         this.queryDataFlowLocation();
         this.$nextTick(() => {
           this.drawLine();
         });
-      } else if (tab.index == 2) {
+      } else if (val == 1) {
         this.liveSdkflowControl();
       }
     },
@@ -660,16 +668,20 @@ export default {
         toolbox: {
           itemSize: 20,
           itemGap: 30,
-          right: 50,
+          right: 30,
           feature: {
             mydow: {
               show: true,
               title: "导出",
-              icon:
-                "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
+              icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
               onclick: function() {
                 _this.exoprtant_Zb();
               },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
             },
           },
         },
@@ -757,11 +769,15 @@ export default {
             mydow: {
               show: true,
               title: "导出",
-              icon:
-                "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
+              icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
               onclick: function() {
                 _this.exoprtant_Ll();
               },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
             },
           },
         },
@@ -858,40 +874,44 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.user_item {
-  width: auto;
+.device_tables {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
+  width: 100%;
   height: auto;
-  background: #FDFBFB;
+  .operating{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
+  }
+}
+.user_item {
+  width: 400px;
+  height: auto;
   border-radius: 32px;
   margin-bottom: 50px;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 36px 71px;
-  .item_left {
-    width: 33%;
-    .item_text {
-      font-size: 14px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  .items {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    .text {
+      font-size: 16px;
       color: #333333;
+      font-weight: 400;
     }
-    .item_count {
-      line-height: 55px;
-      span {
-        font-size: 34px;
-      }
-    }
-  }
-  .item_right {
-    width: 33%;
-    .item_text {
-      font-size: 14px;
+    .count {
       color: #333333;
-    }
-    .item_count {
-      line-height: 55px;
-      span {
-        font-size: 34px;
-      }
+      font-size: 40px;   
+      font-weight: bold;
     }
   }
 }

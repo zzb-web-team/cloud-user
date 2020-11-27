@@ -1,35 +1,18 @@
 <template>
 	<div class="content">
-		<div class="top_title">概览页</div>
-		<!-- 主体内容 -->
 		<div class="content_top">
-			<div class="content_top_title">
-				<span>资源用量</span>
-				<span @click="godosage" class="astyle">更多数据</span>
+			<div>
+				<p style="color:#333;font-size: 18px;text-align: left;">资源用量</p>
+				<p style="color:#333;font-size: 16px;margin-top: 27px;text-align: left;">本月使用流量<span style="font-size: 32px;color: #333;font-weight:bold;margin-left: 38px;">{{dataL}}</span>{{ unitdata }}</p>
 			</div>
-			<div class="content_top_con">
-				<p>本月使用流量</p>
-				<p>
-					<span style="font-size: 32px;color: #333333;">{{
-						dataL
-					}}</span
-					>{{ unitdata }}
-				</p>
-			</div>
+			<img width="278px" height="254px" src="../../assets/img/pic1.png" alt="" @click="godosage">
 		</div>
 		<div class="content_bottom">
 			<div class="content_bottom_title">
 				<span>用量趋势</span>
-				<span @click="godosage" class="astyle">更多数据</span>
+				<span @click="godosage" class="astyle">更多数据 ></span>
 			</div>
-			<div
-				style="padding: 43px 54px;background: #ffffff;box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);"
-			>
-				<div
-					id="myChart3"
-					:style="{ height: '450px', fontSize: '16px' }"
-				></div>
-			</div>
+			<div id="myChart3" :style="{ height: '450px', width: 'auto', fontSize: '16px' }"></div>
 		</div>
 	</div>
 </template>
@@ -159,35 +142,26 @@ export default {
 			let options = {
 				title: {
 					text: '流量趋势',
-					itemGap: 10,
+					// itemGap: 10,
 					textStyle: {
 						//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
-						fontSize: 14,
-						color: '#666666',
+						fontSize: 16,
+						color: '#333',
 						fontStyle: 'normal',
 						fontWeight: '400',
 					},
 				},
+				
+ 				grid:{
+					top:"50px",
+					left:"50px",
+					right:"15px",
+					bottom:"50px"
+                },
 				toolbox: {
-					//show: true,
 					itemSize: 20,
 					itemGap: 30,
 					right: 50,
-					feature: {
-						// mark: { show: true },
-						// dataView: { show: true, readOnly: false },
-						// magicType: { show: true, type: ['line', 'bar'] },
-						// restore: { show: true },
-						// saveAsImage: { show: false },
-						// mydow: {
-						// 	show: true,
-						// 	title: '导出',
-						// 	icon:'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
-						// 	onclick: function() {
-						// 		alert('myToolHandler1');
-						// 	},
-						// },
-					},
 				},
 				tooltip: {
 					trigger: 'axis',
@@ -207,8 +181,9 @@ export default {
 					data: this.timeArray,
 				},
 				yAxis: {
+					
 					type: 'value',
-					name: _this.unitdata,
+					// name: _this.unitdata,
 				},
 				series: [
 					{
@@ -250,67 +225,43 @@ export default {
 <style lang="scss" scoped>
 .content {
 	.content_top {
-		padding: 15px 0 25px;
+		margin-top: 72px;
+		padding: 71px;
 		width: 100%;
-		// border: 1px solid #000;
-		.content_top_title {
-			margin: auto;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			line-height: 75px;
-			span:nth-child(1) {
-				color: #333;
-				font-weight: 400;
-				font-size: 16px;
-			}
-			span:nth-child(2) {
-				color: #644CF7;
-				font-weight: 400;
-				font-size: 14px;
-			}
-		}
-		.content_top_con {
-			height: 116px;
-			background: #ffffff;
-			margin: auto;
-			box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-			border-radius: 2px;
-			text-align: left;
-			padding-left: 53px;
-			color: #333333;
-			p {
-				line-height: 65px;
-				font-size: 14px;
-				color: #333333;
-			}
-			p:nth-child(2) {
-				line-height: 16px;
-			}
+		background: #fff;
+		border-radius: 32px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		position: relative;
+		img{
+			position: absolute;
+			right:71px;
+			bottom: 18px;
 		}
 	}
 	.content_bottom {
-		margin-top: 70px;
-		margin: auto;
+		margin-top: 72px;
+		padding: 71px;
+		width: 100%;
+		background: #fff;
+		border-radius: 32px;
 		.content_bottom_title {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			line-height: 75px;
+			margin-bottom: 40px;
 			span:nth-child(1) {
 				color: #333;
 				font-weight: 400;
-				font-size: 16px;
+				font-size: 18px;
 			}
 			span:nth-child(2) {
-				color: #644CF7;
+				color: #999;
 				font-weight: 400;
-				font-size: 14px;
+				font-size: 16px;
 			}
-		}
-		p {
-			text-align: right;
-			color: #644CF7;
 		}
 	}
 	.astyle:hover {

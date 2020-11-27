@@ -1,10 +1,15 @@
 <template>
 	<div>
 		<section class="myself-container content">
-			<div class="top_title">统计分析</div>
+			<div class="top_title">统计分析
+				<div class="wrapperStyle">
+					<div class="itemStyle" :class="{ isSelected: type == 0 }" @click="handleClick(0)">PV/UV</div>
+					<div class="itemStyle" :class="{ isSelected: type == 1}" @click="handleClick(1)">访问用户分布</div>
+				</div>
+			</div>
 			<div class="content-main">
-				<el-tabs v-model="activeName" @tab-click="handleClick">
-					<el-tab-pane label="PV/UV" name="first">
+				<!-- <el-tabs v-model="activeName" @tab-click="handleClick">
+					<el-tab-pane label="PV/UV" name="first"> -->
 						<div class="seach">
 							<el-input
 								placeholder="请输入域名"
@@ -51,68 +56,48 @@
 								<el-option label="ios" value="1"></el-option>
 								<el-option label="其他" value="2"></el-option>
 							</el-select>
-							<!-- <span style="margin-right:10px;margin-left:15px;"
-								>日期:</span
-							> -->
-							<div>
-								<el-radio-group
-									v-model="radio1"
-									size="medium"
-									@change="sele_time(0)"
+							<SelectTime ref="selectTime" @selectTime="selectTime" :type="'daterange'" />
+						</div>
+						<div v-show="type==0" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+							<div class="user_item">
+								<div class="items">
+									<img width="111px" height="111px" src="../../assets/img/pv.png" alt="">
+									<div>
+									<p class="text">总访问次数(PV)</p>
+									<p class="count">{{totalPV}}</p>
+									</div>
+								</div>
+								<div class="items">
+									<img width="111px" height="111px" src="../../assets/img/uv.png" alt="">
+									<div>
+									<p class="text">独立IP访问数(UV)</p>
+									<p class="count">{{totalUV}}</p>
+									</div>
+								</div>
+							</div>
+							<div  style="flex: 1; min-width: 400px;">
+								<div id="myChart" :style="{ height: '500px' }"></div>
+							</div>
+						</div>
+					<!-- </el-tab-pane> -->
+						<div v-show="type==1">
+							<el-radio-group
+								v-model="radio_tab"
+								size="medium"
+								@change="sele_tab()"
+							>
+								<el-radio-button label="1"
+									>地区</el-radio-button
 								>
-									<el-radio-button label="1"
-										>今天</el-radio-button
-									>
-									<el-radio-button label="2"
-										>昨天</el-radio-button
-									>
-									<el-radio-button label="3"
-										>近7天</el-radio-button
-									>
-									<el-radio-button label="4"
-										>近30天</el-radio-button
-									>
-									<el-radio-button label="5"
-										>自定义</el-radio-button
-									>
-								</el-radio-group>
-							</div>
-							<el-date-picker
-								v-show="shoudzy"
-								style="margin-left:10px;"
-								v-model="val2"
-								type="datetimerange"
-								:picker-options="pickerOptions"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								align="left"
-								@change="gettimes_pvpu"
-							></el-date-picker>
-						</div>
-
-						<div class="user_item">
-							<div class="item_left">
-								<div class="item_text">总访问次数(PV)</div>
-								<div class="item_count">
-									<span>{{ totalPV }}</span>
-								</div>
-							</div>
-							<div class="item_right">
-								<div class="item_text">独立IP访问数(UV)</div>
-								<div class="item_count">
-									<span>{{ totalUV }}</span>
-								</div>
-							</div>
-						</div>
-						<div class="device_curve">
+								<el-radio-button label="2"
+									>运营商</el-radio-button
+								>
+							</el-radio-group>
 							<div
-								id="myChart"
+								id="myChart1"
 								:style="{ height: '607px' }"
 							></div>
 						</div>
-					</el-tab-pane>
-
 					<el-tab-pane label="访问用户分布" name="second">
 						<div class="seach">
 							<el-input
@@ -194,152 +179,135 @@
 								@change="gettimes_option"
 							></el-date-picker>
 						</div>
-						<div class="device_table" v-show="region_show">
-							<el-row type="flex" class="row_active">
-								<el-col
-									:span="24"
-									style="text-align:left;    font-weight: bold;padding-left:10px;"
-									>用户访问区域分布</el-col
-								>
-							</el-row>
-							<el-row type="flex" class="row_active">
-								<el-col :span="24">
-									<el-table
-										:data="tablecdn"
-										border
-										stripe
-										style="width: 100%;margin:10px;"
-										:cell-style="rowClass"
-										:header-cell-style="headClass"
-									>
-										<el-table-column label="省市"
-											><template slot-scope="scope">
-												<div v-if="scope.row.region">
-													{{ scope.row.region }}
-												</div>
-												<div v-else>
-													{{ scope.row.isp }}
-												</div>
-											</template></el-table-column
-										>
-										<el-table-column label="访问用户总数">
-											<template slot-scope="scope">
-												<div>{{scope.row.sumCnt}}</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="有效访问用户数（%）">
-											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.validCnt }}</div>
-												<div>({{ scope.row.validPercent | percentss }})</div>
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="无效访问用户数（%）">
-											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.invalidCnt }}</div>
-												<div>({{ scope.row.invalidPercent | percentss }})</div>
-												</div>
-											</template>
-										</el-table-column>
-									</el-table>
-								</el-col>
-							</el-row>
-							<fenye
-								v-show="tablecdn.length != 0"
-								style="text-align:right;margin:10px 0 20px 0;"
-								@fatherMethod="f_getpage"
-								@fathernum="f_gettol"
-								:pagesa="f_total_cnt"
-								:currentPage="f_currentPage"
-							>
-							</fenye>
-						</div>
-						<!-- 运营商 -->
-						<div class="devide_table" v-show="!region_show">
-							<el-row type="flex" class="row_active">
-								<el-col
-									:span="24"
-									style="text-align:left;    font-weight: bold;padding-left:10px;"
-									>用户运营商分布</el-col
-								>
-							</el-row>
-							<el-row type="flex" class="row_active">
-								<el-col :span="24">
-									<el-table
-										:data="tablecdn"
-										border
-										stripe
-										style="width: 100%;margin:10px;"
-										:cell-style="rowClass"
-										:header-cell-style="headClass"
-									>
-										<el-table-column label="运营商"
-											><template slot-scope="scope">
-												<div v-if="scope.row.region">
-													{{ scope.row.region }}
-												</div>
-												<div v-else>
-													{{ scope.row.isp }}
-												</div>
-											</template></el-table-column
-										>
-										<el-table-column label="访问用户总数">
-											<template slot-scope="scope">
-												<div>{{scope.row.sumCnt}}</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="有效访问用户数（%）">
-											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.validCnt }}</div>
-												<div>({{ scope.row.validPercent | percentss }})</div>
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="无效访问用户数（%）">
-											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.invalidCnt }}</div>
-												<div>({{ scope.row.invalidPercent | percentss }})</div>
-												</div>
-											</template>
-										</el-table-column>
-									</el-table>
-								</el-col>
-							</el-row>
-							<fenye
-								v-show="tablecdn.length != 0"
-								style="text-align:right;margin:10px 0 20px 0;"
-								@fatherMethod="f_getpage"
-								@fathernum="f_gettol"
-								:pagesa="f_total_cnt"
-								:currentPage="f_currentPage"
-							>
-							</fenye>
-						</div>
+						
 					</el-tab-pane>
-				</el-tabs>
+				<!-- </el-tabs> -->
 			</div>
 		</section>
-		<div class="device_form">
-			<el-radio-group
-				v-model="radio_tab"
-				size="medium"
-				@change="sele_tab()"
+		<div class="device_tables" v-show="region_show&&type==1">
+			<el-row type="flex" class="row_active">
+				<el-col
+					:span="24"
+					style="text-align:left;    font-weight: bold;padding-left:10px;"
+					>用户访问区域分布</el-col
+				>
+			</el-row>
+			<el-row type="flex" class="row_active">
+				<el-col :span="24">
+					<el-table
+						:data="tablecdn"
+						border
+						stripe
+						style="width: 100%;margin:10px;"
+						:cell-style="rowClass"
+						:header-cell-style="headClass"
+					>
+						<el-table-column label="省市"
+							><template slot-scope="scope">
+								<div v-if="scope.row.region">
+									{{ scope.row.region }}
+								</div>
+								<div v-else>
+									{{ scope.row.isp }}
+								</div>
+							</template></el-table-column
+						>
+						<el-table-column label="访问用户总数">
+							<template slot-scope="scope">
+								<div>{{scope.row.sumCnt}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="有效访问用户数（%）">
+							<template slot-scope="scope">
+								<div style="display: flex;justify-content: center;">
+								<div>{{ scope.row.validCnt }}</div>
+								<div>({{ scope.row.validPercent | percentss }})</div>
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="无效访问用户数（%）">
+							<template slot-scope="scope">
+								<div style="display: flex;justify-content: center;">
+								<div>{{ scope.row.invalidCnt }}</div>
+								<div>({{ scope.row.invalidPercent | percentss }})</div>
+								</div>
+							</template>
+						</el-table-column>
+					</el-table>
+				</el-col>
+			</el-row>
+			<fenye
+				v-show="tablecdn.length != 0"
+				style="text-align:right;margin:10px 0 20px 0;"
+				@fatherMethod="f_getpage"
+				@fathernum="f_gettol"
+				:pagesa="f_total_cnt"
+				:currentPage="f_currentPage"
 			>
-				<el-radio-button label="1"
-					>地区</el-radio-button
+			</fenye>
+		</div>
+		<!-- 运营商 -->
+		<div class="device_tables" v-show="!region_show&&type==1">
+			<el-row type="flex" class="row_active">
+				<el-col
+					:span="24"
+					style="text-align:left;    font-weight: bold;padding-left:10px;"
+					>用户运营商分布</el-col
 				>
-				<el-radio-button label="2"
-					>运营商</el-radio-button
-				>
-			</el-radio-group>
-			<div
-				id="myChart1"
-				:style="{ height: '607px' }"
-			></div>
+			</el-row>
+			<el-row type="flex" class="row_active">
+				<el-col :span="24">
+					<el-table
+						:data="tablecdn"
+						border
+						stripe
+						style="width: 100%;margin:10px;"
+						:cell-style="rowClass"
+						:header-cell-style="headClass"
+					>
+						<el-table-column label="运营商"
+							><template slot-scope="scope">
+								<div v-if="scope.row.region">
+									{{ scope.row.region }}
+								</div>
+								<div v-else>
+									{{ scope.row.isp }}
+								</div>
+							</template></el-table-column
+						>
+						<el-table-column label="访问用户总数">
+							<template slot-scope="scope">
+								<div>{{scope.row.sumCnt}}</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="有效访问用户数（%）">
+							<template slot-scope="scope">
+								<div style="display: flex;justify-content: center;">
+								<div>{{ scope.row.validCnt }}</div>
+								<div>({{ scope.row.validPercent | percentss }})</div>
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="无效访问用户数（%）">
+							<template slot-scope="scope">
+								<div style="display: flex;justify-content: center;">
+								<div>{{ scope.row.invalidCnt }}</div>
+								<div>({{ scope.row.invalidPercent | percentss }})</div>
+								</div>
+							</template>
+						</el-table-column>
+					</el-table>
+				</el-col>
+			</el-row>
+			<fenye
+				v-show="tablecdn.length != 0"
+				style="text-align:right;margin:10px 0 20px 0;"
+				@fatherMethod="f_getpage"
+				@fathernum="f_gettol"
+				:pagesa="f_total_cnt"
+				:currentPage="f_currentPage"
+			>
+			</fenye>
 		</div>
 	</div>
 </template>
@@ -350,6 +318,7 @@ import { dateToMs, getymdtime, splitTimes } from '../../servers/sevdate';
 
 import mtImg from '../../assets/img/dowload.png';
 import fenye from '@/components/fenye';
+import SelectTime from '@/components/SelectTime';
 import {
 	pv_uv_query_conditions,
 	pv_uv_curve,
@@ -371,6 +340,7 @@ import echarts from 'echarts';
 export default {
 	data() {
 		return {
+			type: 0,
 			radio1: '1',
 			radio_tab: '1',
 			currentPage: 1,
@@ -700,7 +670,7 @@ export default {
 		},
 	},
 	components: {
-		fenye,
+		fenye, SelectTime
 	},
 	mounted() {
 		if (this.$cookies.get('id')) {
@@ -713,10 +683,10 @@ export default {
 		this.endtime = Date.parse(new Date()) / 1000;
 		// this.getlabrl2();
 		if (sessionStorage.getItem('tab_name')) {
-			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName == 'first') {
+			this.type = sessionStorage.getItem('tab_name');
+			if (this.type == 0) {
 				this.getcure(0);
-			} else if (this.activeName == 'second') {
+			} else if (this.type == 1) {
 				this.getcure(1);
 			} else {
 				this.getcure(3);
@@ -733,6 +703,18 @@ export default {
 		this.chart = null;
 	},
 	methods: {
+		selectTime(val){
+			this.starttime = val.starttime;
+			this.endtime = val.endtime;
+			this.pageNo = 1;
+			if (this.type == 0) {
+				this.getcure(0);
+			} else if (this.type == 1) {
+				this.getcure(1);
+			} else {
+				this.getcure(3);
+			}
+		},
 		//获取页码
 		getpage(pages) {
 			this.pageNo = pages;
@@ -1382,9 +1364,10 @@ export default {
 			return 'text-align: center;';
 		},
 		//选项卡
-		handleClick(tab, event) {
+		handleClick(val) {
+			this.type = val;
 			this.timeUnit = 5;
-			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
+			sessionStorage.setItem('tab_name', this.type); //添加到sessionStorage
 			this.radio1 = '1';
 			this.val2 = [];
 			this.shoudzy = false;
@@ -1396,18 +1379,18 @@ export default {
 			this.starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.endtime = Date.parse(new Date()) / 1000;
-			if (tab.index == 0) {
+			if (val == 0) {
 				this.value_a1 = '';
 				this.value_a2 = '';
 				this.value_a3 = '';
 				this.getcure(0);
-			} else if (tab.index == 1) {
+			} else if (val == 1) {
 				this.value_b1 = '';
 				this.value_b2 = '';
 				this.value_b3 = '';
 				this.twob = false;
 				this.getcure(1);
-			} else if (tab.index == 2) {
+			} else if (val == 2) {
 				this.value_c1 = '';
 				this.value_c2 = '';
 				this.value_c3 = '';
@@ -1442,11 +1425,15 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								_this.exoprtant_pupv();
 							},
+							emphasis: {
+								iconStyle: {
+								textFill: '#644CF7'
+								}
+							}
 						},
 					},
 				},
@@ -1573,8 +1560,7 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								if (_this.datatype == 1) {
 									_this.exoprtant_topregion();
@@ -1582,6 +1568,11 @@ export default {
 									_this.exoprtant_topisp();
 								}
 							},
+							emphasis: {
+								iconStyle: {
+								textFill: '#644CF7'
+								}
+							}
 						},
 					},
 				},
@@ -1636,11 +1627,15 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								_this.exoprtant_playtimes();
 							},
+							emphasis: {
+								iconStyle: {
+								textFill: '#644CF7'
+								}
+							}
 						},
 					},
 				},
@@ -1714,97 +1709,67 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.btn_active {
-	color: #409eff;
-	border-color: #c6e2ff;
-	background-color: #ecf5ff;
+.top_title{
+  text-align: left;
+  font-size: 18px;
+  color: #333;
+  .wrapperStyle{
+      display: inline;
+      margin-left: 54px;
+      .itemStyle {
+          font-weight: 500;
+          display: inline;
+          font-size: 16px;
+          color: #666;
+          margin-right: 48px;
+          cursor: pointer;
+          height: 20px;
+      }
+      .isSelected{
+          color: #644CF7;
+          border-bottom: 4px solid  #644CF7;
+      }
+  }
 }
-.myself-container {
-	width: 100%;
-	// min-width: 1600px;
-	.device_curve {
-		width: auto;
-		height: auto;
-		overflow: hidden;
-		margin-top: 60px;
-		background: #ffffff;
-		box-sizing: border-box;
-		border-radius: 2px;
-	}
-
-	.devide_table {
-		width: auto;
-		margin-left: 45px;
-		margin-right: 45px;
-		height: auto;
-		overflow: hidden;
-		margin-top: 20px;
-		background: #ffffff;
-		padding: 37px;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-		border-radius: 2px;
-		.el-table td,
-		.el-table th {
-			padding: 6px 0px;
-		}
-
-		.row_active {
-			margin-top: 10px;
-		}
-	}
-
-	.devide_pageNation {
-		width: 100%;
-		height: auto;
-		overflow: hidden;
-		margin-top: 20px;
-
-		.devide_pageNation_active {
-			float: right;
-		}
-	}
+.device_tables {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
+  width: 100%;
+  height: auto;
+  .operating{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
+  }
 }
-
 .user_item {
-	width: auto;
-	height: 130px;
-	background: #FDFBFB;
-	border-radius: 32px;
-	margin-top: 20px;
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	text-align: left;
-	padding: 36px 71px;
-	.item_left {
-		width: 49%;
-		height: 58px;
-		border-right: 1px solid #e6e9ed;
-		.item_text {
-			font-size: 14px;
-			color: #333333;
-		}
-		.item_count {
-			line-height: 55px;
-			span {
-				font-size: 34px;
-			}
-		}
-	}
-	.item_right {
-		height: 48px;
-		width: 49%;
-		padding-left: 40px;
-		.item_text {
-			font-size: 14px;
-			color: #333333;
-		}
-		.item_count {
-			line-height: 55px;
-			span {
-				font-size: 34px;
-			}
-		}
-	}
+  width: 400px;
+  height: auto;
+  border-radius: 32px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  .items {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    .text {
+      font-size: 16px;
+      color: #333333;
+      font-weight: 400;
+    }
+    .count {
+      color: #333333;
+      font-size: 40px;   
+      font-weight: bold;
+    }
+  }
 }
 </style>

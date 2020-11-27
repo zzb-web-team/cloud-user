@@ -1,9 +1,16 @@
 <template>
 	<div>
-		<section class="myself-container content">
-			<div class="top_title">播放流量</div>
-			<div class="content-main">
-				<el-tabs v-model="activeName" @tab-click="handleClick" ref="tabs">
+		<section class="content">
+			<div class="top_title">播放流量
+				<div class="wrapperStyle">
+					<div class="itemStyle" :class="{ isSelected: type == 0 }" @click="handleClick(0)">播放流量统计</div>
+					<div style="display: none;" class="itemStyle" :class="{ isSelected: type == 2}" @click="handleClick(1)">播放流量分布</div>
+					<div class="itemStyle" :class="{ isSelected: type == 1}" @click="handleClick(1)">播放流量终端</div>
+				</div>
+			</div>
+			<div class="content-main" style="margin-top: 48px;">
+				
+				<!-- <el-tabs v-model="activeName" @tab-click="handleClick" ref="tabs"> -->
 					<div class="seach">
 						<el-input
 							v-show="activeName != 'third'"
@@ -65,41 +72,7 @@
 						<!-- <span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
 						> -->
-						<el-radio-group
-							v-model="radio1"
-							size="medium"
-							@change="sele_time()"
-							v-show="!shoudzyx"
-						>
-							<el-radio-button label="1">今天</el-radio-button>
-							<el-radio-button label="2">昨天</el-radio-button>
-							<el-radio-button label="3">近7天</el-radio-button>
-							<el-radio-button label="4">近30天</el-radio-button>
-							<el-radio-button label="5">自定义</el-radio-button>
-						</el-radio-group>
-						<el-button
-							type="primary"
-							v-show="shoudzyx"
-							style="background:#409EFF;border:#409EFF"
-							@click="setshoudzyx"
-							>自定义</el-button
-						>
-						<el-date-picker
-							v-show="shoudzyx"
-							style="margin-left:10px;"
-							v-model="val2"
-							:type="
-								activeName == 'first'
-									? 'daterange'
-									: 'datetimerange'
-							"
-							:picker-options="pickerOptions"
-							range-separator="至"
-							start-placeholder="开始日期"
-							end-placeholder="结束日期"
-							align="left"
-							@change="gettimes"
-						></el-date-picker>
+						<SelectTime @selectTime="selectTime" :type="'datetimerange'" />
 						<!-- <el-button
 							style="margin-left:10px;"
 							type="primary"
@@ -107,6 +80,28 @@
 							>查询</el-button
 						> -->
 					</div>
+					<div v-show="type==0" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+						<div class="user_item">
+							<div class="items">
+								<img width="111px" height="111px" src="../../assets/img/p2pflow.png" alt="">
+								<div>
+								<p class="text">P2P播放流量</p>
+								<p class="count">{{totalp2p |setnum}}<span class="text">{{totalp2p |setunit}}</span></p>
+								</div>
+							</div>
+							<div class="items">
+								<img width="111px" height="111px" src="../../assets/img/cdnflow.png" alt="">
+								<div>
+								<p class="text">CDN播放流量</p>
+								<p class="count">{{totalcdn |setnum}}<span class="text">{{totalcdn |setunit}}</span></p>
+								</div>
+							</div>
+						</div>
+						<div  style="flex: 1; min-width: 400px;">
+							<div id="liuliang_echarts" :style="{ height: '500px' }"></div>
+						</div>
+					</div>
+					<div v-show="type==1" id="jiankong_echarts" :style="{ height: '500px' }"></div>
 					<el-tab-pane label="播放流量占比" name="first">
 						<el-row class="resources_percentage">
 							<el-col :span="4">
@@ -118,137 +113,7 @@
 								<p>CDN播放流量</p>
 							</el-col>
 						</el-row>
-						<div class="device_table">
-							<el-row type="flex" class="row_active">
-								<el-col :span="24">
-									<el-table
-										:data="tableflow"
-										border
-										max-height="600"
-										style="width: 100%;"
-										:cell-style="rowClass"
-										:header-cell-style="headClass"
-									>
-										<el-table-column label="加速内容名称">
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.urlname }}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="播放URL">
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.playurl }}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="P2P播放流量(%)">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.p2pflow
-															| updatabkb
-													}}({{
-														(
-															scope.row
-																.p2ppercent *
-															100
-														).toFixed(2)
-													}}%)
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="CDN播放流量">
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.cdnflow
-															| updatabkb
-													}}({{
-														(
-															scope.row
-																.cdnpercent *
-															100
-														).toFixed(2)
-													}}%)
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column
-											:render-header="renderHeader"
-											label="节点有资源时CDN播放流量(%)"
-										>
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row.cdnactiveflow
-															| updatabkb
-													}}({{
-														(
-															scope.row
-																.cdnactivepercent *
-															100
-														).toFixed(2)
-													}}%)
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column
-											:render-header="renderHeader"
-											label="节点无资源时CDN播放流量(%)"
-										>
-											<template slot-scope="scope">
-												<div>
-													{{
-														scope.row
-															.cdnpassiveflow
-															| updatabkb
-													}}({{
-														(
-															scope.row
-																.cdnpassivepercent *
-															100
-														).toFixed(2)
-													}}%)
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column label="加速播放次数">
-											<template slot-scope="scope">
-												<div>
-													{{ scope.row.times }}
-												</div>
-											</template>
-										</el-table-column>
-										<el-table-column
-											label="时间"
-											prop="stime"
-											:formatter="timeFormatter"
-										>
-											<!-- <template slot-scope="scope">
-												<div>
-													{{
-														scope.row.stime
-															| settimes
-													}}-{{
-														scope.row.etime
-															| settimes
-													}}
-												</div>
-											</template> -->
-										</el-table-column>
-									</el-table>
-									<fenye
-										style="float:right;margin:10px 0 20px 0;"
-										@fatherMethod="flowgetpage"
-										@fathernum="flowgettol"
-										:pagesa="flowtotal_cnt"
-										:currentPage="flowcurrentPage"
-									></fenye>
-								</el-col>
-							</el-row>
-						</div>
+						
 					</el-tab-pane>
 					<el-tab-pane label="播放流量分布" name="third">
 						<div class="device_form">
@@ -312,11 +177,139 @@
 					<el-tab-pane label="播放流量终端" name="second">
 						<div id="jiankong_echarts"></div>
 					</el-tab-pane>
-				</el-tabs>
+				<!-- </el-tabs> -->
 			</div>
 		</section>
-		<div class="device_form" v-show="activeName == 'first'">
-			<div id="liuliang_echarts" :style="{ height: '650px' }"></div>
+		<div v-show="type==0" class="device_tables">
+			<el-row type="flex" class="row_active">
+				<el-col :span="24">
+					<el-table
+						:data="tableflow"
+						border
+						max-height="600"
+						style="width: 100%;"
+						:cell-style="rowClass"
+						:header-cell-style="headClass"
+					>
+						<el-table-column label="加速内容名称">
+							<template slot-scope="scope">
+								<div>
+									{{ scope.row.urlname }}
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="播放URL">
+							<template slot-scope="scope">
+								<div>
+									{{ scope.row.playurl }}
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="P2P播放流量(%)">
+							<template slot-scope="scope">
+								<div>
+									{{
+										scope.row.p2pflow
+											| updatabkb
+									}}({{
+										(
+											scope.row
+												.p2ppercent *
+											100
+										).toFixed(2)
+									}}%)
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="CDN播放流量">
+							<template slot-scope="scope">
+								<div>
+									{{
+										scope.row.cdnflow
+											| updatabkb
+									}}({{
+										(
+											scope.row
+												.cdnpercent *
+											100
+										).toFixed(2)
+									}}%)
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column
+							:render-header="renderHeader"
+							label="节点有资源时CDN播放流量(%)"
+						>
+							<template slot-scope="scope">
+								<div>
+									{{
+										scope.row.cdnactiveflow
+											| updatabkb
+									}}({{
+										(
+											scope.row
+												.cdnactivepercent *
+											100
+										).toFixed(2)
+									}}%)
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column
+							:render-header="renderHeader"
+							label="节点无资源时CDN播放流量(%)"
+						>
+							<template slot-scope="scope">
+								<div>
+									{{
+										scope.row
+											.cdnpassiveflow
+											| updatabkb
+									}}({{
+										(
+											scope.row
+												.cdnpassivepercent *
+											100
+										).toFixed(2)
+									}}%)
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column label="加速播放次数">
+							<template slot-scope="scope">
+								<div>
+									{{ scope.row.times }}
+								</div>
+							</template>
+						</el-table-column>
+						<el-table-column
+							label="时间"
+							prop="stime"
+							:formatter="timeFormatter"
+						>
+							<!-- <template slot-scope="scope">
+								<div>
+									{{
+										scope.row.stime
+											| settimes
+									}}-{{
+										scope.row.etime
+											| settimes
+									}}
+								</div>
+							</template> -->
+						</el-table-column>
+					</el-table>
+					<fenye
+						style="float:right;margin:10px 0 20px 0;"
+						@fatherMethod="flowgetpage"
+						@fathernum="flowgettol"
+						:pagesa="flowtotal_cnt"
+						:currentPage="flowcurrentPage"
+					></fenye>
+				</el-col>
+			</el-row>
 		</div>
 	</div>
 </template>
@@ -334,6 +327,7 @@ import {
 	splitTimes
 } from '../../servers/sevdate';
 import fenye from '@/components/fenye';
+import SelectTime from '@/components/SelectTime';
 import {
 	accelerate_flow_query_conditions,
 	accelerate_flow,
@@ -361,6 +355,7 @@ import 'echarts/map/js/china.js';
 export default {
 	data() {
 		return {
+			type: 0,
 			radio1: '1',
 			currentPage: 1,
 			flowcurrentPage: 1,
@@ -446,6 +441,12 @@ export default {
 			var stat = getymdtime(data);
 			return stat;
 		},
+		setunit(data) {
+			return common.formatByteActiveunit(data, 0);
+		},
+		setnum(data) {
+			return common.formatByteNum(data, common.formatByteActiveunit(data, 0));
+		},
 		updatabkb(data) {
 			if (data == 0) {
 				return 0 + 'B';
@@ -475,12 +476,9 @@ export default {
 		},
 	},
 	components: {
-		fenye,
+		fenye, SelectTime
 	},
 	mounted() {
-		this.$nextTick(function () {
-			this.$refs.tabs.$children[0].$refs.tabs[1].style.display="none";
-		})
 		if (this.$cookies.get('id')) {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
@@ -502,16 +500,14 @@ export default {
 
 		if (sessionStorage.getItem('tab_name')) {
 			console.log(sessionStorage.getItem('tab_name'));
-			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName == 'first') {
+			this.type = sessionStorage.getItem('tab_name');
+			if (this.type == 0) {
 				this.getflow3();
-			} else if(this.activeName == 'second') {
+			} else if(this.type == 1) {
 				this.getflow4();
-			} else {
-				this.queryDataFlowLocation()
 			}
 		} else {
-			this.activeName = 'first';
+			this.type = 0;
 			this.getflow3();
 		}
 	},
@@ -523,6 +519,18 @@ export default {
 		this.chart = null;
 	},
 	methods: {
+		selectTime(val) {
+			this.starttime = val.starttime;
+			this.endtime = val.endtime;
+			this.pageNo = 1;
+			this.tableData = [];
+			this.total_cnt = 0;
+			if(this.type==0){
+				this.getflow3();
+			}else{
+				this.getflow4()
+			}
+		},
 		//时间处理
 		timeFormatter(row){
 			console.log(row)
@@ -1092,15 +1100,16 @@ export default {
 
 		// 表头样式设置
 		headClass() {
-			return 'text-align: center;background:#F3F6FB;';
+			return 'text-align: center;background:#FDFBFB;';
 		},
 		// 表格样式设置
 		rowClass() {
 			return 'text-align: center;';
 		},
 		//选项卡
-		handleClick(tab, event) {
-			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
+		handleClick(val) {
+			this.type = val;
+			sessionStorage.setItem('tab_name', this.type); //添加到sessionStorage
 			this.starttime =
 			  new Date(new Date().toLocaleDateString()).getTime() / 1000;
 			this.endtime = Date.parse(new Date()) / 1000;
@@ -1110,9 +1119,9 @@ export default {
 			this.terminalName = "";
 			this.radio1 = 1;
 			this.valueChanel = "";
-			if (this.activeName == 'first') {
+			if (val == 0) {
 				this.getflow3();
-			} else if (this.activeName == 'second') {
+			} else if (val == 1) {
 				this.getflow4();
 			} else {
 				this.queryDataFlowLocation();
@@ -1290,11 +1299,15 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								_this.export_tab3();
 							},
+							emphasis: {
+								iconStyle: {
+									textFill: '#644CF7'
+								}
+							}
 						},
 					},
 				},
@@ -1436,11 +1449,15 @@ export default {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								_this.export_tab4();
 							},
+							emphasis: {
+								iconStyle: {
+								textFill: '#644CF7'
+								}
+							}
 						},
 					},
 				},
@@ -1665,40 +1682,67 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.myself-container {
-	width: 100%;
-	// min-width: 1600px;
-	.resources_percentage {
-		background: #ffffff;
-		margin-right: 45px;
-		padding-bottom: 20px;
-		.el-col {
-			height: 100px;
-			background: rgba(247, 247, 251, 1);
-			border-radius: 8px;
-			p:nth-child(1) {
-				color: #333333;
-				font-size: 24px;
-				margin-top: 30px;
-			}
-			p:nth-child(2) {
-				color: #656565;
-				font-size: 14px;
-			}
-		}
-		.el-col:nth-child(1) {
-			margin-right: 24px;
-		}
-	}
-	// #liuliang_echarts,
-	#jiankong_echarts {
-		margin-top: 24px;
-		margin-left: 45px;
-		margin-right: 45px;
-		height: 632px;
-		padding-top: 35px;
-		padding-bottom: 20px;
-		border-radius: 2px;
-	}
+.top_title{
+  text-align: left;
+  font-size: 18px;
+  color: #333;
+  .wrapperStyle{
+      display: inline;
+      margin-left: 54px;
+      .itemStyle {
+          font-weight: 500;
+          display: inline;
+          font-size: 16px;
+          color: #666;
+          margin-right: 48px;
+          cursor: pointer;
+          height: 20px;
+      }
+      .isSelected{
+          color: #644CF7;
+          border-bottom: 4px solid  #644CF7;
+      }
+  }
+}
+.device_tables {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
+  width: 100%;
+  height: auto;
+  .operating{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
+  }
+}
+.user_item {
+  width: 400px;
+  height: auto;
+  border-radius: 32px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  .items {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    .text {
+      font-size: 16px;
+      color: #333333;
+      font-weight: 400;
+    }
+    .count {
+      color: #333333;
+      font-size: 40px;   
+      font-weight: bold;
+    }
+  }
 }
 </style>

@@ -1,11 +1,29 @@
 <template>
   <div>
     <section class="content">
-      <div class="top_title">节点流量监控</div>
-      <div class="content-main">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="节点流量" name="first" :lazy="true">
-            <div class="seach">
+      <div class="content-main" style="margin-top: 48px;">
+        <div class="top_title">
+          节点流量监控
+          <div class="wrapperStyle">
+            <div
+              class="itemStyle"
+              :class="{ isSelected: type == 0 }"
+              @click="handleClick(0)"
+            >
+              节点流量
+            </div>
+            <div
+              class="itemStyle"
+              :class="{ isSelected: type == 1 }"
+              @click="handleClick(1)"
+            >
+              加速排行
+            </div>
+          </div>
+        </div>
+        <!-- <el-tabs v-model="activeName" @tab-click="handleClick"> -->
+            <!-- <el-tab-pane label="节点流量" name="first" :lazy="true"> -->
+            <div v-show="type==0" class="seach">
                 <el-input
                 v-model="valueRoomId"
                 placeholder="请输入直播间ID"
@@ -46,49 +64,10 @@
                 </el-select>
                 <SelectTime ref="selectTime" @selectTime="selectTime" :type="'datetimerange'" />
             </div>
-            <div class="device_table">
-                <el-row type="flex" class="row_active">
-                <el-col :span="24">
-                    <el-table
-                    :data="tableData"
-                    border
-                    max-height="560px"
-                    style="width: 100%;"
-                    :cell-style="rowClass"
-                    :header-cell-style="headClass"
-                    >
-                    <el-table-column label="P2P播放流量">
-                        <template slot-scope="scope">
-                        <div>{{ scope.row.p2pflow | setbytes }}</div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="直播源流量">
-                        <template slot-scope="scope">
-                        <div style="display: flex; justify-content: center">
-                            <div>{{ scope.row.liveflow | setbytes }}</div>
-                        </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="统计时间">
-                        <template slot-scope="scope">
-                        <div>{{ scope.row.stime | settimes }}</div>
-                        <div>{{ scope.row.etime | settimes }}</div>
-                        </template>
-                    </el-table-column>
-                    </el-table>
-                    <fenye
-                    style="float: right; margin: 10px 0 0 0"
-                    @handleCurrentChange="handleCurrentChange"
-                    @handleSizeChange="handleSizeChange"
-                    :currentPage="pageNo"
-                    :pagesa="total_cnt"
-                    ></fenye>
-                </el-col>
-                </el-row>
-            </div>
-            </el-tab-pane>
-            <el-tab-pane label="加速排行" name="second" :lazy="true">
-            <div class="seach">
+            
+            <!-- </el-tab-pane>
+            <el-tab-pane label="加速排行" name="second" :lazy="true"> -->
+            <div v-show="type==1" class="seach">
                 <el-input
                 v-model="valueRoomId"
                 placeholder="请输入直播间ID"
@@ -112,7 +91,10 @@
                 @change="gettimes"
                 ></el-date-picker>
             </div>
-            <div class="device_table">
+            <div v-show="type==0">
+              <div id="myChartMap2" :style="{ height: '600px' }"></div>
+            </div>
+            <div v-show="type==1" class="device_table">
                 <div
                 style="
                     display: flex;
@@ -161,12 +143,49 @@
                 </el-col>
                 </el-row>
             </div>
-            </el-tab-pane>
-        </el-tabs>
+            <!-- </el-tab-pane>
+        </el-tabs> -->
       </div>
     </section>
-    <div class="device_form" v-show="activeName == 'first'">
-      <div id="myChartMap2" :style="{ height: '700px' }"></div>
+    <div v-show="type==0" class="device_tables">
+      <el-row type="flex" class="row_active">
+        <el-col :span="24">
+            <el-table
+            :data="tableData"
+            border
+            max-height="560px"
+            style="width: 100%;"
+            :cell-style="rowClass"
+            :header-cell-style="headClass"
+            >
+            <el-table-column label="P2P播放流量">
+                <template slot-scope="scope">
+                <div>{{ scope.row.p2pflow | setbytes }}</div>
+                </template>
+            </el-table-column>
+            <el-table-column label="直播源流量">
+                <template slot-scope="scope">
+                <div style="display: flex; justify-content: center">
+                    <div>{{ scope.row.liveflow | setbytes }}</div>
+                </div>
+                </template>
+            </el-table-column>
+            <el-table-column label="统计时间">
+                <template slot-scope="scope">
+                <div>{{ scope.row.stime | settimes }}</div>
+                <div>{{ scope.row.etime | settimes }}</div>
+                </template>
+            </el-table-column>
+            </el-table>
+            <fenye
+            style="float: right; margin: 10px 0 0 0"
+            @handleCurrentChange="handleCurrentChange"
+            @handleSizeChange="handleSizeChange"
+            :currentPage="pageNo"
+            :pagesa="total_cnt"
+            ></fenye>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -200,6 +219,7 @@ import _ from "lodash";
 export default {
   data() {
     return {
+      type: 0,
       chanid: '',
       dataAry: [],
       dataAry1: [],
@@ -274,7 +294,7 @@ export default {
       this.changes();
     },
     changes(){
-        if(this.activeName == 'first'){
+        if(this.type == 0){
           this.liveIpfsFlow()
         }else{
           this.liveIpfsFlowRank()
@@ -563,15 +583,16 @@ export default {
       return "text-align: center;";
     },
     //选项卡
-    handleClick(tab, event) {
+    handleClick(val) {
       this.reset()
-      if (tab.index == 0) {
+      this.type = val;
+      if (val == 0) {
         if(this.accelerateType==0){
           this.getNodeTraffic();
         }else{
           this.liveIpfsFlow()
         }
-      } else if (tab.index == 1) {
+      } else if (val == 1) {
         this.val3 = [];
         this.val3[0] = this.common.getTimes(this.starttime * 1000);
         this.val3[1] = this.common.getTimes(this.endtime * 1000);
@@ -619,11 +640,15 @@ export default {
             mydow: {
               show: true,
               title: "导出",
-              icon:
-                "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
+              icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
               onclick: function () {
                 _this.exoprtNodeTraffic();
               },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
             },
           },
         },
@@ -761,11 +786,15 @@ export default {
             mydow: {
               show: true,
               title: "导出",
-              icon:
-                "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
+              icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
               onclick: function () {
                 _this.exoprtNodeTraffic();
               },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
             },
           },
         },
@@ -857,75 +886,43 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.myself-container {
+<style lang="scss" scoped>
+.top_title{
+  text-align: left;
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  .wrapperStyle{
+      display: inline;
+      margin-left: 54px;
+      .itemStyle {
+          font-weight: 500;
+          display: inline;
+          font-size: 16px;
+          color: #666;
+          margin-right: 48px;
+          cursor: pointer;
+          height: 20px;
+      }
+      .isSelected{
+          color: #644CF7;
+          border-bottom: 4px solid  #644CF7;
+      }
+  }
+}
+.device_tables {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
   width: 100%;
-  //min-width: 1600px;
-
-  .device_form {
-    width: auto;
-    height: auto;
-    margin-top: 20px;
-    background: #ffffff;
-    padding: 15px 30px;
-    box-sizing: border-box;
-    box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-    border-radius: 2px;
-
-    .bottom {
-      margin-top: 20px;
-    }
-
-    .el-form-item__label {
-      white-space: nowrap;
-    }
-
-    .el-form-item {
-      margin-bottom: 0px;
-      margin-left: 10px;
-    }
-
-    .div_show {
-      width: auto;
+  height: auto;
+  .operating{
+      width: 100%;
       display: flex;
-      height: 40px;
-      justify-content: center;
+      flex-direction: row;
       align-items: center;
-      color: #409eff;
-      cursor: pointer;
-      margin-left: 20px;
-    }
-  }
-
-  .devide_table {
-    padding: 35px;
-    height: auto;
-    margin-top: 20px;
-    background: #ffffff;
-    border-radius: 2px;
-    box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-    border-radius: 2px;
-    .el-table::before {
-      z-index: inherit;
-    }
-    .el-table td,
-    .el-table th {
-      padding: 6px 0px;
-    }
-    .tab_top_btn {
-      text-align: left;
-      margin-left: 10px;
-    }
-  }
-
-  .devide_pageNation {
-    width: 100%;
-    height: auto;
-    // overflow: hidden;
-    margin-top: 20px;
-    .devide_pageNation_active {
-      float: right;
-    }
+      justify-content: flex-start;
+      margin-bottom: 20px;
   }
 }
 </style>

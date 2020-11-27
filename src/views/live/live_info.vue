@@ -1,8 +1,26 @@
 <template>
   <section class="myself-container content">
-    <div class="top_title">直播流信息</div>
-    <div class="content-main">
-      <el-tabs v-model="activeName" @tab-click="handleClick" style="margin">
+    <div class="content-main" style="margin-top: 48px;">
+      <div class="top_title">
+        直播流信息
+        <div class="wrapperStyle">
+          <div
+            class="itemStyle"
+            :class="{ isSelected: type == 0 }"
+            @click="handleClick(0)"
+          >
+            在线流
+          </div>
+          <div
+            class="itemStyle"
+            :class="{ isSelected: type == 1 }"
+            @click="handleClick(1)"
+          >
+            历史流
+          </div>
+        </div>
+      </div>
+      <!-- <el-tabs v-model="activeName" @tab-click="handleClick" style="margin"> -->
         <div class="seach" style="margin-top: 40px;">
           <el-input v-model="values" placeholder="请输入直播流名称、直播流地址、直播间ID、渠道ID" style="width:24%;margin-right: 10px;" @keyup.enter.native="onChanges">
             <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
@@ -10,8 +28,8 @@
           <el-date-picker style="margin-left:10px;" v-model="times" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="left" @change="gettimes"></el-date-picker>
           <el-button style="margin-left: 10px;" type="primary" @click="reset">重置</el-button>
         </div>
-        <el-tab-pane label="在线流" name="first" :lazy="true">
-          <div class="device_table">
+        <!-- <el-tab-pane label="在线流" name="first" :lazy="true"> -->
+          <div v-show="type==0" class="device_table">
             <el-row type="flex" class="row_active">
               <el-col :span="24">
                 <el-table :data="onlineDatas" border max-height="560px" style="width: 100%;margin: 10px 0;" :cell-style="rowClass" :header-cell-style="headClass">
@@ -57,9 +75,9 @@
               </el-col>
             </el-row>
           </div>
-        </el-tab-pane>
-        <el-tab-pane label="历史流" name="second" :lazy="true">
-          <div class="device_table">
+        <!-- </el-tab-pane> -->
+        <!-- <el-tab-pane label="历史流" name="second" :lazy="true"> -->
+          <div v-show="type==1" class="device_table">
             <div class="operating">
               <el-button style="margin-left: auto;" type="primary">导出</el-button>
             </div>
@@ -112,8 +130,8 @@
               </el-col>
             </el-row>
           </div>
-        </el-tab-pane>
-      </el-tabs>
+        <!-- </el-tab-pane> -->
+      <!-- </el-tabs> -->
     </div>
   </section>
 </template>
@@ -131,6 +149,7 @@ import _ from "lodash";
 export default {
   data() {
     return {
+      type: 0,
       activeName: "first",
       values: "",
       radio: 1,
@@ -335,14 +354,15 @@ export default {
     },
 
     //选项卡
-    handleClick(tab, event) {
-      if (tab.index == 0) {
+    handleClick(val) {
+      this.type = val;
+      if (val == 0) {
         this.times= [];
         let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
         this.starttime = times;
         this.endtime = Date.parse(new Date()) / 1000;
         this.getStreamInfo();
-      } else if (tab.index == 1) {
+      } else if (val == 1) {
         this.times = [];
         let times = new Date(new Date().toLocaleDateString()).getTime() / 1000;
         this.starttime = times;
@@ -360,74 +380,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.myself-container {
-  width: 100%;
-  //min-width: 1600px;
-
-  .device_form {
-    width: auto;
-    height: auto;
-    margin-top: 20px;
-    background: #ffffff;
-    padding: 15px 30px;
-    box-sizing: border-box;
-    box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-    border-radius: 2px;
-
-    .bottom {
-      margin-top: 20px;
-    }
-
-    .el-form-item__label {
-      white-space: nowrap;
-    }
-
-    .el-form-item {
-      margin-bottom: 0px;
-      margin-left: 10px;
-    }
-
-    .div_show {
-      width: auto;
-      display: flex;
-      height: 40px;
-      justify-content: center;
-      align-items: center;
-      color: #409eff;
-      cursor: pointer;
-      margin-left: 20px;
-    }
-  }
-
-  .devide_table {
-    padding: 0px 35px 35px 35px;
-    height: auto;
-    background: #ffffff;
-    border-radius: 2px;
-    box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-    border-radius: 2px;
-    // .el-table::before {
-    //   z-index: inherit;
-    // }
-    .el-table td,
-    .el-table th {
-      padding: 6px 0px;
-    }
-    .tab_top_btn {
-			text-align: left;
-			margin-left: 10px;
-		}
-  }
-
-  .devide_pageNation {
-    width: 100%;
-    height: auto;
-    // overflow: hidden;
-    margin-top: 20px;
-    .devide_pageNation_active {
-      float: right;
-    }
+.top_title{
+  text-align: left;
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  .wrapperStyle{
+      display: inline;
+      margin-left: 54px;
+      .itemStyle {
+          font-weight: 500;
+          display: inline;
+          font-size: 16px;
+          color: #666;
+          margin-right: 48px;
+          cursor: pointer;
+          height: 20px;
+      }
+      .isSelected{
+          color: #644CF7;
+          border-bottom: 4px solid  #644CF7;
+      }
   }
 }
-
 </style>

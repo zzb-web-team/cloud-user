@@ -1,7 +1,8 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">节点流量用量</div>
-		<div class="content-main">
+		<!-- <div class="top_title">节点流量用量</div> -->
+		<div class="content-main" style="margin-top: 48px;">
+			<div style="font-size:18px;color:#333;margin-bottom:39px;text-align:left;">节点流量用量</div>
 			<div class="seach">
 				<el-input
 					placeholder="请输入域名"
@@ -45,7 +46,8 @@
 						:value="item.value"
 					></el-option>
 				</el-select>
-				<div style="min-width: 385px;">
+				<SelectTime ref="selectTime" @selectTime="selectTime" :type="'datetimerange'" />
+				<!-- <div style="min-width: 385px;">
 					<el-radio-group
 						v-model="radio1"
 						size="medium"
@@ -69,62 +71,66 @@
 					end-placeholder="结束日期"
 					align="left"
 					@change="gettimes"
-				></el-date-picker>
+				></el-date-picker> -->
 			</div>
-			<div class="device_tables">
-				<div class="user-item">
-					<div class="item-text">使用流量</div>
-					<div class="item-count">
-						<span>{{ dataL }}&nbsp;{{ allunitdata }}</span>
+			<div style="display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+				<div class="user_item" style="margin-right: 95px;margin-bottom: 30px;">
+					<div class="item_left" style="margin: 0 30px 22px 0;">
+						<div class="item_text" style="text-align:left;">总流量</div>
+						<div class="item_count" style="text-align:left;">
+							<span>{{ dataL }}&nbsp;{{ allunitdata }}</span>
+						</div>
 					</div>
+					<img width="83px" height="260px" src="../../assets/img/backfemale.png" /> 
 				</div>
-				<el-row type="flex" class="row_active">
-					<el-col
-						:span="24"
-						style="text-align:left;font-weight: bold;padding-left:10px; margin: 30px 0 20px 0;"
-						>节点流量用量表</el-col
-					>
-				</el-row>
-				<el-row type="flex" class="row_active">
-					<el-col :span="24">
-						<el-table
-							:data="tablecdn"
-							border
-							stripe
-							style="width: 100%;"
-							:cell-style="rowClass"
-							:header-cell-style="headClass"
-						>
-							<el-table-column label="时间" prop="time" :formatter="timeFormatter">
-								<!-- <template slot-scope="scope">
-									<div>
-										{{ scope.row.time | settimes }}
-									</div>
-								</template> -->
-							</el-table-column>
-							<el-table-column label="总流量">
-								<template slot-scope="scope">
-									<div>
-										{{ scope.row.dataFlow | zhuanb }}
-									</div>
-								</template>
-							</el-table-column>
-						</el-table>
-					</el-col>
-				</el-row>
-				<fenye
-					style="text-align: right;margin-top: 20px;"
-					@fatherMethod="getpage"
-					@fathernum="gettol"
-					:pagesa="total_cnt"
-					:currentPage="currentPage"
-					ref="fen"
-				></fenye>
+				<div style="flex: 1; min-width: 400px;">
+					<div id="myChart" :style="{ height: '480px' }"></div>
+				</div>
 			</div>
-			
 		</div>
-		<div class="device_form">
-			<div id="myChart" :style="{ height: '607px' }"></div>
+		<div class="device_table">
+			<el-row type="flex" class="row_active">
+				<el-col
+					:span="24"
+					style="text-align:left;font-weight: bold;padding-left:10px; margin: 0px 0 20px 0;"
+					>节点流量用量表</el-col
+				>
+			</el-row>
+			<el-row type="flex" class="row_active">
+				<el-col :span="24">
+					<el-table
+						:data="tablecdn"
+						border
+						stripe
+						style="width: 100%;"
+						:cell-style="rowClass"
+						:header-cell-style="headClass"
+					>
+						<el-table-column label="时间" prop="time" :formatter="timeFormatter">
+							<!-- <template slot-scope="scope">
+								<div>
+									{{ scope.row.time | settimes }}
+								</div>
+							</template> -->
+						</el-table-column>
+						<el-table-column label="总流量">
+							<template slot-scope="scope">
+								<div>
+									{{ scope.row.dataFlow | zhuanb }}
+								</div>
+							</template>
+						</el-table-column>
+					</el-table>
+				</el-col>
+			</el-row>
+			<fenye
+				style="text-align: right;margin-top: 20px;"
+				@fatherMethod="getpage"
+				@fathernum="gettol"
+				:pagesa="total_cnt"
+				:currentPage="currentPage"
+				ref="fen"
+			></fenye>
 		</div>
 	</section>
 </template>
@@ -133,6 +139,7 @@
 var _this;
 import echarts from 'echarts';
 import fenye from '@/components/fenye';
+import SelectTime from '@/components/SelectTime';
 import {
 	dateToMs,
 	getymdtime,
@@ -287,7 +294,7 @@ export default {
 		},
 	},
 	components: {
-		fenye,
+		fenye, SelectTime
 	},
 	mounted() {
 		if (this.$cookies.get('id')) {
@@ -312,6 +319,14 @@ export default {
 		this.chart = null;
 	},
 	methods: {
+		selectTime(val) {
+			this.starttime = val.starttime;
+			this.endtime = val.endtime;
+			this.pageNo = 1;
+			this.tableData = [];
+			this.total_cnt = 0;
+			this.gettu();
+		},
 		//统计时间段
 		timeFormatter(row, column){
 			if(this.timeUnit == 120){
@@ -616,47 +631,26 @@ export default {
 					itemGap: 30,
 					right: 50,
 					feature: {
-						// mark: { show: true },
-						// dataView: { show: true, readOnly: false },
-						//magicType: { show: true, type: ['line', 'bar'] },
-						//设置按钮(图标)的颜色
-						//  magicType: {
-						//     show: true,
-						//     type: ['line', 'bar'],
-						//     iconStyle: {
-						//         borderColor: '#22bb22'
-						//     },
-						//     emphasis:{
-						//         iconStyle: {
-						//             borderColor: '#22bb22'
-						//         },
-						//     }
-						// },
-						// restore: { show: true },
-						// saveAsImage: { show: false },
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								_this.exportant_dataflow();
 							},
+							emphasis: {
+								iconStyle: {
+									textFill: '#644CF7'
+								}
+							}
 						},
 					},
 				},
 				grid: {
-					// 间距是 根据x、y轴计算的；假如都是0，x、y轴的label汉字就隐藏掉了。
-					left: '5%', // 默认10%，给24就挺合适的。
+					left: 50, // 默认10%，给24就挺合适的。
 					top: 60, // 默认60
 					right: 35, // 默认10%
 					bottom: 60, // 默认60
-					// width: "100%", // grid 组件的宽度。默认自适应。
-					// height: "100%",
-					// containLabel:true, // grid 区域是否包含坐标轴的刻度标签。(如果true的时候，上下左右可以为0了)
-					// show:true, // 是否显示直角坐标系网格。是否显示grid，grid:show后，下面的一些参数生效。
-					// backgroundColor:'#ccac62',
-					// borderColor:"#000",
 				},
 				color: '#297AFF',
 				tooltip: {
@@ -756,97 +750,60 @@ export default {
 </script>
 
 <style lang="scss">
-.myself-container {
-	width: 100%;
-	// min-width: 1600px;
-
-	.device_form_query {
-		width: 100%;
-		height: auto;
-		overflow: hidden;
-		margin-top: 20px;
-		background: #ffffff;
-		padding: 15px 30px;
-		box-sizing: border-box;
-
-		.bottom {
-			margin-top: 20px;
-		}
-
-		.el-form-item__label {
-			white-space: nowrap;
-		}
-
-		.el-form-item {
-			margin-bottom: 0px;
-			margin-left: 10px;
-		}
-
-		.row_activess {
-			margin-top: 20px;
-			display: flex;
-			justify-content: flex-start;
-		}
-
-		.div_show {
-			width: auto;
-			display: flex;
-			height: 40px;
-			justify-content: center;
-			align-items: center;
-			color: #409eff;
-			cursor: pointer;
-			margin-left: 20px;
-		}
-	}
-
-	.devide_tables {
-		padding: 35px;
-		height: auto;
-		overflow: hidden;
-		margin-top: 20px;
-		margin-left: 0;
-		margin-right: 0;
-		background: rgba(255, 255, 255, 1);
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-		border-radius: 2px;
-		.el-table td,
-		.el-table th {
-			padding: 6px 0px;
-		}
-
-		.row_active {
-			margin-top: 10px;
-		}
-	}
-
-	.devide_pageNation {
-		width: 100%;
-		height: auto;
-		overflow: hidden;
-		margin-top: 20px;
-
-		.devide_pageNation_active {
-			float: right;
-		}
-	}
+.user_item {
+  background: #FDFBFB;
+  width: 324px;
+  height: 438px;
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  padding: 36px 71px;
+  .item_left {
+    width: 49%;
+    height: 58px;
+    .item_text {
+      font-size: 14px;
+      color: #333333;
+    }
+    .item_count {
+      line-height: 55px;
+      span {
+        font-size: 34px;
+      }
+    }
+  }
+  .item_right {
+    height: 48px;
+    width: 49%;
+    padding-left: 40px;
+    .item_text {
+      font-size: 14px;
+      color: #333333;
+    }
+    .item_count {
+      line-height: 55px;
+      span {
+        font-size: 34px;
+      }
+    }
+  }
 }
-
-.user-item {
-	background: #FDFBFB;
-	border-radius: 30px;
-	padding: 31px 31px 31px 67px;
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	text-align: left;
-	.item-count {
-		height: 50px;
-		line-height: 50px;
-		span {
-			font-size: 26px;
-			font-weight: 600;
-		}
-	}
+.device_table {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
+  width: 100%;
+  height: auto;
+  .operating{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
+  }
 }
 </style>

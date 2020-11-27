@@ -1,339 +1,328 @@
 <template>
-	<div class="content domin_index">
+	<div class="content">
 		<!-- 面包屑 -->
 		<div class="top_title">点播加速管理</div>
 		<div class="content-main">
-			<el-tabs v-model="activeName" style="margin-top:10px;" ref="tabs">
-				<div class="seach">
-					<el-input
-						placeholder="加速内容名称"
-						v-model="input"
-						maxlength="70"
-						style="width: 15%"
-						@keyup.enter.native="onSubmit"
-					>
-						<i
-							slot="prefix"
-							class="el-input__icon el-icon-search"
-							@click="seachuser()"
-						></i>
-					</el-input>
-					<el-button
-						type="primary"
-						@click="option_display()"
-						style="margin-left: 15px;"
-					>
-						筛选
-						<i
-							class="el-icon-caret-bottom"
-							:class="[
-								rotate
-									? 'fa fa-arrow-down go'
-									: 'fa fa-arrow-down aa',
-							]"
-						></i>
+			<div class="seach">
+				<el-input
+					placeholder="加速内容名称"
+					v-model="input"
+					maxlength="70"
+					style="width: 12%"
+					@keyup.enter.native="onSubmit"
+				>
+					<i
+						slot="prefix"
+						class="el-input__icon el-icon-search"
+						@click="seachuser()"
+					></i>
+				</el-input>
+				<span style="margin: 10px 24px 0 55px;">状态：</span>
+				<el-select
+					style="width: 12%;"
+					v-model="value"
+					placeholder="请选择"
+					@change="getdata()"
+				>
+					<el-option
+						v-for="(item, index) in options"
+						:key="index + 'reat'"
+						:label="item.label"
+						:value="item.value"
+					></el-option>
+				</el-select>
+				<span style="margin: 10px 24px 0 55px;">日期：</span>
+				<el-date-picker
+					style="width: 20%;"
+					v-model="value1"
+					type="datetimerange"
+					range-separator="至"
+					start-placeholder="开始日期"
+					end-placeholder="结束日期"
+					@change="gettimes"
+					:picker-options="pickerOptions"
+				></el-date-picker>
+				<el-button
+					type="primary"
+					@click="reset()"
+					style="margin-left: 55px;"
+					>重置</el-button
+				>
+			</div>
+			<!-- 第二排按钮 -->
+			<div class="device_table">
+				<div class="operating">
+					<el-button type="primary" @click="new_btn">
+						<span class="el-icon-plus"></span>
+						创建加速内容
 					</el-button>
-				</div>
-				<div v-if="optiondisplay" class="seach">
-					<span style="margin-top: 10px;">状态：</span>
-					<el-select
-						v-model="value"
-						placeholder="请选择"
-						@change="getdata()"
-					>
-						<el-option
-							v-for="(item, index) in options"
-							:key="index + 'reat'"
-							:label="item.label"
-							:value="item.value"
-						></el-option>
-					</el-select>
-					<span style="margin: 10px 0 0 10px">日期：</span>
-					<el-date-picker
-						v-model="value1"
-						type="datetimerange"
-						range-separator="至"
-						start-placeholder="开始日期"
-						end-placeholder="结束日期"
-						@change="gettimes"
-						:picker-options="pickerOptions"
-					></el-date-picker>
 					<el-button
-						plain
 						type="primary"
-						@click="reset()"
-						style="margin-left: 10px;"
-						>重置</el-button
+						plain
+						@click="upload_btn"
+						>批量导入加速内容</el-button
 					>
+					<el-button
+						type="primary"
+						@click="exp_table"
+						style="width: 100px;margin-left: auto;"
+						>导出</el-button
+					>
+					<!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
 				</div>
-				<el-tab-pane label="加速内容管理" name="first">
-					<!-- 第二排按钮 -->
-					<div class="device_table">
-						<div class="operating">
-							<el-button type="primary" @click="new_btn">
-								<span class="el-icon-plus"></span>
-								创建加速内容
-							</el-button>
+				<!-- 主体数据表格 -->
+				<el-table
+					ref="multipleTable"
+					:data="tableData"
+					stripe
+					border
+					row-key="url_name"
+					tooltip-effect="dark"
+					style="width: 100%"
+					:cell-style="rowClass"
+					:header-cell-style="headClass"
+					:default-sort="{
+						prop: 'date',
+						order: 'descending',
+					}"
+					@selection-change="handleSelectionChange"
+					@sort-change="tableSortChange"
+				>
+					>
+					<el-table-column
+						type="selection"
+						width="55"
+					></el-table-column>
+					<el-table-column
+						prop="url_name"
+						label="加速内容名称"
+					></el-table-column>
+					<el-table-column
+						prop="domain"
+						label="源站域名"
+						class-name="firsturl"
+						:show-overflow-tooltip="true"
+					></el-table-column>
+
+					<el-table-column
+						prop="host_url"
+						label="回源路径"
+					></el-table-column>
+					<el-table-column
+						prop="url"
+						label="播放路径"
+					></el-table-column>
+					<el-table-column
+						prop="state"
+						label="状态"
+						width="120"
+					>
+						<template slot-scope="scope">
+							<span
+								style="color:#0ABF5B;"
+								v-if="scope.row.state == 1"
+								>正常运行</span
+							>
+							<span
+								style="color:#E54545;"
+								v-else-if="scope.row.state == 0"
+								>已停止</span
+							>
+							<span style="color:#E54545;" v-else
+								>回源失败</span
+							>
+						</template>
+					</el-table-column>
+
+					<!-- <el-table-column label="标签" width="50">
+<template slot-scope="scope">
+	<i class="iconfont icon-biaoqian" @click="handleClick(scope.row)"></i>
+</template>
+</el-table-column>-->
+					<el-table-column
+						prop="create_time"
+						sortable="custom"
+						label="创建时间"
+					>
+						<template slot-scope="scope">
+							<span>{{
+								scope.row.create_time | settimes
+							}}</span>
+						</template>
+						>
+					</el-table-column>
+
+					<el-table-column label="操作" width="550">
+						<template slot-scope="scope">
 							<el-button
-								type="primary"
-								plain
-								@click="upload_btn"
-								>批量导入加速内容</el-button
+								class="action"
+								@click="handleClick(scope.row)"
+								type="text"
+								size="small"
+								>配置</el-button
 							>
 							<el-button
-								type="primary"
-								@click="exp_table"
-								style="width: 100px;margin-left: auto;"
-								>导出</el-button
+								class="action"
+								type="text"
+								size="small"
+								@click="updatauser(scope.row)"
+								>复制配置</el-button
 							>
-							<!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
-						</div>
-						<!-- 主体数据表格 -->
-						<el-table
-							ref="multipleTable"
-							:data="tableData"
-							stripe
-							border
-							row-key="url_name"
-							tooltip-effect="dark"
-							style="width: 100%"
-							:cell-style="rowClass"
-							:header-cell-style="headClass"
-							:default-sort="{
-								prop: 'date',
-								order: 'descending',
-							}"
-							@selection-change="handleSelectionChange"
-							@sort-change="tableSortChange"
+							<el-button
+								class="action"
+								type="text"
+								size="small"
+								@click="pwdwetout(scope.row)"
+								>监控</el-button
+							>
+							<el-button
+								class="action"
+								style="color: #F78C4C"
+								type="text"
+								size="small"
+								@click="disableuser(scope.row)"
+								v-if="scope.row.state == 1"
+								>停用</el-button
+							>
+							<el-button
+								class="action"
+								type="text"
+								size="small"
+								@click="enableuser(scope.row)"
+								v-else
+								>启用</el-button
+							>
+							<el-button
+								class="action"
+								type="text"
+								size="small"
+								@click="deleateuser(scope.row)"
+								v-if="scope.row.state !== 1"
+								style="color:#F85555;"
+								>删除</el-button
+							>
+							<el-button
+								class="action"
+								type="text"
+								size="small"
+								disabled
+								v-else
+								style="color:#c5c5c5;"
+								>删除</el-button
+							>
+						</template>
+					</el-table-column>
+				</el-table>
+				<!-- 配置弹窗 -->
+				<el-dialog
+					title="添加用户"
+					:visible.sync="dialog"
+					custom-class="customWidth"
+				>
+					<el-form :model="details">
+						<el-form-item
+							label="使用状态"
+							:label-width="formLabelWidth"
 						>
+							<el-radio
+								v-model="radioes"
+								label="1"
+								:disabled="true"
+								>启用</el-radio
 							>
-							<el-table-column
-								type="selection"
-								width="55"
-							></el-table-column>
-							<el-table-column
-								prop="url_name"
-								label="加速内容名称"
-							></el-table-column>
-							<el-table-column
-								prop="domain"
-								label="源站域名"
-								class-name="firsturl"
-								:show-overflow-tooltip="true"
-							></el-table-column>
-
-							<el-table-column
-								prop="host_url"
-								label="回源路径"
-							></el-table-column>
-							<el-table-column
-								prop="url"
-								label="播放路径"
-							></el-table-column>
-							<el-table-column
-								prop="state"
-								label="状态"
-								width="120"
+							<el-radio
+								v-model="radioes"
+								label="2"
+								:disabled="true"
+								>停用</el-radio
 							>
-								<template slot-scope="scope">
-									<span
-										style="color:#0ABF5B;"
-										v-if="scope.row.state == 1"
-										>正常运行</span
-									>
-									<span
-										style="color:#E54545;"
-										v-else-if="scope.row.state == 0"
-										>已停止</span
-									>
-									<span style="color:#E54545;" v-else
-										>回源失败</span
-									>
-								</template>
-							</el-table-column>
-
-							<!-- <el-table-column label="标签" width="50">
-		<template slot-scope="scope">
-			<i class="iconfont icon-biaoqian" @click="handleClick(scope.row)"></i>
-		</template>
-		</el-table-column>-->
-							<el-table-column
-								prop="create_time"
-								sortable="custom"
-								label="创建时间"
-							>
-								<template slot-scope="scope">
-									<span>{{
-										scope.row.create_time | settimes
-									}}</span>
-								</template>
-								>
-							</el-table-column>
-
-							<el-table-column label="操作" width="550">
-								<template slot-scope="scope">
-									<el-button
-										@click="handleClick(scope.row)"
-										type="text"
-										size="small"
-										>配置</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="updatauser(scope.row)"
-										>复制配置</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="pwdwetout(scope.row)"
-										>监控</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="disableuser(scope.row)"
-										v-if="scope.row.state == 1"
-										>停用</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="enableuser(scope.row)"
-										v-else
-										>启用</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="deleateuser(scope.row)"
-										v-if="scope.row.state !== 1"
-										style="color:#666666;"
-										>删除</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										disabled
-										v-else
-										style="color:#c5c5c5;"
-										>删除</el-button
-									>
-								</template>
-							</el-table-column>
-						</el-table>
-						<!-- 配置弹窗 -->
-						<el-dialog
-							title="添加用户"
-							:visible.sync="dialog"
-							custom-class="customWidth"
+						</el-form-item>
+						<el-form-item
+							label="账号"
+							:label-width="formLabelWidth"
 						>
-							<el-form :model="details">
-								<el-form-item
-									label="使用状态"
-									:label-width="formLabelWidth"
-								>
-									<el-radio
-										v-model="radioes"
-										label="1"
-										:disabled="true"
-										>启用</el-radio
-									>
-									<el-radio
-										v-model="radioes"
-										label="2"
-										:disabled="true"
-										>停用</el-radio
-									>
-								</el-form-item>
-								<el-form-item
-									label="账号"
-									:label-width="formLabelWidth"
-								>
-									<el-input
-										v-model="details.nickname"
-										:disabled="true"
-										placeholder="请输入账号"
-										autocomplete="off"
-									></el-input>
-								</el-form-item>
-								<el-form-item
-									label="真实姓名"
-									:label-width="formLabelWidth"
-								>
-									<el-input
-										v-model="details.username"
-										:disabled="true"
-										placeholder="请输入真实姓名"
-										autocomplete="off"
-									></el-input>
-								</el-form-item>
-								<el-form-item
-									label="联系方式"
-									:label-width="formLabelWidth"
-								>
-									<el-input
-										v-model="details.phone"
-										maxlength="11"
-										:disabled="true"
-										placeholder="请输入有效手机号"
-										autocomplete="off"
-									></el-input>
-								</el-form-item>
-							</el-form>
-							<div slot="footer" class="dialog-footer">
-								<el-button
-									type="primary"
-									@click="dialog = false"
-									>确 定</el-button
-								>
-							</div>
-						</el-dialog>
-						<!-- 底部按钮 -->
-						<div
-							style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+							<el-input
+								v-model="details.nickname"
+								:disabled="true"
+								placeholder="请输入账号"
+								autocomplete="off"
+							></el-input>
+						</el-form-item>
+						<el-form-item
+							label="真实姓名"
+							:label-width="formLabelWidth"
 						>
-							<div>
-								<el-button
-									type="text"
-									size="small"
-									@click="enableuser()"
-									>启用</el-button
-								>
-								<el-button
-									type="text"
-									style="color:#E54545;"
-									size="small"
-									@click="disableuser()"
-									>停用</el-button
-								>
-								<el-button
-									type="text"
-									size="small"
-									@click="deleateuser()"
-									>删除</el-button
-								>
-								<!-- <el-button @click="enableuser()" type="success">启用</el-button>
-		<el-button @click="disableuser()" type="warning">禁用</el-button>
-		<el-button @click="deleateuser()" type="danger">删除</el-button>-->
-							</div>
-							<fenye
-								style="float:right;margin:10px 0 20px 0;"
-								@fatherMethod="getpage"
-								@fathernum="gettol"
-								:pagesa="total_cnt"
-								:currentPage="currentPage"
-							></fenye>
-						</div>
+							<el-input
+								v-model="details.username"
+								:disabled="true"
+								placeholder="请输入真实姓名"
+								autocomplete="off"
+							></el-input>
+						</el-form-item>
+						<el-form-item
+							label="联系方式"
+							:label-width="formLabelWidth"
+						>
+							<el-input
+								v-model="details.phone"
+								maxlength="11"
+								:disabled="true"
+								placeholder="请输入有效手机号"
+								autocomplete="off"
+							></el-input>
+						</el-form-item>
+					</el-form>
+					<div slot="footer" class="dialog-footer">
+						<el-button
+							type="primary"
+							@click="dialog = false"
+							>确 定</el-button
+						>
 					</div>
-				</el-tab-pane>
-						<!-- @expand-change="toggleRowExpansion"
-							:tree-props="{
-								children: 'children',
-								hasChildren: 'hasChildren',
-							}" -->
-				<el-tab-pane label="点播回源" name="second">
+				</el-dialog>
+				<!-- 底部按钮 -->
+				<div
+					style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+				>
+					<div  class="table-bottom">
+						<el-button
+							type="primary"
+							size="small"
+							@click="enableuser()"
+							>启用</el-button
+						>
+						<el-button
+							type="text"
+							style="color:#E54545;"
+							size="small"
+							@click="disableuser()"
+							>停用</el-button
+						>
+						<el-button
+							type="text"
+							size="small"
+							@click="deleateuser()"
+							>删除</el-button
+						>
+						<!-- <el-button @click="enableuser()" type="success">启用</el-button>
+<el-button @click="disableuser()" type="warning">禁用</el-button>
+<el-button @click="deleateuser()" type="danger">删除</el-button>-->
+					</div>
+					<fenye
+						style="float:right;margin:10px 0 20px 0;"
+						@fatherMethod="getpage"
+						@fathernum="gettol"
+						:pagesa="total_cnt"
+						:currentPage="currentPage"
+					></fenye>
+				</div>
+			</div>
+				<!-- @expand-change="toggleRowExpansion"
+						:tree-props="{
+							children: 'children',
+							hasChildren: 'hasChildren',
+						}" -->
+			<!-- <el-tab-pane label="点播回源" name="second">
 					<div class="con_lable host_table">
 						<el-table
 							:data="demotableData"
@@ -522,8 +511,7 @@
 							></fenye>
 						</div>
 					</div>
-				</el-tab-pane>
-			</el-tabs>
+				</el-tab-pane> -->
 		</div>
 	</div>
 </template>
@@ -767,9 +755,6 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
-		this.$nextTick(function () {
-			this.$refs.tabs.$children[0].$refs.tabs[1].style.display="none";
-		})
 		this.gettoken();
 		this.getuserlist();
 	},
@@ -1399,7 +1384,7 @@ export default {
 		},
 		// 表头样式设置
 		headClass() {
-			return 'text-align: center;background:#F3F6FB;color:#333333;font-size:16px;';
+			return 'text-align: center;background:#FDFBFB;color:#333333;font-size:16px;';
 		},
 		// 表格样式设置
 		rowClass() {
@@ -1410,55 +1395,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .content {
-// 	width: 100%;
-// 	height: 100%;
-// 	text-align: left;
-// 	.seach {
-// 		// width: 100%;
-// 		margin: 30px 45px 30px 45px;
-// 		box-sizing: border-box;
-// 		background: #ffffff;
-// 		border-radius: 2px;
-// 		padding: 21px 37px;
-// 		box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
-// 		.seach_top {
-// 			width: 100%;
-// 			height: 60px;
-// 			line-height: 60px;
-// 			display: flex;
-// 			justify-content: flex-start;
-// 			align-items: center;
-// 			.input-with-select {
-// 				width: 15%;
-// 			}
-// 			.seach_top_right {
-// 				width: 80px;
-// 				text-align: center;
-// 				height: 36px;
-// 				line-height: 36px;
-// 				margin-left: 10px;
-// 			}
-// 		}
-// 		.seach_bottom {
-// 			height: 72px;
-// 			background: rgba(242, 246, 250, 1);
-// 			border-radius: 2px;
-// 			display: flex;
-// 			align-items: center;
-// 			padding-left: 27px;
-// 		}
-// 	}
-// 	.con_lable {
-// 		background: #ffffff;
-// 		background: rgba(255, 255, 255, 1);
-// 		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-// 		border-radius: 2px;
-// 		padding: 8px 37px 0;
-// 		margin: 0 45px;
-// 	}
-// 	.host_table {
-// 		padding-top: 25px;
-// 	}
-// }
+.table-bottom{
+	.el-button:nth-child(1){
+		background: #fff;
+		border-color: #644CF7;
+		color: #644CF7;
+	}
+	.el-button:nth-child(2){
+		background: #fff;
+		border-color: #F68E53;
+		color: #F68E53;
+	}
+	.el-button:nth-child(3){
+		background: #fff;
+		border-color: #F85555;
+		color: #F85555;
+	}
+}
+.action{
+	padding: 0;
+}
 </style>

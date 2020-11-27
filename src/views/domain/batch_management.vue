@@ -1,6 +1,195 @@
 <template>
-	<div class="content bath_m">
-		<div class="top_title">
+	<div class="back_source">
+		<div class="tabsStyle">
+			<div class="itemStyle" style="height: 136px; line-height: 136px; font-weight: 500;margin-bottom: 0;" @click="goBack">
+				<i class="el-icon-arrow-left" style="font-size: 18px;color: #333;font-weight: 500;"></i>
+				返回域名列表
+			</div>
+			<template v-for="item in names">
+				<div
+				class="itemStyle"
+				:class="{ isActive: item.key == selected}"
+				:index="item.key"
+				:key="item.key"
+				@click="select(item.key, item.value)"
+				>
+				{{ item.value }}
+				</div>
+			</template>
+		</div>
+		<div class="main-content">
+			<div class="top">
+				<div class="urlStyle">{{datalist.urlname }}</div>
+				<div class="actionStyle">
+				<el-button v-if="datalist.state == 1" @click="disableuser(0)" style="background:#fff;color:#F85555;border-color:#F85555;width:120px;height:56px;">停用</el-button>
+				<el-button v-else @click="disableuser(1)" style="background:#fff;color:#665AB2;border-color:#665AB2;width:120px;height:56px;">启用</el-button>
+				</div>
+			</div>
+			<div class="wrapper" v-show="selected==0">
+				<ol class="tala">
+					<li>
+						<span>创建时间</span>
+						<span class="tala_con">{{ datalist.create_time | settimes }}</span>
+					</li>
+					<li>
+						<span>源站域名</span>
+						<el-select
+							v-model="datalist.domain_id"
+							placeholder="请选择"
+							:disabled="!yfas"
+							style="width: 3                       00px;"
+						>
+							<el-option
+								v-for="item in url_arr"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value"
+								class="tala_con"
+							></el-option>
+						</el-select>
+						<span @click="fsho" style="color: #644CF7;margin-left: 25px;">
+							{{
+								yfas == false
+									? datalist.domain_id != ''
+										? '修改'
+										: '修改'
+									: '确定'
+							}}
+						</span>
+					</li>
+					<li>
+						<span>回源路径</span>
+						<div
+							class="tala_con"
+							style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
+							>{{ datalist.host_url }}</div>
+						<span
+							style="color: #644CF7;margin-left: 25px;"
+							@click="cleckurl(2, datalist.host_url)"
+							>修改</span>
+					</li>
+					<li>
+						<span>播放路径</span>
+						<div
+							class="tala_con"
+							style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
+							>{{ datalist.url }}</div>
+						<span
+							style="color: #644CF7;margin-left: 25px;"
+							@click="cleckurl(3, datalist.url)"
+							>修改</span
+						>
+					</li>
+					<li>
+						<span>视频格式</span>
+						<el-select
+							v-model="datalist.url_type"
+							placeholder="请选择"
+							:disabled="!fas"
+							style="width: 300px;"
+						>
+							<el-option
+								v-for="item in options"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value"
+								class="tala_con"
+							></el-option>
+						</el-select>
+						<span @click="yfsho" style="color: #644CF7;margin-left: 25px;">
+							{{
+								fas == false
+									? datalist.url_type != ''
+										? '修改'
+										: '修改'
+									: '确定'
+							}}
+						</span>
+					</li>
+					<el-dialog
+						:title="'修改' + dialog_title"
+						:visible.sync="basisVisible"
+						class="add_dialog"
+						@close="handleClose"
+					>
+						<el-form :model="basisform" ref="accelerate_dialog">
+							<el-form-item
+								:label="dialog_title"
+								:label-width="formLabelWidth"
+								prop="name"
+								:rules="[
+									{
+										validator: jiobasis,
+										trigger: 'blur',
+									},
+								]"
+							>
+								<el-input
+									v-model="basisform.name"
+									autocomplete="off"
+									:placeholder="basis_point"
+									@change="set_dia_val"
+								></el-input>
+							</el-form-item>
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="quxzteaone">取 消</el-button>
+							<el-button type="primary" @click="quxzteao"
+								>确定</el-button
+							>
+						</div>
+					</el-dialog>
+				</ol>
+			</div>
+			<div class="wrapper" v-show="selected==1">
+				<div class="talb_title_tio">
+				<div style="display: flex;flex-directiomn: row; align-items: baseline; justify-content: flex-start;">
+					<p>缓存自动刷新</p>
+					<div style="display: flex;flex-direction: column; align-items: flex-start; justify-content: flex-start;margin-left: 47px;">
+					<div style="display: flex;flex-directiomn: row; align-items: center;">
+						<p style="margin-right: 23px;color:#333;font-size:16px;">{{valueh ? '开启' : '未开启'}}</p>
+						<el-switch v-model="valueh" active-color="#13ce66" inactive-color="#ddd" @change="changeSwitch2"></el-switch>
+					</div>
+					<p style="margin-top: 25px;color:#999;font-size:16px;">开启后，能够自动发现加速节点的同名缓存刷新，并自动同步最新缓存</p>
+					</div>
+				</div>
+				</div>
+				<div class="talb_title_tio" style="margin-top: 47px;">
+				<div style="display: flex;flex-directiomn: row; align-items: center; ">
+					<p style="">缓存过期时间</p>
+					<p style="margin: 0 23px 0 47px;" v-if="expireTime&&!valueh">{{expireTime | settimes}}</p>
+					<p style="margin: 0 23px 0 47px;" v-else>默认自动过期</p>
+					<el-button type="text" :disabled="valueh" @click="huanVisible = true;radio1='自动过期';automatic_time=true;automatic()">设置</el-button>
+					<el-dialog title="配置缓存过期时间" :visible.sync="huanVisible">
+					<el-form :model="huanform">
+						<el-form-item label="过期类型:" style="text-align:left;" :label-width="formLabelWidth">
+						<el-radio-group v-model="radio1" @change="selecttime()" class="huandan">
+							<el-radio-button label="自动过期" style="border-radius:50%;"></el-radio-button>
+							<el-radio-button label="自定义时间"></el-radio-button>
+						</el-radio-group>
+
+						<p v-if="automatic_time == true" style="font-size: 12px;color: #676767;height: 18px;">
+							当加速内容失去热度时缓存将自动过期
+						</p>
+						</el-form-item>
+						<el-form-item class="huancuntime" label="过期时间:" :label-width="formLabelWidth" style="text-align:left;" v-if="automatic_time == false">
+						<el-date-picker v-model="huanfo" type="datetime" style="width:100%;" align="right" placeholder="选择日期时间" :picker-options="pickerOptions0">
+						</el-date-picker>
+						<p style="font-size: 12px;color: #676767;height: 18px;">
+							最长过期时间为三年
+						</p>
+						</el-form-item>
+					</el-form>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="huanno">取 消</el-button>
+						<el-button type="primary" @click="huanVisib()">确 定</el-button>
+					</div>
+					</el-dialog>
+				</div>
+				</div>
+			</div>
+		</div>
+		<!-- <div class="top_title">
 			<span @click="goback" style="font-size: 24px;color: #202020;">
 				<i
 					class="el-icon-arrow-left"
@@ -12,8 +201,8 @@
 		<div
 			class="bath"
 			style="width:auto;margin: auto;background: #ffffff;margin-top: 25px;border-radius: 2px;padding: 37px;box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);margin-right:45px;margin-left:45px;"
-		>
-			<div class="tala_title">
+		> -->
+			<!-- <div class="tala_title">
 				<span
 					style="max-width: 230px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
 					>{{ datalist.urlname }}</span
@@ -34,15 +223,15 @@
 						>启用</el-button
 					>
 				</div>
-			</div>
-			<el-tabs
+			</div> -->
+			<!-- <el-tabs
 				:tab-position="tabPosition"
 				v-model="oneName"
 				@tab-click="handleClick"
 				v-loading="loading"
 				ref="tabs"
-			>
-				<el-tab-pane label="基础配置" name="one">
+			> -->
+				<!-- <el-tab-pane label="基础配置" name="one">
 					<div
 						style="font-weight: 600;font-size: 18px;text-align: left;margin: 10px 0;"
 					></div>
@@ -130,16 +319,6 @@
 								}}
 							</span>
 						</li>
-						<!-- 基础配置弹窗 -->
-						<!-- <el-dialog title="url" :visible.sync="zurl" width="30%">
-							<span>{{ sleckurl }}</span>
-							<span slot="footer" class="dialog-footer">
-								<el-button type="primary" @click="zurl = false"
-									>确 定</el-button
-								>
-							</span>
-						</el-dialog> -->
-						<!-- 基础配置弹窗 -->
 						<el-dialog
 							:title="'修改' + dialog_title"
 							:visible.sync="basisVisible"
@@ -174,7 +353,7 @@
 							</div>
 						</el-dialog>
 					</ol>
-				</el-tab-pane>
+				</el-tab-pane> -->
 				<!-- <el-tab-pane label="回源配置" name="two">
 					<div class="talb">
 						<div
@@ -244,7 +423,7 @@
 					</div>
 				</el-tab-pane> -->
 
-				<el-tab-pane label="缓存配置" name="there">
+				<!-- <el-tab-pane label="缓存配置" name="there">
 					<div class="talb_title_tio">
 						<div style="display: flex;"><p class="talb_title_p"></p>缓存自动刷新</div>
 						<div style="display: flex">
@@ -291,176 +470,6 @@
 						<el-button type="primary" @click="huanVisib()">确 定</el-button>
 						</div>
 					</el-dialog>
-					<!-- <el-tabs v-model="activeName" tab-position="left">
-						<el-tab-pane label="缓存设置" name="first">
-							<div class="talb_title_tio">
-								<span>缓存自动刷新</span>
-								<div>
-									<el-switch
-										v-model="valueh"
-										active-color="#13ce66"
-										inactive-color="#EEEEEE"
-										@change="changeSwitch2"
-									></el-switch>
-									<p>
-										开启后，能够自动发现加速节点的同名缓存刷新，并自动同步最新缓存
-									</p>
-								</div>
-							</div>
-						</el-tab-pane>
-						<el-tab-pane label="缓存过期时间" name="second">
-							<div class="batch_huan">
-								<div style="text-align:left;padding: 10px 0">
-									<el-button
-										type="primary"
-										style="width:100px;"
-										@click="
-											huanVisible = true;
-											edit = 0;
-											editnum = '';
-											city_disabled = false;
-											radio1 = '自动过期';
-										"
-									>
-										<span class="el-icon-plus"></span>配置
-									</el-button>
-								</div>
-								<el-dialog
-									title="配置缓存过期时间"
-									:visible.sync="huanVisible"
-								>
-									<el-form :model="huanform">
-										<el-form-item
-											label="过期类型:"
-											style="text-align:left;"
-											:label-width="formLabelWidth"
-										>
-											<el-radio-group
-												v-model="radio1"
-												@change="selecttime()"
-												class="huandan"
-											>
-												<el-radio-button
-													label="自动过期"
-												></el-radio-button>
-												<el-radio-button
-													label="自定义时间"
-												></el-radio-button>
-											</el-radio-group>
-											<p
-												v-if="automatic_time == true"
-												style="font-size: 12px;color: #676767;height: 18px;"
-											>
-												当域名失去热度时缓存将自动过期
-											</p>
-										</el-form-item>
-										<el-form-item
-											label="区域:"
-											style="text-align:left;"
-											:label-width="formLabelWidth"
-											class="huancunoption"
-										>
-											<el-cascader
-												:options="citylist1"
-												ref="cascaderAddr"
-												v-model="citylabel"
-												:disabled="city_disabled"
-											></el-cascader>
-										</el-form-item>
-										<el-form-item
-											class="huancuntime"
-											label="过期时间:"
-											:label-width="formLabelWidth"
-											style="text-align:left;"
-											v-if="automatic_time == false"
-										>
-											<el-date-picker
-												v-model="huanfo"
-												type="datetime"
-												style="width:100%;"
-												align="right"
-												placeholder="选择日期时间"
-												:picker-options="pickerOptions0"
-											></el-date-picker>
-											<p
-												style="font-size: 12px;color: #676767;height: 18px;"
-											>
-												最长过期时间为三年
-											</p>
-										</el-form-item>
-									</el-form>
-									<div slot="footer" class="dialog-footer">
-										<el-button @click="huanno"
-											>取 消</el-button
-										>
-										<el-button
-											type="primary"
-											@click="huanVisib()"
-											>确 定</el-button
-										>
-									</div>
-								</el-dialog>
-
-								<el-table
-									:data="datalist.cache_con"
-									border
-									height="580"
-									:cell-style="rowClass"
-									:header-cell-style="headClass"
-								>
-									<el-table-column
-										prop="area"
-										label="区域"
-									></el-table-column>
-									<el-table-column
-										prop="province"
-										label="城市"
-									></el-table-column>
-									<el-table-column
-										prop="expire"
-										label="过期时间"
-									>
-										<template slot-scope="scope">
-											<span v-if="scope.row.type == 0"
-												>自动过期</span
-											>
-											<span v-else>
-												{{
-													scope.row.expire | settimes
-												}}
-											</span>
-										</template>
-									</el-table-column>
-									<el-table-column prop="state" label="状态">
-										<template slot-scope="scope">
-											<span>
-												{{
-													scope.row.state == 0
-														? '缓存中'
-														: '已过期'
-												}}
-											</span>
-										</template>
-									</el-table-column>
-									<el-table-column label="操作">
-										<template slot-scope="scope">
-											<el-button
-												@click="
-													xhuanVisib(
-														scope.row,
-														scope.$index
-													)
-												"
-												type="text"
-												size="small"
-												>修改</el-button
-											>
-										</template>
-									</el-table-column>
-								</el-table>
-							</div>
-						</el-tab-pane>
-					</el-tabs> -->
 				</el-tab-pane>
 				<el-tab-pane label="自定义页面" name="four">
 					<div
@@ -474,7 +483,6 @@
 						>
 							<span class="el-icon-plus"></span>添加
 						</el-button>
-						<!-- 添加弹窗 -->
 						<el-dialog
 							title="自定义错误码"
 							:visible.sync="dialogFormVisible"
@@ -581,9 +589,9 @@
 							</el-table-column>
 						</el-table>
 					</div>
-				</el-tab-pane>
-			</el-tabs>
-		</div>
+				</el-tab-pane> -->
+			<!-- </el-tabs> -->
+		<!-- </div> -->
 	</div>
 </template>
 <script>
@@ -601,6 +609,17 @@ export default {
 	inject: ['reload'],
 	data() {
 		return {
+			names: [
+				{
+					key: 0,
+					value: "基础配置",
+				},
+				{
+					key: 1,
+					value: "缓存配置",
+				},
+			],
+			selected: 0,
 			city_disabled: false,
 			dialog_title: '源站域名', //基础配置弹出框标题
 			baseis_num: 1,
@@ -964,9 +983,6 @@ export default {
 		},
 	},
 	mounted() {
-		this.$nextTick(function () {
-			this.$refs.tabs.$children[0].$refs.tabs[2].style.display="none";
-		})
 		if (this.$cookies.get('id')) {
 			this.chanid = this.$cookies.get('id') * 1;
 		} else {
@@ -989,6 +1005,12 @@ export default {
 		//this.getlabrl2();
 	},
 	methods: {
+		goBack(){
+			this.$router.go(-1);
+		},
+		select(val){
+			this.selected = val;
+		},
 		//获取url列表--请求
 		getuserlist(page) {
 			// 已选择项
@@ -1625,115 +1647,224 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-	// width: 1240px;
-	// margin: auto;
-	// padding: 19px;
-	// margin-top: 34px;
-	// background: #ffffff;
-	.bath_title_btn {
-		font-size: 16px;
-		i {
-			font-size: 16px;
-			font-weight: 600;
-			margin-right: 5px;
-		}
-	}
-	.tala_title {
-		height: 50px;
-		line-height: 50px;
-		// background: #eeeeee;
-		padding: 10px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		span {
-			color: #333333;
-			font-size: 18px;
-			font-weight: 600;
-		}
-	}
-	.tala {
-		li {
-			height: 50px;
-			// line-height: 50px;
+.back_source {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: row;
+  .tabsStyle {
+    background: #ffffff;
+    border-radius: 32px;
+    margin-right: 24px;
+    width: 292px;
+    min-height: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    .itemStyle{
+      width: 148px;
+      height: 48px;
+      margin-bottom: 49px;
+      text-align: center;
+      line-height: 49px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .isActive{
+      background: #644CF7;
+      color: #ffffff;
+      border-radius: 24px;
+    }
+  }
+  .main-content{
+    background: #ffffff;
+    border-radius: 32px;
+    width: 100%;
+    height: 100%;
+    .top{
+      height: 136px;
+      padding: 0 72px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom-style: solid ;
+      border-bottom-width: 1px;
+      border-bottom-color: #F2F2F2;
+    }
+    .wrapper{
+      min-height: 700px;
+      padding: 63px 0 0 72px;
+      .tala {
+        padding: 0;
+        margin: 0;
+        li {
+		  display: flex;
+		  flex-direction: row;
+		  justify-content: flex-start;
+		  align-items: center;
+		  margin-bottom: 47px;
+          span{
+            margin-right: 25px;
+		  }
+          .tala_con {
+            display: inline-block;
+			width: 300px;
 			text-align: left;
-			span {
-				display: inline-block;
-				margin-right: 25px;
-				width: 60px;
-			}
-			.tala_con {
-				display: inline-block;
-				width: 206px;
-			}
-		}
-	}
-	.tala_x {
-		margin-left: 10px;
-		color: rgb(64, 158, 255);
-	}
-	.talb_title_tio {
-		text-align: left;
-		margin-left: 40px;
-    	margin-top: 20px;
-		.talb_title_p{
-			width: 4px;
-			height:20px;
-			background-color:#297aff;
-			margin-right: 8px
-		}
-		span {
-			margin-right: 45px;
-		}
-	}
-	.talb_title_two {
-		text-align: left;
-		display: flex;
-		margin: 15px 0;
-		span {
-			margin-right: 30px;
-		}
-	}
+          }
+        }
+      }
+      .talb_title_tio {
+        text-align: left;
+        margin-top: 20px;
+        .talb_title_p{
+          width: 4px;
+          height:20px;
+          background-color:#297aff;
+          margin-right: 8px
+        }
+        span {
+          margin-right: 45px;
+        }
+      }
+    }
+  }
+  .tala_title {
+    height: 50px;
+    line-height: 50px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    span {
+      color: #333333;
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  .tala_x {
+    margin-left: 10px;
+    color: rgb(64, 158, 255);
+  }
+  .talb_title_two {
+    text-align: left;
+    display: flex;
+    margin: 15px 0;
+
+    span {
+      margin-right: 30px;
+    }
+  }
 }
-.seach {
-	width: 100%;
-	background: #ffffff;
-	// margin: 30px 0 30px 0;
-	// border-radius: 2px;
-	// padding: 21px 37px;
-	// box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
-	.seach_top {
-		width: 100%;
-		height: 60px;
-		line-height: 60px;
-		// display: flex;
-		// align-items: center;
-		.input-with-select {
-			width: 20%;
-			float: left;
-		}
-		.seach_top_right {
-			float: left;
-			width: 80px;
-			text-align: center;
-			height: 40px;
-			margin-top: 10px;
-			line-height: 40px;
-			margin-left: 10px;
-		}
-	}
-	.seach_hui {
-		background: rgba(242, 246, 250, 1);
-		.seach_bottom {
-			height: 72px;
-			border-radius: 2px;
-			display: flex;
-			align-items: center;
-			padding-left: 27px;
-		}
-	}
-}
+// .content {
+// 	// width: 1240px;
+// 	// margin: auto;
+// 	// padding: 19px;
+// 	// margin-top: 34px;
+// 	// background: #ffffff;
+// 	.bath_title_btn {
+// 		font-size: 16px;
+// 		i {
+// 			font-size: 16px;
+// 			font-weight: 600;
+// 			margin-right: 5px;
+// 		}
+// 	}
+// 	.tala_title {
+// 		height: 50px;
+// 		line-height: 50px;
+// 		// background: #eeeeee;
+// 		padding: 10px;
+// 		display: flex;
+// 		justify-content: space-between;
+// 		align-items: center;
+// 		span {
+// 			color: #333333;
+// 			font-size: 18px;
+// 			font-weight: 600;
+// 		}
+// 	}
+// 	.tala {
+// 		li {
+// 			height: 50px;
+// 			// line-height: 50px;
+// 			text-align: left;
+// 			span {
+// 				display: inline-block;
+// 				margin-right: 25px;
+// 				width: 60px;
+// 			}
+// 			.tala_con {
+// 				display: inline-block;
+// 				width: 206px;
+// 			}
+// 		}
+// 	}
+// 	.tala_x {
+// 		margin-left: 10px;
+// 		color: rgb(64, 158, 255);
+// 	}
+// 	.talb_title_tio {
+// 		text-align: left;
+// 		margin-left: 40px;
+//     	margin-top: 20px;
+// 		.talb_title_p{
+// 			width: 4px;
+// 			height:20px;
+// 			background-color:#297aff;
+// 			margin-right: 8px
+// 		}
+// 		span {
+// 			margin-right: 45px;
+// 		}
+// 	}
+// 	.talb_title_two {
+// 		text-align: left;
+// 		display: flex;
+// 		margin: 15px 0;
+// 		span {
+// 			margin-right: 30px;
+// 		}
+// 	}
+// }
+// .seach {
+// 	width: 100%;
+// 	background: #ffffff;
+// 	// margin: 30px 0 30px 0;
+// 	// border-radius: 2px;
+// 	// padding: 21px 37px;
+// 	// box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
+// 	.seach_top {
+// 		width: 100%;
+// 		height: 60px;
+// 		line-height: 60px;
+// 		// display: flex;
+// 		// align-items: center;
+// 		.input-with-select {
+// 			width: 20%;
+// 			float: left;
+// 		}
+// 		.seach_top_right {
+// 			float: left;
+// 			width: 80px;
+// 			text-align: center;
+// 			height: 40px;
+// 			margin-top: 10px;
+// 			line-height: 40px;
+// 			margin-left: 10px;
+// 		}
+// 	}
+// 	.seach_hui {
+// 		background: rgba(242, 246, 250, 1);
+// 		.seach_bottom {
+// 			height: 72px;
+// 			border-radius: 2px;
+// 			display: flex;
+// 			align-items: center;
+// 			padding-left: 27px;
+// 		}
+// 	}
+// }
 .pei_zi_url {
 	max-width: 130px;
 	overflow: hidden;

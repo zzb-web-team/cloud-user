@@ -1,32 +1,33 @@
 <template>
-	<div class="add_url">
+	<div class="content">
 		<div class="top_title">
-			<span @click="goback" style="font-size: 24px;color: #202020;">
+			<span @click="goback" style="font-size: 18px;color: #333;">
 				<i
 					class="el-icon-arrow-left"
-					style="color:#297AFF;font-size: 18px;margin-right:23px;font-weight: 600;"
+					style="color:#333;font-size: 18px;margin-right:16px;"
 				></i>
 				创建加速内容
 			</span>
 		</div>
-		<div class="content">
-			<el-form :model="dynamicValidateForm" ref="dynamicValidateForm">
-				<p>创建点播加速内容</p>
+		<div class="content-main">
+			<el-form :model="dynamicValidateForm" ref="dynamicValidateForm" label-position="left" >
+				<p class="title">创建点播加速内容</p>
 				<el-form-item
-					label="加速内容名称:"
+					label="加速内容名称"
 					:label-width="formLabelWidth"
 					prop="url_content"
 					:rules="[{ validator: jioshi, trigger: 'blur' }]"
 				>
 					<el-input
-						class="other_bgc"
+						style="width: 480px;"
 						v-model="dynamicValidateForm.url_content"
 						placeholder="4-50个字符，汉字、英文、数字下划线任意组合"
 						maxlength="1024"
 					></el-input>
-					<span class="add_url_point">创建成功后将无法修改</span>
+					<span class="add_url_point" style="color: #999;font-size: 14px;">创建成功后将无法修改</span>
 				</el-form-item>
-				<p class="add_url_title">加速配置</p>
+				<div class="seperator"></div>
+				<p class="title">加速配置</p>
 				<el-form-item
 					label="源站域名"
 					:label-width="formLabelWidth"
@@ -39,6 +40,7 @@
 					]"
 				>
 					<el-select
+						style="width: 480px;"
 						v-model="dynamicValidateForm.url_address"
 						placeholder="请选择"
 					>
@@ -51,6 +53,7 @@
 						></el-option>
 					</el-select>
 					<el-button
+						class="add_url_point"
 						type="text"
 						size="small"
 						@click="go_accelerate_management"
@@ -64,7 +67,7 @@
 					:rules="[{ validator: jiozhu, trigger: 'blur' }]"
 				>
 					<el-input
-						class="other_bgc"
+						style="width: 480px;"
 						v-model="dynamicValidateForm.back_path"
 						placeholder="开头固定为/，2-1024字符内"
 						maxlength="1024"
@@ -77,7 +80,7 @@
 					:rules="[{ validator: jiozhu, trigger: 'blur' }]"
 				>
 					<el-input
-						class="other_bgc"
+						style="width: 480px;"
 						v-model="dynamicValidateForm.play_path"
 						placeholder="开头固定为/，2-1024字符内"
 						autocomplete="off"
@@ -96,6 +99,7 @@
 					]"
 				>
 					<el-select
+						style="width: 480px;"
 						v-model="dynamicValidateForm.format"
 						placeholder="请选择"
 					>
@@ -108,16 +112,16 @@
 					</el-select>
 				</el-form-item>
 			</el-form>
-			<div slot="footer" class="add_urlfooter">
+			<div class="add_urlfooter">
 				<el-button
 					type="primary"
 					@click="dialogFormVisiblea('dynamicValidateForm')"
-					style="width:96px;height:36px;background:rgba(41,122,255,1);border-radius:2px;"
+					style="width:120px;height:40px;"
 					>确 定</el-button
 				>
 				<el-button
 					@click="dialogFormVisibles('dynamicValidateForm')"
-					style="width:96px;height:36px;background:rgba(225,225,225,1);border-radius:2px;color:#666666;"
+					style="width: 120px; height: 40px; background: #F9F9F9; border: 1px solid #ddd;"
 					>取 消</el-button
 				>
 			</div>
@@ -137,7 +141,7 @@ export default {
 				play_path: '',
 				format: '',
 			},
-			formLabelWidth: '110px',
+			formLabelWidth: '140px',
 			url_arr: [],
 			pagenum: 0,
 			yewu: [
@@ -340,41 +344,41 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-	width: auto;
-	margin: auto;
-	margin-left: 45px;
-	margin-right: 45px;
-	height: auto;
-	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-	border-radius: 2px;
-	margin-top: 20px;
-	padding: 23px 38px;
-	p {
-		width: 100%;
-		height: 30px;
-		font-size: 16px;
-		font-weight: 500;
+.content-main {
+	padding: 55px 0 64px 0 ;
+	.el-form{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		position: relative;
+		.el-form-item__label{
+			font-size: 16px;
+		}
+	}
+	.title {
+		width: 620px;
 		text-align: left;
-		color: #333333;
-		line-height: 18px;
-		margin: 15px 0;
+		font-size: 16px;
+		color: #333;
+		margin-bottom: 35px;
 	}
-	.add_url_title {
-		display: inline-block;
-		padding: 15px 0;
-		border-top: 1px solid #e3e3e3;
-	}
-	.add_url_point {
-		font-size: 12px;
-		color: #9b9b9b;
+	.add_url_point{
+		width: 200px;
+		position: absolute;
+		text-align: left;
+		padding-left: 24px;
 	}
 	.add_urlfooter {
+		margin-top: 45px;
+	}
+	.seperator {
+		width: 100%;
+		height: 1px;
 		border-top: 1px solid #e3e3e3;
 		text-align: left;
-		margin-top: 24px;
-		padding-top: 21px;
+		margin-top: 55px;
+		padding-top: 55px;
 	}
 }
 input::-webkit-input-placeholder {

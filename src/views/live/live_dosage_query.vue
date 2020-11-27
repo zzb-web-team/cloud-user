@@ -4,80 +4,80 @@
     <div class="top_title">节点流量用量</div>
     <div class="content-main">
         <div class="seach">
-        <el-input
-            v-model="valueRoomId"
-            placeholder="请输入直播间ID"
-            style="width:10%;margin-right: 10px;"
-            @keyup.enter.native="onChanges"
-        >
-            <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
-        </el-input>
-        <el-input
-            v-model="valueStreamName"
-            placeholder="请输入直播流名称"
-            style="width:10%;margin-right: 10px;"
-            @keyup.enter.native="onChanges"
-        >
-            <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
-        </el-input>
-        <el-select
-            v-model="valueIpfsChannel"
-            placeholder="全部节点渠道"
-            style="width: 10%;margin-right: 10px;"
-            @change="onChanges"
-        >
-            <el-option label="全部" value="*"></el-option>
-            <el-option
-            v-for="(item, index) in hashidSets"
-            :key="index"
-            :label="item.label"
-            :value="item.value"
-            ></el-option>
-        </el-select>
-        <SelectTime ref="selectTime" @selectTime="selectTime" :type="'daterange'" />
+          <el-input
+              v-model="valueRoomId"
+              placeholder="请输入直播间ID"
+              style="width:10%;margin-right: 10px;"
+              @keyup.enter.native="onChanges"
+          >
+              <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
+          </el-input>
+          <el-input
+              v-model="valueStreamName"
+              placeholder="请输入直播流名称"
+              style="width:10%;margin-right: 10px;"
+              @keyup.enter.native="onChanges"
+          >
+              <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
+          </el-input>
+          <el-select
+              v-model="valueIpfsChannel"
+              placeholder="全部节点渠道"
+              style="width: 10%;margin-right: 10px;"
+              @change="onChanges"
+          >
+              <el-option label="全部" value="*"></el-option>
+              <el-option
+              v-for="(item, index) in hashidSets"
+              :key="index"
+              :label="item.label"
+              :value="item.value"
+              ></el-option>
+          </el-select>
+          <SelectTime ref="selectTime" @selectTime="selectTime" :type="'daterange'" />
         </div>
-        <div class="device_table" style="display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
-            <div class="user_item" style="margin-right: 100px;">
-                <div class="item_left" style="margin-right: 30px;">
-                    <div class="item_text" style="text-align:center;">总流量</div>
-                    <div class="item_count" style="text-align:center;">
-                        <span>{{ totalYl | setbytes }}</span>
-                    </div>
+        <div style="display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; flex-wrap: wrap;">
+            <div class="user_item" style="margin-right: 95px;margin-bottom: 30px;">
+              <div class="item_left" style="margin: 0 30px 22px 0;">
+                <div class="item_text" style="text-align:left;">总流量</div>
+                <div class="item_count" style="text-align:left;">
+                  <span>{{ totalYl }}</span>
                 </div>
-                <img src="../../assets/img/pic.png" /> 
+              </div>
+              <img width="83px" height="260px" src="../../assets/img/backfemale.png" /> 
             </div>
             <div style="flex: 1; min-width: 400px;">
-                <el-row type="flex" class="row_active">
-                <el-col :span="23">
-                    <el-table
-                    :data="tablecdn"
-                    border
-                    style="width: 100%; max-height: 530px; overflow-y: auto;"
-                    :cell-style="rowClass"
-                    :header-cell-style="headClass"
-                    >
-                    <el-table-column label="总流量">
-                        <template slot-scope="scope">
-                        <div>{{ scope.row.dataFlow | setbytes }}</div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="时间" prop="time" :formatter="timeFormatter"></el-table-column>
-                    </el-table>
-                    <fenye
-                    style="float:right;margin:10px 0 0 0;"
-                    @handleCurrentChange="handleCurrentChange"
-                    @handleSizeChange="handleSizeChange"
-                    :pagesa="total_cnt"
-                    :currentPage="pageNo"
-                    ></fenye>
-                </el-col>
-                </el-row>
+              <div id="myChart" :style="{ height: '480px' }"></div>
             </div>
         </div>
     </div>
   </section>
-  <div class="device_form">
-    <div id="myChart" :style="{ height: '507px' }"></div>
+  <div class="device_table">
+    <el-row type="flex" class="row_active">
+      <el-col :span="23">
+        <el-table
+          :data="tablecdn"
+          border
+          style="width: 100%; max-height: 530px; overflow-y: auto;"
+          :cell-style="rowClass"
+          :header-cell-style="headClass"
+        >
+          <el-table-column label="总流量">
+              <template slot-scope="scope">
+              <div>{{ scope.row.dataFlow | setbytes }}</div>
+              </template>
+          </el-table-column>
+          <el-table-column label="时间" prop="time" :formatter="timeFormatter"></el-table-column>
+        </el-table>
+        <fenye
+          style="float:right;margin:10px 0 0 0;"
+          @handleCurrentChange="handleCurrentChange"
+          @handleSizeChange="handleSizeChange"
+          :pagesa="total_cnt"
+          :currentPage="pageNo"
+        ></fenye>
+      </el-col>
+    </el-row>
   </div>
 </div>
 </template>
@@ -86,6 +86,7 @@
 import { dateToMs, getymdtime, getymdtime1, splitTimes, formatBytes, formatBkb} from "../../servers/sevdate";
 import fenye from "@/components/fenye";
 import SelectTime from "@/components/SelectTime";
+// import exportpng from "@/assets/img/export.png";
 import {
   manage_dataflow_curve,
   manage_dataflow_table,
@@ -376,16 +377,20 @@ export default {
 					//show: true,
 					itemSize: 20,
 					itemGap: 30,
-					right: 50,
+					right: 30,
 					feature: {
 						mydow: {
 							show: true,
 							title: '导出',
-							icon:
-								'path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z',
+							icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
 							onclick: function() {
 								_this.exportant_dataflow();
-							},
+              },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
 						},
 					},
 				},
@@ -470,26 +475,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-table /deep/.disabledCheck .cell .el-checkbox__inner {
-  display: none !important;
-}
-.el-table /deep/.disabledCheck .cell:before {
-  content: "";
-  position: absolute;
-  right: 11px;
-}
-
 .user_item {
   background: #FDFBFB;
-  width: 500px;
-  height: 300px;
+  width: 324px;
+  height: 438px;
   border-radius: 32px;
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   text-align: left;
   padding: 36px 71px;
-
   .item_left {
     width: 49%;
     height: 58px;
@@ -518,6 +514,21 @@ export default {
         font-size: 34px;
       }
     }
+  }
+}
+.device_table {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
+  width: 100%;
+  height: auto;
+  .operating{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
   }
 }
 </style>

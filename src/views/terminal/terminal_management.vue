@@ -1,10 +1,28 @@
 <template>
   <div class="content">
-    <div class="top_title">终端管理</div>
-    <div class="content-main">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="终端token" name="first">
-          <div class="device_table">
+    <div class="content-main" style="margin-top: 48px;">
+      <div class="top_title">
+          终端管理
+          <div class="wrapperStyle">
+            <div
+              class="itemStyle"
+              :class="{ isSelected: type == 0 }"
+              @click="handleClick(0)"
+            >
+              终端token
+            </div>
+            <div
+              class="itemStyle"
+              :class="{ isSelected: type == 1 }"
+              @click="handleClick(1)"
+            >
+              SDK下载
+            </div>
+          </div>
+        </div>
+      <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="终端token" name="first"> -->
+          <div v-show="type==0" class="device_table">
             <div class=" operating">
               <el-button type="primary" @click="new_btn" :disabled="tableData.length>0">
                 <span class="el-icon-plus"></span>
@@ -75,9 +93,9 @@
               ></fenye>
             </div>
           </div>
-        </el-tab-pane>
-        <el-tab-pane label="SDK下载" name="second">
-          <div class="device_table">
+        <!-- </el-tab-pane>
+        <el-tab-pane label="SDK下载" name="second"> -->
+          <div v-show="type==1" class="device_table">
             <el-table
               :data="datadown"
               border
@@ -152,8 +170,8 @@
               ></fenye>
             </div>
           </div>
-        </el-tab-pane>
-      </el-tabs>
+        <!-- </el-tab-pane>
+      </el-tabs> -->
     </div>
     <!-- 修改弹窗 -->
     <el-dialog
@@ -214,6 +232,7 @@ import fenye from "@/components/fenye";
 export default {
   data() {
     return {
+      type: 0,
       currentPage: 1,
       activeName: "first",
       dialogFormVisible: false,
@@ -487,10 +506,12 @@ export default {
       this.xzteao = false;
       this.$refs.tokene.resetFields();
     },
-    handleClick(tab, event) {},
+    handleClick(val) {
+      this.type = val;
+    },
     // 表头样式设置
     headClass() {
-      return "text-align: center;background:#F3F6FB;color:#666666;";
+      return "text-align: center;background:#FDFBFB;color:#333;";
     },
     // 表格样式设置
     rowClass() {
@@ -582,4 +603,28 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.top_title{
+  text-align: left;
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  .wrapperStyle{
+      display: inline;
+      margin-left: 54px;
+      .itemStyle {
+          font-weight: 500;
+          display: inline;
+          font-size: 16px;
+          color: #666;
+          margin-right: 48px;
+          cursor: pointer;
+          height: 20px;
+      }
+      .isSelected{
+          color: #644CF7;
+          border-bottom: 4px solid  #644CF7;
+      }
+  }
+}
+</style>

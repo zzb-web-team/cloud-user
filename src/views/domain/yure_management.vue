@@ -1,237 +1,250 @@
 <template>
-	<div class="content">
-		<div class="top_title">刷新预热</div>
+	<div class="yure">
+		<!-- <div class="top_title">刷新预热</div> -->
 		<!-- 主体内容 -->
-		<div class="content-main">
-			<el-tabs v-model="activeName" @tab-click="handleClick">
-				<el-tab-pane label="刷新缓存" name="first">
-					<div class="seach">
-						<span style="color: #333;font-size:14px;line-height: 40px;">刷新区域：</span>
-						<el-select
-							v-model="citylabel"
-						>
-							<el-option
-								v-for="item in citylist1"
-								:key="item.value"
-								:label="item.label"
-								:value="item.value">
-							</el-option>
-						</el-select>
-					</div>
-					<p
-						style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
+		<div class="tabsStyle">
+          <div class="itemStyle" style="height: 136px; line-height: 136px; font-weight: 500;margin-bottom: 0;" @click="goBack">
+            <i class="el-icon-arrow-left" style="font-size: 18px;color: #333;font-weight: 500;"></i>
+            刷新预热</div>
+          <template v-for="item in names">
+            <div
+              class="itemStyle"
+              :class="{ isActive: item.key == selected}"
+              :index="item.key"
+              :key="item.key"
+              @click="select(item.key, item.value)"
+            >
+              {{ item.value }}
+            </div>
+          </template>
+        </div>
+		<div class="content_main">
+			<div v-show="selected==0">
+				<div class="seach">
+					<span style="color: #333;font-size:14px;line-height: 40px;">刷新区域：</span>
+					<el-select
+						v-model="citylabel"
 					>
-						Filed刷新单次提交最多 10
-						条，使用回车换行输入，刷新任务完成时间预计为 10 分钟
-					</p>
-					<el-input
-						type="textarea"
-						:rows="2"
-						placeholder="请输入点播加速内容,例：test123"
-						:autosize="{ minRows: 10, maxRows: 20 }"
-						v-model="textarea1"
-					></el-input>
-					<div style="margin: 20px 0;text-align: left;">
-						<el-button
-							@click="getrefresh(0)"
-							type="primary"
-							style="width:96px;height:40px;"
-							>提交</el-button
-						>
-					</div>
-				</el-tab-pane>
-				<el-tab-pane label="内容预热" name="second">
-					<div class="seach">
-						<span style="color: #333;font-size:14px;line-height: 40px;">预热区域：</span>
-						<el-select v-model="citylabel1">
-							<el-option
-								v-for="item in citylist1"
-								:key="item.value"
-								:label="item.label"
-								:value="item.value">
-							</el-option>
-						</el-select>
-					</div>
-					<p style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;">
-						Filed预热单次提交最多 10
-						条，使用回车换行输入，预热任务完成时间预计为 10 分钟
-					</p>
-					<el-input
-						type="textarea"
-						:rows="2"
-						placeholder="请输入点播加速内容,例：test123"
-						:autosize="{ minRows: 10, maxRows: 20 }"
-						v-model="textarea2"
-					></el-input>
-					<div style="margin: 20px 0; text-align: left;">
-						<el-button
-							type="primary"
-							@click="getrefresh(1)"
-							style="width:96px;height:40px;"
-							>提交</el-button
-						>
-					</div>
-				</el-tab-pane>
-				<el-tab-pane label="操作记录" name="third">
+						<el-option
+							v-for="item in citylist1"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value">
+						</el-option>
+					</el-select>
+				</div>
+				<p
+					style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;"
+				>
+					Filed刷新单次提交最多 10
+					条，使用回车换行输入，刷新任务完成时间预计为 10 分钟
+				</p>
+				<el-input
+					type="textarea"
+					:rows="2"
+					placeholder="请输入点播加速内容,例：test123"
+					:autosize="{ minRows: 10, maxRows: 20 }"
+					v-model="textarea1"
+				></el-input>
+				<div style="margin: 20px 0;text-align: left;">
+					<el-button
+						@click="getrefresh(0)"
+						type="primary"
+						style="width:96px;height:40px;"
+						>提交</el-button
+					>
+				</div>
+			</div>
+				<!-- </el-tab-pane>
+				<el-tab-pane label="内容预热" name="second"> -->
+			<div v-show="selected==1">
+				<div class="seach">
+					<span style="color: #333;font-size:14px;line-height: 40px;">预热区域：</span>
+					<el-select v-model="citylabel1">
+						<el-option
+							v-for="item in citylist1"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value">
+						</el-option>
+					</el-select>
+				</div>
+				<p style="text-align: left;color: #999999;margin: 23px 0;font-size:14px;">
+					Filed预热单次提交最多 10
+					条，使用回车换行输入，预热任务完成时间预计为 10 分钟
+				</p>
+				<el-input
+					type="textarea"
+					:rows="2"
+					placeholder="请输入点播加速内容,例：test123"
+					:autosize="{ minRows: 10, maxRows: 20 }"
+					v-model="textarea2"
+				></el-input>
+				<div style="margin: 20px 0; text-align: left;">
+					<el-button
+						type="primary"
+						@click="getrefresh(1)"
+						style="width:96px;height:40px;"
+						>提交</el-button
+					>
+				</div>
+			</div>
+				<!-- </el-tab-pane>
+				<el-tab-pane label="操作记录" name="third"> -->
 					<!-- 搜索 -->
-					<div class="seach">
-						<el-input
-							placeholder="请输入点播加速内容"
-							v-model="input"
-							class="input-with-select"
-							@keyup.enter.native="seachuser"
-						>
-							<i
-								slot="suffix"
-								class="el-input__icon el-icon-search"
-								@click="seachuser()"
-							></i>
-						</el-input>
-						<el-button
-							@click="option_display()"
-							type="primary"
-							style="margin-left:15px;"
-						>
-							筛选
-							<i
-								class="el-icon-caret-center"
-								:class="[
-									rotate
-										? 'fa fa-arrow-down go'
-										: 'fa fa-arrow-down aa',
-								]"
-							></i>
-						</el-button>
-						<div v-if="optiondisplay" class="seach_bottom">
-							<span style="width: 88px;">操作类型：</span>
-							<el-select
-								v-model="valuea"
-								placeholder="请选择"
-								style="width: 160px;"
-								@change="seachdata()"
-							>
-								<el-option label="全部" value=""></el-option>
-								<el-option
-									v-for="(item, index) in options1"
-									:key="index"
-									:label="item.label"
-									:value="item.value"
-								></el-option>
-							</el-select>
-							<span style="width: 50px;">状态：</span>
-							<el-select
-								v-model="valueb"
-								placeholder="请选择"
-								style="width: 160px;"
-								@change="seachdata()"
-							>
-								<el-option
-									v-for="(item, index) in options2"
-									:key="index"
-									:label="item.label"
-									:value="item.value"
-								></el-option>
-							</el-select>
-							<span style="width: 50px;">日期：</span>
-							<el-date-picker
-								v-model="value1"
-								type="datetimerange"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								style="width:20%;"
-								:picker-options="pickerOptions"
-							></el-date-picker>
-							<el-button
-								@click="seachuser()"
-								style="margin:0 10px 0 9px;width:91px;height:36px;background:rgba(41,122,255,1);border-radius:4px;color:#ffffff;border:none"
-								>确定</el-button
-							>
-							<el-button
-								style="width:90px;height:36px;background:rgba(219,233,255,1);border-radius:4px;color:#297aff;border:none"
-								@click="reset()"
-								>重置</el-button
-							>
-						</div>
-					</div>
-					<!-- 操作记录 -->
-					<el-table
-						:data="tableData"
-						stripe
-						style="width: 100%"
-						:cell-style="rowClass"
-						:header-cell-style="headClass"
-						@sort-change="tableSortChange"
+			<div v-show="selected==2">
+				<div class="seach">
+					<el-input
+						placeholder="请输入点播加速内容"
+						v-model="input"
+						style="width: 15%;margin-right: 15px;"
+						class="input-with-select"
+						@keyup.enter.native="seachuser"
 					>
-						<el-table-column
-							prop="url_name"
-							label="操作内容"
-						></el-table-column>
-
-						<el-table-column
-							prop="are"
-							label="区域"
-						></el-table-column>
-						<el-table-column
-							prop="operation_date"
-							sortable="custom"
-							label="操作时间"
+						<i
+							slot="suffix"
+							class="el-input__icon el-icon-search"
+							@click="seachuser()"
+						></i>
+					</el-input>
+					<!-- <el-button
+						@click="option_display()"
+						type="primary"
+						style="margin-left:15px;"
+					>
+						筛选
+						<i
+							class="el-icon-caret-center"
+							:class="[
+								rotate
+									? 'fa fa-arrow-down go'
+									: 'fa fa-arrow-down aa',
+							]"
+						></i>
+					</el-button>
+					<div v-if="optiondisplay" class="seach_bottom"> -->
+						<!-- <span style="width: 88px;">操作类型：</span> -->
+						<el-select
+							v-model="valuea"
+							placeholder="请选择"
+							style="width: 12%;margin-right: 15px;"
+							@change="seachdata()"
 						>
-							<template slot-scope="scope"
-								>{{ scope.row.opt_time | settimes }}
-							</template>
-						</el-table-column>
-						<el-table-column prop="operation_type" label="操作类型">
-							<template slot-scope="scope">
-								<span v-if="scope.row.refresh_type == 1"
-									>内容预热</span
-								>
-								<span v-else>缓存刷新</span>
-							</template>
-						</el-table-column>
-						<el-table-column prop="operation_status" label="状态">
-							<template slot-scope="scope">
-								<span v-if="scope.row.state == 0">进行中</span>
-								<span v-else-if="scope.row.state == 1"
-									>完成</span
-								>
-								<span v-else-if="scope.row.state == 2"
-									>等待</span
-								>
-								<span v-else-if="scope.row.state == 3"
-									>失败</span
-								>
-							</template>
-						</el-table-column>
-						<el-table-column prop="schedule" label="进度">
-							<template slot-scope="scope">
-								<!-- <div
-									v-if="scope.row.state == 0"
-									style="color:#297AFF"
-								>
-									— —
-								</div>
-								<el-progress
-									v-else
-									:percentage="scope.row.progress"
-								></el-progress> -->
-                                <el-progress
-									:percentage="scope.row.progress"
-								></el-progress>
-							</template>
-						</el-table-column>
-					</el-table>
-					<div>
-						<fenye
-							style="text-align:right;margin:37px 0 0 0;"
-							@fatherMethod="getpage"
-							@fathernum="gettol"
-							:pagesa="total_cnt"
-							:currentPage="currentPage"
-						></fenye>
-					</div>
-				</el-tab-pane>
-			</el-tabs>
+							<el-option label="全部" value=""></el-option>
+							<el-option
+								v-for="(item, index) in options1"
+								:key="index"
+								:label="item.label"
+								:value="item.value"
+							></el-option>
+						</el-select>
+						<!-- <span style="width: 50px;">状态：</span> -->
+						<el-select
+							v-model="valueb"
+							placeholder="请选择"
+							style="width: 12%;margin-right: 15px;"
+							@change="seachdata()"
+						>
+							<el-option
+								v-for="(item, index) in options2"
+								:key="index"
+								:label="item.label"
+								:value="item.value"
+							></el-option>
+						</el-select>
+						<!-- <span style="width: 50px;">日期：</span> -->
+						<el-date-picker
+							v-model="value1"
+							type="datetimerange"
+							range-separator="至"
+							start-placeholder="开始日期"
+							end-placeholder="结束日期"
+							style="width: 20%;margin-right: 15px;"
+							:picker-options="pickerOptions"
+						></el-date-picker>
+						<!-- <el-button
+							@click="seachuser()"
+							style="margin:0 10px 0 9px;width:91px;height:36px;background:rgba(41,122,255,1);border-radius:4px;color:#ffffff;border:none"
+							>确定</el-button
+						> -->
+						<el-button
+							type="primary"
+							style="width:90px;height:40px;"
+							@click="reset()"
+							>重置</el-button
+						>
+					<!-- </div> -->
+				</div>
+				<!-- 操作记录 -->
+				<el-table
+					:data="tableData"
+					stripe
+					border
+					style="width: 100%"
+					:cell-style="rowClass"
+					:header-cell-style="headClass"
+					@sort-change="tableSortChange"
+				>
+					<el-table-column
+						prop="url_name"
+						label="操作内容"
+					></el-table-column>
+
+					<el-table-column
+						prop="are"
+						label="区域"
+					></el-table-column>
+					<el-table-column
+						prop="operation_date"
+						sortable="custom"
+						label="操作时间"
+					>
+						<template slot-scope="scope"
+							>{{ scope.row.opt_time | settimes }}
+						</template>
+					</el-table-column>
+					<el-table-column prop="operation_type" label="操作类型">
+						<template slot-scope="scope">
+							<span v-if="scope.row.refresh_type == 1"
+								>内容预热</span
+							>
+							<span v-else>缓存刷新</span>
+						</template>
+					</el-table-column>
+					<el-table-column prop="operation_status" label="状态">
+						<template slot-scope="scope">
+							<span v-if="scope.row.state == 0">进行中</span>
+							<span v-else-if="scope.row.state == 1"
+								>完成</span
+							>
+							<span v-else-if="scope.row.state == 2"
+								>等待</span
+							>
+							<span v-else-if="scope.row.state == 3"
+								>失败</span
+							>
+						</template>
+					</el-table-column>
+					<el-table-column prop="schedule" label="进度">
+						<template slot-scope="scope">
+							<el-progress
+								:percentage="scope.row.progress"
+							></el-progress>
+						</template>
+					</el-table-column>
+				</el-table>
+				<div>
+					<fenye
+						style="text-align:right;margin:37px 0 0 0;"
+						@fatherMethod="getpage"
+						@fathernum="gettol"
+						:pagesa="total_cnt"
+						:currentPage="currentPage"
+					></fenye>
+				</div>
+			</div>
+				<!-- </el-tab-pane>
+			</el-tabs> -->
 		</div>
 		<!--  -->
 	</div>
@@ -248,6 +261,21 @@ import {
 export default {
 	data() {
 		return {
+			names: [
+				{
+					key: 0,
+					value: "刷新缓存",
+				},
+				{
+					key: 1,
+					value: "内容预热",
+				},
+				{
+					key: 2,
+					value: "操作记录",
+				},
+			],
+			selected: 0,
 			currentPage: 1,
 			errarr: '',
 			successarr: '',
@@ -389,14 +417,29 @@ export default {
 			this.$router.push({ path: '/' });
 		}
 		if (sessionStorage.getItem('tab_name')) {
-			this.activeName = sessionStorage.getItem('tab_name');
-			if (this.activeName == 'third') {
+			this.selected = sessionStorage.getItem('tab_name');
+			if (this.selected == 2) {
 				this.getrefreshstate();
 			}
 		}
 		// this.gettoken();
 	},
 	methods: {
+		goBack(){
+			this.$router.go(-1);
+		},
+		select(val){
+			this.selected = val;
+			sessionStorage.setItem('tab_name', this.selected); //添加到sessionStorage
+			this.citylabel = '';
+			this.textarea1 = '';
+			this.citylabel1 = '';
+			this.textarea2 = '';
+			if (this.selected == 2) {
+				this.getrefreshstate();
+			}
+			
+		},
 		//获去token列表
 		gettoken() {
 			this.tableData = [];
@@ -750,14 +793,7 @@ export default {
 			this.getrefreshstate();
 		},
 		handleClick(tab, event) {
-			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
-			this.citylabel = '';
-			this.textarea1 = '';
-			this.citylabel1 = '';
-			this.textarea2 = '';
-			if (tab.name == 'third') {
-				this.getrefreshstate();
-			}
+			
 		},
 		//获取页码
 		getpage(pages) {
@@ -790,7 +826,7 @@ export default {
 		},
 		// 表头样式设置
 		headClass() {
-			return 'text-align: center;background:#F3F6FB;color:#333333;font-size:16px;';
+			return 'text-align: center; background: #FDFBFB; color:#333; font-size:16px;';
 		},
 		// 表格样式设置
 		rowClass() {
@@ -804,52 +840,50 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .content {
-// 	.yure_content {
-// 		width: 100%;
-// 		// margin: 15px 0;
-// 	}
-// 	width: 100%;
-// 	height: 100%;
-// 	text-align: left;
-// 	.seach {
-// 		width: 100%;
-// 		// display: flex;
-// 		// align-items: center;
-// 		.seach_top {
-// 			width: 100%;
-// 			height: 60px;
-// 			line-height: 60px;
-// 			.input-with-select {
-// 				width: 300px;
-// 				float: left;
-// 				margin-right: 10px;
-// 			}
-// 		}
-// 		.seach_bottom {
-// 			text-align: left;
-// 			height: 80px;
-// 			background: #f2f6fa;
-// 			border-radius: 10px;
-// 			padding: 10px 15px;
-// 			display: flex;
-// 			justify-content: flex-start;
-// 			align-items: center;
-// 			margin-bottom: 20px;
-// 			span {
-// 				color: #999999;
-// 				font-size: 14px;
-// 				margin-left: 10px;
-// 			}
-// 		}
-// 	}
-// }
-//旋转
-.aa {
-	transition: all 1s;
-}
-.go {
-	transform: rotate(-180deg);
-	transition: all 1s;
+.yure{
+	margin-top: 48px;
+  	display: flex;
+  	flex-direction: row;
+	.tabsStyle {
+		background: #ffffff;
+		border-radius: 32px;
+		margin-right: 24px;
+		width: 292px;
+		min-height: 700;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		.itemStyle{
+			width: 148px;
+			height: 48px;
+			margin-bottom: 49px;
+			text-align: center;
+			line-height: 49px;
+			font-size: 18px;
+			cursor: pointer;
+		}
+		.isActive{
+			background: #644CF7;
+			color: #ffffff;
+			border-radius: 24px;
+		}
+	}
+	.content_main{
+		background: #ffffff;
+		border-radius: 32px;
+		width: 100%;
+		height: 100%;
+		padding: 72px;
+		.seach{
+			width: 100%;
+            margin: 0px 0 30px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+		}
+	}
 }
 </style>

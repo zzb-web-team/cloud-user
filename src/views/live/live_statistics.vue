@@ -1,9 +1,14 @@
 <template>
   <div>
     <section class="content">
-      <div class="top_title">统计分析</div>
+      <div class="top_title">统计分析
+				<div class="wrapperStyle">
+					<div class="itemStyle" :class="{ isSelected: type == 0 }" @click="handleClick(0)">PV/UV</div>
+					<div class="itemStyle" :class="{ isSelected: type == 1}" @click="handleClick(1)">访问用户分布</div>
+				</div>
+			</div>
       <div class="content-main">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <!-- <el-tabs v-model="activeName" @tab-click="handleClick"> -->
         <div class="seach">
             <el-input v-model="valueRoomId" placeholder="请输入直播间ID" style="width:160px;margin-right: 10px;" @change="onChanges">
             <i slot="prefix" class="el-input__icon el-icon-search" @click="onChanges()"></i>
@@ -17,90 +22,84 @@
             </el-select>
             <SelectTime ref="selectTime" @selectTime="selectTime" :type="'daterange'" />
         </div>
-        <el-tab-pane label="PV/UV" name="first">
-            <div class="user_item">
-            <div class="item_left">
-                <div class="item_text">总访问次数(PV)</div>
-                <div class="item_count">
-                <span>{{ totalPV }}</span>
-                </div>
+        <!-- <el-tab-pane label="PV/UV" name="first"> -->
+            <div v-show="type==0" class="user_item">
+              <div class="items">
+                  <div class="item_text">总访问次数(PV)</div>
+                  <div class="item_count">{{ totalPV }}</div>
+              </div>
+              <div class="items">
+                  <div class="item_text">{{'独立IP数'}}</div>
+                  <div class="item_count">{{ totalUV }}</div>
+              </div>
+              <div class="items">
+                  <div class="item_text">并发连接数峰值</div>
+                  <div class="item_count">{{ maxConnect }}</div>
+              </div>
             </div>
-            <div class="item_right">
-                <div class="item_text">{{'独立IP数'}}</div>
-                <div class="item_count">
-                <span>{{ totalUV }}</span>
-                </div>
+            <div v-show="type==0" style="margin-top: 40px;">
+              <div id="myChart" :style="{ height: '607px' }"></div>
             </div>
-            <div class="item_right">
-                <div class="item_text">并发连接数峰值</div>
-                <div class="item_count">
-                <span>{{ maxConnect }}</span>
-                </div>
+        <!-- </el-tab-pane>
+        <el-tab-pane label="访问用户分布" name="second"> -->
+            <div v-show="type==1">
+              <el-radio-group
+                v-model="radios"
+                size="medium"
+                @change="select()"
+                style="display: flex;justify-content: center;"
+              >
+                <el-radio-button label="1">地区</el-radio-button >
+                <el-radio-button label="2">运营商</el-radio-button >
+              </el-radio-group>
+              <div id="myChart1" :style="{ height: '607px' }"></div>
             </div>
-            </div>
-            <div style="margin-top: 40px;">
-            <div id="myChart" :style="{ height: '607px' }"></div>
-            </div>
-        </el-tab-pane>
-        <el-tab-pane label="访问用户分布" name="second">
-            <div class="device_table">
-            <el-row type="flex" class="row_active">
-                <el-col :span="24" style="text-align:left; font-weight: bold; margin-bottom:10px;">{{exportTitle}}</el-col>
-            </el-row>
-            <el-row type="flex" class="row_active">
-                <el-col :span="24">
-                <el-table :data="tableData" border stripe max-height="530" style="width: 100%;" :cell-style="rowClass" :header-cell-style="headClass">
-                    <el-table-column :label="exportTitleTable">
-                    <template slot-scope="scope">
-                        <div v-if="scope.row.region">
-                        {{ scope.row.region }}
-                        </div>
-                        <div v-else>{{ scope.row.isp }}</div>
-                    </template>
-                    </el-table-column>
-                    <el-table-column label="访问用户总数">
-                    <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                        <div>{{ scope.row.sumCnt }}</div>
-                        </div>
-                    </template>
-                    </el-table-column>
-                    <el-table-column label="有效访问用户数（%）">
-                    <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                        <div>{{ scope.row.validCnt }}</div>
-                        <div>({{ scope.row.validPercent | percentss }})</div>
-                        </div>
-                    </template>
-                    </el-table-column>
-                    <el-table-column label="无效访问用户数（%）">
-                    <template slot-scope="scope">
-                        <div style="display: flex;justify-content: center;">
-                        <div>{{ scope.row.invalidCnt }}</div>
-                        <div>({{ scope.row.invalidPercent | percentss }})</div>
-                        </div>
-                    </template>
-                    </el-table-column>
-                </el-table>
-                <fenye style="float:right;margin:10px 0 0 0;" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :currentPage="pageNo" :pagesa="total_cnt"></fenye>
-                </el-col>
-            </el-row>
-            </div>
-        </el-tab-pane>
-        </el-tabs>
+        <!-- </el-tab-pane>
+        </el-tabs> -->
       </div>
     </section>
-    <div class="device_form" v-show="activeName=='second'">
-      <el-radio-group
-        v-model="radios"
-        size="medium"
-        @change="select()"
-        style="display: flex;justify-content: center;"
-      >
-        <el-radio-button label="1">地区</el-radio-button >
-        <el-radio-button label="2">运营商</el-radio-button >
-      </el-radio-group>
-      <div id="myChart1" :style="{ height: '607px' }"></div>
+    <div v-show="type==1" class="device_tables">
+      <el-row type="flex" class="row_active">
+          <el-col :span="24" style="text-align:left; font-weight: bold; margin-bottom:10px;">{{exportTitle}}</el-col>
+      </el-row>
+      <el-row type="flex" class="row_active">
+          <el-col :span="24">
+          <el-table :data="tableData" border stripe max-height="530" style="width: 100%;" :cell-style="rowClass" :header-cell-style="headClass">
+              <el-table-column :label="exportTitleTable">
+              <template slot-scope="scope">
+                  <div v-if="scope.row.region">
+                  {{ scope.row.region }}
+                  </div>
+                  <div v-else>{{ scope.row.isp }}</div>
+              </template>
+              </el-table-column>
+              <el-table-column label="访问用户总数">
+              <template slot-scope="scope">
+                  <div style="display: flex;justify-content: center;">
+                  <div>{{ scope.row.sumCnt }}</div>
+                  </div>
+              </template>
+              </el-table-column>
+              <el-table-column label="有效访问用户数（%）">
+              <template slot-scope="scope">
+                  <div style="display: flex;justify-content: center;">
+                  <div>{{ scope.row.validCnt }}</div>
+                  <div>({{ scope.row.validPercent | percentss }})</div>
+                  </div>
+              </template>
+              </el-table-column>
+              <el-table-column label="无效访问用户数（%）">
+              <template slot-scope="scope">
+                  <div style="display: flex;justify-content: center;">
+                  <div>{{ scope.row.invalidCnt }}</div>
+                  <div>({{ scope.row.invalidPercent | percentss }})</div>
+                  </div>
+              </template>
+              </el-table-column>
+          </el-table>
+          <fenye style="float:right;margin:10px 0 0 0;" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange" :currentPage="pageNo" :pagesa="total_cnt"></fenye>
+          </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -126,6 +125,7 @@ import common from "../../comm/js/util";
 export default {
   data() {
     return {
+      type: 0,
       hashidSets: [
         {
           value: "1",
@@ -414,14 +414,15 @@ export default {
       return "text-align: center;";
     },
     //选项卡
-    handleClick(tab, event) {
+    handleClick(val) {
       this.reset();
       this.$refs.selectTime.resetTimes();
       this.starttime = new Date(new Date().toLocaleDateString()).getTime() / 1000;
       this.endtime = Date.parse(new Date()) / 1000;
-      if (tab.index == 0) {
+      this.type = val;
+      if (val == 0) {
         this.livePuVuCurve();
-      } else if (tab.index == 1) {
+      } else if (val == 1) {
         this.liveTopregionCurve();
       }
     },
@@ -449,6 +450,9 @@ export default {
           },
         },
         toolbox: {
+          itemSize: 20,
+					itemGap: 30,
+					right: 30,
           feature: {
             // mark: { show: true },
             // dataView: { show: true, readOnly: false },
@@ -458,11 +462,15 @@ export default {
             mydow: {
               show: true,
               title: "导出",
-              icon:
-                "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
+              icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
               onclick: function() {
                 _this.exoprtant_pupv();
               },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
             },
           },
         },
@@ -574,8 +582,7 @@ export default {
             mydow: {
               show: true,
               title: "导出",
-              icon:
-                "path://M552 586.178l60.268-78.53c13.45-17.526 38.56-20.83 56.085-7.38s20.829 38.56 7.38 56.085l-132 172c-16.012 20.863-47.454 20.863-63.465 0l-132-172c-13.45-17.526-10.146-42.636 7.38-56.085 17.525-13.45 42.635-10.146 56.084 7.38L472 586.177V152c0-22.091 17.909-40 40-40s40 17.909 40 40v434.178zM832 512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 61.856-50.144 112-112 112H224c-61.856 0-112-50.144-112-112V512c0-22.091 17.909-40 40-40s40 17.909 40 40v288c0 17.673 14.327 32 32 32h576c17.673 0 32-14.327 32-32V512z",
+              icon: "image://data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAWCAYAAADafVyIAAACVklEQVRIS9WVT0gUYRjGn+fT3NnVpFMQHSI6RFEnL3brD4Qys6mEEISi7mjQIRCCgiA6dAgCL4GH3F2XDtWlKNdcCYq9FVSnkOyvh4IIKsFyZnZrvjd2zDLd3F3bS99tmHee3/O9z/fNS1Rh2aY7HNbG4KUMc8vlWAV92JY3C5Eppb61X043flyqWT0AZAMEr7VPMzlpPF+EVAzoa5nbztpQGyHNgN4GcD2ALQBUICr4DOJwfDycLTyWDeiznD0KPA9gf6m2CpAX7R9LTjSkSgIGmmSdvyl3ESInyPINiSCVuGP00bbc98HONHsTE8bkUncDUYn44o0ROFDK9ZL3GlBn4uOhC0GLbMuVAEDdkUjX3/pdKCpmemMkzOXiIpgDOQOIAzBCyO6fGTiaqjuZDt34FfLfAP2mc0rIwMVCdngDqLj287dHMw3PAAbGCmvhmGqXStpG0vWP/jimxQDdlrO5DnwJIAzILESdfjX/IJnN7vterFW25Wb9vHSN3o28XXHRigH6TW9IKIMQPIaWjngm8m61DHr2zhip7FZvsabr4JeNobranUUz6OyUmkbX+0DBdN280TKc5dcKAg5KY6ZzhOS1ogC71WlGDa/nXaPpyj1+qlS8JCBmzh+nVtPxTPj+WsRLAnpaneZUJvJwreIlAf8ivPjtqhn8lwC/cM2F6mgiHbpajR3YltsLIAkwz5jlPiWwC4IXIhwSyIqxVxFU0VAiJ0EUZsUTxqK5dmh9s5JfcZlALaIPBfMgZnlRiD4LcgeBmjIFipaJwCcxRfLcSNrI/AC30TaaX55yXgAAAABJRU5ErkJggg==",
               onclick: function() {
                 if (_this.radios == 1) {
                   _this.exoprtant_topregion();
@@ -583,6 +590,11 @@ export default {
                   _this.exoprtant_topisp();
                 }
               },
+              emphasis: {
+                iconStyle: {
+                  textFill: '#644CF7'
+                }
+              }
             },
           },
         },
@@ -619,36 +631,45 @@ export default {
 .user_item {
   width: auto;
   height: auto;
-  background: #FDFBFB;
   border-radius: 32px;
   margin-top: 20px;
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  padding: 36px 71px;
-  .item_left {
+  .items{
+    width: 32%;
+    background: #FDFBFB;
+    height: 128px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     .item_text {
-      font-size: 14px;
+      font-size: 16px;
       color: #333333;
     }
     .item_count {
-      line-height: 55px;
-      span {
-        font-size: 34px;
-      }
+      font-size: 36px;
+      color: #333333;
+      font-weight: bold;
     }
   }
-  .item_right {
-    .item_text {
-      font-size: 14px;
-      color: #333333;
-    }
-    .item_count {
-      line-height: 55px;
-      span {
-        font-size: 34px;
-      }
-    }
+}
+.device_tables {
+  background: #fff;
+  padding: 72px 64px;
+  border-radius: 32px;
+  width: 100%;
+  height: auto;
+  .operating{
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 20px;
   }
 }
 </style>

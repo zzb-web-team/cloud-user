@@ -22,12 +22,13 @@
 				<span>用量趋势</span>
 				<span @click="godosage" class="astyle">更多数据</span>
 			</div>
-			<div
-				style="height: 483px;padding: 43px 54px;background: #ffffff;box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);"
-			>
+			<div style="padding:0 43px 0 54px;">
 				<div
 					id="myChart3"
-					:style="{ height: '397px', fontSize: '16px' }"
+					:style="{
+						height: clientHeight - 440 + 'px',
+						fontSize: '16px',
+					}"
 				></div>
 			</div>
 		</div>
@@ -36,7 +37,7 @@
 
 <script>
 var _this;
-import { dataflow_curve,manage_dataflow_curve, } from '../../servers/api';
+import { dataflow_curve, manage_dataflow_curve } from '../../servers/api';
 import {
 	dateToMs,
 	getymdtime,
@@ -45,7 +46,7 @@ import {
 	getlocaltimes,
 	formatBytes,
 	splitTimes,
-	getymdtime1
+	getymdtime1,
 } from '../../servers/sevdate';
 import echarts from 'echarts';
 export default {
@@ -56,7 +57,23 @@ export default {
 			timeArray: [],
 			chanid: '',
 			unitdata: 'B',
+			clientHeight: document.body.clientHeight,
 		};
+	},
+	watch: {
+		clientHeight(val) {
+			// 为了避免频繁触发resize函数导致页面卡顿，使用定时器
+			if (!this.timer) {
+				// 一旦监听到的screenWidth值改变，就将其重新赋给data里的screenWidth
+				this.clientHeight = val;
+				this.timer = true;
+				let that = this;
+				setTimeout(function() {
+					// 打印screenWidth变化的值
+					that.timer = false;
+				}, 400);
+			}
+		},
 	},
 	mounted() {
 		if (this.$cookies.get('id')) {
@@ -64,6 +81,11 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
+		window.addEventListener(
+			'resize',
+			() => (this.clientHeight = document.body.clientHeight),
+			false
+		);
 		this.getlist();
 	},
 	methods: {
@@ -85,15 +107,14 @@ export default {
 			// params.chanId = this.chanid + '';
 			// params.fileName = '*';
 			// params.timeUnit = 1440;
-            // params.acce = '*';
-            
+			// params.acce = '*';
 
-            let arr=[];
-           	arr.push(this.chanid + '');
-            let params = new Object();
+			let arr = [];
+			arr.push(this.chanid + '');
+			let params = new Object();
 			params.startTs = starttime;
-            params.endTs = endtime;
-            params.channelId = arr;
+			params.endTs = endtime;
+			params.channelId = arr;
 			params.urlName = '*';
 			params.domain = '*';
 			params.timeUnit = 1440;
@@ -113,23 +134,28 @@ export default {
 								this.unitdata
 							);
 						}
-						if(res.data.data[0].dataflowArray.length == 0){
-							let arr = splitTimes(starttime, endtime, 1440);	
-							console.log(arr)						
+						if (res.data.data[0].dataflowArray.length == 0) {
+							let arr = splitTimes(starttime, endtime, 1440);
+							console.log(arr);
 							arr.forEach((item, index) => {
 								this.timeArray.push(getymdtime1(item));
 							});
 							this.dataFlowArray = _.fill(Array(arr.length), 0);
-						}else{
-							res.data.data[0].dataflowArray.forEach((item, index) => {
-								this.dataFlowArray.push(
-									formatBkb(item, this.unitdata)
-								);
-							});
-							this.dataFlownum = res.data.data[0].dataflowArray.length - 1;
-							res.data.data[0].timeArray.forEach((item, index) => {
-								this.timeArray.push(getymdtime1(item));
-							});
+						} else {
+							res.data.data[0].dataflowArray.forEach(
+								(item, index) => {
+									this.dataFlowArray.push(
+										formatBkb(item, this.unitdata)
+									);
+								}
+							);
+							this.dataFlownum =
+								res.data.data[0].dataflowArray.length - 1;
+							res.data.data[0].timeArray.forEach(
+								(item, index) => {
+									this.timeArray.push(getymdtime1(item));
+								}
+							);
 						}
 						// res.data.data[0].dataflowArray.forEach((item) => {
 						// 	this.dataFlowArray.push(
@@ -167,6 +193,12 @@ export default {
 						fontStyle: 'normal',
 						fontWeight: '400',
 					},
+				},
+				grid: {
+					left: '3%', //距离左边的距离
+					right: '6%', //距离右边的距离
+					bottom: '8%', //距离下边的距离
+					top: '12%', //距离上边的距离
 				},
 				toolbox: {
 					//show: true,
@@ -219,7 +251,7 @@ export default {
 						smooth: true,
 						itemStyle: {
 							normal: {
-								color: '#09b0f5',
+								color: '#A7D5FF', //#09b0f5
 							},
 						},
 						areaStyle: {
@@ -232,7 +264,7 @@ export default {
 									[
 										{ offset: 0, color: '#A7D5FF' },
 										{ offset: 0.5, color: '#D0E8FF' },
-										{ offset: 1, color: '#ffffff' },
+										{ offset: 1, color: '#A7D5FF' },
 									]
 								),
 							},
@@ -250,8 +282,12 @@ export default {
 <style lang="scss" scoped>
 .content {
 	.content_top {
-		padding: 15px 0 25px;
-		width: 100%;
+		// padding: 15px 0 25px;
+		margin: 25px 45px;
+		// width: 100%;
+		background: #ffffff;
+		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		border-radius: 2px;
 		// border: 1px solid #000;
 		.content_top_title {
 			margin: auto;
@@ -274,14 +310,12 @@ export default {
 		}
 		.content_top_con {
 			height: 116px;
-			background: #ffffff;
 			margin: auto;
 			margin-right: 45px;
 			margin-left: 45px;
-			box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
-			border-radius: 2px;
+			margin-top: -25px;
 			text-align: left;
-			padding-left: 53px;
+			// padding-left: 53px;
 			color: #333333;
 			p {
 				line-height: 65px;
@@ -298,11 +332,14 @@ export default {
 		margin: auto;
 		margin-left: 45px;
 		margin-right: 45px;
+		background: #ffffff;
+		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
 		.content_bottom_title {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			line-height: 75px;
+			margin: 15px 45px 0 54px;
 			span:nth-child(1) {
 				color: #202020;
 				font-weight: 400;

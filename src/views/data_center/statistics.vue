@@ -62,6 +62,8 @@
 									v-model="radio1"
 									size="medium"
 									@change="sele_time(0)"
+									v-show="!shoudzy"
+									style="white-space:nowrap;"
 								>
 									<el-radio-button label="1"
 										>今天</el-radio-button
@@ -79,6 +81,13 @@
 										>自定义</el-radio-button
 									>
 								</el-radio-group>
+								<el-button
+									type="primary"
+									v-show="shoudzy"
+									@click="setshoudzyx"
+									style="background:#409EFF;border:#409EFF"
+									>自定义</el-button
+								>
 							</div>
 							<el-date-picker
 								v-show="shoudzy"
@@ -92,6 +101,18 @@
 								align="left"
 								@change="gettimes_pvpu"
 							></el-date-picker>
+							<el-button
+								style="margin-left:10px;"
+								type="primary"
+								@click="getdata1()"
+								>确定</el-button
+							>
+							<el-button
+								style="margin-left:10px;"
+								plain
+								@click="reset"
+								>重置</el-button
+							>
 						</div>
 
 						<div class="user_item">
@@ -169,6 +190,8 @@
 								v-model="radio1"
 								size="medium"
 								@change="sele_time(1)"
+								v-show="!shoudzyz"
+								style="white-space:nowrap;"
 							>
 								<el-radio-button label="1"
 									>今天</el-radio-button
@@ -186,8 +209,15 @@
 									>自定义</el-radio-button
 								>
 							</el-radio-group>
+							<el-button
+								type="primary"
+								v-show="shoudzyz"
+								@click="showzdyz"
+								style="background:#409EFF;border:#409EFF"
+								>自定义</el-button
+							>
 							<el-date-picker
-								v-show="shoudzyx"
+								v-show="shoudzyz"
 								style="margin-left:10px;"
 								v-model="val2"
 								type="datetimerange"
@@ -198,6 +228,18 @@
 								align="left"
 								@change="gettimes_option"
 							></el-date-picker>
+							<el-button
+								style="margin-left:10px;"
+								type="primary"
+								@click="getdata1"
+								>确定</el-button
+							>
+							<el-button
+								style="margin-left:10px;"
+								plain
+								@click="reset_map"
+								>重置</el-button
+							>
 						</div>
 						<div class="device_form" style>
 							<el-radio-group
@@ -247,22 +289,50 @@
 										>
 										<el-table-column label="访问用户总数">
 											<template slot-scope="scope">
-												<div>{{scope.row.sumCnt}}</div>
-											</template>
-										</el-table-column>
-										 <el-table-column label="有效访问用户数（%）">
-											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.validCnt }}</div>
-												<div>({{ scope.row.validPercent | percentss }})</div>
+												<div>
+													{{ scope.row.sumCnt }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="无效访问用户数（%）">
+										<el-table-column
+											label="有效访问用户数（%）"
+										>
 											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.invalidCnt }}</div>
-												<div>({{ scope.row.invalidPercent | percentss }})</div>
+												<div
+													style="display: flex;justify-content: center;"
+												>
+													<div>
+														{{ scope.row.validCnt }}
+													</div>
+													<div>
+														({{
+															scope.row
+																.validPercent
+																| percentss
+														}})
+													</div>
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column
+											label="无效访问用户数（%）"
+										>
+											<template slot-scope="scope">
+												<div
+													style="display: flex;justify-content: center;"
+												>
+													<div>
+														{{
+															scope.row.invalidCnt
+														}}
+													</div>
+													<div>
+														({{
+															scope.row
+																.invalidPercent
+																| percentss
+														}})
+													</div>
 												</div>
 											</template>
 										</el-table-column>
@@ -310,22 +380,50 @@
 										>
 										<el-table-column label="访问用户总数">
 											<template slot-scope="scope">
-												<div>{{scope.row.sumCnt}}</div>
-											</template>
-										</el-table-column>
-										 <el-table-column label="有效访问用户数（%）">
-											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.validCnt }}</div>
-												<div>({{ scope.row.validPercent | percentss }})</div>
+												<div>
+													{{ scope.row.sumCnt }}
 												</div>
 											</template>
 										</el-table-column>
-										<el-table-column label="无效访问用户数（%）">
+										<el-table-column
+											label="有效访问用户数（%）"
+										>
 											<template slot-scope="scope">
-												<div style="display: flex;justify-content: center;">
-												<div>{{ scope.row.invalidCnt }}</div>
-												<div>({{ scope.row.invalidPercent | percentss }})</div>
+												<div
+													style="display: flex;justify-content: center;"
+												>
+													<div>
+														{{ scope.row.validCnt }}
+													</div>
+													<div>
+														({{
+															scope.row
+																.validPercent
+																| percentss
+														}})
+													</div>
+												</div>
+											</template>
+										</el-table-column>
+										<el-table-column
+											label="无效访问用户数（%）"
+										>
+											<template slot-scope="scope">
+												<div
+													style="display: flex;justify-content: center;"
+												>
+													<div>
+														{{
+															scope.row.invalidCnt
+														}}
+													</div>
+													<div>
+														({{
+															scope.row
+																.invalidPercent
+																| percentss
+														}})
+													</div>
 												</div>
 											</template>
 										</el-table-column>
@@ -816,9 +914,9 @@ export default {
 		},
 		percentss(data) {
 			if (data == 0) {
-				return 0 + "%";
+				return 0 + '%';
 			}
-			return (data * 100).toFixed(2) + "%";
+			return (data * 100).toFixed(2) + '%';
 		},
 	},
 	components: {
@@ -922,15 +1020,15 @@ export default {
 				// } else {
 				// 	params.acce = this.accval1 * 1;
 				// }
-				if(this.valueDomain == ''){
+				if (this.valueDomain == '') {
 					params.domain = '*';
-				}else{
+				} else {
 					params.domain = this.valueDomain;
 				}
-				if (this.accval1 !== "") {
+				if (this.accval1 !== '') {
 					params.terminalName = this.accval1;
 				} else {
-					params.terminalName = "-1";
+					params.terminalName = '-1';
 				}
 				params.timeUnit = 60;
 				this.uvArray = [];
@@ -941,15 +1039,21 @@ export default {
 						if (res.status == 0) {
 							this.totalPV = res.data.totalPV;
 							this.totalUV = res.data.totalUV;
-							if(res.data.uvArray.length == 0 && res.data.pvArray.length == 0){
-								let arr = splitTimes(this.starttime, this.endtime, 60);
+							if (
+								res.data.uvArray.length == 0 &&
+								res.data.pvArray.length == 0
+							) {
+								let arr = splitTimes(
+									this.starttime,
+									this.endtime,
+									60
+								);
 								arr.forEach((item, index) => {
 									this.timeArray.push(getymdtime(item));
 								});
 								this.uvArray = _.fill(Array(arr.length), 0);
-              					this.pvArray = _.fill(Array(arr.length), 0);
-
-							}else{
+								this.pvArray = _.fill(Array(arr.length), 0);
+							} else {
 								res.data.uvArray.forEach((item, index) => {
 									this.uvArray.push(Math.floor(item));
 								});
@@ -959,7 +1063,7 @@ export default {
 								res.data.timeArray.forEach((item, index) => {
 									this.timeArray.push(getymdtime(item));
 								});
-							}			
+							}
 						} else {
 							this.$message.error(res.err_msg);
 						}
@@ -990,14 +1094,14 @@ export default {
 				// } else {
 				// 	params.acce = this.accval2 * 1;
 				// }
-				if (this.accval2 !== "") {
+				if (this.accval2 !== '') {
 					params.terminalName = this.accval2;
 				} else {
-					params.terminalName = "-1";
+					params.terminalName = '-1';
 				}
-				if(this.valueDomain1 == ''){
+				if (this.valueDomain1 == '') {
 					params.domain = '*';
-				}else{
+				} else {
 					params.domain = this.valueDomain1;
 				}
 				params.pageNo = this.f_currentPage - 1;
@@ -1011,7 +1115,10 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.regionArray;
-								this.tablecdn = res.data.accessCntTable==null?[]:res.data.accessCntTable;
+								this.tablecdn =
+									res.data.accessCntTable == null
+										? []
+										: res.data.accessCntTable;
 								this.f_total_cnt = res.data.totalPage;
 							} else {
 								this.$message.error(res.err_msg);
@@ -1028,7 +1135,10 @@ export default {
 							if (res.status == 0) {
 								this.playTimesArray1 = res.data.accessCntArray;
 								this.timeArray1 = res.data.ispArray;
-								this.tablecdn = res.data.accessCntTable==null?[]:res.data.accessCntTable;
+								this.tablecdn =
+									res.data.accessCntTable == null
+										? []
+										: res.data.accessCntTable;
 							} else {
 								this.$message.error(res.err_msg);
 							}
@@ -1309,6 +1419,9 @@ export default {
 		},
 		showzdyz() {
 			this.shoudzyz = !this.shoudzyz;
+			this.radio1 = 1;
+			this.val2 = [];
+			this.sele_time(1);
 		},
 		sele_time(data) {
 			if (this.radio1 == 1) {
@@ -1335,11 +1448,31 @@ export default {
 				if (data == 0) {
 					this.shoudzy = true;
 				} else if (data == 1) {
-					this.shoudzyx = true;
+					this.shoudzyz = true;
 				} else if (data == 3) {
 					this.shoudzyz = true;
 				}
 			}
+		},
+		setshoudzyx() {
+			this.shoudzy = !this.showzdy;
+			this.radio1 = 1;
+			this.sele_time(0);
+		},
+		reset() {
+			this.valueDomain = '';
+			this.value_a1 = '';
+			this.accval1 = '';
+			this.radio1 = 1;
+			this.sele_time(0);
+		},
+		reset_map() {
+			this.valueDomain = '';
+			this.value_b1 = '';
+			this.accval2 = '';
+			this.radio1 = 1;
+			this.val2 = [];
+			this.sele_time(1);
 		},
 		//今天
 		today(data) {
@@ -1512,8 +1645,8 @@ export default {
 			this.shoudzy = false;
 			this.shoudzyx = false;
 			this.shoudzyz = false;
-			this.accval1 = "";
-			this.accval2 = "";
+			this.accval1 = '';
+			this.accval2 = '';
 			//切换时重置时间为当前时间
 			this.starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;

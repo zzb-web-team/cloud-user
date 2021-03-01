@@ -62,13 +62,13 @@
 						@change="gettimes"
 						:picker-options="pickerOptions"
 					></el-date-picker>
-					<!-- <el-button
+					<el-button
 						type="primary"
 						size="mini"
 						@click="seachuser()"
 						style="margin-left: 10px;"
 						>确定</el-button
-					> -->
+					>
 					<el-button
 						plain
 						size="mini"
@@ -86,7 +86,7 @@
 				>
 					<div>
 						<el-button type="primary" @click="new_btn">
-							<span class="el-icon-plus"></span>
+							<!-- <span class="el-icon-plus"></span> -->
 							添加域名
 						</el-button>
 					</div>

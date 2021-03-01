@@ -13,14 +13,13 @@
 					<span style="color: #666666;font-size:14px;"
 						>刷新区域：</span
 					>
-					<el-select
-						v-model="citylabel"
-					>
+					<el-select v-model="citylabel">
 						<el-option
 							v-for="item in citylist1"
 							:key="item.value"
 							:label="item.label"
-							:value="item.value">
+							:value="item.value"
+						>
 						</el-option>
 					</el-select>
 					<p
@@ -51,14 +50,13 @@
             <el-radio v-model="radio2" label="2">域名刷新</el-radio>
           </div> -->
 					<span>预热区域：</span>
-					<el-select
-						v-model="citylabel1"
-					>
+					<el-select v-model="citylabel1">
 						<el-option
 							v-for="item in citylist1"
 							:key="item.value"
 							:label="item.label"
-							:value="item.value">
+							:value="item.value"
+						>
 						</el-option>
 					</el-select>
 					<p
@@ -157,11 +155,15 @@
 							></el-date-picker>
 							<el-button
 								@click="seachuser()"
-								style="margin:0 10px 0 9px;width:91px;height:36px;background:rgba(41,122,255,1);border-radius:4px;color:#ffffff;border:none"
+								type="primary"
+								size="mini"
+								style="margin-left: 10px;"
 								>确定</el-button
 							>
 							<el-button
-								style="width:90px;height:36px;background:rgba(219,233,255,1);border-radius:4px;color:#297aff;border:none"
+								plain
+								size="mini"
+								style="margin-left: 10px;"
 								@click="reset()"
 								>重置</el-button
 							>
@@ -174,7 +176,12 @@
 						style="width: 100%"
 						:cell-style="rowClass"
 						:header-cell-style="headClass"
+						row-key="id"
 						@sort-change="tableSortChange"
+						:tree-props="{
+							children: 'children',
+							hasChildren: 'hasChildren',
+						}"
 					>
 						<el-table-column
 							prop="url_name"
@@ -191,7 +198,7 @@
 							label="操作时间"
 						>
 							<template slot-scope="scope"
-								>{{ scope.row.opt_time | settimes }}
+								>{{ scope.row.operation_date | settimes }}
 							</template>
 						</el-table-column>
 						<el-table-column prop="operation_type" label="操作类型">
@@ -202,8 +209,8 @@
 								<span v-else>缓存刷新</span>
 							</template>
 						</el-table-column>
-						<el-table-column prop="operation_status" label="状态">
-							<template slot-scope="scope">
+						<el-table-column prop="state" label="状态">
+							<!-- <template slot-scope="scope">
 								<span v-if="scope.row.state == 0">进行中</span>
 								<span v-else-if="scope.row.state == 1"
 									>完成</span
@@ -214,7 +221,7 @@
 								<span v-else-if="scope.row.state == 3"
 									>失败</span
 								>
-							</template>
+							</template> -->
 						</el-table-column>
 						<el-table-column prop="schedule" label="进度">
 							<template slot-scope="scope">
@@ -228,7 +235,7 @@
 									v-else
 									:percentage="scope.row.progress"
 								></el-progress> -->
-                                <el-progress
+								<el-progress
 									:percentage="scope.row.progress"
 								></el-progress>
 							</template>
@@ -313,7 +320,54 @@ export default {
 					label: '失败',
 				},
 			],
-			tableData: [],
+			tableData: [
+				// {
+				// 	id: 1,
+				// 	url_name: 'http://www.baidu.com',
+				// 	refresh_type: 1,
+				// 	are: '湖北-武汉',
+				// 	buser_id: '6000053',
+				// 	operation_date: 1606233600,
+				// 	state: '成功',
+				// 	progress: 60,
+				// 	error_type: 1,
+				// 	children: [
+				// 		{
+				// 			id: 101,
+				// 			url_name: 'http://www.baidu.com',
+				// 			refresh_type: 2,
+				// 			are: '湖北-武汉',
+				// 			buser_id: '6000053',
+				// 			operation_date: 1610340575,
+				// 			state: '进行中',
+				// 			progress: 60,
+				// 			error_type: 1,
+				// 		},
+				// 		{
+				// 			id: 102,
+				// 			url_name: 'http://www.baidu.com',
+				// 			refresh_type: 1,
+				// 			are: '湖北-武汉',
+				// 			buser_id: '6000053',
+				// 			operation_date: 1611940575,
+				// 			state: '成功',
+				// 			progress: 60,
+				// 			error_type: 1,
+				// 		},
+				// 	],
+				// },
+				// {
+				// 	id: 2,
+				// 	url_name: 'http://www.3600.com',
+				// 	refresh_type: 2,
+				// 	are: '湖南-长沙',
+				// 	buser_id: '6000061',
+				// 	operation_date: 1610949575,
+				// 	state: '失败',
+				// 	progress: 32,
+				// 	error_type: 101,
+				// },
+			],
 			citylist1: [
 				{
 					value: '全部',
@@ -410,6 +464,23 @@ export default {
 		// this.gettoken();
 	},
 	methods: {
+		arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+			if (!row.children) {
+				if (columnIndex === 0) {
+					return [1, 3];
+				} else if (columnIndex === 1) {
+					return [0, 0];
+				}
+			}
+		},
+		//关闭回源
+		closeurl(index, rows) {
+			console.log(index, rows);
+		},
+		//重新回源
+		changeset(index, rows) {
+			console.log(index, rows);
+		},
 		//获去token列表
 		gettoken() {
 			this.tableData = [];
@@ -463,7 +534,7 @@ export default {
 		},
 		//请求数据---预热刷新
 		getrefresh(datas) {
-			let nowtime = (Date.parse(new Date()) / 1000).toFixed(0)-5;
+			let nowtime = (Date.parse(new Date()) / 1000).toFixed(0) - 5;
 			let parmas = new Object();
 			parmas.buser_id = this.chanid + '';
 			if (datas == 0) {
@@ -580,42 +651,41 @@ export default {
 					if (localStorage.getItem('yure_url_name')) {
 						let old_url_name = JSON.parse(
 							localStorage.getItem('yure_url_name')
-					    );
+						);
 						res.data.res_data.forEach((item) => {
 							if (item[1] == true) {
 								let obj = {};
-					            obj.url_name=item[0];
-					            obj.creatte_time = nowtime;
-					            obj.area = parmas.area;
-					            obj.type = parmas.type;
-					            arr.push(obj);
+								obj.url_name = item[0];
+								obj.creatte_time = nowtime;
+								obj.area = parmas.area;
+								obj.type = parmas.type;
+								arr.push(obj);
 							}
-					    });
-					     if(arr.length>0){
-					         arr = old_url_name.concat(arr);
-					         localStorage.setItem(
-					             'yure_url_name',
-					             JSON.stringify(arr)
-					         );
-					    }
+						});
+						if (arr.length > 0) {
+							arr = old_url_name.concat(arr);
+							localStorage.setItem(
+								'yure_url_name',
+								JSON.stringify(arr)
+							);
+						}
 					} else {
 						res.data.res_data.forEach((item) => {
 							if (item[1] == true) {
-					            let obj = {};
-					            obj.url_name=item[0];
-					            obj.creatte_time = nowtime;
-					            obj.area = parmas.area;
-					            obj.type = parmas.type;
-					            arr.push(obj);
-					        }
-					    });
-					    if(arr.length>0){
-					        localStorage.setItem(
-					            'yure_url_name',
-					            JSON.stringify(arr)
-					        );
-
-					    }
+								let obj = {};
+								obj.url_name = item[0];
+								obj.creatte_time = nowtime;
+								obj.area = parmas.area;
+								obj.type = parmas.type;
+								arr.push(obj);
+							}
+						});
+						if (arr.length > 0) {
+							localStorage.setItem(
+								'yure_url_name',
+								JSON.stringify(arr)
+							);
+						}
 					}
 					if (res.status == 0) {
 						if (res.data.failed_count == 0) {

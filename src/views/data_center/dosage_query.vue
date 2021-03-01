@@ -86,9 +86,15 @@
 					align="left"
 					@change="gettimes"
 				></el-date-picker>
-				<!-- <el-button style="margin-left:10px;" type="primary" @click="seachtu"
-          >查询</el-button
-        > -->
+				<el-button
+					style="margin-left:10px;"
+					type="primary"
+					@click="seachtu"
+					>确定</el-button
+				>
+				<el-button style="margin-left:10px;" plain @click="reset"
+					>重置</el-button
+				>
 			</div>
 			<div style="margin-top:20px;">
 				<el-row>
@@ -120,7 +126,11 @@
 								:cell-style="rowClass"
 								:header-cell-style="headClass"
 							>
-								<el-table-column label="时间" prop="time" :formatter="timeFormatter">
+								<el-table-column
+									label="时间"
+									prop="time"
+									:formatter="timeFormatter"
+								>
 									<!-- <template slot-scope="scope">
 										<div>
 											{{ scope.row.time | settimes }}
@@ -162,7 +172,7 @@ import {
 	formatBytes,
 	formatBkb,
 	getymdtime1,
-	splitTimes
+	splitTimes,
 } from '../../servers/sevdate';
 import {
 	query_conditions,
@@ -173,7 +183,7 @@ import {
 	export_manage_dataflow_table_file,
 	manage_dataflow_curve,
 	manage_dataflow_table,
-	get_nodetype_enum
+	get_nodetype_enum,
 } from '../../servers/api';
 export default {
 	data() {
@@ -335,13 +345,17 @@ export default {
 	},
 	methods: {
 		//统计时间段
-		timeFormatter(row, column){
-			if(this.timeUnit == 120){
+		timeFormatter(row, column) {
+			if (this.timeUnit == 120) {
 				let startTime = row.time * 1000;
-				let endTime = (row.time + 2*60*60 -1) * 1000
-				return this.common.getTimes(startTime) + '-' + this.common.getTimes(endTime)
-			}else{
-				return this.common.getTimess(row.time * 1000)
+				let endTime = (row.time + 2 * 60 * 60 - 1) * 1000;
+				return (
+					this.common.getTimes(startTime) +
+					'-' +
+					this.common.getTimes(endTime)
+				);
+			} else {
+				return this.common.getTimess(row.time * 1000);
 			}
 		},
 		//设置时间粒度
@@ -364,22 +378,22 @@ export default {
 			// this.getuserlist();
 		},
 		//获取节点渠道
-		getNodeType(){
-			let param = {}
-			get_nodetype_enum(param).then(
-				(res) => {
-					let data = res && res.data && res.data.firstchan || [];
-					let list = data.map((item)=>{
+		getNodeType() {
+			let param = {};
+			get_nodetype_enum(param)
+				.then((res) => {
+					let data = (res && res.data && res.data.firstchan) || [];
+					let list = data.map((item) => {
 						let obj = {};
 						obj.label = item.name;
 						obj.value = item.value;
-						return obj
-					})
+						return obj;
+					});
 					this.hashidSets = list;
 				})
-				.catch((err)=>{
-					console.log(err)
-				})
+				.catch((err) => {
+					console.log(err);
+				});
 		},
 		//请求数据--柱形图
 		gettu() {
@@ -390,8 +404,8 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-            params.channelId = arr;
-            // params.channelId = [];
+			params.channelId = arr;
+			// params.channelId = [];
 			if (this.urlname) {
 				params.domain = this.urlname;
 			} else {
@@ -404,7 +418,7 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.ipfsChannel = "*";
+				params.ipfsChannel = '*';
 			} else {
 				params.ipfsChannel = this.acc;
 			}
@@ -417,9 +431,7 @@ export default {
 							this.dataL = 0;
 							this.allunitdata = 'B';
 						} else {
-							this.allunitdata = formatBytes(
-								res.data.total
-							);
+							this.allunitdata = formatBytes(res.data.total);
 							this.dataL = formatBkb(
 								res.data.total,
 								this.allunitdata
@@ -432,24 +444,33 @@ export default {
 							let maxnum = _.max(res.data.data[0].dataflowArray);
 							this.unitdata = formatBytes(maxnum);
 						}
-						if(res.data.data[0].dataflowArray.length == 0){
-							let arr = splitTimes(this.starttime, this.endtime, this.timeUnit);							
+						if (res.data.data[0].dataflowArray.length == 0) {
+							let arr = splitTimes(
+								this.starttime,
+								this.endtime,
+								this.timeUnit
+							);
 							arr.forEach((item, index) => {
 								this.timeArray.push(getymdtime1(item));
 							});
 							this.dataFlowArray = _.fill(Array(arr.length), 0);
-						}else{
-							res.data.data[0].dataflowArray.forEach((item, index) => {
-								this.dataFlowArray.push(
-									formatBkb(item, this.unitdata)
-								);
-							});
-							this.dataFlownum = res.data.data[0].dataflowArray.length - 1;
-							res.data.data[0].timeArray.forEach((item, index) => {
-								this.timeArray.push(getymdtime1(item));
-							});
+						} else {
+							res.data.data[0].dataflowArray.forEach(
+								(item, index) => {
+									this.dataFlowArray.push(
+										formatBkb(item, this.unitdata)
+									);
+								}
+							);
+							this.dataFlownum =
+								res.data.data[0].dataflowArray.length - 1;
+							res.data.data[0].timeArray.forEach(
+								(item, index) => {
+									this.timeArray.push(getymdtime1(item));
+								}
+							);
 						}
-						
+
 						this.getdtable();
 						this.drawLine();
 					} else {
@@ -466,8 +487,8 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-            params.channelId = arr;
-            //  params.channelId = [];
+			params.channelId = arr;
+			//  params.channelId = [];
 			if (this.urlname) {
 				params.domain = this.urlname;
 			} else {
@@ -480,7 +501,7 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.ipfsChannel = "*";
+				params.ipfsChannel = '*';
 			} else {
 				params.ipfsChannel = this.acc;
 			}
@@ -498,7 +519,7 @@ export default {
 			let params = new Object();
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
-			params.channelId = this.chanid + ",";
+			params.channelId = this.chanid + ',';
 			if (this.mvitem) {
 				params.domain = this.mvitem;
 			} else {
@@ -511,7 +532,7 @@ export default {
 			}
 			params.timeUnit = this.timeUnit;
 			if (this.acc == '') {
-				params.ipfsChannel = "*";
+				params.ipfsChannel = '*';
 			} else {
 				params.ipfsChannel = this.acc;
 			}
@@ -596,7 +617,7 @@ export default {
 				this.endtime = Date.parse(new Date()) / 1000 - 1;
 			} else {
 				this.starttime = dateToMs(this.value2[0]);
-				this.endtime = dateToMs(this.value2[1]) + (24*60*60-1);
+				this.endtime = dateToMs(this.value2[0]) + (24 * 60 * 60 - 1);
 				this.settimeunit(this.starttime, this.endtime);
 			}
 
@@ -609,6 +630,15 @@ export default {
 		//查询按钮
 		seachtu() {
 			this.gettu();
+		},
+		//重置
+		reset() {
+			this.urlname = '';
+			this.mvitem = '';
+			this.acc = '';
+			this.value2 = '';
+			this.radio1 = 1;
+			this.sele_time();
 		},
 		// 表头样式设置
 		headClass() {
@@ -626,6 +656,7 @@ export default {
 			let myChart = this.$echarts.init(
 				document.getElementById('myChart')
 			);
+			myChart.off('click');
 			window.onresize = myChart.resize;
 			// 绘制图表
 			let options = {
@@ -771,7 +802,23 @@ export default {
 				],
 				backgroundColor: '#FFFFFF',
 			};
+			myChart.clear();
 			myChart.setOption(options);
+			myChart.on('click', function(params) {
+				// myChart.off('click');
+				// 如果不加off事件，就会叠加触发
+				let happynewyear = new Date().getFullYear();
+				let shold_time = params.name.split(' ')[0];
+				let happynewmonth = Number(shold_time.split('-')[0]) - 1;
+				let happynewday = Number(shold_time.split('-')[1]);
+				_this.showdate = true;
+				_this.value2 = [
+					new Date(happynewyear, happynewmonth, happynewday, 0, 0),
+					new Date(happynewyear, happynewmonth, happynewday, 23, 59),
+				];
+
+				_this.gettimes(0);
+			});
 		},
 	},
 };

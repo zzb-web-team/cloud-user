@@ -10,8 +10,8 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
 } else if (href.indexOf('zzb.stguarantee.com') >= 0) {
     var userUrl = 'http://zzb.stguarantee.com'; //PHP服务URL
 } else {
-    var userUrl = 'http://zzb.stguarantee.com';
-    // var userUrl = 'http://service.kclgames.com'; 
+    // var userUrl = 'http://zzb.stguarantee.com';
+    var userUrl = 'http://service.kclgames.com';
     // var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
 }
 

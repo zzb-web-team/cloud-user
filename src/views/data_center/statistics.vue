@@ -7,8 +7,11 @@
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="PV/UV" name="first">
 						<div
-							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
+                        <div style="display: flex;align-items: center;flex-flow: row;">
+
+                       
 							<el-input
 								placeholder="请输入域名"
 								v-model="valueDomain"
@@ -113,6 +116,14 @@
 								@click="reset"
 								>重置</el-button
 							>
+                            </div>
+                            <div style="display:flex;white-space:nowrap;">
+							<span style="margin-right:5px;">使用缓存</span>
+							<el-switch
+								v-model="useCache"
+								active-color="#409EFF"
+							></el-switch>
+						</div>
 						</div>
 
 						<div class="user_item">
@@ -139,8 +150,9 @@
 
 					<el-tab-pane label="访问用户分布" name="second">
 						<div
-							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 						>
+                        <div style="display: flex;align-items: center;flex-flow: row;">
 							<el-input
 								placeholder="请输入域名"
 								v-model="valueDomain1"
@@ -240,6 +252,16 @@
 								@click="reset_map"
 								>重置</el-button
 							>
+                            
+
+                            </div>
+                             <div style="display:flex;white-space:nowrap;">
+							<span style="margin-right:5px;">使用缓存</span>
+							<el-switch
+								v-model="useCache"
+								active-color="#409EFF"
+							></el-switch>
+						</div>
 						</div>
 						<div class="device_form" style>
 							<el-radio-group
@@ -643,7 +665,8 @@ export default {
 			datatype: 1,
 			twob: false,
 			minDate: '',
-			maxDate: '',
+            maxDate: '',
+            useCache:true,
 			pickerOptions: {
 				onPick: ({ maxDate, minDate }) => {
 					this.minDate = minDate;
@@ -994,7 +1017,8 @@ export default {
 		},
 		//请求数据--曲线图
 		getcure(data) {
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1189,7 +1213,8 @@ export default {
 		//请求数据--表格
 		gettable() {
 			this.tablecdn2 = [];
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
@@ -1241,7 +1266,8 @@ export default {
 		// },
 		//导出pupv
 		exoprtant_pupv() {
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1280,7 +1306,8 @@ export default {
 		},
 		//导出用户分布
 		exoprtant_topregion() {
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1321,7 +1348,8 @@ export default {
 		},
 		//导出运营商
 		exoprtant_topisp() {
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1361,7 +1389,8 @@ export default {
 		},
 		//导出热门加速类容
 		exoprtant_playtimes() {
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
@@ -1638,6 +1667,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
+            this.useCache = true;
 			this.timeUnit = 5;
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.radio1 = '1';

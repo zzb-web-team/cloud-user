@@ -6,8 +6,9 @@
 			style="display: flex;flex-flow: column;margin: auto;margin-left:45px;margin-right:45px;"
 		>
 			<div
-				style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
+				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
 			>
+            <div style="display: flex;align-items: center;flex-flow: row;">
 				<el-input
 					placeholder="请输入域名"
 					v-model="urlname"
@@ -95,6 +96,14 @@
 				<el-button style="margin-left:10px;" plain @click="reset"
 					>重置</el-button
 				>
+                </div>
+                  <div style="display:flex;white-space:nowrap;">
+						<span style="margin-right:5px;">使用缓存</span>
+						<el-switch
+							v-model="useCache"
+							active-color="#409EFF"
+						></el-switch>
+				</div>
 			</div>
 			<div style="margin-top:20px;">
 				<el-row>
@@ -206,7 +215,8 @@ export default {
 			urlname: '',
 			dataL: 0,
 			minDate: '',
-			maxDate: '',
+            maxDate: '',
+            useCache:true,
 			pickerOptions: {
 				onPick: ({ maxDate, minDate }) => {
 					this.minDate = minDate;
@@ -401,7 +411,8 @@ export default {
 			this.timeArray = [];
 			let arr = [];
 			arr.push(this.chanid + '');
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
 			params.channelId = arr;
@@ -484,7 +495,8 @@ export default {
 			this.tablecdn = [];
 			let arr = [];
 			arr.push(this.chanid + '');
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
 			params.channelId = arr;

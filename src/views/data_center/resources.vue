@@ -5,117 +5,141 @@
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<div
-						style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
 					>
-						<el-input
-							v-show="activeName != 'third'"
-							placeholder="请输入域名"
-							v-model="value_url"
-							class="input-with-select"
-							maxlength="70"
-							@keyup.enter.native="getdata"
-							style="width:10%;margin-right:10px;"
+						<div
+							style="display: flex;align-items: center;flex-flow: row;"
 						>
-							<i
-								slot="prefix"
-								class="el-input__icon el-icon-search"
-								@click="getdata()"
-							></i>
-						</el-input>
-						<el-input
-							v-show="activeName != 'third'"
-							placeholder="请输入加速内容名称"
-							v-model="value1"
-							class="input-with-select"
-							maxlength="70"
-							@keyup.enter.native="getdata"
-							style="width:10%;margin-right:10px;"
-						>
-							<i
-								slot="prefix"
-								class="el-input__icon el-icon-search"
-								@click="getdata()"
-							></i>
-						</el-input>
-						<el-select
-							v-show="activeName == 'first'"
-							v-model="terminalName"
-							placeholder="终端类型"
-							style="width: 10%;margin-right: 10px;"
-							@change="getdata()"
-						>
-							<el-option label="全部" value="-1"></el-option>
-							<el-option label="android" value="0"></el-option>
-							<el-option label="ios" value="1"></el-option>
-							<el-option label="其他" value="2"></el-option>
-						</el-select>
-						<el-select
-							v-show="activeName != 'third'"
-							v-model="valueChanel"
-							placeholder="节点渠道"
-							style="width: 10%;margin-right: 10px;"
-							@change="getdata()"
-						>
-							<el-option label="全部" value="*"></el-option>
-							<el-option
-								v-for="(item, index) in hashidSets"
-								:key="index"
-								:label="item.label"
-								:value="item.value"
-							></el-option>
-						</el-select>
-						<!-- <span style="margin-right:10px;margin-left:15px;"
+							<el-input
+								v-show="activeName != 'third'"
+								placeholder="请输入域名"
+								v-model="value_url"
+								class="input-with-select"
+								maxlength="70"
+								@keyup.enter.native="getdata"
+								style="width:10%;margin-right:10px;"
+							>
+								<i
+									slot="prefix"
+									class="el-input__icon el-icon-search"
+									@click="getdata()"
+								></i>
+							</el-input>
+							<el-input
+								v-show="activeName != 'third'"
+								placeholder="请输入加速内容名称"
+								v-model="value1"
+								class="input-with-select"
+								maxlength="70"
+								@keyup.enter.native="getdata"
+								style="width:10%;margin-right:10px;"
+							>
+								<i
+									slot="prefix"
+									class="el-input__icon el-icon-search"
+									@click="getdata()"
+								></i>
+							</el-input>
+							<el-select
+								v-show="activeName == 'first'"
+								v-model="terminalName"
+								placeholder="终端类型"
+								style="width: 10%;margin-right: 10px;"
+								@change="getdata()"
+							>
+								<el-option label="全部" value="-1"></el-option>
+								<el-option
+									label="android"
+									value="0"
+								></el-option>
+								<el-option label="ios" value="1"></el-option>
+								<el-option label="其他" value="2"></el-option>
+							</el-select>
+							<el-select
+								v-show="activeName != 'third'"
+								v-model="valueChanel"
+								placeholder="节点渠道"
+								style="width: 10%;margin-right: 10px;"
+								@change="getdata()"
+							>
+								<el-option label="全部" value="*"></el-option>
+								<el-option
+									v-for="(item, index) in hashidSets"
+									:key="index"
+									:label="item.label"
+									:value="item.value"
+								></el-option>
+							</el-select>
+							<!-- <span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
 						> -->
-						<el-radio-group
-							v-model="radio1"
-							size="medium"
-							@change="sele_time()"
-							v-show="!shoudzyx"
-						>
-							<el-radio-button label="1">今天</el-radio-button>
-							<el-radio-button label="2">昨天</el-radio-button>
-							<el-radio-button label="3">近7天</el-radio-button>
-							<el-radio-button label="4">近30天</el-radio-button>
-							<el-radio-button label="5">自定义</el-radio-button>
-						</el-radio-group>
-						<el-button
-							type="primary"
-							v-show="shoudzyx"
-							style="background:#409EFF;border:#409EFF"
-							@click="setshoudzyx"
-							>自定义</el-button
-						>
-						<el-date-picker
-							v-show="shoudzyx"
-							style="margin-left:10px;"
-							v-model="val2"
-							:type="
-								activeName == 'first'
-									? 'daterange'
-									: 'datetimerange'
-							"
-							:picker-options="pickerOptions"
-							range-separator="至"
-							start-placeholder="开始日期"
-							end-placeholder="结束日期"
-							align="left"
-							@change="gettimes"
-						></el-date-picker>
-						<el-button
-							style="margin-left:10px;"
-							type="primary"
-							@click="getdata()"
-                            v-show="activeName != 'third'"
-							>确定</el-button
-						>
-						<el-button
-							style="margin-left:10px;"
-							plain
-							@click="reset()"
-                            v-show="activeName != 'third'"
-							>重置</el-button
-						>
+							<el-radio-group
+								v-model="radio1"
+								size="medium"
+								@change="sele_time()"
+								v-show="!shoudzyx"
+							>
+								<el-radio-button label="1"
+									>今天</el-radio-button
+								>
+								<el-radio-button label="2"
+									>昨天</el-radio-button
+								>
+								<el-radio-button label="3"
+									>近7天</el-radio-button
+								>
+								<el-radio-button label="4"
+									>近30天</el-radio-button
+								>
+								<el-radio-button label="5"
+									>自定义</el-radio-button
+								>
+							</el-radio-group>
+							<el-button
+								type="primary"
+								v-show="shoudzyx"
+								style="background:#409EFF;border:#409EFF"
+								@click="setshoudzyx"
+								>自定义</el-button
+							>
+							<el-date-picker
+								v-show="shoudzyx"
+								style="margin-left:10px;"
+								v-model="val2"
+								:type="
+									activeName == 'first'
+										? 'daterange'
+										: 'datetimerange'
+								"
+								:picker-options="pickerOptions"
+								range-separator="至"
+								start-placeholder="开始日期"
+								end-placeholder="结束日期"
+								align="left"
+								@change="gettimes"
+							></el-date-picker>
+							<el-button
+								style="margin-left:10px;"
+								type="primary"
+								@click="getdata()"
+								v-show="activeName != 'third'"
+								>确定</el-button
+							>
+							<el-button
+								style="margin-left:10px;"
+								plain
+								@click="reset()"
+								v-show="activeName != 'third'"
+								>重置</el-button
+							>
+						</div>
+						<div style="display:flex;white-space:nowrap;">
+							<span style="margin-right:5px;">使用缓存</span>
+							<el-switch
+								v-model="useCache"
+								active-color="#409EFF"
+							></el-switch>
+						</div>
 					</div>
 					<el-tab-pane label="播放流量占比" name="first">
 						<el-row class="resources_percentage">
@@ -544,6 +568,7 @@ export default {
 			locationCurveList: [],
 			locationMax: '',
 			locationTableList: [],
+			useCache: true,
 		};
 	},
 	filters: {
@@ -752,7 +777,8 @@ export default {
 		//流量占比图表
 		getflow3() {
 			this.zhanbitimearray = [];
-			let parmas = new Object();
+            let parmas = new Object();
+            parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
@@ -871,7 +897,8 @@ export default {
 		},
 		//流量占比表格
 		gettable3() {
-			let parmas = new Object();
+            let parmas = new Object();
+            parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			parmas.pageNo = this.flowcurrentPage - 1;
 			parmas.pageSize = this.flowpagesize;
@@ -916,7 +943,8 @@ export default {
 		//流量监控图表
 		getflow4() {
 			this.flow4_time = [];
-			let parmas = new Object();
+            let parmas = new Object();
+             parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			if (this.value_url == '') {
 				parmas.domain = '*';
@@ -1013,7 +1041,8 @@ export default {
 		},
 		//播放流量分布图
 		queryDataFlowLocation() {
-			let params = new Object();
+            let params = new Object();
+             params.useCache = this.useCache == true ? 1 : 0;
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
 			params.channelId = this.chanid;
@@ -1056,7 +1085,8 @@ export default {
 				});
 		},
 		export_tab3() {
-			let parmas = new Object();
+            let parmas = new Object();
+             parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
@@ -1097,7 +1127,8 @@ export default {
 				.catch((error) => {});
 		},
 		export_tab4() {
-			let parmas = new Object();
+            let parmas = new Object();
+             parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			if (this.value1 == '') {
 				parmas.urlName = '*';
@@ -1271,6 +1302,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
+            this.useCache = true;
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;

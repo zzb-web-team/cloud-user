@@ -1,10 +1,23 @@
 <template>
 	<div class="myownStyle">
 		<el-row class="container">
-			<el-col :span="24" class="header">
-				<!-- <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
-          <div style="fontSize:20px;color:#000">云点播管理平台</div>
-        </el-col>-->
+			<el-col class="header">
+				<el-col
+					class="logo"
+					:class="collapsed ? 'logo-collapse-width' : 'logo-width'"
+				>
+					<div style="fontSize:20px;color:#ffffff">点播控制台</div>
+				</el-col>
+				<el-col :span="4">
+					<el-radio-group
+						v-model="menu_type"
+						class="my_radio"
+						@change="change_tab"
+					>
+						<el-radio-button label="管理中心"></el-radio-button>
+						<el-radio-button label="数据中心"></el-radio-button>
+					</el-radio-group>
+				</el-col>
 				<el-col :span="4" class="userinfo">
 					<el-dropdown trigger="hover">
 						<span class="el-dropdown-link userinfo-inner">
@@ -25,11 +38,11 @@
 			</el-col>
 			<el-col :span="24" class="main">
 				<aside :class="collapsed ? 'menu-collapsed' : 'menu-expanded'">
-					<div
+					<!-- <div
 						style="color: #333;font-size: 20px;background: #fff;height: 60px;line-height: 60px;position: relative;z-index: 1;"
 					>
 						点播控制台
-					</div>
+					</div> -->
 					<el-menu
 						:default-active="$route.path"
 						class="el-menu-vertical-demo"
@@ -40,10 +53,10 @@
 						router
 					>
 						<!-- 一级菜单 -->
-						<template
-							v-for="item in $router.options.routes"
-							v-if="!item.hidden"
-						>
+						<template v-for="item in menu_list" v-if="!item.hidden">
+							<p v-if="item.meta" class="menu_item_title">
+								{{ item.meta.title }}
+							</p>
 							<el-submenu
 								v-if="item.children && item.children.length"
 								:index="item.path"
@@ -55,7 +68,7 @@
 										:class="item.icon"
 										style="margin-right: 10px;margin-left: 10px;"
 									></i>
-                                   
+
 									<span>{{ item.name }}</span>
 								</template>
 
@@ -104,7 +117,7 @@
 									>
 										<i :class="itemChild.icon"></i>
 										<el-badge
-											:is-dot=false
+											:is-dot="false"
 											class="item"
 											v-show="
 												itemChild.name == '刷新预热'
@@ -126,23 +139,17 @@
 								v-else
 								:index="item.path"
 								:key="item.path"
-								style="text-align: left;padding-left: 70px;"
 								class="fist_el_meau"
-								v-bind:class="{
-									active: item.bgc == true,
-									textdanger: item.bgc == false,
-									onle: item.bsgc == true,
-								}"
 							>
 								<i
 									v-if="item.icon"
 									:class="item.icon"
 									style="margin-right: 10px;margin-left: 5px;"
 								></i>
-								<el-badge :is-dot=false class="item" v-if="item.path=='/terminal_management'">{{ item.name }}</el-badge>
-								<span slot="title" v-else>{{ item.name }}</span>
+								<span slot="title">{{ item.name }}</span>
 							</el-menu-item>
 						</template>
+						<p class="last_boder"></p>
 					</el-menu>
 				</aside>
 				<section class="content-container">
@@ -165,6 +172,7 @@ export default {
 	data() {
 		return {
 			sysName: '云点播',
+			menu_type: '管理中心',
 			collapsed: false,
 			sysUserName: '',
 			sysUserAvatar: '',
@@ -184,9 +192,34 @@ export default {
 			yu_success: '',
 			shua_error: '',
 			shua_success: '',
+			manage_list: [],
+			data_list: [],
+			menu_list: [],
 		};
 	},
 	mounted() {
+		if (localStorage.getItem('menu_type')) {
+			this.menu_type = localStorage.getItem('menu_type');
+		}
+		let _this = this;
+		this.manage_list = this.$router.options.routes.filter(function(elem) {
+			if (elem.name == '节点流量统计' && elem.hidden != true) {
+				elem.meta = { title: '数据中心' };
+				_this.data_list.push(elem);
+			} else if (elem.name == '播放统计' && elem.hidden != true) {
+				_this.data_list.push(elem);
+			}
+
+			if (
+				elem.hidden != true &&
+				elem.name != '节点流量统计' &&
+				elem.name != '播放统计'
+			) {
+				return elem;
+			}
+		});
+		console.log(_this.data_list);
+		this.change_tab();
 		if (this.$cookies.get('user')) {
 			var user = this.$cookies.get('user');
 			sessionStorage.setItem(
@@ -207,6 +240,14 @@ export default {
 		}
 	},
 	methods: {
+		change_tab() {
+			if (this.menu_type == '管理中心') {
+				this.menu_list = this.manage_list;
+			} else {
+				this.menu_list = this.data_list;
+			}
+			localStorage.setItem('menu_type', this.menu_type);
+		},
 		tanchuan() {
 			var _this = this;
 			setInterval(() => {
@@ -245,8 +286,8 @@ export default {
 							this.yu_error = '';
 							this.yu_success = '';
 							this.shua_error = '';
-                            this.shua_success = '';
-                            console.log(this.processing_arr);
+							this.shua_success = '';
+							console.log(this.processing_arr);
 							this.processing_arr.forEach((item, index) => {
 								if (item.state == 1) {
 									arr.push(item);
@@ -284,9 +325,9 @@ export default {
                                     ${this.shua_success}刷新成功
                                     `,
 									type: 'success',
-                                });   
-							this.yu_success = '';
-							this.shua_success = '';
+								});
+								this.yu_success = '';
+								this.shua_success = '';
 							} else if (
 								this.yu_success != '' &&
 								this.shua_success == ''
@@ -301,8 +342,8 @@ export default {
                                     ${this.yu_success}预热成功
                                     `,
 									type: 'success',
-                                });
-                                this.yu_success='';
+								});
+								this.yu_success = '';
 							} else if (
 								this.yu_success == '' &&
 								this.shua_success != ''
@@ -317,10 +358,9 @@ export default {
                                     ${this.shua_success}刷新成功
                                     `,
 									type: 'success',
-                                });
-                                this.shua_success='';
-                            }
-                            
+								});
+								this.shua_success = '';
+							}
 
 							if (this.yu_error != '' && this.shua_error != '') {
 								this.yu_error = this.yu_error.slice(
@@ -338,9 +378,9 @@ export default {
                                      ${this.shua_error}刷新失败
                                     `,
 									type: 'warning',
-                                });
-                                this.yu_error='';
-                                this.shua_error='';
+								});
+								this.yu_error = '';
+								this.shua_error = '';
 							} else if (
 								this.yu_error != '' &&
 								this.shua_error == ''
@@ -355,8 +395,8 @@ export default {
                                      ${this.yu_error}预热失败
                                     `,
 									type: 'warning',
-                                });
-                                this.yu_error='';
+								});
+								this.yu_error = '';
 							} else if (
 								this.yu_error == '' &&
 								this.shua_error != ''
@@ -371,12 +411,12 @@ export default {
                                      ${this.shua_error}刷新失败
                                     `,
 									type: 'warning',
-                                });
-                                this.shua_error='';
+								});
+								this.shua_error = '';
 							}
 							if (arr.length > 0) {
 								this.testing(arr, url_name);
-                            }
+							}
 							return false;
 						} else {
 							page++;
@@ -421,6 +461,7 @@ export default {
 					sessionStorage.removeItem('user');
 					sessionStorage.removeItem('id');
 					sessionStorage.removeItem('token');
+					localStorage.removeItem('menu_type');
 					_this.$cookies.set('user', '', 0);
 					_this.$cookies.set('id', '', 0);
 					_this.$cookies.set('token', '', 0);
@@ -477,7 +518,7 @@ export default {
 			}
 		}
 		.logo {
-			//width:230px;
+			width: 200px;
 			height: 60px;
 			font-size: 22px;
 			padding-left: 20px;
@@ -485,7 +526,8 @@ export default {
 			border-color: #eef1924d;
 			border-right-width: 1px;
 			border-right-style: solid;
-			background: #ffffff;
+			background: #297aff;
+			color: #fff;
 			img {
 				width: auto;
 				float: left;
@@ -496,7 +538,8 @@ export default {
 			}
 		}
 		.logo-width {
-			width: 230px;
+			width: 200px;
+			color: #fff;
 		}
 		.logo-collapse-width {
 			width: 60px;
@@ -525,7 +568,8 @@ export default {
 			.el-menu {
 				height: 100%;
 				text-align: center;
-				box-shadow: 2px 0px 7px 0px rgba(38, 101, 160, 0.08);
+				background: #f5f5f5;
+				// box-shadow: 2px 0px 7px 0px rgba(38, 101, 160, 0.08);
 			}
 			.collapsed {
 				width: 60px;
@@ -547,8 +591,8 @@ export default {
 			width: 60px;
 		}
 		.menu-expanded {
-			flex: 0 0 280px;
-			width: 280px;
+			flex: 0 0 200px;
+			width: 200px;
 			//margin-top: -60px;
 		}
 		.content-container {
@@ -583,29 +627,51 @@ export default {
 				// color: #ffffff;
 			}
 		}
+		.menu_item_title {
+			display: inline-block;
+			width: 100%;
+			font-size: 14px;
+			font-weight: bold;
+			margin: 10px 0;
+			padding-top: 15px;
+			text-align: left;
+			box-sizing: border-box;
+			padding-left: 40px;
+			position: relative;
+		}
+		.menu_item_title::before {
+			content: ''; /*CSS伪类用法*/
+			position: absolute; /*定位背景横线的位置*/
+			width: 65%; /*宽和高做出来的背景横线*/
+			height: 0.5px;
+			background: #afafaf;
+			top: 0px;
+			z-index: 1;
+		}
+		.menu_item_title:first-child::before {
+			content: ''; /*CSS伪类用法*/
+			position: absolute; /*定位背景横线的位置*/
+			width: 0; /*宽和高做出来的背景横线*/
+			height: 0;
+			background: #f5f5f5;
+			top: 0;
+			z-index: -1;
+		}
+		.last_boder {
+			position: relative;
+			&:after {
+				content: ''; /*CSS伪类用法*/
+				position: absolute; /*定位背景横线的位置*/
+				width: 65%; /*宽和高做出来的背景横线*/
+				height: 0.5px;
+				background: #afafaf;
+				top: 10px;
+				left: 40px;
+				z-index: 1;
+			}
+		}
 	}
 }
-.active {
-	background: #297aff;
-	pointer-events: none;
-}
-.textdanger {
-	background: #ffffff;
-	color: #333333;
-	pointer-events: none; //不可点击
-	text-align: left;
-	height: 64px;
-	line-height: 64px;
-	span {
-		font-size: 18px;
-	}
-}
-.onle {
-	span {
-		font-size: 18px;
-	}
-}
-
 el-submenu {
 	text-align: center;
 }

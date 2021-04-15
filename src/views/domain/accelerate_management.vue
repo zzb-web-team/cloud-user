@@ -1,13 +1,14 @@
 <template>
 	<div class="content accelerate_ma">
 		<!-- title -->
-		<div class="top_title">域名管理</div>
+		
 		<div
 			style="margin: auto;margin-left: 45px;margin-right: 45px;"
 			class="acceleerate_con"
 		>
 			<!-- 搜索栏 -->
 			<div class="seach">
+                <div class="top_title">域名管理</div>
 				<div class="seach_top">
 					<el-input
 						placeholder="请输入源站域名"

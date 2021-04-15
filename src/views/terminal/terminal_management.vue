@@ -597,4 +597,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.top_title {
+		margin: 45px 45px 0 45px;
+		background-color: #fff;
+		padding-left: 45px;
+		box-shadow: 0px 1px 6px 0px rgba(51, 51, 51, 0.16);
+	}
+</style>

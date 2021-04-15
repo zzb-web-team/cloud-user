@@ -1,6 +1,6 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">播放流量</div>
+		<div class="top_title update_width">播放流量</div>
 		<div class="user-title" style="display: flex;flex-flow: column;">
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">

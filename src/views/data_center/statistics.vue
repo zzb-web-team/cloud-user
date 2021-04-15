@@ -1,8 +1,8 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">统计分析</div>
 		<!-- <div class="user-title" style="display: flex;flex-flow: column;width: 1240px;margin: auto;"> -->
 		<div class="user-title">
+		<div class="top_title update_width">统计分析</div>
 			<div class="statisics_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="PV/UV" name="first">

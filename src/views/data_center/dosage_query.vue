@@ -1,108 +1,108 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">节点流量用量</div>
+			<div class="top_title update_width">节点流量用量</div>
 		<div
 			class="user-title"
 			style="display: flex;flex-flow: column;margin: auto;margin-left:45px;margin-right:45px;"
 		>
 			<div
-				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 0px 7px 0px rgba(41,108,171,0.1);border-radius:6px;"
+				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 4px 7px 0px rgba(41,108,171,0.1);"
 			>
-            <div style="display: flex;align-items: center;flex-flow: row;">
-				<el-input
-					placeholder="请输入域名"
-					v-model="urlname"
-					class="input-with-select"
-					maxlength="70"
-					@keyup.enter.native="changmvitem"
-					style="width:15%;margin-right:10px;"
-				>
-					<i
-						slot="prefix"
-						class="el-input__icon el-icon-search"
-						@click="changmvitem()"
-					></i>
-				</el-input>
-				<el-input
-					placeholder="请输入加速内容名称"
-					v-model="mvitem"
-					class="input-with-select"
-					maxlength="70"
-					@keyup.enter.native="changmvitem"
-					style="width:15%;margin-right:10px;"
-				>
-					<i
-						slot="prefix"
-						class="el-input__icon el-icon-search"
-						@click="changmvitem()"
-					></i>
-				</el-input>
-				<!-- <span style="margin-right:10px;margin-left:15px;"
+				<div style="display: flex;align-items: center;flex-flow: row;">
+					<el-input
+						placeholder="请输入域名"
+						v-model="urlname"
+						class="input-with-select"
+						maxlength="70"
+						@keyup.enter.native="changmvitem"
+						style="width:15%;margin-right:10px;"
+					>
+						<i
+							slot="prefix"
+							class="el-input__icon el-icon-search"
+							@click="changmvitem()"
+						></i>
+					</el-input>
+					<el-input
+						placeholder="请输入加速内容名称"
+						v-model="mvitem"
+						class="input-with-select"
+						maxlength="70"
+						@keyup.enter.native="changmvitem"
+						style="width:15%;margin-right:10px;"
+					>
+						<i
+							slot="prefix"
+							class="el-input__icon el-icon-search"
+							@click="changmvitem()"
+						></i>
+					</el-input>
+					<!-- <span style="margin-right:10px;margin-left:15px;"
 					>终端类型:</span
 				> -->
-				<el-select
-					v-model="acc"
-					placeholder="节点渠道"
-					style="margin-right: 10px;"
-					@change="changmvitem"
-				>
-					<el-option label="全部" value="*"></el-option>
-					<el-option
-						v-for="(item, index) in hashidSets"
-						:key="index"
-						:label="item.label"
-						:value="item.value"
-					></el-option>
-				</el-select>
-				<!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
-				<!-- <el-button-group>
+					<el-select
+						v-model="acc"
+						placeholder="节点渠道"
+						style="margin-right: 10px;"
+						@change="changmvitem"
+					>
+						<el-option label="全部" value="*"></el-option>
+						<el-option
+							v-for="(item, index) in hashidSets"
+							:key="index"
+							:label="item.label"
+							:value="item.value"
+						></el-option>
+					</el-select>
+					<!-- <span style="margin-right:10px;margin-left:15px;">日期:</span> -->
+					<!-- <el-button-group>
 					<el-button @click="today()">今天</el-button>
 					<el-button @click="yesterday()">昨天</el-button>
 					<el-button @click="sevendat()">近7天</el-button>
 					<el-button @click="thirtyday()">近30天</el-button>
 					<el-button @click="showzi()">自定义</el-button>
 				</el-button-group> -->
-				<div style="min-width: 385px;">
-					<el-radio-group
-						v-model="radio1"
-						size="medium"
-						@change="sele_time()"
+					<div style="min-width: 385px;">
+						<el-radio-group
+							v-model="radio1"
+							size="medium"
+							@change="sele_time()"
+						>
+							<el-radio-button label="1">今天</el-radio-button>
+							<el-radio-button label="2">昨天</el-radio-button>
+							<el-radio-button label="3">近7天</el-radio-button>
+							<el-radio-button label="4">近30天</el-radio-button>
+							<el-radio-button label="5">自定义</el-radio-button>
+						</el-radio-group>
+					</div>
+					<el-date-picker
+						v-show="showdate"
+						style="margin-left:10px;"
+						v-model="value2"
+						type="daterange"
+						:picker-options="pickerOptions"
+						range-separator="至"
+						start-placeholder="开始日期"
+						end-placeholder="结束日期"
+						align="left"
+						@change="gettimes"
+					></el-date-picker>
+					<el-button
+						style="margin-left:10px;"
+						type="primary"
+						@click="seachtu"
+						>确定</el-button
 					>
-						<el-radio-button label="1">今天</el-radio-button>
-						<el-radio-button label="2">昨天</el-radio-button>
-						<el-radio-button label="3">近7天</el-radio-button>
-						<el-radio-button label="4">近30天</el-radio-button>
-						<el-radio-button label="5">自定义</el-radio-button>
-					</el-radio-group>
+					<el-button style="margin-left:10px;" plain @click="reset"
+						>重置</el-button
+					>
 				</div>
-				<el-date-picker
-					v-show="showdate"
-					style="margin-left:10px;"
-					v-model="value2"
-					type="daterange"
-					:picker-options="pickerOptions"
-					range-separator="至"
-					start-placeholder="开始日期"
-					end-placeholder="结束日期"
-					align="left"
-					@change="gettimes"
-				></el-date-picker>
-				<el-button
-					style="margin-left:10px;"
-					type="primary"
-					@click="seachtu"
-					>确定</el-button
-				>
-				<el-button style="margin-left:10px;" plain @click="reset"
-					>重置</el-button
-				>
-                </div>
-                  <div style="display:flex;white-space:nowrap;">
-						<span style="margin-right:5px;">使用缓存</span>
-						<el-switch
-							v-model="useCache"
-							active-color="#409EFF"
-						></el-switch>
+				<div style="display:flex;white-space:nowrap;">
+					<span style="margin-right:5px;">使用缓存</span>
+					<el-switch
+						v-model="useCache"
+						active-color="#409EFF"
+					></el-switch>
 				</div>
 			</div>
 			<div style="margin-top:20px;">
@@ -215,8 +215,8 @@ export default {
 			urlname: '',
 			dataL: 0,
 			minDate: '',
-            maxDate: '',
-            useCache:true,
+			maxDate: '',
+			useCache: true,
 			pickerOptions: {
 				onPick: ({ maxDate, minDate }) => {
 					this.minDate = minDate;
@@ -411,8 +411,8 @@ export default {
 			this.timeArray = [];
 			let arr = [];
 			arr.push(this.chanid + '');
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
 			params.channelId = arr;
@@ -495,8 +495,8 @@ export default {
 			this.tablecdn = [];
 			let arr = [];
 			arr.push(this.chanid + '');
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
 			params.channelId = arr;
@@ -840,7 +840,6 @@ export default {
 .myself-container {
 	width: 100%;
 	// min-width: 1600px;
-
 	.device_form_query {
 		width: 100%;
 		height: auto;

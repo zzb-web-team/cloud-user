@@ -1,15 +1,21 @@
 <template>
 	<div class="content domin_index">
 		<!-- 面包屑 -->
-		<div class="top_title">点播加速管理</div>
+
 		<div
 			class="user-title"
 			style="margin: auto;display: flex;flex-flow: column;"
 		>
 			<!-- 搜索 -->
+
 			<div class="resources_con">
-				<el-tabs v-model="activeName" style="margin-top:10px;" ref="tabs">
+				<!-- <el-tabs
+					v-model="activeName"
+					style="margin-top:10px;"
+					ref="tabs"
+				> -->
 					<div class="seach">
+						<div class="top_title">点播加速管理</div>
 						<div class="seach_top">
 							<el-input
 								placeholder="加速内容名称"
@@ -64,7 +70,13 @@
 								@change="gettimes"
 								:picker-options="pickerOptions"
 							></el-date-picker>
-							<el-button type="primary" size="mini" @click="seachuser()" style="margin-left: 10px;">确定</el-button>
+							<el-button
+								type="primary"
+								size="mini"
+								@click="seachuser()"
+								style="margin-left: 10px;"
+								>确定</el-button
+							>
 							<el-button
 								plain
 								size="mini"
@@ -75,280 +87,280 @@
 						</div>
 					</div>
 
-					<el-tab-pane label="加速内容管理" name="first">
-						<!-- 第二排按钮 -->
-						<div class="con_lable">
-							<div
-								style="padding:10px 0 18px;display: flex;justify-content: space-between;"
-							>
-								<div>
-									<el-button type="primary" @click="new_btn">
-										<span class="el-icon-plus"></span>
-										创建加速内容
-									</el-button>
-									<el-button
-										type="primary"
-										plain
-										@click="upload_btn"
-										>批量导入加速内容</el-button
-									>
-									<!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
-								</div>
-								<div>
-									<el-button
-										type="primary"
-										@click="exp_table"
-										style="width: 100px;"
-										>导出</el-button
-									>
-								</div>
+					<!-- <el-tab-pane label="加速内容管理" name="first"> -->
+					<!-- 第二排按钮 -->
+					<div class="con_lable">
+						<div
+							style="padding:10px 0 18px;display: flex;justify-content: space-between;"
+						>
+							<div>
+								<el-button type="primary" @click="new_btn">
+									<span class="el-icon-plus"></span>
+									创建加速内容
+								</el-button>
+								<el-button
+									type="primary"
+									plain
+									@click="upload_btn"
+									>批量导入加速内容</el-button
+								>
+								<!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
 							</div>
-							<!-- 主体数据表格 -->
-							<el-table
-								ref="multipleTable"
-								:data="tableData"
-								stripe
-								border
-								row-key="url_name"
-								tooltip-effect="dark"
-								style="width: 100%"
-								:cell-style="rowClass"
-								:header-cell-style="headClass"
-								:default-sort="{
-									prop: 'date',
-									order: 'descending',
-								}"
-								@selection-change="handleSelectionChange"
-								@sort-change="tableSortChange"
+							<div>
+								<el-button
+									type="primary"
+									@click="exp_table"
+									style="width: 100px;"
+									>导出</el-button
+								>
+							</div>
+						</div>
+						<!-- 主体数据表格 -->
+						<el-table
+							ref="multipleTable"
+							:data="tableData"
+							stripe
+							border
+							row-key="url_name"
+							tooltip-effect="dark"
+							style="width: 100%"
+							:cell-style="rowClass"
+							:header-cell-style="headClass"
+							:default-sort="{
+								prop: 'date',
+								order: 'descending',
+							}"
+							@selection-change="handleSelectionChange"
+							@sort-change="tableSortChange"
+						>
 							>
-								>
-								<el-table-column
-									type="selection"
-									width="55"
-								></el-table-column>
-								<el-table-column
-									prop="url_name"
-									label="加速内容名称"
-								></el-table-column>
-								<el-table-column
-									prop="domain"
-									label="源站域名"
-									class-name="firsturl"
-									:show-overflow-tooltip="true"
-								></el-table-column>
+							<el-table-column
+								type="selection"
+								width="55"
+							></el-table-column>
+							<el-table-column
+								prop="url_name"
+								label="加速内容名称"
+							></el-table-column>
+							<el-table-column
+								prop="domain"
+								label="源站域名"
+								class-name="firsturl"
+								:show-overflow-tooltip="true"
+							></el-table-column>
 
-								<el-table-column
-									prop="host_url"
-									label="回源路径"
-								></el-table-column>
-								<el-table-column
-									prop="url"
-									label="播放路径"
-								></el-table-column>
-								<el-table-column
-									prop="state"
-									label="状态"
-									width="120"
-								>
-									<template slot-scope="scope">
-										<span
-											style="color:#0ABF5B;"
-											v-if="scope.row.state == 1"
-											>正常运行</span
-										>
-										<span
-											style="color:#E54545;"
-											v-else-if="scope.row.state == 0"
-											>已停止</span
-										>
-										<span style="color:#E54545;" v-else
-											>回源失败</span
-										>
-									</template>
-								</el-table-column>
+							<el-table-column
+								prop="host_url"
+								label="回源路径"
+							></el-table-column>
+							<el-table-column
+								prop="url"
+								label="播放路径"
+							></el-table-column>
+							<el-table-column
+								prop="state"
+								label="状态"
+								width="120"
+							>
+								<template slot-scope="scope">
+									<span
+										style="color:#0ABF5B;"
+										v-if="scope.row.state == 1"
+										>正常运行</span
+									>
+									<span
+										style="color:#E54545;"
+										v-else-if="scope.row.state == 0"
+										>已停止</span
+									>
+									<span style="color:#E54545;" v-else
+										>回源失败</span
+									>
+								</template>
+							</el-table-column>
 
-								<!-- <el-table-column label="标签" width="50">
+							<!-- <el-table-column label="标签" width="50">
             <template slot-scope="scope">
               <i class="iconfont icon-biaoqian" @click="handleClick(scope.row)"></i>
             </template>
           </el-table-column>-->
-								<el-table-column
-									prop="create_time"
-									sortable="custom"
-									label="创建时间"
+							<el-table-column
+								prop="create_time"
+								sortable="custom"
+								label="创建时间"
+							>
+								<template slot-scope="scope">
+									<span>{{
+										scope.row.create_time | settimes
+									}}</span>
+								</template>
 								>
-									<template slot-scope="scope">
-										<span>{{
-											scope.row.create_time | settimes
-										}}</span>
-									</template>
-									>
-								</el-table-column>
+							</el-table-column>
 
-								<el-table-column label="操作" width="550">
-									<template slot-scope="scope">
-										<el-button
-											@click="handleClick(scope.row)"
-											type="text"
-											size="small"
-											>配置</el-button
-										>
-										<el-button
-											type="text"
-											size="small"
-											@click="updatauser(scope.row)"
-											>复制配置</el-button
-										>
-										<el-button
-											type="text"
-											size="small"
-											@click="pwdwetout(scope.row)"
-											>监控</el-button
-										>
-										<el-button
-											type="text"
-											size="small"
-											@click="disableuser(scope.row)"
-											v-if="scope.row.state == 1"
-											>停用</el-button
-										>
-										<el-button
-											type="text"
-											size="small"
-											@click="enableuser(scope.row)"
-											v-else
-											>启用</el-button
-										>
-										<el-button
-											type="text"
-											size="small"
-											@click="deleateuser(scope.row)"
-											v-if="scope.row.state !== 1"
-											style="color:#666666;"
-											>删除</el-button
-										>
-										<el-button
-											type="text"
-											size="small"
-											disabled
-											v-else
-											style="color:#c5c5c5;"
-											>删除</el-button
-										>
-									</template>
-								</el-table-column>
-							</el-table>
-							<!-- 配置弹窗 -->
-							<el-dialog
-								title="添加用户"
-								:visible.sync="dialog"
-								custom-class="customWidth"
-							>
-								<el-form :model="details">
-									<el-form-item
-										label="使用状态"
-										:label-width="formLabelWidth"
-									>
-										<el-radio
-											v-model="radioes"
-											label="1"
-											:disabled="true"
-											>启用</el-radio
-										>
-										<el-radio
-											v-model="radioes"
-											label="2"
-											:disabled="true"
-											>停用</el-radio
-										>
-									</el-form-item>
-									<el-form-item
-										label="账号"
-										:label-width="formLabelWidth"
-									>
-										<el-input
-											v-model="details.nickname"
-											:disabled="true"
-											placeholder="请输入账号"
-											autocomplete="off"
-										></el-input>
-									</el-form-item>
-									<el-form-item
-										label="真实姓名"
-										:label-width="formLabelWidth"
-									>
-										<el-input
-											v-model="details.username"
-											:disabled="true"
-											placeholder="请输入真实姓名"
-											autocomplete="off"
-										></el-input>
-									</el-form-item>
-									<el-form-item
-										label="联系方式"
-										:label-width="formLabelWidth"
-									>
-										<el-input
-											v-model="details.phone"
-											maxlength="11"
-											:disabled="true"
-											placeholder="请输入有效手机号"
-											autocomplete="off"
-										></el-input>
-									</el-form-item>
-								</el-form>
-								<div slot="footer" class="dialog-footer">
+							<el-table-column label="操作" width="550">
+								<template slot-scope="scope">
 									<el-button
-										type="primary"
-										@click="dialog = false"
-										>确 定</el-button
+										@click="handleClick(scope.row)"
+										type="text"
+										size="small"
+										>配置</el-button
 									>
-								</div>
-							</el-dialog>
-							<!-- 底部按钮 -->
-							<div
-								style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
-							>
-								<div>
 									<el-button
 										type="text"
 										size="small"
-										@click="enableuser()"
-										>启用</el-button
+										@click="updatauser(scope.row)"
+										>复制配置</el-button
 									>
 									<el-button
 										type="text"
-										style="color:#E54545;"
 										size="small"
-										@click="disableuser()"
+										@click="pwdwetout(scope.row)"
+										>监控</el-button
+									>
+									<el-button
+										type="text"
+										size="small"
+										@click="disableuser(scope.row)"
+										v-if="scope.row.state == 1"
 										>停用</el-button
 									>
 									<el-button
 										type="text"
 										size="small"
-										@click="deleateuser()"
+										@click="enableuser(scope.row)"
+										v-else
+										>启用</el-button
+									>
+									<el-button
+										type="text"
+										size="small"
+										@click="deleateuser(scope.row)"
+										v-if="scope.row.state !== 1"
+										style="color:#666666;"
 										>删除</el-button
 									>
-									<!-- <el-button @click="enableuser()" type="success">启用</el-button>
+									<el-button
+										type="text"
+										size="small"
+										disabled
+										v-else
+										style="color:#c5c5c5;"
+										>删除</el-button
+									>
+								</template>
+							</el-table-column>
+						</el-table>
+						<!-- 配置弹窗 -->
+						<el-dialog
+							title="添加用户"
+							:visible.sync="dialog"
+							custom-class="customWidth"
+						>
+							<el-form :model="details">
+								<el-form-item
+									label="使用状态"
+									:label-width="formLabelWidth"
+								>
+									<el-radio
+										v-model="radioes"
+										label="1"
+										:disabled="true"
+										>启用</el-radio
+									>
+									<el-radio
+										v-model="radioes"
+										label="2"
+										:disabled="true"
+										>停用</el-radio
+									>
+								</el-form-item>
+								<el-form-item
+									label="账号"
+									:label-width="formLabelWidth"
+								>
+									<el-input
+										v-model="details.nickname"
+										:disabled="true"
+										placeholder="请输入账号"
+										autocomplete="off"
+									></el-input>
+								</el-form-item>
+								<el-form-item
+									label="真实姓名"
+									:label-width="formLabelWidth"
+								>
+									<el-input
+										v-model="details.username"
+										:disabled="true"
+										placeholder="请输入真实姓名"
+										autocomplete="off"
+									></el-input>
+								</el-form-item>
+								<el-form-item
+									label="联系方式"
+									:label-width="formLabelWidth"
+								>
+									<el-input
+										v-model="details.phone"
+										maxlength="11"
+										:disabled="true"
+										placeholder="请输入有效手机号"
+										autocomplete="off"
+									></el-input>
+								</el-form-item>
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button
+									type="primary"
+									@click="dialog = false"
+									>确 定</el-button
+								>
+							</div>
+						</el-dialog>
+						<!-- 底部按钮 -->
+						<div
+							style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+						>
+							<div>
+								<el-button
+									type="text"
+									size="small"
+									@click="enableuser()"
+									>启用</el-button
+								>
+								<el-button
+									type="text"
+									style="color:#E54545;"
+									size="small"
+									@click="disableuser()"
+									>停用</el-button
+								>
+								<el-button
+									type="text"
+									size="small"
+									@click="deleateuser()"
+									>删除</el-button
+								>
+								<!-- <el-button @click="enableuser()" type="success">启用</el-button>
             <el-button @click="disableuser()" type="warning">禁用</el-button>
             <el-button @click="deleateuser()" type="danger">删除</el-button>-->
-								</div>
-								<fenye
-									style="float:right;margin:10px 0 20px 0;"
-									@fatherMethod="getpage"
-									@fathernum="gettol"
-									:pagesa="total_cnt"
-									:currentPage="currentPage"
-								></fenye>
 							</div>
+							<fenye
+								style="float:right;margin:10px 0 20px 0;"
+								@fatherMethod="getpage"
+								@fathernum="gettol"
+								:pagesa="total_cnt"
+								:currentPage="currentPage"
+							></fenye>
 						</div>
-					</el-tab-pane>
-                            <!-- @expand-change="toggleRowExpansion"
+					</div>
+					<!-- </el-tab-pane> -->
+					<!-- @expand-change="toggleRowExpansion"
 								:tree-props="{
 									children: 'children',
 									hasChildren: 'hasChildren',
 								}" -->
-					<el-tab-pane label="点播回源" name="second">
+					<!-- <el-tab-pane label="点播回源" name="second"> -->
 						<div class="con_lable host_table">
 							<el-table
 								:data="demotableData"
@@ -537,8 +549,8 @@
 								></fenye>
 							</div>
 						</div>
-					</el-tab-pane>
-				</el-tabs>
+					<!-- </el-tab-pane> -->
+				<!-- </el-tabs> -->
 			</div>
 		</div>
 	</div>
@@ -769,8 +781,10 @@ export default {
 	},
 	filters: {
 		settimes(data) {
-			console.log(data)
-			return String(data).length == 10 ? getymdtime(data) : getymdtime(data/1000)
+			console.log(data);
+			return String(data).length == 10
+				? getymdtime(data)
+				: getymdtime(data / 1000);
 		},
 	},
 	components: {
@@ -783,9 +797,9 @@ export default {
 		} else {
 			this.$router.push({ path: '/' });
 		}
-		this.$nextTick(function () {
-			this.$refs.tabs.$children[0].$refs.tabs[1].style.display="none";
-		})
+		// this.$nextTick(function() {
+		// 	this.$refs.tabs.$children[0].$refs.tabs[1].style.display = 'none';
+		// });
 		this.gettoken();
 		this.getuserlist();
 	},

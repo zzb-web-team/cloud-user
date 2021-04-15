@@ -1,7 +1,7 @@
 <template>
 	<section class="myself-container content">
-		<div class="top_title">节点流量监控</div>
 		<div class="user-title" style="display: flex;flex-flow: column;">
+		<div class="top_title update_width">节点流量监控</div>
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<div

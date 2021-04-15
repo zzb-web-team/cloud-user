@@ -1,8 +1,9 @@
 <template>
 	<div class="content">
-		<div class="top_title">刷新预热</div>
+		
 		<!-- 主体内容 -->
 		<div class="yure_content">
+            <div class="top_title">刷新预热</div>
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<el-tab-pane label="刷新缓存" name="first">
 					<!-- <div style="text-align: left;margin: 10px 0;">
@@ -890,7 +891,13 @@ export default {
 .content {
 	.yure_content {
 		width: 100%;
-		// margin: 15px 0;
+        // margin: 15px 0;
+        .top_title{
+            margin:45px 45px 0;
+            background-color: #fff;
+            padding-left: 45px;
+             box-shadow: 0px 1px 6px 0px rgba(51, 51, 51, 0.16);
+        }
 	}
 	width: 100%;
 	height: 100%;

@@ -46,6 +46,18 @@ import word_map from '@/views/distributed/word_map.vue';
 //终端管理
 import terminal_management from '@/views/terminal/terminal_management.vue';
 
+//订单管理
+import order_list from '@/views/order/order_list.vue';
+import order_detil from '@/views/order/order_detil.vue';
+
+//订单管理
+import traffic_list from '@/views/traffic/traffic_list.vue';
+import traffic_detil from '@/views/traffic/traffic_detil.vue';
+
+//商品列表
+import commodity_list from '@/views/commodity/commodity_list.vue';
+import pre_payment from '@/views/commodity/pre_payment.vue';
+import commodity_detil from '@/views/commodity/commodity_detil.vue';
 Vue.use(Router);
 
 const router = new Router({
@@ -91,7 +103,25 @@ const router = new Router({
                     name: '概览',
                     component: overview,
                     icon: 'iconfont icon-dian',
-                },
+                }, {
+                    path: '/commodity_list',
+                    name: '流量包商城',
+                    component: commodity_list,
+                    icon: 'iconfont icon-dian',
+                    hidden: true,
+                }, {
+                    path: '/pre_payment',
+                    name: '新用户订单',
+                    component: pre_payment,
+                    icon: 'iconfont icon-dian',
+                    hidden: true,
+                }, {
+                    path: '/commodity_detil',
+                    name: '订单',
+                    component: commodity_detil,
+                    icon: 'iconfont icon-dian',
+                    hidden: true,
+                }
             ],
         },
         {
@@ -100,18 +130,16 @@ const router = new Router({
             component: overview,
             bsgc: true,
             icon: 'iconfont icon-shujutongji',
-        },
-        {
-            path: '/gerg',
-            name: '配置管理',
-            component: index,
-            bgc: false,
+            meta: {
+                title: '点播控制台'
+            }
         },
         {
             path: '/home_four',
             name: '分发加速配置',
             component: index,
             icon: 'iconfont icon-jiasu',
+            hidden: true,
             children: [{
                     path: '/accelerate_management',
                     name: '域名管理',
@@ -177,23 +205,40 @@ const router = new Router({
             ],
         },
         {
-            path: '/fsd156',
-            name: '数据中心',
-            component: index,
-            bgc: false,
+            path: '/accelerate_management',
+            name: '域名管理',
+            component: accelerate_management,
+            icon: 'iconfont icon-dian',
+            // hidden: true
+            meta: {
+                title: '点播控制台'
+            }
+        },
+        {
+            path: '/domain_management',
+            name: '点播加速管理',
+            component: domain_management,
+            icon: 'iconfont icon-dian',
+            // hidden: true
+        },
+        {
+            path: '/yure_management',
+            name: '刷新预热',
+            component: yure_management,
+            icon: 'iconfont icon-dian',
+            // hidden: true
         },
         {
             path: '/home_fosdr',
             name: '节点流量统计',
             component: index,
             icon: 'iconfont icon-tongjichaxun_',
-            children: [
-                {
+            children: [{
                     path: '/dosage_query',
                     name: '节点流量用量',
                     component: dosage_query,
                     icon: 'iconfont icon-dian',
-                }, 
+                },
                 {
                     path: '/node_flow',
                     name: '节点流量监控',
@@ -229,10 +274,65 @@ const router = new Router({
             ],
         },
         {
-            path: '/fsfg',
-            name: '终端管理',
+            path: '/fdsf',
+            name: '订单管理',
+            hidden: true,
             component: index,
-            bgc: false,
+            icon: 'iconfont icon-zhongduanguanli',
+            children: [{
+                path: '/order_list',
+                name: '订单管理',
+                component: order_list,
+                icon: 'iconfont icon-dian',
+            }, {
+                path: '/order_detil',
+                name: '订单详情',
+                component: order_detil,
+                icon: 'iconfont icon-dian',
+
+            }],
+        },
+        {
+            path: '/order_list',
+            name: '订单管理',
+            component: order_list,
+            icon: 'iconfont icon-dian',
+            meta: {
+                title: "订单管理"
+            },
+        },
+        {
+            path: '/jytj',
+            name: '流量包管理',
+            hidden: true,
+            component: index,
+            icon: 'iconfont icon-zhongduanguanli',
+            children: [{
+                    path: '/traffic_list',
+                    name: '流量包管理',
+                    component: traffic_list,
+                    icon: 'iconfont icon-dian',
+                    meta: {
+                        dot: true
+                    },
+                },
+                {
+                    path: '/traffic_detil',
+                    name: '流量包详情',
+                    component: traffic_detil,
+                    icon: 'iconfont icon-dian',
+
+                }
+            ],
+        },
+        {
+            path: '/traffic_list',
+            name: '流量包管理',
+            component: traffic_list,
+            icon: 'iconfont icon-zhongduanguanli',
+            meta: {
+                title: "流量包管理"
+            },
         },
         {
             path: '/fdsf',
@@ -245,9 +345,7 @@ const router = new Router({
                 name: '终端管理',
                 component: terminal_management,
                 icon: 'iconfont icon-dian',
-                meta: {
-                    dot: true
-                }
+
             }, ],
         },
         {
@@ -255,6 +353,9 @@ const router = new Router({
             name: '终端管理',
             component: terminal_management,
             icon: 'iconfont icon-zhongduanguanli',
+            meta: {
+                title: "终端管理"
+            }
         },
         {
             path: '/word_map',

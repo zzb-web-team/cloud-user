@@ -102,7 +102,8 @@ export default {
 			this.getyzmcode = true;
 			let params = new Object();
 			params.user = this.ruleForm.name + '';
-			params.type = 'phone';
+            params.type = 'phone';
+            console.log(params);
 			forgetpassword(params)
 				.then(res => {
 					this.loading = false;

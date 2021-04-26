@@ -5,6 +5,9 @@
 		<div class="con_flex">
 			<div class="con_flex_left">
 				<div class="swiper_con">
+					<div class="left_img">
+						图片
+					</div>
 					<div class="roll" :class="{ marquee_con: con_animate }">
 						<ul :class="{ marquee_top: animate }">
 							<li
@@ -72,7 +75,7 @@
 								<p>更新时间2020.07.20</p>
 							</el-col>
 							<el-col :span="6" class="tit_item">
-								<p>6月总用量</p>
+								<p>{{ new Date().getMonth() + 1 }}月总用量</p>
 								<p>
 									<span
 										style="font-size: 32px;color: #333333;"
@@ -95,7 +98,7 @@
 						<div
 							id="myChart3"
 							:style="{
-								height: clientHeight - 640 + 'px',
+								height: clientHeight - 650 + 'px',
 								fontSize: '16px',
 							}"
 						></div>
@@ -141,7 +144,7 @@
 				<div
 					class="right_bottom"
 					:style="{
-						height: clientHeight - 566 + 'px',
+						height: clientHeight - 540+ 'px',
 					}"
 				>
 					<div class="right_bottom_title">帮助文档</div>
@@ -163,7 +166,11 @@
 
 <script>
 var _this;
-import { dataflow_curve, manage_dataflow_curve } from '../../servers/api';
+import {
+	dataflow_curve,
+	manage_dataflow_curve,
+	ipfs_flow_summay,
+} from '../../servers/api';
 import {
 	dateToMs,
 	getymdtime,
@@ -324,8 +331,28 @@ export default {
 			false
 		);
 		// this.getlist();
+		// this.get_data();
 	},
 	methods: {
+		get_data() {
+			let params = {
+				startTs: 1617984000,
+				endTs: 1618018645,
+				urlName: '*',
+				channelId: '*',
+				ipfsChanel: '*',
+				domain: '*',
+				timeUnit: 120,
+				useCache: 0,
+			};
+			ipfs_flow_summay(params)
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
 		show_popups(data) {
 			this.$refs.popups.show();
 			this.con_text = data;
@@ -557,19 +584,29 @@ export default {
 		display: flex;
 		align-items: center;
 		background-color: #fff;
+        min-width: 1500px;
 		.con_flex_left {
 			width: 65%;
 			.swiper_con {
 				display: flex;
 				justify-content: space-around;
-				margin: 0 24px 25px 36px;
+				margin: 0 24px 15px 25px;
 				background-color: #f6f9ff;
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+				.left_img {
+					width: 80px;
+					display: flex;
+					justify-content: center;
+					// align-items: center;
+					padding-top: 40px;
+					img {
+					}
+				}
 				.roll {
 					width: 80%;
 					text-align: left;
 					box-sizing: border-box;
-					padding: 30px 0 20px 40px;
+					padding: 30px 0 20px;
 					.marquee_con {
 						padding-top: 26px;
 					}
@@ -582,6 +619,8 @@ export default {
 						position: relative;
 						padding-left: 10px;
 						margin-bottom: 16px;
+						white-space: nowrap;
+						overflow-y: hidden;
 						&:before {
 							top: 8px;
 							left: 0;
@@ -592,6 +631,10 @@ export default {
 							border-radius: 50%;
 							background: #8e8e8e;
 							content: '';
+						}
+						.txtWrap {
+							display: flex;
+							align-items: center;
 						}
 						.txt:first-child {
 							display: inline-block;
@@ -614,7 +657,7 @@ export default {
 			}
 			.content_top {
 				// padding: 15px 0 25px;
-				margin: 25px 24px 25px 36px;
+				margin: 0 24px 15px 25px;
 				// width: 100%;
 				background: #ffffff;
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
@@ -671,7 +714,7 @@ export default {
 			.content_bottom {
 				margin-top: 70px;
 				margin: auto;
-				margin-left: 36px;
+				margin-left: 25px;
 				margin-right: 24px;
 				background: #ffffff;
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
@@ -708,14 +751,14 @@ export default {
 			height: 100%;
 			display: flex;
 			flex-direction: column;
-			margin-right: 36px;
+			margin-right: 25px;
 			.right_top {
-				height: 414px;
+				height: 390px;
 
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 				background-color: #fff;
-				margin-top: 36px;
-				margin-bottom: 25px;
+				margin-top: 30px;
+				margin-bottom: 15px;
 				overflow: hidden;
 				.right_top_title {
 					box-sizing: border-box;
@@ -770,7 +813,7 @@ export default {
 			.right_bottom {
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 				background-color: #fff;
-				margin-bottom: 36px;
+				margin-bottom: 30px;
 				.right_bottom_title {
 					box-sizing: border-box;
 					padding: 20px 40px;

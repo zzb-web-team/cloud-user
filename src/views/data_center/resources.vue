@@ -5,7 +5,7 @@
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<div
-						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 25px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
 					>
 						<div
 							style="display: flex;align-items: center;flex-flow: row;"
@@ -280,6 +280,7 @@
 										@fathernum="flowgettol"
 										:pagesa="flowtotal_cnt"
 										:currentPage="flowcurrentPage"
+										v-show="tableflow.length > 0"
 									></fenye>
 								</el-col>
 							</el-row>
@@ -442,7 +443,12 @@
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="播放流量终端" name="second">
-						<div id="jiankong_echarts"></div>
+						<div
+							id="jiankong_echarts"
+							:style="{
+								height: clientHeight - 340 + 'px',
+							}"
+						></div>
 					</el-tab-pane>
 				</el-tabs>
 			</div>
@@ -486,8 +492,10 @@ import echarts from 'echarts';
 import _ from 'lodash';
 import common from '../../comm/js/util';
 import 'echarts/map/js/china.js';
+import base from '../../components/base.vue';
 
 export default {
+	mixins: [base],
 	data() {
 		return {
 			radio1: '1',
@@ -777,8 +785,8 @@ export default {
 		//流量占比图表
 		getflow3() {
 			this.zhanbitimearray = [];
-            let parmas = new Object();
-            parmas.useCache = this.useCache == true ? 1 : 0;
+			let parmas = new Object();
+			parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
@@ -897,8 +905,8 @@ export default {
 		},
 		//流量占比表格
 		gettable3() {
-            let parmas = new Object();
-            parmas.useCache = this.useCache == true ? 1 : 0;
+			let parmas = new Object();
+			parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			parmas.pageNo = this.flowcurrentPage - 1;
 			parmas.pageSize = this.flowpagesize;
@@ -943,8 +951,8 @@ export default {
 		//流量监控图表
 		getflow4() {
 			this.flow4_time = [];
-            let parmas = new Object();
-             parmas.useCache = this.useCache == true ? 1 : 0;
+			let parmas = new Object();
+			parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			if (this.value_url == '') {
 				parmas.domain = '*';
@@ -1041,8 +1049,8 @@ export default {
 		},
 		//播放流量分布图
 		queryDataFlowLocation() {
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
 			params.channelId = this.chanid;
@@ -1085,8 +1093,8 @@ export default {
 				});
 		},
 		export_tab3() {
-            let parmas = new Object();
-             parmas.useCache = this.useCache == true ? 1 : 0;
+			let parmas = new Object();
+			parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			// parmas.chanid = '*';
 			if (this.terminalName == '') {
@@ -1127,8 +1135,8 @@ export default {
 				.catch((error) => {});
 		},
 		export_tab4() {
-            let parmas = new Object();
-             parmas.useCache = this.useCache == true ? 1 : 0;
+			let parmas = new Object();
+			parmas.useCache = this.useCache == true ? 1 : 0;
 			parmas.channelId = this.chanid;
 			if (this.value1 == '') {
 				parmas.urlName = '*';
@@ -1302,7 +1310,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-            this.useCache = true;
+			this.useCache = true;
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.starttime =
 				new Date(new Date().toLocaleDateString()).getTime() / 1000;
@@ -1930,12 +1938,12 @@ export default {
 		width: auto;
 		height: auto;
 		margin-top: 20px;
-		margin-right: 45px;
-		margin-left: 45px;
+		margin-right: 25px;
+		margin-left: 25px;
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 
 		.bottom {
@@ -1972,12 +1980,13 @@ export default {
 	.devide_table {
 		padding: 35px;
 		height: auto;
-		margin-left: 45px;
-		margin-right: 45px;
-		margin-top: 20px;
+		margin-left: 25px;
+		margin-right: 25px;
+		margin-top: 15px;
 		background: #ffffff;
 		border-radius: 2px;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		margin-bottom: 30px;
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 		.el-table td,
 		.el-table th {
@@ -1997,13 +2006,13 @@ export default {
 	}
 	.resources_percentage {
 		background: #ffffff;
-		margin-left: 45px;
-		margin-right: 45px;
+		margin-left: 25px;
+		margin-right: 25px;
 		padding-left: 30px;
 		padding-top: 15px;
 		padding-bottom: 15px;
-		margin-top: 24px;
-		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
+		margin-top: 15px;
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.el-col {
 			height: 100px;
 			background: rgba(247, 247, 251, 1);
@@ -2024,15 +2033,15 @@ export default {
 	}
 	#liuliang_echarts,
 	#jiankong_echarts {
-		margin-top: 24px;
-		margin-left: 45px;
-		margin-right: 45px;
+		margin-top: 15px;
+		margin-left: 25px;
+		margin-right: 25px;
 		height: 632px;
 		padding-top: 35px;
 		padding-bottom: 20px;
 		background: rgba(255, 255, 255, 1);
 		border-radius: 2px;
-		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	}
 }
 

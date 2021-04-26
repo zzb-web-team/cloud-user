@@ -1,14 +1,14 @@
 <template>
 	<div class="content accelerate_ma">
 		<!-- title -->
-		
+
 		<div
-			style="margin: auto;margin-left: 45px;margin-right: 45px;"
+			style="margin: auto;margin-left: 25px;margin-right: 25px;"
 			class="acceleerate_con"
 		>
 			<!-- 搜索栏 -->
 			<div class="seach">
-                <div class="top_title">域名管理</div>
+				<div class="top_title">域名管理</div>
 				<div class="seach_top">
 					<el-input
 						placeholder="请输入源站域名"
@@ -80,10 +80,15 @@
 				</div>
 			</div>
 			<!-- 表格头部按钮 -->
-			<div class="con_lable">
+			<div
+				class="con_lable"
+				:style="{
+					height: clientHeight - 297 + 'px',
+				}"
+			>
 				<div
 					class="con_lable_top_btn"
-					style="padding:10px 0 18px;display: flex;justify-content: space-between;"
+					style="padding:20px 0 18px;display: flex;justify-content: space-between;"
 				>
 					<div>
 						<el-button type="primary" @click="new_btn">
@@ -193,6 +198,7 @@
 				</el-table>
 				<!-- 底部分页和按钮 -->
 				<div
+					v-show="tableData.length > 0"
 					style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
 				>
 					<div>
@@ -272,7 +278,9 @@ import {
 	del_domain,
 	change_domainstate,
 } from '../../servers/api';
+import base from '../../components/base.vue';
 export default {
+	mixins: [base],
 	data() {
 		return {
 			rotate: false,
@@ -904,11 +912,11 @@ export default {
 	text-align: left;
 	.seach {
 		width: 100%;
-		margin: 30px 0 30px 0;
+		margin: 30px 0 15px 0;
 		background: #ffffff;
 		border-radius: 2px;
 		padding: 21px 37px;
-		box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.seach_top {
 			width: 100%;
 			height: 60px;
@@ -940,7 +948,7 @@ export default {
 		width: 100%;
 		background: #ffffff;
 		background: rgba(255, 255, 255, 1);
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 		padding: 8px 37px 0;
 	}

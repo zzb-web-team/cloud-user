@@ -290,7 +290,7 @@ export default {
 		//查询屏幕高度自适应
 		changeFixed(data) {
 			if (this.$refs.box_rHeight) {
-				this.$refs.box_rHeight.style.height = data - 374 + 'px';
+				this.$refs.box_rHeight.style.height = data - 295 + 'px';
 				this.$refs.box_rHeight.style.minHeight = 500 + 'px';
 			}
 		},
@@ -320,7 +320,7 @@ export default {
 	width: 100%;
 	text-align: left;
 	box-sizing: border-box;
-	padding: 40px 40px;
+	padding: 30px 25px;
 	background-color: #fff;
 	.con_top {
 		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
@@ -359,7 +359,7 @@ export default {
 		}
 	}
 	.con_table {
-		margin-top: 36px;
+		margin-top: 15px;
 		flex: 1;
 
 		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);

@@ -131,7 +131,7 @@ const router = new Router({
             bsgc: true,
             icon: 'iconfont icon-shujutongji',
             meta: {
-                title: '点播控制台'
+                title: '概览'
             }
         },
         {
@@ -211,7 +211,7 @@ const router = new Router({
             icon: 'iconfont icon-dian',
             // hidden: true
             meta: {
-                title: '点播控制台'
+                title: '内容加速配置'
             }
         },
         {

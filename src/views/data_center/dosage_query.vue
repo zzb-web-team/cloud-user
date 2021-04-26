@@ -1,9 +1,9 @@
 <template>
 	<section class="myself-container content">
-			<div class="top_title update_width">节点流量用量</div>
+		<div class="top_title update_width">节点流量用量</div>
 		<div
 			class="user-title"
-			style="display: flex;flex-flow: column;margin: auto;margin-left:45px;margin-right:45px;"
+			style="display: flex;flex-flow: column;margin: auto;margin-left:25px;margin-right:25px;"
 		>
 			<div
 				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 4px 7px 0px rgba(41,108,171,0.1);"
@@ -105,7 +105,7 @@
 					></el-switch>
 				</div>
 			</div>
-			<div style="margin-top:20px;">
+			<div style="margin-top:15px;">
 				<el-row>
 					<div class="user-item">
 						<div class="item-text">使用流量</div>
@@ -163,6 +163,7 @@
 						:pagesa="total_cnt"
 						:currentPage="currentPage"
 						ref="fen"
+						v-show="tablecdn.length > 0"
 					></fenye>
 				</div>
 			</div>
@@ -844,7 +845,7 @@ export default {
 		width: 100%;
 		height: auto;
 		overflow: hidden;
-		margin-top: 20px;
+		margin-top: 15px;
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
@@ -884,11 +885,12 @@ export default {
 		padding: 35px;
 		height: auto;
 		overflow: hidden;
-		margin-top: 20px;
+		margin-top: 15px;
 		margin-left: 0;
 		margin-right: 0;
+		margin-bottom: 30px;
 		background: rgba(255, 255, 255, 1);
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 		.el-table td,
 		.el-table th {
@@ -924,7 +926,7 @@ export default {
 }
 .user-item {
 	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
+	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	border-radius: 2px;
 	padding: 31px 31px 31px 67px;
 	display: flex;

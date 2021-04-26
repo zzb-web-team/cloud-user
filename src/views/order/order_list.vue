@@ -181,7 +181,7 @@
 					</template>
 				</el-table-column>
 			</el-table>
-			<div class="content_bottom">
+			<div class="content_bottom" v-show="tableData.length > 0">
 				<fenye
 					:currentPage="pageNo"
 					@handleCurrentChange="handleCurrentChange"
@@ -296,7 +296,7 @@ export default {
 		};
 		if (that.$refs.box_rHeight) {
 			that.$refs.box_rHeight.style.height =
-				that.clientHeight - 334 + 'px';
+				that.clientHeight - 329 + 'px';
 			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
 		}
 	},
@@ -355,7 +355,7 @@ export default {
 		//查询屏幕高度自适应
 		changeFixed(data) {
 			if (this.$refs.box_rHeight) {
-				this.$refs.box_rHeight.style.height = data - 374 + 'px';
+				this.$refs.box_rHeight.style.height = data - 353 + 'px';
 				this.$refs.box_rHeight.style.minHeight = 500 + 'px';
 			}
 		},
@@ -376,7 +376,7 @@ export default {
 	width: 100%;
 	text-align: left;
 	box-sizing: border-box;
-	padding: 40px 40px;
+	padding: 30px 25px;
 	background-color: #fff;
 	.con_top {
 		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
@@ -416,7 +416,7 @@ export default {
 		}
 	}
 	.con_table {
-		margin-top: 36px;
+		margin-top: 15px;
 		flex: 1;
 
 		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);

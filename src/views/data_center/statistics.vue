@@ -7,7 +7,7 @@
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="PV/UV" name="first">
 						<div
-							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 25px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
 						>
                         <div style="display: flex;align-items: center;flex-flow: row;">
 
@@ -143,14 +143,14 @@
 						<div class="device_form">
 							<div
 								id="myChart"
-								:style="{ height: '607px' }"
+								:style="{ height: '590px' }"
 							></div>
 						</div>
 					</el-tab-pane>
 
 					<el-tab-pane label="访问用户分布" name="second">
 						<div
-							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
 						>
                         <div style="display: flex;align-items: center;flex-flow: row;">
 							<el-input
@@ -465,7 +465,7 @@
 					</el-tab-pane>
 					<!-- <el-tab-pane label="热门加速内容" name="there">
 						<div
-							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+							style="display: flex;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
 						>
 							
 							<span style="margin-right:10px;margin-left:15px;"
@@ -1758,7 +1758,7 @@ export default {
 				grid: {
 					left: '3%',
 					right: '4%',
-					bottom: '3%',
+					bottom: '6%',
 					containLabel: true,
 				},
 				yAxis: {
@@ -2002,7 +2002,7 @@ export default {
 .btn_active {
 	color: #409eff;
 	border-color: #c6e2ff;
-	background-color: #ecf5ff;
+	background-color: #ffffff;
 }
 .myself-container {
 	width: 100%;
@@ -2011,14 +2011,15 @@ export default {
 	.device_form {
 		width: auto;
 		height: auto;
-		margin-left: 45px;
-		margin-right: 45px;
+		margin-left: 25px;
+		margin-right: 25px;
 		overflow: hidden;
-		margin-top: 20px;
+        margin-top: 15px;
+        margin-bottom: 30px;
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 
 		.bottom {
@@ -2054,14 +2055,14 @@ export default {
 
 	.devide_table {
 		width: auto;
-		margin-left: 45px;
-		margin-right: 45px;
+		margin-left: 25px;
+		margin-right: 25px;
 		height: auto;
 		overflow: hidden;
 		margin-top: 20px;
 		background: #ffffff;
 		padding: 37px;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 		.el-table td,
 		.el-table th {
@@ -2100,11 +2101,11 @@ export default {
 	width: auto;
 	height: 130px;
 	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	border-radius: 2px;
-	margin-top: 20px;
-	margin-left: 45px;
-	margin-right: 45px;
+	margin-top: 15px;
+	margin-left: 25px;
+	margin-right: 25px;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;

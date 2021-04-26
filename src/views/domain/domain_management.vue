@@ -9,547 +9,510 @@
 			<!-- 搜索 -->
 
 			<div class="resources_con">
-				<!-- <el-tabs
-					v-model="activeName"
-					style="margin-top:10px;"
-					ref="tabs"
-				> -->
-					<div class="seach">
-						<div class="top_title">点播加速管理</div>
-						<div class="seach_top">
-							<el-input
-								placeholder="加速内容名称"
-								v-model="input"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="onSubmit"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="seachuser()"
-								></i>
-							</el-input>
-							<div
-								class="seach_top_right"
-								@click="option_display()"
-								:class="[rotate ? 'sethui' : 'setwhile']"
-							>
-								筛选
-								<i
-									class="el-icon-caret-bottom"
-									:class="[
-										rotate
-											? 'fa fa-arrow-down go'
-											: 'fa fa-arrow-down aa',
-									]"
-								></i>
-							</div>
+				<div class="seach">
+					<div class="top_title">点播加速管理</div>
+					<div class="seach_top">
+						<el-input
+							placeholder="加速内容名称"
+							v-model="input"
+							class="input-with-select"
+							maxlength="70"
+							@keyup.enter.native="onSubmit"
+						>
+							<i
+								slot="prefix"
+								class="el-input__icon el-icon-search"
+								@click="seachuser()"
+							></i>
+						</el-input>
+						<div
+							class="seach_top_right"
+							@click="option_display()"
+							:class="[rotate ? 'sethui' : 'setwhile']"
+						>
+							筛选
+							<i
+								class="el-icon-caret-bottom"
+								:class="[
+									rotate
+										? 'fa fa-arrow-down go'
+										: 'fa fa-arrow-down aa',
+								]"
+							></i>
 						</div>
-						<div v-if="optiondisplay" class="seach_bottom">
-							<span>状态：</span>
-							<el-select
-								v-model="value"
-								placeholder="请选择"
-								@change="getdata()"
-							>
-								<el-option
-									v-for="(item, index) in options"
-									:key="index + 'reat'"
-									:label="item.label"
-									:value="item.value"
-								></el-option>
-							</el-select>
-							<span style="margin-left: 10px;">日期：</span>
-							<el-date-picker
-								v-model="value1"
-								type="datetimerange"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								@change="gettimes"
-								:picker-options="pickerOptions"
-							></el-date-picker>
+					</div>
+					<div v-if="optiondisplay" class="seach_bottom">
+						<span>状态：</span>
+						<el-select
+							v-model="value"
+							placeholder="请选择"
+							@change="getdata()"
+						>
+							<el-option
+								v-for="(item, index) in options"
+								:key="index + 'reat'"
+								:label="item.label"
+								:value="item.value"
+							></el-option>
+						</el-select>
+						<span style="margin-left: 10px;">日期：</span>
+						<el-date-picker
+							v-model="value1"
+							type="datetimerange"
+							range-separator="至"
+							start-placeholder="开始日期"
+							end-placeholder="结束日期"
+							@change="gettimes"
+							:picker-options="pickerOptions"
+						></el-date-picker>
+						<el-button
+							type="primary"
+							size="mini"
+							@click="seachuser()"
+							style="margin-left: 10px;"
+							>确定</el-button
+						>
+						<el-button
+							plain
+							size="mini"
+							@click="reset()"
+							style="margin-left: 10px;"
+							>重置</el-button
+						>
+					</div>
+				</div>
+
+				<!-- <el-tab-pane label="加速内容管理" name="first"> -->
+				<!-- 第二排按钮 -->
+				<div
+					class="con_lable"
+					:style="{
+						minHeight: clientHeight - 297 + 'px',
+					}"
+				>
+					<div
+						style="padding:20px 0 18px;display: flex;justify-content: space-between;"
+					>
+						<div>
 							<el-button
 								type="primary"
-								size="mini"
-								@click="seachuser()"
-								style="margin-left: 10px;"
-								>确定</el-button
+								@click="new_btn"
+								class="my_btn"
 							>
+								<span class="el-icon-plus"></span>
+								创建加速内容
+							</el-button>
 							<el-button
+								type="primary"
 								plain
-								size="mini"
-								@click="reset()"
-								style="margin-left: 10px;"
-								>重置</el-button
+								@click="upload_btn"
+								class="my_btn"
+								>批量导入加速内容</el-button
+							>
+							<!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
+						</div>
+						<div>
+							<el-button
+								type="primary"
+								class="my_btn"
+								@click="exp_table"
+								>导出</el-button
 							>
 						</div>
 					</div>
-
-					<!-- <el-tab-pane label="加速内容管理" name="first"> -->
-					<!-- 第二排按钮 -->
-					<div class="con_lable">
-						<div
-							style="padding:10px 0 18px;display: flex;justify-content: space-between;"
+					<!-- 主体数据表格 -->
+					<el-table
+						ref="multipleTable"
+						:data="tableData"
+						stripe
+						border
+						row-key="url_name"
+						tooltip-effect="dark"
+						style="width: 100%"
+						:cell-style="rowClass"
+						:header-cell-style="headClass"
+						:default-sort="{
+							prop: 'date',
+							order: 'descending',
+						}"
+						@selection-change="handleSelectionChange"
+						@sort-change="tableSortChange"
+					>
 						>
-							<div>
-								<el-button type="primary" @click="new_btn">
-									<span class="el-icon-plus"></span>
-									创建加速内容
-								</el-button>
-								<el-button
-									type="primary"
-									plain
-									@click="upload_btn"
-									>批量导入加速内容</el-button
-								>
-								<!-- <el-button type="primary" plain @click="setdomainlist">批量管理标签</el-button> -->
-							</div>
-							<div>
-								<el-button
-									type="primary"
-									@click="exp_table"
-									style="width: 100px;"
-									>导出</el-button
-								>
-							</div>
-						</div>
-						<!-- 主体数据表格 -->
-						<el-table
-							ref="multipleTable"
-							:data="tableData"
-							stripe
-							border
-							row-key="url_name"
-							tooltip-effect="dark"
-							style="width: 100%"
-							:cell-style="rowClass"
-							:header-cell-style="headClass"
-							:default-sort="{
-								prop: 'date',
-								order: 'descending',
-							}"
-							@selection-change="handleSelectionChange"
-							@sort-change="tableSortChange"
-						>
-							>
-							<el-table-column
-								type="selection"
-								width="55"
-							></el-table-column>
-							<el-table-column
-								prop="url_name"
-								label="加速内容名称"
-							></el-table-column>
-							<el-table-column
-								prop="domain"
-								label="源站域名"
-								class-name="firsturl"
-								:show-overflow-tooltip="true"
-							></el-table-column>
+						<el-table-column
+							type="selection"
+							width="55"
+						></el-table-column>
+						<el-table-column
+							prop="url_name"
+							label="加速内容名称"
+						></el-table-column>
+						<el-table-column
+							prop="domain"
+							label="源站域名"
+							class-name="firsturl"
+							:show-overflow-tooltip="true"
+						></el-table-column>
 
-							<el-table-column
-								prop="host_url"
-								label="回源路径"
-							></el-table-column>
-							<el-table-column
-								prop="url"
-								label="播放路径"
-							></el-table-column>
-							<el-table-column
-								prop="state"
-								label="状态"
-								width="120"
-							>
-								<template slot-scope="scope">
-									<span
-										style="color:#0ABF5B;"
-										v-if="scope.row.state == 1"
-										>正常运行</span
-									>
-									<span
-										style="color:#E54545;"
-										v-else-if="scope.row.state == 0"
-										>已停止</span
-									>
-									<span style="color:#E54545;" v-else
-										>回源失败</span
-									>
-								</template>
-							</el-table-column>
+						<el-table-column
+							prop="host_url"
+							label="回源路径"
+						></el-table-column>
+						<el-table-column
+							prop="url"
+							label="播放路径"
+						></el-table-column>
+						<el-table-column prop="state" label="状态" width="120">
+							<template slot-scope="scope">
+								<span
+									style="color:#0ABF5B;"
+									v-if="scope.row.state == 1"
+									>正常运行</span
+								>
+								<span
+									style="color:#E54545;"
+									v-else-if="scope.row.state == 0"
+									>已停止</span
+								>
+								<span style="color:#E54545;" v-else
+									>回源失败</span
+								>
+							</template>
+						</el-table-column>
 
-							<!-- <el-table-column label="标签" width="50">
+						<!-- <el-table-column label="标签" width="50">
             <template slot-scope="scope">
               <i class="iconfont icon-biaoqian" @click="handleClick(scope.row)"></i>
             </template>
           </el-table-column>-->
-							<el-table-column
-								prop="create_time"
-								sortable="custom"
-								label="创建时间"
+						<el-table-column
+							prop="create_time"
+							sortable="custom"
+							label="创建时间"
+						>
+							<template slot-scope="scope">
+								<span>{{
+									scope.row.create_time | settimes
+								}}</span>
+							</template>
 							>
-								<template slot-scope="scope">
-									<span>{{
-										scope.row.create_time | settimes
-									}}</span>
-								</template>
-								>
-							</el-table-column>
+						</el-table-column>
 
-							<el-table-column label="操作" width="550">
-								<template slot-scope="scope">
-									<el-button
-										@click="handleClick(scope.row)"
-										type="text"
-										size="small"
-										>配置</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="updatauser(scope.row)"
-										>复制配置</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="pwdwetout(scope.row)"
-										>监控</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="disableuser(scope.row)"
-										v-if="scope.row.state == 1"
-										>停用</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="enableuser(scope.row)"
-										v-else
-										>启用</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										@click="deleateuser(scope.row)"
-										v-if="scope.row.state !== 1"
-										style="color:#666666;"
-										>删除</el-button
-									>
-									<el-button
-										type="text"
-										size="small"
-										disabled
-										v-else
-										style="color:#c5c5c5;"
-										>删除</el-button
-									>
-								</template>
-							</el-table-column>
-						</el-table>
-						<!-- 配置弹窗 -->
-						<el-dialog
-							title="添加用户"
-							:visible.sync="dialog"
-							custom-class="customWidth"
-						>
-							<el-form :model="details">
-								<el-form-item
-									label="使用状态"
-									:label-width="formLabelWidth"
-								>
-									<el-radio
-										v-model="radioes"
-										label="1"
-										:disabled="true"
-										>启用</el-radio
-									>
-									<el-radio
-										v-model="radioes"
-										label="2"
-										:disabled="true"
-										>停用</el-radio
-									>
-								</el-form-item>
-								<el-form-item
-									label="账号"
-									:label-width="formLabelWidth"
-								>
-									<el-input
-										v-model="details.nickname"
-										:disabled="true"
-										placeholder="请输入账号"
-										autocomplete="off"
-									></el-input>
-								</el-form-item>
-								<el-form-item
-									label="真实姓名"
-									:label-width="formLabelWidth"
-								>
-									<el-input
-										v-model="details.username"
-										:disabled="true"
-										placeholder="请输入真实姓名"
-										autocomplete="off"
-									></el-input>
-								</el-form-item>
-								<el-form-item
-									label="联系方式"
-									:label-width="formLabelWidth"
-								>
-									<el-input
-										v-model="details.phone"
-										maxlength="11"
-										:disabled="true"
-										placeholder="请输入有效手机号"
-										autocomplete="off"
-									></el-input>
-								</el-form-item>
-							</el-form>
-							<div slot="footer" class="dialog-footer">
+						<el-table-column label="操作" width="550">
+							<template slot-scope="scope">
 								<el-button
-									type="primary"
-									@click="dialog = false"
-									>确 定</el-button
+									@click="handleClick(scope.row)"
+									type="text"
+									size="small"
+									>配置</el-button
 								>
-							</div>
-						</el-dialog>
-						<!-- 底部按钮 -->
-						<div
-							style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
-						>
-							<div>
 								<el-button
 									type="text"
 									size="small"
-									@click="enableuser()"
-									>启用</el-button
+									@click="updatauser(scope.row)"
+									>复制配置</el-button
 								>
 								<el-button
 									type="text"
-									style="color:#E54545;"
 									size="small"
-									@click="disableuser()"
+									@click="pwdwetout(scope.row)"
+									>监控</el-button
+								>
+								<el-button
+									type="text"
+									size="small"
+									@click="disableuser(scope.row)"
+									v-if="scope.row.state == 1"
 									>停用</el-button
 								>
 								<el-button
 									type="text"
 									size="small"
-									@click="deleateuser()"
+									@click="enableuser(scope.row)"
+									v-else
+									>启用</el-button
+								>
+								<el-button
+									type="text"
+									size="small"
+									@click="deleateuser(scope.row)"
+									v-if="scope.row.state !== 1"
+									style="color:#666666;"
 									>删除</el-button
 								>
-								<!-- <el-button @click="enableuser()" type="success">启用</el-button>
+								<el-button
+									type="text"
+									size="small"
+									disabled
+									v-else
+									style="color:#c5c5c5;"
+									>删除</el-button
+								>
+							</template>
+						</el-table-column>
+					</el-table>
+					<!-- 配置弹窗 -->
+					<el-dialog
+						title="添加用户"
+						:visible.sync="dialog"
+						custom-class="customWidth"
+					>
+						<el-form :model="details">
+							<el-form-item
+								label="使用状态"
+								:label-width="formLabelWidth"
+							>
+								<el-radio
+									v-model="radioes"
+									label="1"
+									:disabled="true"
+									>启用</el-radio
+								>
+								<el-radio
+									v-model="radioes"
+									label="2"
+									:disabled="true"
+									>停用</el-radio
+								>
+							</el-form-item>
+							<el-form-item
+								label="账号"
+								:label-width="formLabelWidth"
+							>
+								<el-input
+									v-model="details.nickname"
+									:disabled="true"
+									placeholder="请输入账号"
+									autocomplete="off"
+								></el-input>
+							</el-form-item>
+							<el-form-item
+								label="真实姓名"
+								:label-width="formLabelWidth"
+							>
+								<el-input
+									v-model="details.username"
+									:disabled="true"
+									placeholder="请输入真实姓名"
+									autocomplete="off"
+								></el-input>
+							</el-form-item>
+							<el-form-item
+								label="联系方式"
+								:label-width="formLabelWidth"
+							>
+								<el-input
+									v-model="details.phone"
+									maxlength="11"
+									:disabled="true"
+									placeholder="请输入有效手机号"
+									autocomplete="off"
+								></el-input>
+							</el-form-item>
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button type="primary" @click="dialog = false"
+								>确 定</el-button
+							>
+						</div>
+					</el-dialog>
+					<!-- 底部按钮 -->
+					<div
+						v-show="tableData.length > 0"
+						style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+					>
+						<div>
+							<el-button
+								type="text"
+								size="small"
+								@click="enableuser()"
+								>启用</el-button
+							>
+							<el-button
+								type="text"
+								style="color:#E54545;"
+								size="small"
+								@click="disableuser()"
+								>停用</el-button
+							>
+							<el-button
+								type="text"
+								size="small"
+								@click="deleateuser()"
+								>删除</el-button
+							>
+							<!-- <el-button @click="enableuser()" type="success">启用</el-button>
             <el-button @click="disableuser()" type="warning">禁用</el-button>
             <el-button @click="deleateuser()" type="danger">删除</el-button>-->
-							</div>
-							<fenye
-								style="float:right;margin:10px 0 20px 0;"
-								@fatherMethod="getpage"
-								@fathernum="gettol"
-								:pagesa="total_cnt"
-								:currentPage="currentPage"
-							></fenye>
 						</div>
+						<fenye
+							style="float:right;margin:10px 0 20px 0;"
+							@fatherMethod="getpage"
+							@fathernum="gettol"
+							:pagesa="total_cnt"
+							:currentPage="currentPage"
+						></fenye>
 					</div>
-					<!-- </el-tab-pane> -->
-					<!-- @expand-change="toggleRowExpansion"
+				</div>
+				<!-- </el-tab-pane> -->
+				<!-- @expand-change="toggleRowExpansion"
 								:tree-props="{
 									children: 'children',
 									hasChildren: 'hasChildren',
 								}" -->
-					<!-- <el-tab-pane label="点播回源" name="second"> -->
-						<div class="con_lable host_table">
-							<el-table
-								:data="demotableData"
-								:span-method="arraySpanMethod"
-								style="width: 100%;margin-bottom: 20px;"
-								row-key="id"
-								border
-								:cell-style="rowClass"
-								:header-cell-style="headClass"
-							>
-								<el-table-column type="expand">
-									<template slot-scope="scope">
-										<el-table
-											:data="scope.row.childrens"
-											border
-											style="width: 100%"
-											:cell-style="rowClass"
-											:header-cell-style="headClass"
-										>
-											<el-table-column
-												prop="acce"
-												label="操作内容"
-											></el-table-column>
-											<el-table-column
-												prop="start_time"
-												label="回源开始时间"
-											></el-table-column>
-											<el-table-column
-												prop="end_time"
-												label="回源结束时间"
-											></el-table-column>
-											<el-table-column
-												prop="state"
-												label="状态"
+				<!-- <el-tab-pane label="点播回源" name="second"> -->
+				<!-- <div class="con_lable host_table">
+					<el-table
+						:data="demotableData"
+						:span-method="arraySpanMethod"
+						style="width: 100%;margin-bottom: 20px;"
+						row-key="id"
+						border
+						:cell-style="rowClass"
+						:header-cell-style="headClass"
+					>
+						<el-table-column type="expand">
+							<template slot-scope="scope">
+								<el-table
+									:data="scope.row.childrens"
+									border
+									style="width: 100%"
+									:cell-style="rowClass"
+									:header-cell-style="headClass"
+								>
+									<el-table-column
+										prop="acce"
+										label="操作内容"
+									></el-table-column>
+									<el-table-column
+										prop="start_time"
+										label="回源开始时间"
+									></el-table-column>
+									<el-table-column
+										prop="end_time"
+										label="回源结束时间"
+									></el-table-column>
+									<el-table-column prop="state" label="状态">
+										<template slot-scope="scope">
+											<span v-if="scope.row.state == 0"
+												>进行中</span
 											>
-												<template slot-scope="scope">
-													<span
-														v-if="
-															scope.row.state == 0
-														"
-														>进行中</span
-													>
-													<span
-														v-else-if="
-															scope.row.state == 1
-														"
-														style="color:#E54545;"
-														>已关闭</span
-													>
-													<span
-														v-else-if="
-															scope.row.state == 2
-														"
-														style="color:#E54545;"
-														>回源失败</span
-													>
-													<span
-														v-else-if="
-															scope.row.state == 3
-														"
-														style="color:#0abf5b;"
-														>完成</span
-													>
-												</template>
-											</el-table-column>
-											<el-table-column
-												prop="jingdu"
-												label="进度"
+											<span
+												v-else-if="scope.row.state == 1"
+												style="color:#E54545;"
+												>已关闭</span
 											>
-												<template slot-scope="scope">
-													<el-progress
-														:percentage="
-															scope.row.jingdu
-														"
-													></el-progress> </template
-											></el-table-column>
-											<el-table-column label="操作">
-												<template slot-scope="scope">
-													<el-button
-														type="text"
-														size="small"
-														:disabled="
-															scope.row.state ==
-																1 ||
-																scope.row
-																	.state == 2
-														"
-													>
-														关闭回源
-													</el-button>
-												</template>
-											</el-table-column>
-										</el-table>
-									</template>
-								</el-table-column>
-								<el-table-column type="selection" width="55">
-								</el-table-column>
-								<el-table-column
-									prop="acce"
-									label="加速内容名称"
+											<span
+												v-else-if="scope.row.state == 2"
+												style="color:#E54545;"
+												>回源失败</span
+											>
+											<span
+												v-else-if="scope.row.state == 3"
+												style="color:#0abf5b;"
+												>完成</span
+											>
+										</template>
+									</el-table-column>
+									<el-table-column prop="jingdu" label="进度">
+										<template slot-scope="scope">
+											<el-progress
+												:percentage="scope.row.jingdu"
+											></el-progress> </template
+									></el-table-column>
+									<el-table-column label="操作">
+										<template slot-scope="scope">
+											<el-button
+												type="text"
+												size="small"
+												:disabled="
+													scope.row.state == 1 ||
+														scope.row.state == 2
+												"
+											>
+												关闭回源
+											</el-button>
+										</template>
+									</el-table-column>
+								</el-table>
+							</template>
+						</el-table-column>
+						<el-table-column type="selection" width="55">
+						</el-table-column>
+						<el-table-column prop="acce" label="加速内容名称">
+						</el-table-column>
+						<el-table-column prop="hui_url" label="回源地址">
+						</el-table-column>
+						<el-table-column prop="ip" label="点播IP">
+						</el-table-column>
+						<el-table-column prop="start_time" label="回源开始时间">
+						</el-table-column>
+						<el-table-column prop="end_time" label="回源结束时间">
+						</el-table-column>
+						<el-table-column prop="state" label="状态" width="100">
+							<template slot-scope="scope">
+								<span v-if="scope.row.state == 0">进行中</span>
+								<span
+									v-else-if="scope.row.state == 1"
+									style="color:#E54545;"
+									>已关闭</span
 								>
-								</el-table-column>
-								<el-table-column
-									prop="hui_url"
-									label="回源地址"
+								<span
+									v-else-if="scope.row.state == 2"
+									style="color:#E54545;"
+									>回源失败</span
 								>
-								</el-table-column>
-								<el-table-column prop="ip" label="点播IP">
-								</el-table-column>
-								<el-table-column
-									prop="start_time"
-									label="回源开始时间"
+								<span
+									v-else-if="scope.row.state == 3"
+									style="color:#0abf5b;"
+									>完成</span
 								>
-								</el-table-column>
-								<el-table-column
-									prop="end_time"
-									label="回源结束时间"
+							</template>
+						</el-table-column>
+						<el-table-column prop="jingdu" label="回源进度">
+							<template slot-scope="scope">
+								<el-progress
+									:percentage="scope.row.jingdu"
+								></el-progress>
+							</template>
+						</el-table-column>
+						<el-table-column label="操作">
+							<template slot-scope="scope">
+								<el-button
+									type="text"
+									size="small"
+									:disabled="
+										scope.row.state == 1 ||
+											scope.row.state == 2
+									"
+									@click="closehost(scope.row)"
 								>
-								</el-table-column>
-								<el-table-column
-									prop="state"
-									label="状态"
-									width="100"
-								>
-									<template slot-scope="scope">
-										<span v-if="scope.row.state == 0"
-											>进行中</span
-										>
-										<span
-											v-else-if="scope.row.state == 1"
-											style="color:#E54545;"
-											>已关闭</span
-										>
-										<span
-											v-else-if="scope.row.state == 2"
-											style="color:#E54545;"
-											>回源失败</span
-										>
-										<span
-											v-else-if="scope.row.state == 3"
-											style="color:#0abf5b;"
-											>完成</span
-										>
-									</template>
-								</el-table-column>
-								<el-table-column prop="jingdu" label="回源进度">
-									<template slot-scope="scope">
-										<el-progress
-											:percentage="scope.row.jingdu"
-										></el-progress>
-									</template>
-								</el-table-column>
-								<el-table-column label="操作">
-									<template slot-scope="scope">
-										<el-button
-											type="text"
-											size="small"
-											:disabled="
-												scope.row.state == 1 ||
-													scope.row.state == 2
-											"
-											@click="closehost(scope.row)"
-										>
-											关闭回源
-										</el-button>
-									</template>
-								</el-table-column>
-							</el-table>
-							<div
-								style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+									关闭回源
+								</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+					<div
+						style="margin-top: 20px;display: flex;justify-content: space-between;align-items: center;"
+					>
+						<div>
+							<el-button
+								type="text"
+								size="small"
+								@click="closehost"
+								>关闭回源</el-button
 							>
-								<div>
-									<el-button
-										type="text"
-										size="small"
-										@click="closehost"
-										>关闭回源</el-button
-									>
-								</div>
-								<fenye
-									style="float:right;margin:10px 0 20px 0;"
-									@fatherMethod="getpage"
-									@fathernum="gettol"
-									:pagesa="host_total_cnt"
-									:currentPage="host_currentPage"
-								></fenye>
-							</div>
 						</div>
-					<!-- </el-tab-pane> -->
+						<fenye
+							style="float:right;margin:10px 0 20px 0;"
+							@fatherMethod="getpage"
+							@fathernum="gettol"
+							:pagesa="host_total_cnt"
+							:currentPage="host_currentPage"
+						></fenye>
+					</div>
+				</div> -->
+				<!-- </el-tab-pane> -->
 				<!-- </el-tabs> -->
 			</div>
 		</div>
@@ -559,6 +522,7 @@
 <script>
 import fenye from '@/components/fenye';
 import { dateToMs, getymdtime } from '../../servers/sevdate';
+import base from '../../components/base.vue';
 import {
 	query_url,
 	change_state,
@@ -567,6 +531,7 @@ import {
 	url_export_for_admin,
 } from '../../servers/api';
 export default {
+	mixins: [base],
 	data() {
 		//重置密码
 		var validatePass = (rule, value, callback) => {
@@ -1446,12 +1411,12 @@ export default {
 	text-align: left;
 	.seach {
 		// width: 100%;
-		margin: 30px 45px 30px 45px;
+		margin: 30px 25px 15px 25px;
 		box-sizing: border-box;
 		background: #ffffff;
 		border-radius: 2px;
 		padding: 21px 37px;
-		box-shadow: 0px 0px 7px 0px rgba(41, 108, 171, 0.1);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.seach_top {
 			width: 100%;
 			height: 60px;
@@ -1482,10 +1447,11 @@ export default {
 	.con_lable {
 		background: #ffffff;
 		background: rgba(255, 255, 255, 1);
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 		padding: 8px 37px 0;
-		margin: 0 45px;
+		margin: 0 25px;
+		margin-bottom: 30px;
 	}
 	.host_table {
 		padding-top: 25px;

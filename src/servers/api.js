@@ -315,3 +315,9 @@ export const manage_dataflow_table = (params) =>
 //用量导出
 export const export_manage_dataflow_table_file = (params) =>
     post(`${userUrl}/file_download/export_manage_dataflow_table_file`, params);
+
+
+//首页概览数据
+export const ipfs_flow_summay = (params) => {
+    return post(`10.0.0.128:8090/resource_manage/ipfs_flow_summay`, params)
+};

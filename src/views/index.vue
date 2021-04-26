@@ -12,7 +12,7 @@
 					<el-radio-group
 						v-model="menu_type"
 						class="my_radio"
-						@change="change_tab"
+						@change="change_tab('label')"
 					>
 						<el-radio-button label="管理中心"></el-radio-button>
 						<el-radio-button label="数据中心"></el-radio-button>
@@ -54,7 +54,10 @@
 					>
 						<!-- 一级菜单 -->
 						<template v-for="item in menu_list" v-if="!item.hidden">
-							<p v-if="item.meta" class="menu_item_title">
+							<p
+								v-if="item.meta && item.meta.title != '概览'"
+								class="menu_item_title"
+							>
 								{{ item.meta.title }}
 							</p>
 							<el-submenu
@@ -64,10 +67,7 @@
 								style="text-align: left;"
 							>
 								<template slot="title">
-									<i
-										:class="item.icon"
-										style="margin-right: 10px;margin-left: 10px;"
-									></i>
+									<i :class="item.icon"></i>
 
 									<span>{{ item.name }}</span>
 								</template>
@@ -86,10 +86,7 @@
 										:key="itemChild.path"
 									>
 										<template slot="title">
-											<i
-												:class="itemChild.icon"
-												style="margin-right: 10px;margin-left: 10px;"
-											></i>
+											<i :class="itemChild.icon"></i>
 											<span>{{ itemChild.name }}</span>
 										</template>
 
@@ -102,7 +99,6 @@
 										>
 											<i
 												:class="itemChild_Child.icon"
-												style="margin-right: 10px;margin-left: 10px;"
 											></i>
 											<span slot="title">{{
 												itemChild_Child.name
@@ -140,13 +136,25 @@
 								:index="item.path"
 								:key="item.path"
 								class="fist_el_meau"
+								:class="item.name == '概览' ? 'fitst_li' : ''"
 							>
 								<i
 									v-if="item.icon"
 									:class="item.icon"
 									style="margin-right: 10px;margin-left: 5px;"
 								></i>
-								<span slot="title">{{ item.name }}</span>
+								<span
+									slot="title"
+									v-if="item.name == '概览'"
+									style="font-weight: 600;font-size: 14px;color: #6a6a6c;margin-left: -30px;"
+									>概览</span
+								>
+								<span
+									slot="title"
+									v-else
+									style="margin-left: -16px;"
+									>{{ item.name }}</span
+								>
 							</el-menu-item>
 						</template>
 						<p class="last_boder"></p>
@@ -195,6 +203,7 @@ export default {
 			manage_list: [],
 			data_list: [],
 			menu_list: [],
+			fitst_li: 'fitst_li',
 		};
 	},
 	mounted() {
@@ -204,12 +213,11 @@ export default {
 		let _this = this;
 		this.manage_list = this.$router.options.routes.filter(function(elem) {
 			if (elem.name == '节点流量统计' && elem.hidden != true) {
-				elem.meta = { title: '数据中心' };
-				_this.data_list.push(elem);
+				elem.children[0].meta = { title: '数据中心' };
+				_this.data_list = _this.data_list.concat(elem.children);
 			} else if (elem.name == '播放统计' && elem.hidden != true) {
-				_this.data_list.push(elem);
+				_this.data_list = _this.data_list.concat(elem.children);
 			}
-
 			if (
 				elem.hidden != true &&
 				elem.name != '节点流量统计' &&
@@ -218,7 +226,6 @@ export default {
 				return elem;
 			}
 		});
-		console.log(_this.data_list);
 		this.change_tab();
 		if (this.$cookies.get('user')) {
 			var user = this.$cookies.get('user');
@@ -240,13 +247,16 @@ export default {
 		}
 	},
 	methods: {
-		change_tab() {
+		change_tab(label) {
 			if (this.menu_type == '管理中心') {
 				this.menu_list = this.manage_list;
 			} else {
 				this.menu_list = this.data_list;
 			}
 			localStorage.setItem('menu_type', this.menu_type);
+			if (label) {
+				this.$router.push(this.menu_list[0].path);
+			}
 		},
 		tanchuan() {
 			var _this = this;
@@ -287,7 +297,6 @@ export default {
 							this.yu_success = '';
 							this.shua_error = '';
 							this.shua_success = '';
-							console.log(this.processing_arr);
 							this.processing_arr.forEach((item, index) => {
 								if (item.state == 1) {
 									arr.push(item);
@@ -638,6 +647,8 @@ export default {
 			box-sizing: border-box;
 			padding-left: 40px;
 			position: relative;
+			color: #6a6a6c;
+			margin-left: -30px;
 		}
 		.menu_item_title::before {
 			content: ''; /*CSS伪类用法*/
@@ -653,7 +664,7 @@ export default {
 			position: absolute; /*定位背景横线的位置*/
 			width: 0; /*宽和高做出来的背景横线*/
 			height: 0;
-			background: #f5f5f5;
+			background: #ffffff;
 			top: 0;
 			z-index: -1;
 		}
@@ -666,7 +677,7 @@ export default {
 				height: 0.5px;
 				background: #afafaf;
 				top: 10px;
-				left: 40px;
+				left: 30px;
 				z-index: 1;
 			}
 		}

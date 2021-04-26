@@ -1,11 +1,16 @@
 <template>
 	<div class="content">
-		
 		<!-- 主体内容 -->
 		<div class="yure_content">
-            <div class="top_title">刷新预热</div>
+			<div class="top_title">刷新预热</div>
 			<el-tabs v-model="activeName" @tab-click="handleClick">
-				<el-tab-pane label="刷新缓存" name="first">
+				<el-tab-pane
+					label="刷新缓存"
+					name="first"
+					:style="{
+						height: clientHeight - 310 + 'px',
+					}"
+				>
 					<!-- <div style="text-align: left;margin: 10px 0;">
             <span>刷新类型：</span>
             <el-radio v-model="radio1" label="1">Filed刷新</el-radio>
@@ -39,12 +44,19 @@
 					<div style="margin: 20px 0;">
 						<el-button
 							@click="getrefresh(0)"
-							style="width:96px;-height:40px;background:rgba(41,122,255,1);border-radius:2px;color:#ffffff;"
+							class="my_btn"
+							style="height:40px;background:rgba(41,122,255,1);border-radius:5px;color:#ffffff;"
 							>提交</el-button
 						>
 					</div>
 				</el-tab-pane>
-				<el-tab-pane label="内容预热" name="second">
+				<el-tab-pane
+					label="内容预热"
+					name="second"
+					:style="{
+						height: clientHeight - 310 + 'px',
+					}"
+				>
 					<!-- <div style="text-align: left;margin: 10px 0;">
             <span>刷新类型：</span>
             <el-radio v-model="radio2" label="1">Filed刷新</el-radio>
@@ -76,12 +88,19 @@
 					<div style="margin: 20px 0;">
 						<el-button
 							@click="getrefresh(1)"
-							style="width:96px;-height:40px;background:rgba(41,122,255,1);border-radius:2px;color:#ffffff;"
+							class="my_btn"
+							style="height:40px;background:rgba(41,122,255,1);border-radius:5px;color:#ffffff;"
 							>提交</el-button
 						>
 					</div>
 				</el-tab-pane>
-				<el-tab-pane label="操作记录" name="third">
+				<el-tab-pane
+					label="操作记录"
+					name="third"
+					:style="{
+						height: clientHeight - 310 + 'px',
+					}"
+				>
 					<!-- 搜索 -->
 					<div class="seach">
 						<div class="seach_top">
@@ -242,7 +261,7 @@
 							</template>
 						</el-table-column>
 					</el-table>
-					<div>
+					<div v-show="tableData.length > 0">
 						<fenye
 							style="text-align:right;margin:37px 0 0 0;"
 							@fatherMethod="getpage"
@@ -266,7 +285,9 @@ import {
 	refresh_state,
 	getterminal,
 } from '../../servers/api';
+import base from '../../components/base.vue';
 export default {
+	mixins: [base],
 	data() {
 		return {
 			currentPage: 1,
@@ -891,13 +912,13 @@ export default {
 .content {
 	.yure_content {
 		width: 100%;
-        // margin: 15px 0;
-        .top_title{
-            margin:45px 45px 0;
-            background-color: #fff;
-            padding-left: 45px;
-             box-shadow: 0px 1px 6px 0px rgba(51, 51, 51, 0.16);
-        }
+		// margin: 15px 0;
+		.top_title {
+			margin: 30px 25px 0;
+			background-color: #fff;
+			padding-left: 25px;
+			box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		}
 	}
 	width: 100%;
 	height: 100%;
@@ -906,6 +927,7 @@ export default {
 		width: 100%;
 		// display: flex;
 		// align-items: center;
+		margin-top: -10px;
 		.seach_top {
 			width: 100%;
 			height: 60px;

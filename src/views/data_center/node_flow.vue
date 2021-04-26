@@ -1,11 +1,11 @@
 <template>
 	<section class="myself-container content">
 		<div class="user-title" style="display: flex;flex-flow: column;">
-		<div class="top_title update_width">节点流量监控</div>
+			<div class="top_title update_width">节点流量监控</div>
 			<div class="resources_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<div
-						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:45px;margin-right:45px;"
+						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 25px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
 					>
 						<div
 							style="display: flex;align-items: center;flex-flow: row;"
@@ -218,13 +218,19 @@
 										@fathernum="gettol"
 										:pagesa="total_cnt"
 										:currentPage="currentPage"
+										v-show="tablecdn.length > 0"
 									></fenye>
 								</el-col>
 							</el-row>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="TOP加速内容" name="second">
-						<div class="devide_table">
+						<div
+							class="devide_table"
+							:style="{
+								height: clientHeight - 345 + 'px',
+							}"
+						>
 							<div class="tab_top_btn">
 								<el-radio-group
 									v-model="radio_top"
@@ -378,7 +384,9 @@ import fenye from '@/components/fenye';
 import echarts from 'echarts';
 import common from '../../comm/js/util';
 import _ from 'lodash';
+import base from '../../components/base.vue';
 export default {
+	mixins: [base],
 	data() {
 		return {
 			sump2p: 0,
@@ -1209,13 +1217,13 @@ export default {
 	.device_form {
 		width: auto;
 		height: auto;
-		margin-top: 20px;
-		margin-right: 45px;
-		margin-left: 45px;
+		margin-top: 15px;
+		margin-right: 25px;
+		margin-left: 25px;
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 
 		.bottom {
@@ -1250,13 +1258,13 @@ export default {
 	}
 	.resources_percentage {
 		background: #ffffff;
-		margin-left: 45px;
-		margin-right: 45px;
+		margin-left: 25px;
+		margin-right: 25px;
 		padding-left: 30px;
 		padding-top: 15px;
 		padding-bottom: 15px;
-		margin-top: 24px;
-		box-shadow: rgba(6, 17, 36, 0.14) 0px 2px 3px 0px;
+		margin-top: 15px;
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.el-col {
 			height: 100px;
 			background: rgba(247, 247, 251, 1);
@@ -1281,12 +1289,13 @@ export default {
 	.devide_table {
 		padding: 35px;
 		height: auto;
-		margin-left: 45px;
-		margin-right: 45px;
-		margin-top: 20px;
+		margin-left: 25px;
+		margin-right: 25px;
+		margin-top: 15px;
+		margin-bottom: 30px;
 		background: #ffffff;
 		border-radius: 2px;
-		box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		border-radius: 2px;
 		.el-table td,
 		.el-table th {

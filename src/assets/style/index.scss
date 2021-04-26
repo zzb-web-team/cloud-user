@@ -82,7 +82,7 @@ body::-webkit-scrollbar {
 }
 
 .update_width {
-    margin: 45px 45px 0 45px;
+    margin: 30px 25px 0 25px;
     background-color: #fff;
     padding-left: 45px;
     box-shadow: 0px 1px 6px 0px rgba(51, 51, 51, 0.16);
@@ -223,27 +223,28 @@ body::-webkit-scrollbar {
 
 .el-dialog {
     padding-right: 40px;
-    border-radius: 8px;
+    border-radius: 5px;
 }
 
 .el-tabs__header {
-    margin: 45px;
+    margin: 30px 25px;
     margin-top: -4px;
-    padding: 0 45px 20px 45px;
+    margin-bottom: -10px;
+    padding: 0 25px 20px 25px;
     background: #ffffff;
     font-size: 20px;
-    box-shadow: 0px 3px 6px 0px rgba(51, 51, 51, 0.16);
+    box-shadow: 0px 3px 6px 0px rgba(190, 185, 185, 0.3);
 }
 
 .yure_content .el-tabs .el-tabs__content {
     margin: auto;
     // height: 590px;
     background: #ffffff;
-    margin-left: 45px;
-    margin-right: 45px;
-    padding: 29px 45px;
-    margin-top: 38px;
-    box-shadow: 0px 3px 7px 0px rgba(51, 97, 146, 0.07);
+    margin-left: 25px;
+    margin-right: 25px;
+    padding: 29px 25px;
+    margin-top: 30px;
+    box-shadow: 0px 3px 6px 0px rgba(190, 185, 185, 0.3);
 }
 
 .statisics_con .el-tabs .el-tabs__content {
@@ -256,6 +257,7 @@ body::-webkit-scrollbar {
 
 .termail_con .el-tabs .el-tabs__content {
     margin: auto;
+    margin-top: 25px;
 }
 
 .termail_con .el-tabs__header {
@@ -284,7 +286,7 @@ body::-webkit-scrollbar {
 
 .acceleerate_con .con_lable .con_lable_top_btn .el-button,
 .acceleerate_con .con_lable .add_dialog .el-button {
-    padding: 10px 30px;
+    padding: 12px 30px;
 }
 
 .batch_huan .el-dialog {
@@ -319,14 +321,15 @@ body::-webkit-scrollbar {
     color: #297aff;
     background: #ffffff;
     border-color: #297aff;
-    border-radius: 8px;
+    border-radius: 5px;
 }
 
 .el-button--primary {
     color: #FFF;
     background-color: #297AFF;
     border-color: #297AFF;
-    border-radius: 8px;
+    border-radius: 5px;
+    padding: 12px 30px;
 }
 
 // .el-button--primary {
@@ -380,6 +383,22 @@ body::-webkit-scrollbar {
     .iconfont {
         opacity: 0;
     }
+}
+
+// .fist_el_meau:last-child::before {
+//     content: '';
+//     /*CSS伪类用法*/
+//     position: absolute;
+//     /*定位背景横线的位置*/
+//     width: 65%;
+//     /*宽和高做出来的背景横线*/
+//     height: 0.5px;
+//     background: #afafaf;
+//     top: 0px;
+//     z-index: 1;
+// }
+.fitst_li {
+    margin-bottom: -15px !important;
 }
 
 .el-menu-item {
@@ -601,8 +620,12 @@ body::-webkit-scrollbar {
 }
 
 .el-button {
+    border-radius: 5px;
     padding: 10px 30px;
-    border-radius: 8px;
+}
+
+.my_btn {
+    padding: 12px 30px;
 }
 
 .commodity_con .el-button--mini,
@@ -612,10 +635,6 @@ body::-webkit-scrollbar {
 
 .commodity_con .el-button--default {
     width: 88px;
-}
-
-.domin_index .el-button {
-    padding: 10px 10px;
 }
 
 .domin_index .seach_bottom .el-button {
@@ -673,11 +692,11 @@ body::-webkit-scrollbar {
     .el-radio {
         margin-right: 0;
         position: relative;
-        border-radius: 8px;
+        border-radius: 5px;
     }
     .el-radio.is-bordered.is-checked {
         border: 2px solid #409EFF;
-        border-radius: 8px;
+        border-radius: 5px;
     }
     .el-radio__label {
         display: flex;
@@ -709,7 +728,7 @@ body::-webkit-scrollbar {
         display: none;
     }
     .el-radio {
-        border-radius: 8px;
+        border-radius: 5px;
     }
 }
 
@@ -732,5 +751,17 @@ body::-webkit-scrollbar {
 .el-input--medium .el-input__inner,
 .el-input--prefix .el-input__inner,
 .el-input--suffix .el-input__inner {
-    border-radius: 8px;
+    border-radius: 5px;
+}
+
+.el-radio-button__orig-radio:checked+.el-radio-button__inner {
+    color: #FFF;
+    background-color: #297AFF;
+    border-color: #297AFF;
+    box-shadow: -1px 0 0 0 #297AFF;
+}
+
+.el-switch.is-checked .el-switch__core {
+    border-color: #297AFF !important;
+    background-color: #297AFF !important;
 }

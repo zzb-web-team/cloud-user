@@ -2,268 +2,240 @@
 	<section class="myself-container content">
 		<!-- <div class="user-title" style="display: flex;flex-flow: column;width: 1240px;margin: auto;"> -->
 		<div class="user-title">
-		<div class="top_title update_width">统计分析</div>
+			<div class="top_title update_width">统计分析</div>
+			<div
+				v-show="activeName == 'first'"
+				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding:20px 25px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
+			>
+				<div style="display: flex;align-items: center;flex-flow: row;">
+					<el-input
+						placeholder="请输入域名"
+						v-model="valueDomain"
+						class="input-with-select"
+						maxlength="70"
+						@keyup.enter.native="getdata1"
+						style="width:15%;margin-right:10px;"
+					>
+						<i
+							slot="prefix"
+							class="el-input__icon el-icon-search"
+							@click="getdata1()"
+						></i>
+					</el-input>
+					<el-input
+						placeholder="请输入加速内容名称"
+						v-model="value_a1"
+						class="input-with-select"
+						maxlength="70"
+						@keyup.enter.native="getdata"
+						style="width:15%;margin-right:10px;"
+					>
+						<i
+							slot="prefix"
+							class="el-input__icon el-icon-search"
+							@click="getdata()"
+						></i>
+					</el-input>
+					<!-- <span style="margin-right:10px;margin-left:15px;"
+								>终端类型:</span
+							> -->
+					<el-select
+						v-model="accval1"
+						placeholder="终端类型"
+						style="width: 10%;margin-right: 10px;"
+						@change="getdata()"
+					>
+						<el-option label="全部" value="-1"></el-option>
+						<el-option label="android" value="0"></el-option>
+						<el-option label="ios" value="1"></el-option>
+						<el-option label="其他" value="2"></el-option>
+					</el-select>
+					<!-- <span style="margin-right:10px;margin-left:15px;"
+								>日期:</span
+							> -->
+					<div>
+						<el-radio-group
+							v-model="radio1"
+							size="medium"
+							@change="sele_time(0)"
+							v-show="!shoudzy"
+							style="white-space:nowrap;"
+						>
+							<el-radio-button label="1">今天</el-radio-button>
+							<el-radio-button label="2">昨天</el-radio-button>
+							<el-radio-button label="3">近7天</el-radio-button>
+							<el-radio-button label="4">近30天</el-radio-button>
+							<el-radio-button label="5">自定义</el-radio-button>
+						</el-radio-group>
+						<el-button
+							type="primary"
+							v-show="shoudzy"
+							@click="setshoudzyx"
+							style="background:#409EFF;border:#409EFF"
+							>自定义</el-button
+						>
+					</div>
+					<el-date-picker
+						v-show="shoudzy"
+						style="margin-left:10px;"
+						v-model="val2"
+						type="datetimerange"
+						:picker-options="pickerOptions"
+						range-separator="至"
+						start-placeholder="开始日期"
+						end-placeholder="结束日期"
+						align="left"
+						@change="gettimes_pvpu"
+					></el-date-picker>
+					<el-button
+						style="margin-left:10px;"
+						type="primary"
+						@click="getdata1()"
+						>确定</el-button
+					>
+					<el-button style="margin-left:10px;" plain @click="reset"
+						>重置</el-button
+					>
+				</div>
+				<div style="display:flex;white-space:nowrap;">
+					<span style="margin-right:5px;">使用缓存</span>
+					<el-switch
+						v-model="useCache"
+						active-color="#409EFF"
+					></el-switch>
+				</div>
+			</div>
+			<div
+				v-show="activeName == 'second'"
+				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding:20px 25px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
+			>
+				<div style="display: flex;align-items: center;flex-flow: row;">
+					<el-input
+						placeholder="请输入域名"
+						v-model="valueDomain1"
+						class="input-with-select"
+						maxlength="70"
+						@keyup.enter.native="getdata1"
+						style="width:15%;margin-right:10px;"
+					>
+						<i
+							slot="prefix"
+							class="el-input__icon el-icon-search"
+							@click="getdata1()"
+						></i>
+					</el-input>
+					<el-input
+						placeholder="请输入加速内容名称"
+						v-model="value_b1"
+						class="input-with-select"
+						maxlength="70"
+						@keyup.enter.native="getdata1"
+						style="width:15%;margin-right:10px;"
+					>
+						<i
+							slot="prefix"
+							class="el-input__icon el-icon-search"
+							@click="getdata1()"
+						></i>
+					</el-input>
+					<el-select
+						v-model="accval2"
+						placeholder="终端类型"
+						style="width: 10%;margin-right: 10px;"
+						@change="getdata1()"
+					>
+						<el-option label="全部" value="-1"></el-option>
+						<el-option label="android" value="0"></el-option>
+						<el-option label="ios" value="1"></el-option>
+						<el-option label="其他" value="2"></el-option>
+					</el-select>
+					<!-- <span style="margin-right:10px;margin-left:15px;"
+								>日期:</span
+							> -->
+					<el-radio-group
+						v-model="radio1"
+						size="medium"
+						@change="sele_time(1)"
+						v-show="!shoudzyz"
+						style="white-space:nowrap;"
+					>
+						<el-radio-button label="1">今天</el-radio-button>
+						<el-radio-button label="2">昨天</el-radio-button>
+						<el-radio-button label="3">近7天</el-radio-button>
+						<el-radio-button label="4">近30天</el-radio-button>
+						<el-radio-button label="5">自定义</el-radio-button>
+					</el-radio-group>
+					<el-button
+						type="primary"
+						v-show="shoudzyz"
+						@click="showzdyz"
+						style="background:#409EFF;border:#409EFF"
+						>自定义</el-button
+					>
+					<el-date-picker
+						v-show="shoudzyz"
+						style="margin-left:10px;"
+						v-model="val2"
+						type="datetimerange"
+						:picker-options="pickerOptions"
+						range-separator="至"
+						start-placeholder="开始日期"
+						end-placeholder="结束日期"
+						align="left"
+						@change="gettimes_option"
+					></el-date-picker>
+					<el-button
+						style="margin-left:10px;"
+						type="primary"
+						@click="getdata1"
+						>确定</el-button
+					>
+					<el-button
+						style="margin-left:10px;"
+						plain
+						@click="reset_map"
+						>重置</el-button
+					>
+				</div>
+				<div style="display:flex;white-space:nowrap;">
+					<span style="margin-right:5px;">使用缓存</span>
+					<el-switch
+						v-model="useCache"
+						active-color="#409EFF"
+					></el-switch>
+				</div>
+			</div>
 			<div class="statisics_con">
 				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="PV/UV" name="first">
-						<div
-							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 25px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
-						>
-                        <div style="display: flex;align-items: center;flex-flow: row;">
-
-                       
-							<el-input
-								placeholder="请输入域名"
-								v-model="valueDomain"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata1"
-								style="width:15%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata1()"
-								></i>
-							</el-input>
-							<el-input
-								placeholder="请输入加速内容名称"
-								v-model="value_a1"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata"
-								style="width:15%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata()"
-								></i>
-							</el-input>
-							<!-- <span style="margin-right:10px;margin-left:15px;"
-								>终端类型:</span
-							> -->
-							<el-select
-								v-model="accval1"
-								placeholder="终端类型"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata()"
-							>
-								<el-option label="全部" value="-1"></el-option>
-								<el-option
-									label="android"
-									value="0"
-								></el-option>
-								<el-option label="ios" value="1"></el-option>
-								<el-option label="其他" value="2"></el-option>
-							</el-select>
-							<!-- <span style="margin-right:10px;margin-left:15px;"
-								>日期:</span
-							> -->
-							<div>
-								<el-radio-group
-									v-model="radio1"
-									size="medium"
-									@change="sele_time(0)"
-									v-show="!shoudzy"
-									style="white-space:nowrap;"
-								>
-									<el-radio-button label="1"
-										>今天</el-radio-button
-									>
-									<el-radio-button label="2"
-										>昨天</el-radio-button
-									>
-									<el-radio-button label="3"
-										>近7天</el-radio-button
-									>
-									<el-radio-button label="4"
-										>近30天</el-radio-button
-									>
-									<el-radio-button label="5"
-										>自定义</el-radio-button
-									>
-								</el-radio-group>
-								<el-button
-									type="primary"
-									v-show="shoudzy"
-									@click="setshoudzyx"
-									style="background:#409EFF;border:#409EFF"
-									>自定义</el-button
-								>
-							</div>
-							<el-date-picker
-								v-show="shoudzy"
-								style="margin-left:10px;"
-								v-model="val2"
-								type="datetimerange"
-								:picker-options="pickerOptions"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								align="left"
-								@change="gettimes_pvpu"
-							></el-date-picker>
-							<el-button
-								style="margin-left:10px;"
-								type="primary"
-								@click="getdata1()"
-								>确定</el-button
-							>
-							<el-button
-								style="margin-left:10px;"
-								plain
-								@click="reset"
-								>重置</el-button
-							>
-                            </div>
-                            <div style="display:flex;white-space:nowrap;">
-							<span style="margin-right:5px;">使用缓存</span>
-							<el-switch
-								v-model="useCache"
-								active-color="#409EFF"
-							></el-switch>
-						</div>
-						</div>
-
-						<div class="user_item">
-							<div class="item_left">
-								<div class="item_text">总访问次数(PV)</div>
-								<div class="item_count">
-									<span>{{ totalPV }}</span>
+						<div class="device_echarts">
+							<div class="user_item">
+								<div class="item_left">
+									<div class="item_text">总访问次数(PV)</div>
+									<div class="item_count">
+										<span>{{ totalPV }}</span>
+									</div>
+								</div>
+								<div class="item_right">
+									<div class="item_text">
+										独立IP访问数(UV)
+									</div>
+									<div class="item_count">
+										<span>{{ totalUV }}</span>
+									</div>
 								</div>
 							</div>
-							<div class="item_right">
-								<div class="item_text">独立IP访问数(UV)</div>
-								<div class="item_count">
-									<span>{{ totalUV }}</span>
-								</div>
+							<div class="device_form">
+								<div
+									id="myChart"
+									:style="{ height: '590px' }"
+								></div>
 							</div>
-						</div>
-						<div class="device_form">
-							<div
-								id="myChart"
-								:style="{ height: '590px' }"
-							></div>
 						</div>
 					</el-tab-pane>
 
 					<el-tab-pane label="访问用户分布" name="second">
-						<div
-							style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 20px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
-						>
-                        <div style="display: flex;align-items: center;flex-flow: row;">
-							<el-input
-								placeholder="请输入域名"
-								v-model="valueDomain1"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata1"
-								style="width:15%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata1()"
-								></i>
-							</el-input>
-							<el-input
-								placeholder="请输入加速内容名称"
-								v-model="value_b1"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata1"
-								style="width:15%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata1()"
-								></i>
-							</el-input>
-							<el-select
-								v-model="accval2"
-								placeholder="终端类型"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata1()"
-							>
-								<el-option label="全部" value="-1"></el-option>
-								<el-option
-									label="android"
-									value="0"
-								></el-option>
-								<el-option label="ios" value="1"></el-option>
-								<el-option label="其他" value="2"></el-option>
-							</el-select>
-							<!-- <span style="margin-right:10px;margin-left:15px;"
-								>日期:</span
-							> -->
-							<el-radio-group
-								v-model="radio1"
-								size="medium"
-								@change="sele_time(1)"
-								v-show="!shoudzyz"
-								style="white-space:nowrap;"
-							>
-								<el-radio-button label="1"
-									>今天</el-radio-button
-								>
-								<el-radio-button label="2"
-									>昨天</el-radio-button
-								>
-								<el-radio-button label="3"
-									>近7天</el-radio-button
-								>
-								<el-radio-button label="4"
-									>近30天</el-radio-button
-								>
-								<el-radio-button label="5"
-									>自定义</el-radio-button
-								>
-							</el-radio-group>
-							<el-button
-								type="primary"
-								v-show="shoudzyz"
-								@click="showzdyz"
-								style="background:#409EFF;border:#409EFF"
-								>自定义</el-button
-							>
-							<el-date-picker
-								v-show="shoudzyz"
-								style="margin-left:10px;"
-								v-model="val2"
-								type="datetimerange"
-								:picker-options="pickerOptions"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								align="left"
-								@change="gettimes_option"
-							></el-date-picker>
-							<el-button
-								style="margin-left:10px;"
-								type="primary"
-								@click="getdata1"
-								>确定</el-button
-							>
-							<el-button
-								style="margin-left:10px;"
-								plain
-								@click="reset_map"
-								>重置</el-button
-							>
-                            
-
-                            </div>
-                             <div style="display:flex;white-space:nowrap;">
-							<span style="margin-right:5px;">使用缓存</span>
-							<el-switch
-								v-model="useCache"
-								active-color="#409EFF"
-							></el-switch>
-						</div>
-						</div>
-						<div class="device_form" style>
+						<div class="device_form diqu_yun" style>
 							<el-radio-group
 								v-model="radio_tab"
 								size="medium"
@@ -665,8 +637,8 @@ export default {
 			datatype: 1,
 			twob: false,
 			minDate: '',
-            maxDate: '',
-            useCache:true,
+			maxDate: '',
+			useCache: true,
 			pickerOptions: {
 				onPick: ({ maxDate, minDate }) => {
 					this.minDate = minDate;
@@ -1017,8 +989,8 @@ export default {
 		},
 		//请求数据--曲线图
 		getcure(data) {
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1213,8 +1185,8 @@ export default {
 		//请求数据--表格
 		gettable() {
 			this.tablecdn2 = [];
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
@@ -1266,8 +1238,8 @@ export default {
 		// },
 		//导出pupv
 		exoprtant_pupv() {
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1306,8 +1278,8 @@ export default {
 		},
 		//导出用户分布
 		exoprtant_topregion() {
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1348,8 +1320,8 @@ export default {
 		},
 		//导出运营商
 		exoprtant_topisp() {
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.startTs = this.starttime;
 			params.endTs = this.endtime;
@@ -1389,8 +1361,8 @@ export default {
 		},
 		//导出热门加速类容
 		exoprtant_playtimes() {
-            let params = new Object();
-             params.useCache = this.useCache == true ? 1 : 0;
+			let params = new Object();
+			params.useCache = this.useCache == true ? 1 : 0;
 			params.chanId = this.chanid + '';
 			params.start_ts = this.starttime;
 			params.end_ts = this.endtime;
@@ -1667,7 +1639,7 @@ export default {
 		},
 		//选项卡
 		handleClick(tab, event) {
-            this.useCache = true;
+			this.useCache = true;
 			this.timeUnit = 5;
 			sessionStorage.setItem('tab_name', this.activeName); //添加到sessionStorage
 			this.radio1 = '1';
@@ -1998,7 +1970,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .btn_active {
 	color: #409eff;
 	border-color: #c6e2ff;
@@ -2011,16 +1983,16 @@ export default {
 	.device_form {
 		width: auto;
 		height: auto;
-		margin-left: 25px;
-		margin-right: 25px;
+		// margin-left: 25px;
+		// margin-right: 25px;
 		overflow: hidden;
-        margin-top: 15px;
-        margin-bottom: 30px;
+		margin-top: 25px;
+		margin-bottom: 30px;
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
-		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
-		border-radius: 2px;
+		// box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		// border-radius: 2px;
 
 		.bottom {
 			margin-top: 20px;
@@ -2051,6 +2023,12 @@ export default {
 			cursor: pointer;
 			margin-left: 20px;
 		}
+	}
+	.diqu_yun {
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		border-radius: 2px;
+		margin-left: 25px;
+		margin-right: 25px;
 	}
 
 	.devide_table {
@@ -2100,12 +2078,10 @@ export default {
 .user_item {
 	width: auto;
 	height: 130px;
-	background: rgba(255, 255, 255, 1);
-	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
-	border-radius: 2px;
-	margin-top: 15px;
-	margin-left: 25px;
-	margin-right: 25px;
+	// background: rgba(255, 255, 255, 1);
+	// box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+	// border-radius: 2px;
+	margin-top: 25px;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;

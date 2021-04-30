@@ -6,7 +6,7 @@
 			<div class="con_flex_left">
 				<div class="swiper_con">
 					<div class="left_img">
-						图片
+						<img src="../../assets/img/bangong.png" alt="" />
 					</div>
 					<div class="roll" :class="{ marquee_con: con_animate }">
 						<ul :class="{ marquee_top: animate }">
@@ -22,7 +22,9 @@
 										}}</span
 									>
 									<span class="txt"
-										>已有{{ index }}人购买</span
+										>已有{{
+											parseInt(Math.random() * 100)
+										}}人购买</span
 									>
 									<el-button type="text" @click="go_buy(item)"
 										>立即购买</el-button
@@ -32,7 +34,8 @@
 						</ul>
 					</div>
 					<div class="go_shang" @click="go_commodity_list()">
-						商城
+						<img src="../../assets/img/s_sahngcheng.png" alt="" />
+						<span>商城</span>
 					</div>
 				</div>
 				<div class="content_top">
@@ -144,7 +147,7 @@
 				<div
 					class="right_bottom"
 					:style="{
-						height: clientHeight - 540+ 'px',
+						height: clientHeight - 540 + 'px',
 					}"
 				>
 					<div class="right_bottom_title">帮助文档</div>
@@ -584,14 +587,14 @@ export default {
 		display: flex;
 		align-items: center;
 		background-color: #fff;
-        min-width: 1500px;
+		min-width: 1500px;
 		.con_flex_left {
 			width: 65%;
 			.swiper_con {
 				display: flex;
 				justify-content: space-around;
 				margin: 0 24px 15px 25px;
-				background-color: #f6f9ff;
+				background-color: #f8fafef2;
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 				.left_img {
 					width: 80px;
@@ -600,6 +603,8 @@ export default {
 					// align-items: center;
 					padding-top: 40px;
 					img {
+						width: 36px;
+						height: 36px;
 					}
 				}
 				.roll {
@@ -638,7 +643,7 @@ export default {
 						}
 						.txt:first-child {
 							display: inline-block;
-							width: 60%;
+							width: 75%;
 							white-space: nowrap;
 							overflow: hidden;
 							text-overflow: ellipsis;
@@ -652,7 +657,13 @@ export default {
 					margin: auto;
 					display: flex;
 					// flex-direction: column;
+					flex-direction: column;
 					align-items: center;
+					cursor: pointer;
+					span {
+						margin-top: 10px;
+						color: #297aff;
+					}
 				}
 			}
 			.content_top {

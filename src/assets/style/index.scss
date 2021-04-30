@@ -84,7 +84,7 @@ body::-webkit-scrollbar {
 .update_width {
     margin: 30px 25px 0 25px;
     background-color: #fff;
-    padding-left: 45px;
+    padding-left: 25px;
     box-shadow: 0px 1px 6px 0px rgba(51, 51, 51, 0.16);
 }
 
@@ -108,14 +108,14 @@ body::-webkit-scrollbar {
 
 .content-container {
     // padding: 0 !important;
-    background: #f7f8fc;
+    background: #ffffff;
 }
 
 .content {
     width: 100%;
     // max-width: 1920px;
     height: 100%;
-    background: #f7f8fc;
+    background: #ffffff;
 }
 
 //登录框样式
@@ -243,7 +243,7 @@ body::-webkit-scrollbar {
     margin-left: 25px;
     margin-right: 25px;
     padding: 29px 25px;
-    margin-top: 30px;
+    margin-top: 25px;
     box-shadow: 0px 3px 6px 0px rgba(190, 185, 185, 0.3);
 }
 
@@ -764,4 +764,12 @@ body::-webkit-scrollbar {
 .el-switch.is-checked .el-switch__core {
     border-color: #297AFF !important;
     background-color: #297AFF !important;
+}
+
+.device_echarts {
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+    border-radius: 2px;
+    margin-left: 25px;
+    margin-right: 25px;
 }

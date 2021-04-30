@@ -6,7 +6,7 @@
 			style="display: flex;flex-flow: column;margin: auto;margin-left:25px;margin-right:25px;"
 		>
 			<div
-				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding: 20px;padding-left:37px;background:rgba(255,255,255,1);box-shadow:0px 4px 7px 0px rgba(41,108,171,0.1);"
+				style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding: 20px;padding-left:25px;background:rgba(255,255,255,1);box-shadow:0px 4px 7px 0px rgba(41,108,171,0.1);"
 			>
 				<div style="display: flex;align-items: center;flex-flow: row;">
 					<el-input
@@ -106,16 +106,16 @@
 				</div>
 			</div>
 			<div style="margin-top:15px;">
-				<el-row>
+				<div class="device_echarts">
 					<div class="user-item">
 						<div class="item-text">使用流量</div>
 						<div class="item-count">
 							<span>{{ dataL }}&nbsp;{{ allunitdata }}</span>
 						</div>
 					</div>
-				</el-row>
-				<div class="device_form_query">
-					<div id="myChart" :style="{ height: '607px' }"></div>
+					<div class="device_form_query">
+						<div id="myChart" :style="{ height: '607px' }"></div>
+					</div>
 				</div>
 				<div class="devide_tables">
 					<el-row type="flex" class="row_active">
@@ -836,8 +836,7 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
+<style lang="scss" scoped>
 .myself-container {
 	width: 100%;
 	// min-width: 1600px;
@@ -849,7 +848,7 @@ export default {
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
-
+		// box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.bottom {
 			margin-top: 20px;
 		}
@@ -924,15 +923,19 @@ export default {
 		margin-left: 80px;
 	}
 }
-.user-item {
+.device_echarts {
 	background: rgba(255, 255, 255, 1);
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	border-radius: 2px;
+	margin-left: 0;
+	margin-right: 0;
+}
+.user-item {
 	padding: 31px 31px 31px 67px;
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
-	text-align: left;
+	text-align: center;
 	.item-count {
 		height: 50px;
 		line-height: 50px;

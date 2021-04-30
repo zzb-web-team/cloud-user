@@ -3,156 +3,145 @@
 		<div class="top_title update_width">播放流量</div>
 		<div class="user-title" style="display: flex;flex-flow: column;">
 			<div class="resources_con">
-				<el-tabs v-model="activeName" @tab-click="handleClick">
+				<div
+					style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding:20px 25px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
+				>
 					<div
-						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 25px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
+						style="display: flex;align-items: center;flex-flow: row;"
 					>
-						<div
-							style="display: flex;align-items: center;flex-flow: row;"
+						<el-input
+							v-show="activeName != 'third'"
+							placeholder="请输入域名"
+							v-model="value_url"
+							class="input-with-select"
+							maxlength="70"
+							@keyup.enter.native="getdata"
+							style="width:10%;margin-right:10px;"
 						>
-							<el-input
-								v-show="activeName != 'third'"
-								placeholder="请输入域名"
-								v-model="value_url"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata"
-								style="width:10%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata()"
-								></i>
-							</el-input>
-							<el-input
-								v-show="activeName != 'third'"
-								placeholder="请输入加速内容名称"
-								v-model="value1"
-								class="input-with-select"
-								maxlength="70"
-								@keyup.enter.native="getdata"
-								style="width:10%;margin-right:10px;"
-							>
-								<i
-									slot="prefix"
-									class="el-input__icon el-icon-search"
-									@click="getdata()"
-								></i>
-							</el-input>
-							<el-select
-								v-show="activeName == 'first'"
-								v-model="terminalName"
-								placeholder="终端类型"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata()"
-							>
-								<el-option label="全部" value="-1"></el-option>
-								<el-option
-									label="android"
-									value="0"
-								></el-option>
-								<el-option label="ios" value="1"></el-option>
-								<el-option label="其他" value="2"></el-option>
-							</el-select>
-							<el-select
-								v-show="activeName != 'third'"
-								v-model="valueChanel"
-								placeholder="节点渠道"
-								style="width: 10%;margin-right: 10px;"
-								@change="getdata()"
-							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									v-for="(item, index) in hashidSets"
-									:key="index"
-									:label="item.label"
-									:value="item.value"
-								></el-option>
-							</el-select>
-							<!-- <span style="margin-right:10px;margin-left:15px;"
+							<i
+								slot="prefix"
+								class="el-input__icon el-icon-search"
+								@click="getdata()"
+							></i>
+						</el-input>
+						<el-input
+							v-show="activeName != 'third'"
+							placeholder="请输入加速内容名称"
+							v-model="value1"
+							class="input-with-select"
+							maxlength="70"
+							@keyup.enter.native="getdata"
+							style="width:10%;margin-right:10px;"
+						>
+							<i
+								slot="prefix"
+								class="el-input__icon el-icon-search"
+								@click="getdata()"
+							></i>
+						</el-input>
+						<el-select
+							v-show="activeName == 'first'"
+							v-model="terminalName"
+							placeholder="终端类型"
+							style="width: 10%;margin-right: 10px;"
+							@change="getdata()"
+						>
+							<el-option label="全部" value="-1"></el-option>
+							<el-option label="android" value="0"></el-option>
+							<el-option label="ios" value="1"></el-option>
+							<el-option label="其他" value="2"></el-option>
+						</el-select>
+						<el-select
+							v-show="activeName != 'third'"
+							v-model="valueChanel"
+							placeholder="节点渠道"
+							style="width: 10%;margin-right: 10px;"
+							@change="getdata()"
+						>
+							<el-option label="全部" value="*"></el-option>
+							<el-option
+								v-for="(item, index) in hashidSets"
+								:key="index"
+								:label="item.label"
+								:value="item.value"
+							></el-option>
+						</el-select>
+						<!-- <span style="margin-right:10px;margin-left:15px;"
 							>日期:</span
 						> -->
-							<el-radio-group
-								v-model="radio1"
-								size="medium"
-								@change="sele_time()"
-								v-show="!shoudzyx"
-							>
-								<el-radio-button label="1"
-									>今天</el-radio-button
-								>
-								<el-radio-button label="2"
-									>昨天</el-radio-button
-								>
-								<el-radio-button label="3"
-									>近7天</el-radio-button
-								>
-								<el-radio-button label="4"
-									>近30天</el-radio-button
-								>
-								<el-radio-button label="5"
-									>自定义</el-radio-button
-								>
-							</el-radio-group>
-							<el-button
-								type="primary"
-								v-show="shoudzyx"
-								style="background:#409EFF;border:#409EFF"
-								@click="setshoudzyx"
-								>自定义</el-button
-							>
-							<el-date-picker
-								v-show="shoudzyx"
-								style="margin-left:10px;"
-								v-model="val2"
-								:type="
-									activeName == 'first'
-										? 'daterange'
-										: 'datetimerange'
-								"
-								:picker-options="pickerOptions"
-								range-separator="至"
-								start-placeholder="开始日期"
-								end-placeholder="结束日期"
-								align="left"
-								@change="gettimes"
-							></el-date-picker>
-							<el-button
-								style="margin-left:10px;"
-								type="primary"
-								@click="getdata()"
-								v-show="activeName != 'third'"
-								>确定</el-button
-							>
-							<el-button
-								style="margin-left:10px;"
-								plain
-								@click="reset()"
-								v-show="activeName != 'third'"
-								>重置</el-button
-							>
-						</div>
-						<div style="display:flex;white-space:nowrap;">
-							<span style="margin-right:5px;">使用缓存</span>
-							<el-switch
-								v-model="useCache"
-								active-color="#409EFF"
-							></el-switch>
-						</div>
+						<el-radio-group
+							v-model="radio1"
+							size="medium"
+							@change="sele_time()"
+							v-show="!shoudzyx"
+						>
+							<el-radio-button label="1">今天</el-radio-button>
+							<el-radio-button label="2">昨天</el-radio-button>
+							<el-radio-button label="3">近7天</el-radio-button>
+							<el-radio-button label="4">近30天</el-radio-button>
+							<el-radio-button label="5">自定义</el-radio-button>
+						</el-radio-group>
+						<el-button
+							type="primary"
+							v-show="shoudzyx"
+							style="background:#409EFF;border:#409EFF"
+							@click="setshoudzyx"
+							>自定义</el-button
+						>
+						<el-date-picker
+							v-show="shoudzyx"
+							style="margin-left:10px;"
+							v-model="val2"
+							:type="
+								activeName == 'first'
+									? 'daterange'
+									: 'datetimerange'
+							"
+							:picker-options="pickerOptions"
+							range-separator="至"
+							start-placeholder="开始日期"
+							end-placeholder="结束日期"
+							align="left"
+							@change="gettimes"
+						></el-date-picker>
+						<el-button
+							style="margin-left:10px;"
+							type="primary"
+							@click="getdata()"
+							v-show="activeName != 'third'"
+							>确定</el-button
+						>
+						<el-button
+							style="margin-left:10px;"
+							plain
+							@click="reset()"
+							v-show="activeName != 'third'"
+							>重置</el-button
+						>
 					</div>
+					<div style="display:flex;white-space:nowrap;">
+						<span style="margin-right:5px;">使用缓存</span>
+						<el-switch
+							v-model="useCache"
+							active-color="#409EFF"
+						></el-switch>
+					</div>
+				</div>
+				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="播放流量占比" name="first">
-						<el-row class="resources_percentage">
-							<el-col :span="4">
-								<p>{{ totalp2p }}</p>
-								<p>P2P播放流量</p>
-							</el-col>
-							<el-col :span="4">
-								<p>{{ totalcdn }}</p>
-								<p>CDN播放流量</p>
-							</el-col>
-						</el-row>
-						<div id="liuliang_echarts"></div>
+						<div class="device_echarts">
+							<el-row class="resources_percentage">
+								<el-col :span="11">
+									<p>{{ totalp2p }}</p>
+									<p>P2P播放流量</p>
+								</el-col>
+								<el-col :span="11">
+									<p>{{ totalcdn }}</p>
+									<p>CDN播放流量</p>
+								</el-col>
+							</el-row>
+							<div id="liuliang_echarts"></div>
+						</div>
 						<div class="devide_table">
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
@@ -280,7 +269,7 @@
 										@fathernum="flowgettol"
 										:pagesa="flowtotal_cnt"
 										:currentPage="flowcurrentPage"
-										v-show="tableflow.length > 0"
+										v-if="tableflow"
 									></fenye>
 								</el-col>
 							</el-row>
@@ -749,14 +738,16 @@ export default {
 			let param = {};
 			get_nodetype_enum(param)
 				.then((res) => {
-					let data = res.data.firstchan;
-					let list = data.map((item) => {
-						let obj = {};
-						obj.label = item.name;
-						obj.value = item.value;
-						return obj;
-					});
-					this.hashidSets = list;
+					if (res.status == 0) {
+						let data = res.data.firstchan;
+						let list = data.map((item) => {
+							let obj = {};
+							obj.label = item.name;
+							obj.value = item.value;
+							return obj;
+						});
+						this.hashidSets = list;
+					}
 				})
 				.catch((err) => {
 					console.log(err);
@@ -1930,14 +1921,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .myself-container {
 	width: 100%;
 	// min-width: 1600px;
 	.device_form {
 		width: auto;
 		height: auto;
-		margin-top: 20px;
+		margin-top: 25px;
 		margin-right: 25px;
 		margin-left: 25px;
 		background: #ffffff;
@@ -2011,11 +2002,11 @@ export default {
 		padding-left: 30px;
 		padding-top: 15px;
 		padding-bottom: 15px;
-		margin-top: 15px;
-		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		margin-top: 25px;
+		// box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.el-col {
 			height: 100px;
-			background: rgba(247, 247, 251, 1);
+			// background: rgba(247, 247, 251, 1);
 			border-radius: 8px;
 			p:nth-child(1) {
 				color: #333333;
@@ -2029,11 +2020,19 @@ export default {
 		}
 		.el-col:nth-child(1) {
 			margin-right: 24px;
+			border-right: 1px solid #e6e9ed;
 		}
 	}
-	#liuliang_echarts,
-	#jiankong_echarts {
+	#liuliang_echarts {
 		margin-top: 15px;
+		margin-left: 25px;
+		margin-right: 25px;
+		height: 632px;
+		padding-top: 35px;
+		padding-bottom: 20px;
+	}
+	#jiankong_echarts {
+		margin-top: 25px;
 		margin-left: 25px;
 		margin-right: 25px;
 		height: 632px;

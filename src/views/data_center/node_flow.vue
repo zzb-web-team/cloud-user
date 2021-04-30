@@ -3,9 +3,8 @@
 		<div class="user-title" style="display: flex;flex-flow: column;">
 			<div class="top_title update_width">节点流量监控</div>
 			<div class="resources_con">
-				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<div
-						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;margin-top: 25px;padding:20px 37px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
+						style="display: flex;justify-content: space-between;align-items: center;flex-flow: row;padding:20px 25px;background:rgba(255,255,255,1);box-shadow:0px 2px 3px 0px rgba(6,17,36,0.14);border-radius:2px;margin-left:25px;margin-right:25px;"
 					>
 						<div
 							style="display: flex;align-items: center;flex-flow: row;"
@@ -131,17 +130,19 @@
 							></el-switch>
 						</div>
 					</div>
+				<el-tabs v-model="activeName" @tab-click="handleClick">
 					<el-tab-pane label="节点流量" name="first">
+                        <div class="device_echarts">
 						<el-row class="resources_percentage">
-							<el-col :span="4">
+							<el-col :span="7">
 								<p>{{ sump2p | setbytes }}</p>
 								<p>P2P播放流量</p>
 							</el-col>
-							<el-col :span="4">
+							<el-col :span="7">
 								<p>{{ sumnode | setbytes }}</p>
 								<p>下行节点扩散流量</p>
 							</el-col>
-							<el-col :span="4">
+							<el-col :span="7">
 								<p>{{ sumcdn | setbytes }}</p>
 								<p>CDN回源流量</p>
 							</el-col>
@@ -152,6 +153,7 @@
 								:style="{ height: '607px' }"
 							></div>
 						</div>
+                        </div>
 						<div class="devide_table">
 							<el-row type="flex" class="row_active">
 								<el-col :span="24">
@@ -475,14 +477,16 @@ export default {
 			let param = {};
 			get_nodetype_enum(param)
 				.then((res) => {
-					let data = res.data.firstchan;
-					let list = data.map((item) => {
-						let obj = {};
-						obj.label = item.name;
-						obj.value = item.value;
-						return obj;
-					});
-					this.hashidSets = list;
+                    if(res.status==0){
+                        let data = res.data.firstchan;
+                        let list = data.map((item) => {
+                            let obj = {};
+                            obj.label = item.name;
+                            obj.value = item.value;
+                            return obj;
+                        });
+                        this.hashidSets = list;
+                    }
 				})
 				.catch((err) => {
 					console.log(err);
@@ -1218,13 +1222,13 @@ export default {
 		width: auto;
 		height: auto;
 		margin-top: 15px;
-		margin-right: 25px;
-		margin-left: 25px;
+		// margin-right: 25px;
+		// margin-left: 25px;
 		background: #ffffff;
 		padding: 15px 30px;
 		box-sizing: border-box;
-		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
-		border-radius: 2px;
+		// box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		// border-radius: 2px;
 
 		.bottom {
 			margin-top: 20px;
@@ -1263,12 +1267,10 @@ export default {
 		padding-left: 30px;
 		padding-top: 15px;
 		padding-bottom: 15px;
-		margin-top: 15px;
-		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		margin-top: 25px;
+		// box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 		.el-col {
 			height: 100px;
-			background: rgba(247, 247, 251, 1);
-			border-radius: 8px;
 			p:nth-child(1) {
 				color: #333333;
 				font-size: 24px;
@@ -1279,11 +1281,9 @@ export default {
 				font-size: 14px;
 			}
 		}
-		.el-col:nth-child(1) {
+		.el-col:nth-child(1),.el-col:nth-child(2) {
 			margin-right: 24px;
-		}
-		.el-col:nth-child(2) {
-			margin-right: 24px;
+			border-right: 1px solid #e6e9ed;
 		}
 	}
 	.devide_table {
@@ -1291,7 +1291,7 @@ export default {
 		height: auto;
 		margin-left: 25px;
 		margin-right: 25px;
-		margin-top: 15px;
+		margin-top: 25px;
 		margin-bottom: 30px;
 		background: #ffffff;
 		border-radius: 2px;

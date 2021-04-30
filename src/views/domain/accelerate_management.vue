@@ -933,6 +933,7 @@ export default {
 				height: 36px;
 				line-height: 36px;
 				margin-left: 10px;
+                border-radius: 5px;
 			}
 		}
 		.seach_bottom {

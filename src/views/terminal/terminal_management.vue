@@ -36,7 +36,7 @@
 			<el-tabs v-model="activeName" @tab-click="handleClick">
 				<el-tab-pane label="终端token" name="first">
 					<div
-						style="background: #ffffff;padding:15px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 25px;margin-right: 25px;box-shadow: 0px 2px 3px 0px rgba(6, 17, 36, 0.14);border-radius: 2px;"
+						style="background: #ffffff;padding:15px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 25px;margin-right: 25px;    box-shadow: 0px 0px 6px 0px rgb(51 51 51 / 16%);border-radius: 2px;"
 						:style="{
 							height: clientHeight - 245 + 'px',
 						}"
@@ -172,7 +172,7 @@
 				<el-tab-pane label="SDK下载" name="second">
 					<div
 						class="sdk_tab"
-						style="background: #ffffff;padding:35px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 25px;margin-right: 25px;box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);border-radius: 2px;"
+						style="background: #ffffff;padding:35px 37px 31px 37px;text-align: left;border-radius:6px;margin-left: 25px;margin-right: 25px;    box-shadow: 0px 0px 6px 0px rgb(51 51 51 / 16%);border-radius: 2px;"
 						:style="{
 							height: clientHeight - 245 + 'px',
 						}"

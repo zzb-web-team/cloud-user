@@ -1,0 +1,172 @@
+<template>
+	<div class="recharge_management" ref="box_rHeight">
+		<div class="toptitle"><span>资金管理 ></span><span>充值</span></div>
+		<div class="content">
+			<div class="parameter_item">
+				<span>当前余额：</span>
+				<el-input
+					placeholder="请输入金额"
+					v-model="balance"
+					:disabled="true"
+				>
+				</el-input>
+			</div>
+			<div class="parameter_item">
+				<span>充值金额：</span>
+				<el-input
+					placeholder="请输入充值金额"
+					v-model="amount"
+					oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+				>
+				</el-input>
+			</div>
+			<div class="parameter_item">
+				<span>支付方式：</span>
+				<el-radio v-model="radio" label="1">微信</el-radio>
+				<el-radio v-model="radio" label="2">支付宝</el-radio>
+			</div>
+			<div class="parameter_item tips">
+				<p>温馨提示：</p>
+				<p>不支持信用卡或要求转账方式充值，切勿上当受骗。</p>
+				<p>如您有未结清账单，请优先结清该账单。</p>
+				<p>充值后请及时对支付订单进行结算，以免影响正常服务。</p>
+			</div>
+			<div class="parameter_item">
+				<div>
+					<el-checkbox v-model="pay_checked"
+						>我已阅读并同意<span class="link_text"
+							>《点播加速服务充值协议》</span
+						></el-checkbox
+					>
+				</div>
+			</div>
+			<div class="parameter_item">
+				<div>
+					<el-button
+						type="primary"
+						class="pay_btn"
+						size="samll"
+						@click="pay_money"
+						>充值</el-button
+					>
+				</div>
+			</div>
+		</div>
+		<Recharge
+			ref="recharge"
+			:pay_type="radio"
+			:money="Number(amount)"
+			:order_id="order_id"
+		></Recharge>
+	</div>
+</template>
+<script>
+import Recharge from '../../components/recharge';
+export default {
+	data() {
+		return {
+			clientHeight: '',
+			balance: 0,
+			amount: 0,
+			radio: '1',
+			pay_checked: false,
+			order_id: '1111111111112456',
+		};
+	},
+	components: { Recharge },
+	filters: {},
+	watch: {
+		clientHeight() {
+			//如果clientHeight 发生改变，这个函数就会运行
+			this.changeFixed(this.clientHeight);
+		},
+	},
+	created() {},
+	mounted() {
+		let that = this;
+		that.clientHeight = `${document.documentElement.clientHeight ||
+			document.documentElement.offsetHeight}`; //获取浏览器可视区域高度
+		window.onresize = function() {
+			that.clientHeight = `${document.documentElement.clientHeight ||
+				document.documentElement.offsetHeight}`;
+		};
+		if (that.$refs.box_rHeight) {
+			that.$refs.box_rHeight.style.height =
+				that.clientHeight - 120 + 'px';
+			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
+		}
+	},
+	methods: {
+		pay_money() {
+			if (this.pay_checked == false) {
+				this.$alert('请勾选《点播加速服务充值协议》', '提示', {
+					confirmButtonText: '确定',
+					callback: (action) => {},
+				});
+				return false;
+			}
+			if (this.amount <= 0) {
+				this.$alert('请输入有效充值金额', '提示', {
+					confirmButtonText: '确定',
+					callback: (action) => {},
+				});
+				return false;
+			}
+			this.$refs.recharge.show_dia();
+		},
+		//查询屏幕高度自适应
+		changeFixed(data) {
+			if (this.$refs.box_rHeight) {
+				this.$refs.box_rHeight.style.height = data - 120 + 'px';
+				this.$refs.box_rHeight.style.minHeight = 500 + 'px';
+			}
+		},
+	},
+};
+</script>
+<style lang="scss" scoped>
+.recharge_management {
+	text-align: left;
+	box-sizing: border-box;
+	padding: 30px 25px;
+	background-color: rgb(255, 255, 255);
+	margin: 30px 25px;
+	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+	.toptitle {
+		font-size: 16px;
+		span {
+			font-size: 16px;
+		}
+	}
+	.content {
+		width: 50%;
+		margin: auto;
+		.parameter_item {
+			display: flex;
+			justify-content: start;
+			align-items: center;
+			margin-top: 40px;
+			margin-left: 80px;
+			span {
+				width: 100px;
+			}
+		}
+		.tips {
+			flex-direction: column;
+			align-items: flex-start;
+			// height: 120px;
+			background-color: #f9f9f9;
+			box-sizing: border-box;
+			padding: 20px 15px;
+			border: 1px solid #dcdfe6;
+			border-radius: 2px;
+			p {
+				margin-bottom: 5px;
+			}
+			p:nth-child(3) {
+				color: #ee6723;
+			}
+		}
+	}
+}
+</style>

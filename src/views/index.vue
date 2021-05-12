@@ -8,7 +8,7 @@
 				>
 					<div style="fontSize:20px;color:#ffffff">点播控制台</div>
 				</el-col>
-				<el-col :span="4">
+				<el-col :span="6">
 					<el-radio-group
 						v-model="menu_type"
 						class="my_radio"
@@ -16,6 +16,7 @@
 					>
 						<el-radio-button label="管理中心"></el-radio-button>
 						<el-radio-button label="数据中心"></el-radio-button>
+						<el-radio-button label="资金管理"></el-radio-button>
 					</el-radio-group>
 				</el-col>
 				<el-col :span="4" class="userinfo">
@@ -203,6 +204,7 @@ export default {
 			manage_list: [],
 			data_list: [],
 			menu_list: [],
+			money_list: [],
 			fitst_li: 'fitst_li',
 		};
 	},
@@ -218,10 +220,16 @@ export default {
 			} else if (elem.name == '播放统计' && elem.hidden != true) {
 				_this.data_list = _this.data_list.concat(elem.children);
 			}
+			if (elem.name == '资金管理' && elem.hidden == true) {
+				elem.children[0].meta = { title: '资金管理' };
+				elem.meta = { title: '资金管理' };
+				_this.money_list = elem.children;
+			}
 			if (
 				elem.hidden != true &&
 				elem.name != '节点流量统计' &&
-				elem.name != '播放统计'
+				elem.name != '播放统计' &&
+				elem.name != '资金管理'
 			) {
 				return elem;
 			}
@@ -250,8 +258,10 @@ export default {
 		change_tab(label) {
 			if (this.menu_type == '管理中心') {
 				this.menu_list = this.manage_list;
-			} else {
+			} else if (this.menu_type == '数据中心') {
 				this.menu_list = this.data_list;
+			} else {
+				this.menu_list = this.money_list;
 			}
 			localStorage.setItem('menu_type', this.menu_type);
 			if (label) {
@@ -642,7 +652,7 @@ export default {
 			font-size: 14px;
 			font-weight: bold;
 			margin: 10px 0;
-			padding-top: 15px;
+			padding-top: 20px;
 			text-align: left;
 			box-sizing: border-box;
 			padding-left: 40px;
@@ -659,7 +669,8 @@ export default {
 			top: 0px;
 			z-index: 1;
 		}
-		.menu_item_title:first-child::before {
+		.menu_item_title:first-child::before,
+		.menu_item_title:nth-child(2)::before {
 			content: ''; /*CSS伪类用法*/
 			position: absolute; /*定位背景横线的位置*/
 			width: 0; /*宽和高做出来的背景横线*/

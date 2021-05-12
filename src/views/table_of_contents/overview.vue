@@ -109,6 +109,26 @@
 				</div>
 			</div>
 			<div class="con_flex_right">
+				<div class="right_first">
+					<p>当前加速服务计费方式：<span>流量包计费</span></p>
+					<div class="right_top_btn">
+						<el-button
+							type="primary"
+							plain
+							@click="go_commodity_list()"
+							>{{
+								sss ? '停止加速服务' : '开通加速服务'
+							}}</el-button
+						>
+						<el-button
+							type="primary"
+							plain
+							class="go_up"
+							@click="go_updat_billing()"
+							>变更计费方式</el-button
+						>
+					</div>
+				</div>
 				<div class="right_top">
 					<div class="right_top_title">
 						资源包<span
@@ -144,10 +164,20 @@
 						>
 					</div>
 				</div>
+				<div class="right_second">
+					<div class="right_top_title">
+						按量计费
+					</div>
+					<div class="right_second_text">
+						<p>加速服务：<span> 按量计费</span></p>
+						<p>服务内容： <span>内容加速服务</span></p>
+						<p>费用结算方式：<span>按日结</span></p>
+					</div>
+				</div>
 				<div
 					class="right_bottom"
 					:style="{
-						height: clientHeight - 540 + 'px',
+						height: clientHeight - 625 + 'px',
 					}"
 				>
 					<div class="right_bottom_title">帮助文档</div>
@@ -196,6 +226,7 @@ export default {
 			chanid: '',
 			unitdata: 'B',
 			clientHeight: document.body.clientHeight,
+			sss: '',
 			msg: [
 				{
 					name: '【新用户体验】',
@@ -476,6 +507,10 @@ export default {
 		//跳转页面
 		godosage() {
 			this.$router.push({ path: '/dosage_query' });
+		},
+		//变更计费方式
+		go_updat_billing() {
+			this.$router.push({ path: '/change_billing' });
 		},
 		//绘图
 		configure() {
@@ -763,12 +798,34 @@ export default {
 			display: flex;
 			flex-direction: column;
 			margin-right: 25px;
-			.right_top {
-				height: 390px;
-
+			.right_first {
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 				background-color: #fff;
 				margin-top: 30px;
+				margin-bottom: 15px;
+				overflow: hidden;
+				box-sizing: border-box;
+				padding: 20px 40px;
+				p {
+					span {
+						color: #f59a23;
+					}
+				}
+				.right_top_btn {
+					display: flex;
+					justify-content: center;
+					padding: 0 20px;
+					align-items: center;
+					margin-top: 20px;
+					.go_up {
+						margin-left: 30px;
+					}
+				}
+			}
+			.right_top {
+				height: 190px;
+				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+				background-color: #fff;
 				margin-bottom: 15px;
 				overflow: hidden;
 				.right_top_title {
@@ -788,7 +845,7 @@ export default {
 					}
 				}
 				.right_top_con {
-					height: 240px;
+					height: 50px;
 					overflow-y: scroll;
 					box-sizing: border-box;
 					padding-bottom: 20px;
@@ -815,9 +872,30 @@ export default {
 					justify-content: center;
 					padding: 0 20px;
 					align-items: center;
-					margin-top: 40px;
+					margin-top: 20px;
 					.go_up {
 						margin-left: 30px;
+					}
+				}
+			}
+			.right_second {
+				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+				background-color: #fff;
+				margin-bottom: 15px;
+				overflow: hidden;
+				box-sizing: border-box;
+				padding: 20px 40px;
+				.right_top_title {
+					font-size: 16px;
+					font-weight: 600;
+				}
+				.right_second_text {
+					margin-top: 15px;
+					p {
+						margin-top: 5px;
+						span {
+							color: #f59a23;
+						}
 					}
 				}
 			}

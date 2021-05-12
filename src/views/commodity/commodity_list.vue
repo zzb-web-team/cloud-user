@@ -34,11 +34,12 @@
 						>立即购买</el-button
 					>
 					<el-button
-						disabled
 						v-if="item.name == '按量计费包'"
+						@click="go_pay_money(item, 3)"
+						type="primary"
 						size="mini"
 						style="width:70%;"
-						>敬请期待</el-button
+						>立即开通</el-button
 					>
 				</div>
 			</li>
@@ -103,10 +104,14 @@ export default {
 					path: '/pre_payment',
 					query: { data: JSON.stringify(row) },
 				});
-			} else {
+			} else if (type == 2) {
 				this.$router.push({
 					path: '/commodity_detil',
 					query: { data: JSON.stringify(row) },
+				});
+			} else if (type == 3) {
+				this.$router.push({
+					path: '/pay_dosage',
 				});
 			}
 		},

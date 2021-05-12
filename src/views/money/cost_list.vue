@@ -1,0 +1,350 @@
+<template>
+	<div class="order_list_com">
+		<div class="con_top">
+			<div class="t_title">收支明细</div>
+			<div class="title_seach">
+				<div class="search_left">
+					<el-row
+						type="flex"
+						justify="space-between"
+						class="title_seach_item"
+					>
+						<el-col>
+							<span class="item_title"
+								>&nbsp;&nbsp;&nbsp;&nbsp;交易单号</span
+							>
+							<el-input
+								v-model="order_id"
+								placeholder="请输入订单号"
+								size="medium"
+								@change="onChanges"
+								style="width:60%;max-width:300px;"
+							></el-input>
+						</el-col>
+						<el-col>
+							<span class="item_title">渠道流水号</span>
+							<el-input
+								v-model="order_id"
+								placeholder="请输入商品名称"
+								size="medium"
+								@change="onChanges"
+								style="width:60%;max-width:300px;"
+							></el-input>
+						</el-col>
+						<el-col>
+							<span class="item_title">支付方式</span>
+							<el-select
+								size="medium"
+								v-model="pay_type"
+								placeholder="请选择活动区域"
+								style="width:60%;max-width:300px;height:auto;"
+							>
+								<el-option label="全部" value="*"></el-option>
+								<el-option
+									label="支付宝"
+									value="zhifubao"
+								></el-option>
+								<el-option
+									label="微信"
+									value="weixin"
+								></el-option>
+								<el-option
+									label="钱包扣费"
+									value="qianbao"
+								></el-option>
+							</el-select>
+						</el-col>
+					</el-row>
+					<el-row
+						type="flex"
+						justify="space-between"
+						class="title_seach_item"
+					>
+						<el-col>
+							<span class="item_title">交易类型</span>
+							<el-select
+								size="medium"
+								v-model="pay_type"
+								placeholder="请选择活动区域"
+								style="width:60%;max-width:300px;height:auto;"
+							>
+								<el-option label="全部" value="*"></el-option>
+								<el-option
+									label="充值"
+									value="shanghai"
+								></el-option>
+								<el-option
+									label="扣费"
+									value="beijing"
+								></el-option>
+							</el-select>
+						</el-col>
+						<el-col>
+							<span class="item_title">创建时间</span>
+							<el-date-picker
+								size="medium"
+								v-model="search_time"
+								type="daterange"
+								placeholder="选择日期"
+								range-separator="~"
+								start-placeholder="开始日期"
+								end-placeholder="结束日期"
+								style="width:60%;max-width:300px;"
+							>
+							</el-date-picker>
+						</el-col>
+						<el-col> </el-col>
+					</el-row>
+				</div>
+				<div class="search_right">
+					<el-button type="primary" size="small" @click="onChanges"
+						>查询</el-button
+					>
+					<el-button size="small" @click="reset">重置</el-button>
+				</div>
+			</div>
+		</div>
+		<div class="con_table" ref="box_rHeight">
+			<el-table
+				:data="tableData"
+				stripe
+				style="width: 100%"
+				:cell-style="rowClass"
+				:header-cell-style="headClass"
+			>
+				<el-table-column prop="order_id" label="交易单号">
+				</el-table-column>
+				<el-table-column prop="create_time" label="交易时间">
+				</el-table-column>
+				<el-table-column prop="name" label="交易类型">
+				</el-table-column>
+				<el-table-column prop="num" label="金额">
+					<template slot-scope="scope">
+						<span>{{ scope.row.name == '充值' ? '+' : '-' }}</span>
+						<span>￥{{ scope.row.num }}</span></template
+					>
+				</el-table-column>
+				<el-table-column prop="money" label="余额"> </el-table-column>
+				<el-table-column prop="pay_type" label="交易渠道">
+				</el-table-column>
+				<el-table-column
+					prop="serial_number"
+					label="渠道流水号"
+					width="220"
+				>
+				</el-table-column>
+				<el-table-column prop="operating_name" label="操作账号账号">
+				</el-table-column>
+			</el-table>
+			<div class="content_bottom" v-show="tableData.length > 0">
+				<fenye
+					:currentPage="pageNo"
+					@handleCurrentChange="handleCurrentChange"
+					@handleSizeChange="handleSizeChange"
+					:pagesa="total_cnt"
+				></fenye>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+import fenye from '@/components/fenye';
+export default {
+	data() {
+		return {
+			clientHeight: '',
+			order_id: '',
+			pay_type: '*',
+			search_time: '',
+			starttime: '',
+			endtime: '',
+			pageNo: 1, //当前页码
+			pageSize: 10, //每页数量
+			total_cnt: 0, //数据总量
+			tableData: [
+				{
+					order_id: 15049156199,
+					visit_cnt: 150,
+					name: '充值',
+					user_information: '王小虎',
+					serial_number: '20200511795515913124680',
+					product_type: '流量包',
+					num: 12,
+					money: 140,
+					specification: 3,
+					pay_type: '微信',
+					create_time: '2021-08-03 11:30:00',
+					order_type: 1,
+				},
+				{
+					order_id: 15049156402,
+					visit_cnt: 366,
+					name: '扣费',
+					user_information: '王小虎',
+					serial_number: '20200511795515913124680',
+					product_type: '流量包',
+					num: 12,
+					money: 12540,
+					specification: 3,
+					pay_type: '支付宝',
+					create_time: '2021-08-03 11:30:00',
+					order_type: 1,
+				},
+				{
+					order_id: 15049156946,
+					visit_cnt: 2,
+					name: '扣费',
+					user_information: '王小虎',
+					serial_number: '20200511795515913124680',
+					product_type: '流量包',
+					num: 12,
+					money: 1510,
+					specification: 3,
+					pay_type: '支付宝',
+					create_time: '2021-08-03 11:30:00',
+					order_type: 3,
+				},
+				{
+					order_id: 15049156033,
+					visit_cnt: 32,
+					name: '充值',
+					user_information: '王小虎',
+					serial_number: '20200511795515913124680',
+					product_type: '流量包',
+					num: 12,
+					money: 1071,
+					specification: 3,
+					pay_type: '微信',
+					create_time: '2021-08-03 11:30:00',
+					order_type: 2,
+				},
+			],
+		};
+	},
+	components: {
+		fenye,
+	},
+	filters: {
+		formatTel(iphone) {
+			let tel = String(iphone);
+			var reg = /^(\d{3})\d{4}(\d{4})$/;
+			return tel.replace(reg, '$1****$2');
+		},
+	},
+	watch: {
+		clientHeight() {
+			//如果clientHeight 发生改变，这个函数就会运行
+			this.changeFixed(this.clientHeight);
+		},
+	},
+	mounted() {
+		this.starttime =
+			new Date(new Date().toLocaleDateString()).getTime() / 1000;
+		this.endtime = Date.parse(new Date()) / 1000;
+		let that = this;
+		that.clientHeight = `${document.documentElement.clientHeight ||
+			document.documentElement.offsetHeight}`; //获取浏览器可视区域高度
+		window.onresize = function() {
+			that.clientHeight = `${document.documentElement.clientHeight ||
+				document.documentElement.offsetHeight}`;
+		};
+		if (that.$refs.box_rHeight) {
+			that.$refs.box_rHeight.style.height =
+				that.clientHeight - 329 + 'px';
+			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
+		}
+	},
+	methods: {
+		onChanges() {},
+		reset() {},
+		//获取页码
+		handleCurrentChange(pages) {
+			this.pageNo = pages;
+			this.onChanges();
+		},
+		handleSizeChange(pagesize) {
+			this.pageSize = pagesize;
+		},
+		//查询屏幕高度自适应
+		changeFixed(data) {
+			if (this.$refs.box_rHeight) {
+				this.$refs.box_rHeight.style.height = data - 353 + 'px';
+				this.$refs.box_rHeight.style.minHeight = 500 + 'px';
+			}
+		},
+		// 表头样式设置
+		headClass() {
+			return 'text-align: center;background:#E8F3FF;';
+		},
+		// 表格样式设置
+		rowClass() {
+			return 'text-align: center;';
+		},
+	},
+};
+</script>
+
+<style lang="scss" scoped>
+.order_list_com {
+	width: 100%;
+	text-align: left;
+	box-sizing: border-box;
+	padding: 30px 25px;
+	background-color: #fff;
+	.con_top {
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		box-sizing: border-box;
+		padding: 20px 30px;
+		.t_title {
+			// margin-bottom: 20px;
+			font-size: 16px;
+			font-weight: 500;
+			width: 100%;
+			height: 60px;
+			line-height: 70px;
+			text-align: left;
+			font-size: 18px;
+			color: #202020;
+		}
+		.title_seach {
+			display: flex;
+			justify-content: start;
+			align-items: center;
+			white-space: nowrap;
+			.search_left {
+				width: 65%;
+				.title_seach_item {
+					margin-bottom: 20px;
+					.item_title {
+						margin-right: 5px;
+						font-size: 14px;
+					}
+				}
+			}
+			.search_right {
+				flex: 1;
+				padding-bottom: 20px;
+				text-align: right;
+			}
+		}
+	}
+	.con_table {
+		margin-top: 15px;
+		flex: 1;
+
+		box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+		padding: 40px;
+		.content_top {
+			text-align: right;
+			img {
+				width: 80%;
+			}
+		}
+		.content_bottom {
+			margin-top: 20px;
+			text-align: right;
+		}
+	}
+}
+</style>

@@ -58,6 +58,16 @@ import traffic_detil from '@/views/traffic/traffic_detil.vue';
 import commodity_list from '@/views/commodity/commodity_list.vue';
 import pre_payment from '@/views/commodity/pre_payment.vue';
 import commodity_detil from '@/views/commodity/commodity_detil.vue';
+import pay_dosage from '@/views/commodity/pay_dosage.vue';
+import change_billing from '@/views/commodity/change_billing.vue';
+
+
+//资金管理
+import money_management from '@/views/money/money_management.vue';
+import recharge_management from '@/views/money/recharge_management.vue';
+import cost_list from '@/views/money/cost_list.vue';
+import bill from '@/views/money/bill.vue';
+
 Vue.use(Router);
 
 const router = new Router({
@@ -119,6 +129,19 @@ const router = new Router({
                     path: '/commodity_detil',
                     name: '订单',
                     component: commodity_detil,
+                    icon: 'iconfont icon-dian',
+                    hidden: true,
+                }, {
+                    path: '/pay_dosage',
+                    name: '按量计费',
+                    component: pay_dosage,
+                    icon: 'iconfont icon-dian',
+                    hidden: true,
+                },
+                {
+                    path: '/change_billing',
+                    name: '变更计费方式',
+                    component: change_billing,
                     icon: 'iconfont icon-dian',
                     hidden: true,
                 }
@@ -369,7 +392,39 @@ const router = new Router({
                 component: word_map,
                 hidden: false,
             }]
-        }
+        },
+        {
+            path: '/dsafd',
+            name: '资金管理',
+            component: index,
+            hidden: true,
+            icon: 'iconfont icon-zhongduanguanli',
+            children: [{
+                path: '/money_management',
+                name: '资金管理',
+                component: money_management,
+                hidden: false,
+                icon: 'iconfont icon-zhongduanguanli',
+            }, {
+                path: '/recharge_management',
+                name: '充值管理',
+                component: recharge_management,
+                hidden: false,
+                icon: 'iconfont icon-zhongduanguanli',
+            }, {
+                path: '/cost_list',
+                name: '收支明细',
+                component: cost_list,
+                hidden: false,
+                icon: 'iconfont icon-zhongduanguanli',
+            }, {
+                path: '/bill',
+                name: '费用账单',
+                component: bill,
+                hidden: false,
+                icon: 'iconfont icon-zhongduanguanli',
+            }]
+        },
     ],
 });
 

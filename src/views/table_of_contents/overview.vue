@@ -365,13 +365,13 @@ export default {
 			false
 		);
 		// this.getlist();
-		// this.get_data();
+		this.get_data();
 	},
 	methods: {
 		get_data() {
 			let params = {
-				startTs: 1617984000,
-				endTs: 1618018645,
+				startTs: 1577808000,
+				endTs: 1620885921,
 				urlName: '*',
 				channelId: '*',
 				ipfsChanel: '*',

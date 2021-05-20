@@ -168,6 +168,7 @@ axios.interceptors.request.use(
 // 响应拦截器
 axios.interceptors.response.use(
     (response) => {
+        console.log(response);
         if (response.config.headers.showLoading !== false) {
             hideLoading();
         }
@@ -182,12 +183,16 @@ axios.interceptors.response.use(
             //     return false;
             // }
             return Promise.resolve(response);
+        } else if (response.status === 404) {
+            console.log("222")
         } else {
             return Promise.reject(response);
         }
     },
     // 服务器状态码不是200的情况
     (error) => {
+        console.log(error.response);
+        return false;
         //判断当前请求是否设置了不显示Loading（不显示自然无需隐藏）
         if (error.config.headers.showLoading !== false) {
             hideLoading();

@@ -5,7 +5,7 @@
 			<div class="title_seach">
 				<div class="search_left">
 					<el-input
-						v-model="order_id"
+						v-model="val_name"
 						placeholder="请输入资源包名称"
 						size="medium"
 						@change="onChanges"
@@ -20,6 +20,7 @@
 						range-separator="~"
 						start-placeholder="开始时间"
 						end-placeholder="截止时间"
+                        value-format="timestamp"
 						style="width:40%;max-width:220px;"
 					>
 					</el-date-picker>
@@ -136,7 +137,7 @@ export default {
 	data() {
 		return {
 			clientHeight: '',
-			order_id: '',
+			val_name: '',
 			pay_type: '*',
 			search_time: '',
 			starttime: '',
@@ -238,7 +239,22 @@ export default {
         }
 	},
 	methods: {
-		onChanges() {},
+		onChanges() {
+            let params = {
+				product_name: this.val_name,
+				start_time: this.search_time[0], //创建开始时间 单位:秒
+				end_time: this.search_time[1],
+				page: this.pageNo,
+			};
+			query_pktproduct(params)
+				.then((res) => {
+					if (res.status == 200) {
+						this.tableData = res.data;
+						this.total_cnt = res.max_page;
+					}
+				})
+				.catch((error) => {});
+        },
 		reset() {},
 		handleClick(row) {
 			this.$router.push({

@@ -71,23 +71,25 @@
 	</div>
 </template>
 <script>
+import { setup_flowcharge } from '../../servers/api';
 export default {
 	data() {
 		return {
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 			clientHeight: '',
 			activeClass: 'activeClass',
 			valid_period: 'one',
 			parameter_list: [
-				{
-					id: 1,
-					name: '按日结',
-				},
+				// {
+				// 	id: 1,
+				// 	name: '按日结',
+				// },
 				{
 					id: 2,
 					name: '按月结',
 				},
 			],
-			pay_type: 1,
+			pay_type: 2,
 			checked: false,
 			pay_checked: false,
 		};
@@ -128,9 +130,20 @@ export default {
 				});
 				return false;
 			}
-			this.$router.push({
-				path: '/money_management',
-			});
+			let params = {
+				user_id: this.user_id,
+				// flowcharge_type: this.pay_type, //1:启用加速 2:停用加速
+			};
+			setup_flowcharge(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message.success({
+							message: '已开通按量计费',
+							type: 'success',
+						});
+					}
+				})
+				.catch((error) => {});
 		},
 		//查询屏幕高度自适应
 		changeFixed(data) {

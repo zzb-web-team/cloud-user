@@ -57,6 +57,7 @@
 	</div>
 </template>
 <script>
+import { change_chargetype } from '../../servers/api';
 export default {
 	data() {
 		return {
@@ -64,13 +65,24 @@ export default {
 			tableData: {
 				current_billing_method: '按量计费',
 				billing_method: '流量包',
-				current_settlement_method: '日结 / 月结',
+				current_settlement_method: '月结',
 				settlement_method: '用完即止',
 				current_precautions:
 					' 1.计费方式变更，变更须从次日00:00开始计算，当天所使用的流量计费方式还是采用未变更前计费方式；2.计费方式变更后，须将未结算账单计时结算以免意向后期使用；',
-				precautions: '上海市普陀区金沙江路 1518 弄',
+				precautions: '--',
+			},
+			change_table_data: {
+				current_billing_method: '流量包',
+				billing_method: '按量计费',
+				current_settlement_method: '用完即止',
+				settlement_method: '月结',
+				current_precautions: '--',
+				precautions:
+					' 1.计费方式变更，变更须从次日00:00开始计算，当天所使用的流量计费方式还是采用未变更前计费方式；2.计费方式变更后，须将未结算账单计时结算以免意向后期使用；',
 			},
 			pay_checked: false,
+			user_id: JSON.parse(sessionStorage.getItem('id')),
+			charge_type: 1,
 		};
 	},
 	components: {},
@@ -100,6 +112,20 @@ export default {
 				});
 				return false;
 			}
+			let params = {
+				user_id: this.user_id,
+				charge_type: this.charge_type, //1:流量包计费 2:流量计费(日结) 3:流量计费(月结)
+			};
+			change_chargetype(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message.success({
+							message: '变更收费方式成功',
+							type: 'success',
+						});
+					}
+				})
+				.catch((error) => {});
 		},
 		//查询屏幕高度自适应
 		changeFixed(data) {

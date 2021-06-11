@@ -9,15 +9,15 @@
 				<div class="item_radio">
 					<el-radio
 						v-model="pay_type"
-						:label="item.id"
+						:label="item.product_id"
 						border
 						size="small"
 						@change="change_paraer(item, index)"
 						v-for="(item, index) in parameter_list"
-						:key="index"
+						:key="item.product_id"
 						v-bind:class="[index == 0 ? activeClass : '']"
 					>
-						{{ item.name }}</el-radio
+						{{ item.product_name }}</el-radio
 					>
 				</div>
 			</div>
@@ -93,6 +93,7 @@
 				ref="PayDialog"
 				:money="money"
 				:order_id="order_id"
+				:order_data="order_data"
 			></PayDia>
 		</div>
 	</div>
@@ -100,63 +101,75 @@
 
 <script>
 import PayDia from '../../components/payment_panel';
+import {
+	query_pktproduct,
+	create_pktorder,
+	notify_payment,
+} from '../../servers/api';
 export default {
 	data() {
 		return {
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 			clientHeight: '',
 			activeClass: 'activeClass',
 			pay_type: 1,
 			valid_period: 'one',
 			num: 1,
 			money: 0,
+			order_data: {},
 			order_id: '',
 			checked: false,
 			// current_price: 0, //现价
 			discount: 0.95, //折扣
 			original_price: 59.6, //原价
 			parameter_list: [
-				{
-					id: 1,
-					name: '流量资源包 -100GB',
-					discount: 0.5,
-					original_price: 20,
-				},
-				{
-					id: 2,
-					name: '流量资源包 -100GB',
-					discount: 0.6,
-					original_price: 20,
-				},
-				{
-					id: 3,
-					name: '流量资源包 -100GB',
-					discount: 0.35,
-					original_price: 55,
-				},
-				{
-					id: 4,
-					name: '流量资源包 -100GB',
-					discount: 0.2,
-					original_price: 100,
-				},
-				{
-					id: 5,
-					name: '流量资源包 -100GB',
-					discount: 0,
-					original_price: 99,
-				},
-				{
-					id: 6,
-					name: '流量资源包 -100GB',
-					discount: 0.1,
-					original_price: 70,
-				},
-				{
-					id: 7,
-					name: '流量资源包 -100GB',
-					discount: 0,
-					original_price: 10,
-				},
+				// {
+				// 	id: 1,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0.5,
+				// 	original_price: 20,
+				// },
+				// {
+				// 	id: 2,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0.6,
+				// 	original_price: 20,
+				// },
+				// {
+				// 	id: 3,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0.35,
+				// 	original_price: 55,
+				// },
+				// {
+				// 	id: 4,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0.2,
+				// 	original_price: 100,
+				// },
+				// {
+				// 	id: 5,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0,
+				// 	original_price: 99,
+				// },
+				// {
+				// 	id: 6,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0.1,
+				// 	original_price: 70,
+				// },
+				// {
+				// 	id: 7,
+				// 	name: '流量资源包 -100GB',
+				// 	discount: 0,
+				// 	original_price: 10,
+				// },
+			],
+			search_time: [
+				new Date(new Date().toLocaleDateString()).getTime() -
+					86400 * 1000,
+				new Date().getTime(),
 			],
 		};
 	},
@@ -177,12 +190,30 @@ export default {
 			that.clientHeight = `${document.documentElement.clientHeight ||
 				document.documentElement.offsetHeight}`;
 		};
+		this.get_data_list();
 	},
 	methods: {
+		get_data_list() {
+			console.log(this.search_time);
+			let params = {
+				page: 0,
+				product_name: '',
+				start_time: parseInt(this.search_time[0] / 1000), //创建开始时间 单位:秒
+				end_time: parseInt(this.search_time[1] / 1000),
+			};
+			query_pktproduct(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.parameter_list = res.data.data;
+						this.pay_type = this.parameter_list[0].product_id;
+					}
+				})
+				.catch((error) => {});
+		},
 		//切换流量包
 		change_paraer(data, index) {
 			this.discount = data.discount;
-			this.original_price = data.original_price;
+			this.original_price = data.price;
 		},
 		pay_money() {
 			if (this.checked == false) {
@@ -192,7 +223,46 @@ export default {
 				});
 				return false;
 			}
-			this.$refs.PayDialog.show_dia();
+			//创建订单
+			let params = {
+				user_id: this.user_id,
+				product_id: this.pay_type,
+				num: this.num,
+			};
+			create_pktorder(params)
+				.then((res) => {
+					if (res.status == 0) {
+						(this.money = res.data.pay_amount),
+							(this.order_id = res.data.order_id),
+							(this.order_data = res.data);
+						// this.$refs.PayDialog.show_dia();
+						let pay_data = {
+							order_id: res.data.order_id,
+							pay_type: 1,
+							pay_amount:
+								Number(this.original_price) *
+								Number(this.discount),
+						};
+						this.success_payment(pay_data);
+					}
+				})
+				.catch((error) => {});
+		},
+		//支付成功通知
+		success_payment(data) {
+			let params = {
+				order_id: data.order_id,
+				pay_type: data.pay_type, //1:微信 2:支付宝
+				pay_state: 1, //1:成功 2:异常
+				pay_amount: data.pay_amount, //单位:元
+			};
+			notify_payment(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message.success('支付成功');
+					}
+				})
+				.catch((error) => {});
 		},
 		go_pay_money() {
 			this.$router.push({

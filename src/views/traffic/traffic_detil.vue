@@ -3,10 +3,10 @@
 		<div class="title_text">流量包管理 > 流量包使用明细</div>
 		<div class="second_text">
 			<div>
-				<span>产品名称</span><span>{{ title_data.name }}</span>
+				<span>产品名称</span><span>{{ title_data.product_name }}</span>
 			</div>
 			<div>
-				<span>规格</span><span>{{ title_data.specification }}</span>
+				<span>规格</span><span>{{ title_data.size_spec }}</span>
 			</div>
 			<div>
 				<span>数量</span><span>{{ title_data.num }}</span>
@@ -48,26 +48,26 @@ export default {
 		return {
 			clientHeight: '',
 			tableData: [
-				{
-					date: '2016-05-02',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1518 弄',
-				},
-				{
-					date: '2016-05-04',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1517 弄',
-				},
-				{
-					date: '2016-05-01',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1519 弄',
-				},
-				{
-					date: '2016-05-03',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1516 弄',
-				},
+				// {
+				// 	date: '2016-05-02',
+				// 	name: '王小虎',
+				// 	address: '上海市普陀区金沙江路 1518 弄',
+				// },
+				// {
+				// 	date: '2016-05-04',
+				// 	name: '王小虎',
+				// 	address: '上海市普陀区金沙江路 1517 弄',
+				// },
+				// {
+				// 	date: '2016-05-01',
+				// 	name: '王小虎',
+				// 	address: '上海市普陀区金沙江路 1519 弄',
+				// },
+				// {
+				// 	date: '2016-05-03',
+				// 	name: '王小虎',
+				// 	address: '上海市普陀区金沙江路 1516 弄',
+				// },
 			],
 			pageNo: 1,
 			pageSize: 10,
@@ -85,7 +85,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.title_data = JSON.parse(this.$route.query.data);
+        this.title_data = JSON.parse(this.$route.query.data);
 		let that = this;
 		that.clientHeight = `${document.documentElement.clientHeight ||
 			document.documentElement.offsetHeight}`; //获取浏览器可视区域高度

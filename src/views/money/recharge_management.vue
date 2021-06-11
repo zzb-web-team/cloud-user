@@ -62,9 +62,11 @@
 </template>
 <script>
 import Recharge from '../../components/recharge';
+import { create_chargeorder, query_user_acount } from '../../servers/api';
 export default {
 	data() {
 		return {
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 			clientHeight: '',
 			balance: 0,
 			amount: 0,
@@ -95,6 +97,7 @@ export default {
 				that.clientHeight - 120 + 'px';
 			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
 		}
+		this.get_user_money();
 	},
 	methods: {
 		pay_money() {
@@ -112,7 +115,55 @@ export default {
 				});
 				return false;
 			}
-			this.$refs.recharge.show_dia();
+			let params = {
+				user_id: this.user_id,
+				amount: Number(this.amount),
+			};
+			create_chargeorder(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.account = res.data.account;
+						this.order_id = res.data.order_id;
+						// this.$refs.recharge.show_dia();//调用付款二维码
+						let pay_data = {
+							order_id: res.data.order_id,
+							pay_type: Number(this.radio),
+							pay_amount: params.amount,
+						};
+						this.success_payment(pay_data);
+					} else {
+						this.$message.error(res.msg);
+					}
+				})
+				.catch((error) => {});
+		},
+		//支付成功通知
+		success_payment(data) {
+			let params = {
+				order_id: data.order_id,
+				pay_type: data.pay_type, //1:微信 2:支付宝
+				pay_state: 1, //1:成功 2:异常
+				pay_amount: data.pay_amount, //单位:元
+			};
+			notify_payment(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message.success('支付成功');
+					}
+				})
+				.catch((error) => {});
+		},
+		get_user_money() {
+			let params = {
+				user_id: this.user_id,
+			};
+			query_user_acount(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.balance = res.data.balance;
+					}
+				})
+				.catch((error) => {});
 		},
 		//查询屏幕高度自适应
 		changeFixed(data) {

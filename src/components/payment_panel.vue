@@ -121,6 +121,16 @@ export default {
 		order_id: {
 			type: String,
 			default: '',
+        },
+        detail_disabled:{
+            type:Boolean,
+            default:false
+        },
+		order_data: {
+			type: Object,
+			default: () => {
+				return {};
+			},
 		},
 	},
 	methods: {
@@ -135,9 +145,10 @@ export default {
 			this.dialogVisible = !this.dialogVisible;
 		},
 		go_order_detil() {
+            if(this.detail_disabled==true) return false;
 			this.$router.push({
 				path: '/order_detil',
-				query: { data: this.order_id },
+				query: { data: JSON.stringify(this.order_data) },
 			});
 		},
 	},

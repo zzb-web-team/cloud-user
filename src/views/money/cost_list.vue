@@ -24,7 +24,7 @@
 						<el-col>
 							<span class="item_title">渠道流水号</span>
 							<el-input
-								v-model="order_id"
+								v-model="qu_id"
 								placeholder="请输入商品名称"
 								size="medium"
 								@change="onChanges"
@@ -39,18 +39,12 @@
 								placeholder="请选择活动区域"
 								style="width:60%;max-width:300px;height:auto;"
 							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									label="支付宝"
-									value="zhifubao"
-								></el-option>
-								<el-option
-									label="微信"
-									value="weixin"
-								></el-option>
+								<el-option label="全部" value="0"></el-option>
+								<el-option label="微信" value="1"></el-option>
+								<el-option label="支付宝" value="2"></el-option>
 								<el-option
 									label="钱包扣费"
-									value="qianbao"
+									value="3"
 								></el-option>
 							</el-select>
 						</el-col>
@@ -64,19 +58,13 @@
 							<span class="item_title">交易类型</span>
 							<el-select
 								size="medium"
-								v-model="pay_type"
+								v-model="order_type"
 								placeholder="请选择活动区域"
 								style="width:60%;max-width:300px;height:auto;"
 							>
-								<el-option label="全部" value="*"></el-option>
-								<el-option
-									label="充值"
-									value="shanghai"
-								></el-option>
-								<el-option
-									label="扣费"
-									value="beijing"
-								></el-option>
+								<el-option label="全部" value="0"></el-option>
+								<el-option label="充值" value="1"></el-option>
+								<el-option label="扣费" value="2"></el-option>
 							</el-select>
 						</el-col>
 						<el-col>
@@ -150,16 +138,20 @@
 
 <script>
 import fenye from '@/components/fenye';
+import { query_user_sz, query_user_sz_for_admin } from '../../servers/api';
 export default {
 	data() {
 		return {
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 			clientHeight: '',
 			order_id: '',
-			pay_type: '*',
-			search_time: '',
+			qu_id: '',
+			pay_type: '0',
+			order_type: '0',
+			search_time: [],
 			starttime: '',
 			endtime: '',
-			pageNo: 1, //当前页码
+			pageNo: 0, //当前页码
 			pageSize: 10, //每页数量
 			total_cnt: 0, //数据总量
 			tableData: [
@@ -254,13 +246,42 @@ export default {
 				that.clientHeight - 329 + 'px';
 			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
 		}
+		this.onChanges();
 	},
 	methods: {
-		onChanges() {},
-		reset() {},
+		onChanges() {
+			let params = {
+				user_id: this.user_id,
+				order_id: this.order_id, //交易单号
+				order_type: Number(this.order_type), //1:充值 2:扣费
+				pay_type: Number(this.pay_type), //1:微信 2:支付宝 3:钱包
+				start_time: parseInt(this.search_time[0] / 1000),
+				end_time: parseInt(this.search_time[1] / 1000),
+				page: this.pageNo,
+				order: 0,
+			};
+			query_user_sz(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.tableData = res.data.data;
+						this.total_cnt = res.data.total;
+					}
+				})
+				.catch((error) => {});
+		},
+		reset() {
+			this.user_id = '';
+			this.order_id = '';
+			this.qu_id = '';
+			this.order_type = '0';
+			this.pay_type = '0';
+			this.search_time = [];
+			this.pageNo = 0;
+			this.onChanges();
+		},
 		//获取页码
 		handleCurrentChange(pages) {
-			this.pageNo = pages;
+			this.pageNo = pages - 1;
 			this.onChanges();
 		},
 		handleSizeChange(pagesize) {

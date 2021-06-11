@@ -17,18 +17,18 @@
 							>
 								<span class="txtWrap">
 									<span class="txt"
-										>{{ item.name }}抢得商品{{
-											item.goods
+										>【{{ item.title }}】{{
+											item.redirect_url
 										}}</span
 									>
-									<span class="txt"
+									<!-- <span class="txt"
 										>已有{{
 											parseInt(Math.random() * 100)
 										}}人购买</span
-									>
-									<el-button type="text" @click="go_buy(item)"
+									> -->
+									<!-- <el-button type="text" @click="go_buy(item)"
 										>立即购买</el-button
-									>
+									> -->
 								</span>
 							</li>
 						</ul>
@@ -115,15 +115,18 @@
 						<el-button
 							type="primary"
 							plain
-							@click="go_commodity_list()"
+							@click="endbale_speedup()"
 							>{{
-								sss ? '停止加速服务' : '开通加速服务'
+								uesr_endbale.enable_flowcharge == 2
+									? '开通加速服务'
+									: '停止加速服务'
 							}}</el-button
 						>
 						<el-button
 							type="primary"
 							plain
 							class="go_up"
+							v-if="uesr_endbale.enable_speedup != 1"
 							@click="go_updat_billing()"
 							>变更计费方式</el-button
 						>
@@ -142,9 +145,14 @@
 							:key="index"
 							@click="go_traffic_list(item)"
 						>
-							<span>{{ item.name }}</span>
-							<span>使用 {{ item.use }}</span>
-							<span>剩余 {{ item.rem }}</span>
+							<span>{{ item.product_name }}</span>
+							<span>使用 {{ item.used_flow | set_bkb }}</span>
+							<span
+								>剩余
+								{{
+									(item.total_flow - item.used_flow) | set_bkb
+								}}</span
+							>
 							<el-button type="text">></el-button>
 						</li>
 					</ol>
@@ -203,6 +211,10 @@ import {
 	dataflow_curve,
 	manage_dataflow_curve,
 	ipfs_flow_summay,
+	query_cur_adslot,
+	query_user_pkt,
+	endbale_speedup,
+	query_user_acount,
 } from '../../servers/api';
 import {
 	dateToMs,
@@ -226,7 +238,11 @@ export default {
 			chanid: '',
 			unitdata: 'B',
 			clientHeight: document.body.clientHeight,
-			sss: '',
+			endbale_type: 1,
+			uesr_endbale: {
+				enable_flowcharge: 0,
+				enable_speedup: 0,
+			},
 			msg: [
 				{
 					name: '【新用户体验】',
@@ -330,6 +346,7 @@ export default {
 				},
 			],
 			con_text: {},
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 		};
 	},
 	components: {
@@ -351,6 +368,29 @@ export default {
 			}
 		},
 	},
+	filters: {
+		set_bkb(data) {
+			function bytesToSize(bytes) {
+				if (bytes === 0) return '0 B';
+				var k = 1024, // or 1024
+					sizes = [
+						'B',
+						'KB',
+						'MB',
+						'GB',
+						'TB',
+						'PB',
+						'EB',
+						'ZB',
+						'YB',
+					],
+					i = Math.floor(Math.log(bytes) / Math.log(k));
+
+				return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
+			}
+			return bytesToSize(data * 1024 * 1024);
+		},
+	},
 	created() {},
 	mounted() {
 		this.setInTime = setInterval(this.showMarquee, 3000);
@@ -364,8 +404,9 @@ export default {
 			() => (this.clientHeight = document.body.clientHeight),
 			false
 		);
-		// this.getlist();
+		this.get_query_cur_adslot();
 		this.get_data();
+		this.get_query_user_acount();
 	},
 	methods: {
 		get_data() {
@@ -382,6 +423,55 @@ export default {
 			ipfs_flow_summay(params)
 				.then((res) => {
 					console.log(res);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		get_query_user_acount() {
+			let params = {
+				user_id: this.user_id,
+			};
+			query_user_acount(params)
+				.then((res) => {
+                    console.log(res);
+					if (res.status == 0) {
+						this.uesr_endbale = [...res.data];
+						console.log(this.uesr_endbale,"#######");
+					}
+				})
+				.catch((error) => {
+					// console.log(error);
+				});
+		},
+		get_query_cur_adslot() {
+			this.get_user_pkt();
+			let params = {
+				num: 10,
+			};
+			query_cur_adslot(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.msg = res.data.data;
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		},
+		get_user_pkt() {
+			let params = {
+				user_id: String(this.chanid),
+				// start_time: 1620880200,
+				// end_time: 1621910210,
+				page: 0,
+				state: 2,
+			};
+			query_user_pkt(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.order_list = res.data;
+					}
 				})
 				.catch((error) => {
 					console.log(error);
@@ -428,6 +518,27 @@ export default {
 		},
 		go_commodity_list() {
 			this.$router.push({ path: '/commodity_list' });
+		},
+		//开启/停止加速服务
+		endbale_speedup() {
+			let params = {
+				user_id: this.user_id,
+				flag: this.endbale_type, //1:启用加速 2:停用加速
+			};
+			endbale_speedup(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.endbale_type = 2;
+						this.$message.success({
+							message:
+								params.flag == 1
+									? '已开启加速服务'
+									: '已停用加速服务',
+							type: 'success',
+						});
+					}
+				})
+				.catch((error) => {});
 		},
 		//请求数据
 		getlist() {
@@ -510,7 +621,11 @@ export default {
 		},
 		//变更计费方式
 		go_updat_billing() {
-			this.$router.push({ path: '/change_billing' });
+			console.log(this.uesr_endbale);
+			this.$router.push({
+				path: '/change_billing',
+				query: { type: this.uesr_endbale.enable_speedup },
+			});
 		},
 		//绘图
 		configure() {

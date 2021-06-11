@@ -11,18 +11,30 @@
 				:header-cell-style="headClass"
 				:cell-style="cellClass"
 			>
-				<el-table-column prop="date" label="订单号"> </el-table-column>
-				<el-table-column prop="name" label="产品名称">
+				<el-table-column prop="order_id" label="订单号">
 				</el-table-column>
-				<el-table-column prop="name" label="规格"> </el-table-column>
-				<el-table-column prop="name" label="数量"> </el-table-column>
-				<el-table-column prop="name" label="产品类型">
+				<el-table-column prop="product_name" label="产品名称">
 				</el-table-column>
-				<el-table-column prop="name" label="支付方式">
+				<el-table-column prop="size_spec" label="规格">
+					<template slot-scope="scope"
+						>{{ scope.row.size_spec }}GB</template
+					></el-table-column
+				>
+				<el-table-column prop="num" label="数量"> </el-table-column>
+				<el-table-column prop="product_type" label="产品类型">
+					<template slot-scope="scope">
+						<p v-if="scope.row.product_type == 1">流量包</p>
+						<p v-else>流量计费</p>
+					</template>
 				</el-table-column>
-				<el-table-column prop="name" label="订单金额">
+				<el-table-column prop="pay_type" label="支付方式">
+					<template slot-scope="scope">
+						<span v-if="scope.row.pay_type == 1">微信</span>
+						<span v-else-if="scope.row.pay_type == 2">支付宝</span>
+						<span v-else>{{ scope.row.pay_type }}</span>
+					</template>
 				</el-table-column>
-				<el-table-column prop="address" label="实付金额">
+				<el-table-column prop="order_amount" label="实付金额">
 				</el-table-column>
 			</el-table>
 		</div>
@@ -30,7 +42,7 @@
 			<span>
 				实际付款
 			</span>
-			<span>{{ data_list.money }}<i> 元</i></span>
+			<span>{{ data_list.order_amount }}<i> 元</i></span>
 		</div>
 		<el-button type="primary" class="pay_btn" @click="pay_money"
 			>立即支付</el-button
@@ -39,12 +51,14 @@
 			ref="PayDialog"
 			:money="Number(money)"
 			:order_id="order_id"
+			:detail_disabled="detail_disabled"
 		></PayDia>
 	</div>
 </template>
 
 <script>
 import PayDia from '../../components/payment_panel';
+import { notify_payment } from '../../servers/api';
 export default {
 	data() {
 		return {
@@ -65,12 +79,13 @@ export default {
 			money: 0,
 			order_id: '',
 			tableData: [
-				{
-					date: '2016-05-02',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1518 弄',
-				},
+				// {
+				// 	date: '2016-05-02',
+				// 	name: '王小虎',
+				// 	address: '上海市普陀区金沙江路 1518 弄',
+				// },
 			],
+			detail_disabled: true,
 		};
 	},
 	computed: {},
@@ -94,12 +109,36 @@ export default {
 				document.documentElement.offsetHeight}`;
 		};
 		this.data_list = JSON.parse(this.$route.query.data);
-		this.money = this.data_list.money;
+		this.tableData = [JSON.parse(this.$route.query.data)];
+		this.money = this.data_list.order_amount;
+		console.log(this.data_list);
 		this.order_id = String(this.data_list.order_id);
 	},
 	methods: {
 		pay_money() {
 			this.$refs.PayDialog.show_dia();
+			let pay_data = {
+				order_id: this.order_id,
+				pay_type: 1,
+				pay_amount:this.data_list.order_amount,
+			};
+			this.success_payment(pay_data);
+		},
+		//支付成功通知
+		success_payment(data) {
+			let params = {
+				order_id: data.order_id,
+				pay_type: data.pay_type, //1:微信 2:支付宝
+				pay_state: 1, //1:成功 2:异常
+				pay_amount: data.pay_amount, //单位:元
+			};
+			notify_payment(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message.success('支付成功');
+					}
+				})
+				.catch((error) => {});
 		},
 		// 表头样式设置
 		headClass() {

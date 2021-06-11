@@ -71,11 +71,13 @@
 <script>
 import fenye from '@/components/fenye';
 import echarts from 'echarts';
+import { query_user_sz_for_admin, query_user_sz } from '../../servers/api';
 export default {
 	data() {
 		return {
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 			clientHeight: '',
-			search_time: '',
+			search_time: [],
 			starttime: '',
 			endtime: '',
 			pageNo: 1, //当前页码
@@ -145,11 +147,35 @@ export default {
 			that.$refs.box_rHeight.style.height =
 				that.clientHeight - 334 + 'px';
 			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
-		}
+        }
+        this.onChanges();
 		this.set_echarts();
 	},
 	methods: {
-		onChanges() {},
+		onChanges() {
+			let date = new Date();
+			let starttime =
+				date.getFullYear() + '-' + date.getMonth() + '-' + '01';
+			console.log(starttime);
+			let params = {
+				user_id: this.user_id, //用户ID
+				order_id: '', //交易单号
+				order_type: 2, //1:充值 2:扣费
+				pay_type: 0, //1:微信 2:支付宝 3:钱包
+				start_time: parseInt(this.search_time[0] / 1000),
+				end_time: parseInt(this.search_time[1] / 1000),
+				page: 0,
+				order: 0,
+			};
+			query_user_sz(params)
+				.then((res) => {
+					if (res.status == 0) {
+                        this.tableData=res.data.data;
+                        this.total_cnt=res.data.total;
+					}
+				})
+				.catch((error) => {});
+		},
 		reset() {},
 		handleClick(row) {
 			this.$router.push({

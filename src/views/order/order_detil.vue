@@ -18,26 +18,33 @@
 			<li>
 				<span>订单状态</span>
 				<p>
-					<span class="dai" v-if="data_list.order_type == 1">
+					<span class="dai" v-if="data_list.state == 1">
 						待支付
 					</span>
-					<span class="guo" v-else-if="data_list.order_type == 2"
+					<span class="guo" v-else-if="data_list.state == 2"
 						>已过期</span
 					>
-					<span class="wan" v-else>已完成</span>
+					<span class="wan" v-else-if="data_list.state == 3"
+						>已完成</span
+					>
+					<span class="wan" v-else>已删除</span>
 				</p>
 			</li>
 			<li>
 				<span>产品名称</span>
-				<p>{{ data_list.name }}</p>
+				<p
+					style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"
+				>
+					{{ data_list.product_name }}
+				</p>
 			</li>
 			<li>
 				<span>创建时间</span>
-				<p>{{ data_list.create_time }}</p>
+				<p>{{ common.getTimes(data_list.create_time * 1000) }}</p>
 			</li>
 			<li>
 				<span>规格</span>
-				<p>{{ data_list.specification }}</p>
+				<p>{{ data_list.size_spec }}GB</p>
 			</li>
 			<li>
 				<span>付款时间</span>
@@ -45,7 +52,8 @@
 			</li>
 			<li>
 				<span>产品类型</span>
-				<p>{{ data_list.product_type }}</p>
+				<p v-if="data_list.product_type == 1">流量包</p>
+				<p v-else>流量计费</p>
 			</li>
 		</ol>
 		<div class="con_table">
@@ -55,18 +63,32 @@
 				:header-cell-style="headClass"
 				:cell-style="cellClass"
 			>
-				<el-table-column prop="date" label="订单号"> </el-table-column>
-				<el-table-column prop="name" label="产品名称">
+				<el-table-column prop="product_id" label="订单号">
 				</el-table-column>
-				<el-table-column prop="name" label="规格"> </el-table-column>
-				<el-table-column prop="name" label="数量"> </el-table-column>
-				<el-table-column prop="name" label="产品类型">
+				<el-table-column prop="product_name" label="产品名称">
 				</el-table-column>
-				<el-table-column prop="name" label="支付方式">
+				<el-table-column prop="size_spec" label="规格">
+					<template slot-scope="scope"
+						>{{ scope.row.size_spec }}GB</template
+					>
 				</el-table-column>
-				<el-table-column prop="name" label="订单金额">
+				<el-table-column prop="num" label="数量"> </el-table-column>
+				<el-table-column prop="product_type" label="产品类型">
+					<template slot-scope="scope">
+						<p v-if="scope.row.product_type == 1">流量包</p>
+						<p v-else>流量计费</p>
+					</template>
 				</el-table-column>
-				<el-table-column prop="address" label="实付金额">
+				<el-table-column prop="pay_type" label="支付方式">
+					<template slot-scope="scope">
+						<span v-if="scope.row.pay_type == 1">微信</span>
+						<span v-else-if="scope.row.pay_type == 2">支付宝</span>
+						<span v-else>{{ scope.row.pay_type }}</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="order_amount" label="订单金额">
+				</el-table-column>
+				<el-table-column prop="pay_amount" label="实付金额">
 				</el-table-column>
 			</el-table>
 		</div>
@@ -74,12 +96,12 @@
 			<span>
 				实际付款
 			</span>
-			<span>{{ data_list.money }}<i> 元</i></span>
+			<span>{{ data_list.pay_amount }}<i> 元</i></span>
 		</div>
 		<el-button
 			type="primary"
 			class="pay_btn"
-			v-if="data_list.order_type == 1"
+			v-if="data_list.state == 1"
 			@click="pay_money"
 			>立即支付</el-button
 		>
@@ -109,11 +131,11 @@ export default {
 			money: 0,
 			order_id: '',
 			tableData: [
-				{
-					date: '2016-05-02',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1518 弄',
-				},
+				// {
+				// 	date: '2016-05-02',
+				// 	name: '王小虎',
+				// 	address: '上海市普陀区金沙江路 1518 弄',
+				// },
 			],
 		};
 	},
@@ -138,12 +160,36 @@ export default {
 				document.documentElement.offsetHeight}`;
 		};
 		this.data_list = JSON.parse(this.$route.query.data);
-		this.money = this.data_list.money;
+		this.tableData = [JSON.parse(this.$route.query.data)];
+		console.log(this.data_list);
+		this.money = this.data_list.pay_amount;
 		this.order_id = String(this.data_list.order_id);
 	},
 	methods: {
 		pay_money() {
 			this.$refs.PayDialog.show_dia();
+			let pay_data = {
+				order_id: this.order_id,
+				pay_type: 1,
+				pay_amount: this.data_list.order_amount,
+			};
+			this.success_payment(pay_data);
+		},
+		//支付成功通知
+		success_payment(data) {
+			let params = {
+				order_id: data.order_id,
+				pay_type: data.pay_type, //1:微信 2:支付宝
+				pay_state: 1, //1:成功 2:异常
+				pay_amount: data.pay_amount, //单位:元
+			};
+			notify_payment(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.$message.success('支付成功');
+					}
+				})
+				.catch((error) => {});
 		},
 		// 表头样式设置
 		headClass() {
@@ -170,14 +216,14 @@ export default {
 	box-sizing: border-box;
 	text-align: left;
 	box-sizing: border-box;
-    padding: 40px;
-    padding-top: 10px;
+	padding: 40px;
+	padding-top: 10px;
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
-    margin: 36px;
-    background-color: #fff;
+	margin: 36px;
+	background-color: #fff;
 	.top_title {
-        margin-bottom: 20px;
-        font-size: 14px;
+		margin-bottom: 20px;
+		font-size: 14px;
 	}
 	h3 {
 		display: flex;
@@ -221,14 +267,14 @@ export default {
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-        margin-bottom: 30px;
-        width: 50%;
+		margin-bottom: 30px;
+		width: 50%;
 		li {
 			width: 50%;
 			display: flex;
 			line-height: 26px;
 			span {
-				width: 100px;
+				width: 110px;
 			}
 			.dai {
 				font-size: 14px;
@@ -276,10 +322,10 @@ export default {
 		}
 	}
 	.pay_btn {
-        margin-left: 20px;
-        background: #297AFF;
-        border-radius: 8px;
-        margin-left: 40px;
+		margin-left: 20px;
+		background: #297aff;
+		border-radius: 8px;
+		margin-left: 40px;
 	}
 }
 </style>

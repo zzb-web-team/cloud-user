@@ -17,6 +17,7 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
     var userUrl = 'http://service.kclgames.com';
     // var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
     var myurl = "http://10.0.0.75:8090"
+    var testurl = "http://test.zzb.com"
 }
 
 
@@ -324,21 +325,76 @@ export const ipfs_flow_summay = (params) => {
 };
 //查询流量包产品
 export const query_pktproduct = (params) => {
-    return post(`${userUrl}/pktproduct_mgmt/query_pktproduct`, params)
+    return post(`${testurl}/pktproduct_mgmt/query_pktproduct`, params)
 };
 //查询订单
-export const query_order = (params) => {
-    return post(`${userUrl}/order_mgmt/query_order`, params)
+export const query_pktorder_for_admin = (params) => {
+    return post(`${testurl}/pktorder_mgmt/query_pktorder_for_admin`, params)
 };
 //通知支付结果
 export const notify_payment = (params) => {
-    return post(`${userUrl}/order_mgmt/notify_payment`, params)
+    return post(`${testurl}/order_mgmt/notify_payment`, params)
+};
+//创建订单
+export const create_pktorder = (params) => {
+    return post(`${testurl}/pktorder_mgmt/create_pktorder`, params)
 };
 //删除订单
-export const del_order = (params) => {
-    return post(`${userUrl}/order_mgmt/del_order`, params)
+export const del_pktorder = (params) => {
+    return post(`${testurl}/pktorder_mgmt/del_pktorder`, params)
 };
 //营销查询
 export const query_adslot = (params) => {
-    return post(`${userUrl}/ad_mgmt/query_adslot`, params)
+    return post(`${testurl}/ad_mgmt/query_adslot`, params)
+};
+//查询当前待显示营销
+export const query_cur_adslot = (params) => {
+    return post(`${testurl}/ad_mgmt/query_cur_adslot`, params)
+};
+//查询用户当前可用流量包
+export const query_user_pkt = (params) => {
+    return post(`${testurl}/pktorder_mgmt/query_user_pkt`, params)
+};
+
+
+
+//开启/停止加速服务
+export const endbale_speedup = (params) => {
+    return post(`${testurl}/useraccount_mgmt/endbale_speedup`, params)
+};
+//更改收费方式
+export const change_chargetype = (params) => {
+    return post(`${testurl}/useraccount_mgmt/change_chargetype`, params)
+};
+//查询用户账户余额
+export const query_user_acount = (params) => {
+    return post(`${testurl}/useraccount_mgmt/query_user_acount`, params)
+};
+//开通按量计费
+export const setup_flowcharge = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/setup_flowcharge`, params)
+};
+//流量计费充值
+export const create_chargeorder = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/create_chargeorder`, params)
+};
+//通知支付结果
+export const mgmt_notify_payment = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/notify_payment`, params)
+};
+//查询充值记录
+export const query_chargeorder = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/query_chargeorder`, params)
+};
+//查询充值记录
+export const query_chargeorder_for_admin = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/query_chargeorder_for_admin`, params)
+};
+//查询账户流水
+export const query_user_sz = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/query_user_sz`, params)
+};
+//查询账户流水
+export const query_user_sz_for_admin = (params) => {
+    return post(`${testurl}/flowcharge_mgmt/query_user_sz_for_admin`, params)
 };

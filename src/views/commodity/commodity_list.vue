@@ -20,10 +20,11 @@
 						<el-button
 							type="primary"
 							size="mini"
+							style="width:70%;"
 							@click="go_pay_money(item, 1)"
 							>确认申请</el-button
 						>
-						<el-button size="mini">取消</el-button>
+						<!-- <el-button size="mini">取消</el-button> -->
 					</div>
 					<el-button
 						v-if="item.name == '流量包'"
@@ -48,38 +49,14 @@
 </template>
 
 <script>
+import { query_pktproduct,create_pktorder } from '../../servers/api';
 export default {
 	data() {
 		return {
 			clientHeight: '',
-			list: [
-				{
-					name: '新用户超值体验包',
-					second_name: '入门级小额体验包，低成本快速体验点播服务',
-					remake:
-						'新用户限时限量申请点播加速试用，付款成功后，您可以免费享有以下服务：',
-					text_title: '',
-					text:
-						'1、点播免费试用：24小时。2、点播流量：10GB。3、免费技术支持。4、开通后不退换。5、每位新用户仅可使用一次',
-					money: '1.00',
-				},
-				{
-					name: '流量包',
-					second_name: '冰点价来袭，随时随地畅所加速',
-					text_title: '点播流量包',
-					remake: '约10,000同时观看码率为500kbps的视频5小时 ',
-					text:
-						'1、赠一年短视频lincese精简版使用权。2、不限用户类型，每个用户限购10个。3、灵活流量包种类、流量，按需多选均可',
-				},
-				{
-					name: '按量计费包',
-					second_name: '按量计费，不浪费一丝一毫性价比之王',
-					remake:
-						'新用户限时限量申请点播加速试用，付款成功后，您可以免费享有以下服务：',
-					text:
-						'1、点播免费试用：24小时。2、点播流量：10GB。3、免费技术支持。',
-				},
-			],
+			user_id: JSON.parse(sessionStorage.getItem('id')),
+			pay_id: '',
+			list: [],
 		};
 	},
 	watch: {
@@ -88,6 +65,7 @@ export default {
 			this.changeFixed(this.clientHeight);
 		},
 	},
+	created() {},
 	mounted() {
 		let that = this;
 		that.clientHeight = `${document.documentElement.clientHeight ||
@@ -96,14 +74,27 @@ export default {
 			that.clientHeight = `${document.documentElement.clientHeight ||
 				document.documentElement.offsetHeight}`;
 		};
+		this.get_data_list();
 	},
 	methods: {
 		go_pay_money(row, type) {
 			if (type == 1) {
-				this.$router.push({
-					path: '/pre_payment',
-					query: { data: JSON.stringify(row) },
-				});
+				//创建订单
+				let params = {
+					user_id: this.user_id,
+					product_id: this.pay_id,
+					num: 1,
+				};
+				create_pktorder(params)
+					.then((res) => {
+						if (res.status == 0) {
+							this.$router.push({
+								path: '/pre_payment',
+								query: { data: JSON.stringify(res.data) },
+							});
+						}
+					})
+					.catch((error) => {});
 			} else if (type == 2) {
 				this.$router.push({
 					path: '/commodity_detil',
@@ -114,6 +105,54 @@ export default {
 					path: '/pay_dosage',
 				});
 			}
+		},
+		get_data_list() {
+			let params = {
+				page: 0,
+				product_name: '新用户超值体验包',
+				// start_time: parseInt(this.search_time[0] / 1000), //创建开始时间 单位:秒
+				// end_time: parseInt(this.search_time[1] / 1000),
+			};
+			query_pktproduct(params)
+				.then((res) => {
+					if (res.status == 0) {
+						this.list = [
+							{
+								name: '新用户超值体验包',
+								second_name:
+									'入门级小额体验包，低成本快速体验点播服务',
+								remake:
+									'新用户限时限量申请点播加速试用，付款成功后，您可以免费享有以下服务：',
+								text_title: '',
+								text:
+									'1、点播免费试用：24小时。2、点播流量：10GB。3、免费技术支持。4、开通后不退换。5、每位新用户仅可使用一次',
+							},
+							{
+								name: '流量包',
+								second_name: '冰点价来袭，随时随地畅所加速',
+								text_title: '点播流量包',
+								remake:
+									'约10,000同时观看码率为500kbps的视频5小时 ',
+								text:
+									'1、赠一年短视频lincese精简版使用权。2、不限用户类型，每个用户限购10个。3、灵活流量包种类、流量，按需多选均可',
+							},
+							{
+								name: '按量计费包',
+								second_name:
+									'按量计费，不浪费一丝一毫性价比之王',
+								remake:
+									'新用户限时限量申请点播加速试用，付款成功后，您可以免费享有以下服务：',
+								text:
+									'1、点播免费试用：24小时。2、点播流量：10GB。3、免费技术支持。',
+							},
+						];
+						this.pay_id = res.data.data[0].product_id;
+						this.list[0].money =
+							res.data.data[0].price * res.data.data[0].discount;
+					}
+					console.log(this.list[0]);
+				})
+				.catch((error) => {});
 		},
 		//查询屏幕高度自适应
 		changeFixed(data) {

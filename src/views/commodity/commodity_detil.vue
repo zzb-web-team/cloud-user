@@ -104,7 +104,7 @@ import PayDia from '../../components/payment_panel';
 import {
 	query_pktproduct,
 	create_pktorder,
-	notify_payment,
+	mgmt_notify_payment,
 } from '../../servers/api';
 export default {
 	data() {
@@ -120,51 +120,51 @@ export default {
 			order_id: '',
 			checked: false,
 			// current_price: 0, //现价
-			discount: 0.95, //折扣
-			original_price: 59.6, //原价
+			discount: 0, //折扣
+			original_price: 0, //原价
 			parameter_list: [
-				// {
-				// 	id: 1,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0.5,
-				// 	original_price: 20,
-				// },
-				// {
-				// 	id: 2,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0.6,
-				// 	original_price: 20,
-				// },
-				// {
-				// 	id: 3,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0.35,
-				// 	original_price: 55,
-				// },
-				// {
-				// 	id: 4,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0.2,
-				// 	original_price: 100,
-				// },
-				// {
-				// 	id: 5,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0,
-				// 	original_price: 99,
-				// },
-				// {
-				// 	id: 6,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0.1,
-				// 	original_price: 70,
-				// },
-				// {
-				// 	id: 7,
-				// 	name: '流量资源包 -100GB',
-				// 	discount: 0,
-				// 	original_price: 10,
-				// },
+				{
+					product_id: 1,
+					product_name: '流量资源包 -100GB',
+					discount: 0.5,
+					original_price: 20,
+				},
+				{
+					product_id: 2,
+					product_name: '流量资源包 -100GB',
+					discount: 0.6,
+					original_price: 20,
+				},
+				{
+					product_id: 3,
+					product_name: '流量资源包 -100GB',
+					discount: 0.35,
+					original_price: 55,
+				},
+				{
+					product_id: 4,
+					product_name: '流量资源包 -100GB',
+					discount: 0.2,
+					original_price: 100,
+				},
+				{
+					product_id: 5,
+					product_name: '流量资源包 -100GB',
+					discount: 0,
+					original_price: 99,
+				},
+				{
+					product_id: 6,
+					product_name: '流量资源包 -100GB',
+					discount: 0.1,
+					original_price: 70,
+				},
+				{
+					product_id: 7,
+					product_name: '流量资源包 -100GB',
+					discount: 0,
+					original_price: 10,
+				},
 			],
 			search_time: [
 				new Date(new Date().toLocaleDateString()).getTime() -
@@ -198,14 +198,16 @@ export default {
 			let params = {
 				page: 0,
 				product_name: '',
-				start_time: parseInt(this.search_time[0] / 1000), //创建开始时间 单位:秒
-				end_time: parseInt(this.search_time[1] / 1000),
+				// start_time: parseInt(this.search_time[0] / 1000), //创建开始时间 单位:秒
+				// end_time: parseInt(this.search_time[1] / 1000),
 			};
 			query_pktproduct(params)
 				.then((res) => {
 					if (res.status == 0) {
 						this.parameter_list = res.data.data;
 						this.pay_type = this.parameter_list[0].product_id;
+						this.discount = this.parameter_list[0].discount;
+						this.original_price = this.parameter_list[0].price;
 					}
 				})
 				.catch((error) => {});
@@ -244,6 +246,17 @@ export default {
 								Number(this.discount),
 						};
 						this.success_payment(pay_data);
+					} else if (res.status == -7) {
+						if (res.err_code == 458) {
+							this.$message({
+								message: '库存不足',
+								type: warning,
+							});
+						} else {
+							this.$message.error(res.err_msg);
+						}
+					} else {
+						this.$message.error(res.err_msg);
 					}
 				})
 				.catch((error) => {});
@@ -256,10 +269,12 @@ export default {
 				pay_state: 1, //1:成功 2:异常
 				pay_amount: data.pay_amount, //单位:元
 			};
-			notify_payment(params)
+			mgmt_notify_payment(params)
 				.then((res) => {
 					if (res.status == 0) {
 						this.$message.success('支付成功');
+					} else {
+						this.$message.error(res.err_msg);
 					}
 				})
 				.catch((error) => {});

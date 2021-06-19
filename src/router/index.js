@@ -67,6 +67,13 @@ import money_management from '@/views/money/money_management.vue';
 import recharge_management from '@/views/money/recharge_management.vue';
 import cost_list from '@/views/money/cost_list.vue';
 import bill from '@/views/money/bill.vue';
+import bill_deail from '@/views/money/bill_deail.vue';
+import upcoming from '@/views/money/upcoming.vue';
+
+
+//提现
+import withdraw_list from "../views/withdraw/withdraw_list.vue"
+import withdraw_detil from "../views/withdraw/withdraw_detil.vue"
 
 Vue.use(Router);
 
@@ -400,30 +407,57 @@ const router = new Router({
             hidden: true,
             icon: 'iconfont icon-zhongduanguanli',
             children: [{
-                path: '/money_management',
-                name: '资金管理',
-                component: money_management,
-                hidden: false,
-                icon: 'iconfont icon-zhongduanguanli',
-            }, {
-                path: '/recharge_management',
-                name: '充值管理',
-                component: recharge_management,
-                hidden: false,
-                icon: 'iconfont icon-zhongduanguanli',
-            }, {
-                path: '/cost_list',
-                name: '收支明细',
-                component: cost_list,
-                hidden: false,
-                icon: 'iconfont icon-zhongduanguanli',
-            }, {
-                path: '/bill',
-                name: '费用账单',
-                component: bill,
-                hidden: false,
-                icon: 'iconfont icon-zhongduanguanli',
-            }]
+                    path: '/money_management',
+                    name: '资金管理',
+                    component: money_management,
+                    hidden: false,
+                    icon: 'iconfont icon-zhongduanguanli',
+                }, {
+                    path: '/recharge_management',
+                    name: '充值管理',
+                    component: recharge_management,
+                    hidden: false,
+                    icon: 'iconfont icon-zhongduanguanli',
+                }, {
+                    path: '/cost_list',
+                    name: '收支明细',
+                    component: cost_list,
+                    hidden: false,
+                    icon: 'iconfont icon-zhongduanguanli',
+                }, {
+                    path: '/bill',
+                    name: '费用账单',
+                    component: bill,
+                    hidden: false,
+                    icon: 'iconfont icon-zhongduanguanli',
+                }, {
+                    path: '/bill_deail',
+                    name: '账单详情',
+                    component: bill_deail,
+                    hidden: true,
+                    icon: 'iconfont icon-zhongduanguanli',
+                }, {
+                    path: '/upcoming',
+                    name: '待办事件详情',
+                    component: upcoming,
+                    hidden: true,
+                    icon: 'iconfont icon-zhongduanguanli',
+                },
+                {
+                    path: '/withdraw_list',
+                    name: '提现管理',
+                    component: withdraw_list,
+                    hidden: false,
+                    icon: 'iconfont icon-zhongduanguanli',
+                },
+                {
+                    path: '/withdraw_detil',
+                    name: '提现详情',
+                    component: withdraw_detil,
+                    hidden: true,
+                    icon: 'iconfont icon-zhongduanguanli',
+                },
+            ]
         },
     ],
 });

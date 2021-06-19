@@ -141,6 +141,13 @@ export default {
 							message: '已开通按量计费',
 							type: 'success',
 						});
+					} else if (res.status == -7) {
+						if (res.err_code == 462) {
+							this.$message({
+								message: '加速服务未启用',
+								type: 'warning',
+							});
+						}
 					}
 				})
 				.catch((error) => {});

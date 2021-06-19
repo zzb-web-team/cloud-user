@@ -48,6 +48,12 @@
 						<p>待支付</p>
 						<div>￥100.00</div>
 					</div>
+					<el-button
+						size="small"
+						type="primary"
+						@click="go_upcoming()"
+						>查看</el-button
+					>
 				</div>
 				<div class="con_right_bottom">
 					<h4>公告</h4>
@@ -69,7 +75,12 @@
 <script>
 import echarts from 'echarts';
 import PopUps from '../../components/pop_ups';
-import { query_user_acount, query_user_sz,query_user_sz_for_admin,query_cur_adslot } from '../../servers/api';
+import {
+	query_user_acount,
+	query_user_sz,
+	query_user_sz_for_admin,
+	query_cur_adslot,
+} from '../../servers/api';
 export default {
 	data() {
 		return {
@@ -135,23 +146,20 @@ export default {
 			that.clientHeight = `${document.documentElement.clientHeight ||
 				document.documentElement.offsetHeight}`;
 		};
-		console.log(that.clientHeight);
-		setTimeout(() => {
-			this.set_echarts();
-		}, 500);
-        this.get_user_money();
-        this.get_search_data();
-        this.get_query_cur_adslot();
+		this.get_user_money();
+		this.get_search_data();
+		this.get_query_cur_adslot();
 	},
 	methods: {
 		show_popups(data) {
-            this.$refs.popups.show();
-            let obj={};
-            obj=data;
-            obj.name=data.title;
-            obj.con=data.redirect_url;
+			this.$refs.popups.show();
+			let obj = {};
+			obj = data;
+			obj.name = data.title;
+			obj.con = data.redirect_url;
 			this.con_text = data;
 		},
+
 		get_user_money() {
 			let params = {
 				user_id: this.user_id,
@@ -159,10 +167,14 @@ export default {
 			query_user_acount(params)
 				.then((res) => {
 					if (res.status == 0) {
-						this.balance = res.data.account;
+						console.log(res);
+						this.balance = res.data.balance;
 					}
 				})
 				.catch((error) => {});
+		},
+		go_upcoming() {
+			this.$router.push({ path: '/upcoming' });
 		},
 		go_recharge_management() {
 			this.$router.push({ path: '/recharge_management' });
@@ -176,26 +188,35 @@ export default {
 		get_search_data() {
 			let date = new Date();
 			let starttime =
-                date.getFullYear() + '-' + date.getMonth()+ '-' + "01";
-               console.log(starttime); 
+				date.getFullYear() + '-' + date.getMonth() + '-' + '01';
+			console.log(starttime);
 			let params = {
 				user_id: this.user_id, //用户ID
 				order_id: '', //交易单号
 				order_type: 2, //1:充值 2:扣费
 				pay_type: 0, //1:微信 2:支付宝 3:钱包
-				start_time:parseInt( new Date(starttime).getTime()/1000),
-				end_time: parseInt(new Date().getTime()/1000),
+				start_time: parseInt(new Date(starttime).getTime() / 1000),
+				end_time: parseInt(new Date().getTime() / 1000),
 				page: 0,
 				order: 0,
-            };
+			};
 			query_user_sz(params)
 				.then((res) => {
 					if (res.status == 0) {
+						let num = [],
+							data_time = [];
+						res.data.data.forEach((element) => {
+							num = num.push(element.amount);
+							data_time = data_time.push(element.order_time);
+							setTimeout(() => {
+								this.set_echarts(num, data_time);
+							}, 500);
+						});
 					}
 				})
 				.catch((error) => {});
-        },
-        get_query_cur_adslot() {
+		},
+		get_query_cur_adslot() {
 			let params = {
 				num: 10,
 			};
@@ -209,7 +230,7 @@ export default {
 					console.log(error);
 				});
 		},
-		set_echarts() {
+		set_echarts(data, time) {
 			let _this = this;
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
@@ -246,7 +267,8 @@ export default {
 					},
 				},
 				xAxis: {
-					data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+					// data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+					data: time,
 					axisTick: {
 						show: false,
 					},
@@ -260,7 +282,8 @@ export default {
 						type: 'line',
 						// barWidth: 30, //柱图宽度
 						barMaxWidth: 30,
-						data: [150, 230, 224, 218, 135, 147, 260],
+						// data: [150, 230, 224, 218, 135, 147, 260],
+						data: data,
 						smooth: false, //设置折线图的弧度
 						itemStyle: {
 							normal: {
@@ -354,6 +377,7 @@ ol {
 				}
 				.con_right_top_item {
 					padding-top: 15px;
+					margin-bottom: 15px;
 					p {
 						margin-bottom: 10px;
 					}

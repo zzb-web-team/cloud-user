@@ -4,21 +4,41 @@
 		<div class="content">
 			<div class="parameter_item">
 				<span>当前余额：</span>
-				<el-input
+				<span class="balance">￥ {{ balance }}</span>
+				<!-- <el-input
 					placeholder="请输入金额"
 					v-model="balance"
 					:disabled="true"
 				>
-				</el-input>
+				</el-input> -->
 			</div>
-			<div class="parameter_item">
+			<div class="parameter_item parameter_item_money">
 				<span>充值金额：</span>
+				<el-radio
+					v-model="money_num"
+					:label="item.id"
+					border
+					size="small"
+					@change="change_paraer(item, index)"
+					v-for="(item, index) in parameter_list"
+					:key="item.id"
+					v-bind:class="[index == 0 ? activeClass : '']"
+				>
+					{{ item.name }}</el-radio
+				>
 				<el-input
-					placeholder="请输入充值金额"
+					placeholder="￥"
 					v-model="amount"
+					@focus="amountFocus"
+					style="width:120px;margin-left: 10px;"
+					size="small"
 					oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
 				>
 				</el-input>
+				<i>查看</i>
+				<el-button type="text" @click="go_cost_list"
+					>充值记录</el-button
+				>
 			</div>
 			<div class="parameter_item">
 				<span>支付方式：</span>
@@ -34,10 +54,8 @@
 			<div class="parameter_item">
 				<div>
 					<el-checkbox v-model="pay_checked"
-						>我已阅读并同意<span class="link_text"
-							>《点播加速服务充值协议》</span
-						></el-checkbox
-					>
+						>我已了解<span class="link_text"></span
+					></el-checkbox>
 				</div>
 			</div>
 			<div class="parameter_item">
@@ -62,17 +80,40 @@
 </template>
 <script>
 import Recharge from '../../components/recharge';
-import { create_chargeorder, query_user_acount } from '../../servers/api';
+import {
+	create_chargeorder,
+	query_user_acount,
+	mgmt_notify_payment,
+} from '../../servers/api';
 export default {
 	data() {
 		return {
 			user_id: JSON.parse(sessionStorage.getItem('id')),
+			activeClass: 'activeClass',
 			clientHeight: '',
 			balance: 0,
-			amount: 0,
+			amount: null,
 			radio: '1',
 			pay_checked: false,
 			order_id: '1111111111112456',
+			money_num: 1,
+			parameter_list: [
+				{
+					id: 1,
+					num: 500,
+					name: '￥ 500.00',
+				},
+				{
+					id: 2,
+					num: 1000,
+					name: '￥ 1000.00',
+				},
+				{
+					id: 3,
+					num: 2000,
+					name: '￥ 2000.00',
+				},
+			],
 		};
 	},
 	components: { Recharge },
@@ -102,13 +143,13 @@ export default {
 	methods: {
 		pay_money() {
 			if (this.pay_checked == false) {
-				this.$alert('请勾选《点播加速服务充值协议》', '提示', {
+				this.$alert('请阅读并同意提示内容', '提示', {
 					confirmButtonText: '确定',
 					callback: (action) => {},
 				});
 				return false;
 			}
-			if (this.amount <= 0) {
+			if (this.amount <= 0 && this.money_num == 0) {
 				this.$alert('请输入有效充值金额', '提示', {
 					confirmButtonText: '确定',
 					callback: (action) => {},
@@ -119,6 +160,9 @@ export default {
 				user_id: this.user_id,
 				amount: Number(this.amount),
 			};
+			if (!this.amount && this.amount != 0) {
+				params.amount = this.parameter_list[this.money_num - 1].num;
+			}
 			create_chargeorder(params)
 				.then((res) => {
 					if (res.status == 0) {
@@ -131,6 +175,11 @@ export default {
 							pay_amount: params.amount,
 						};
 						this.success_payment(pay_data);
+					} else if (res.status == -7 && res.err_code == 464) {
+						this.$message({
+							message: '首次充值金额最低200元',
+							type: 'warning',
+						});
 					} else {
 						this.$message.error(res.msg);
 					}
@@ -145,14 +194,20 @@ export default {
 				pay_state: 1, //1:成功 2:异常
 				pay_amount: data.pay_amount, //单位:元
 			};
-			notify_payment(params)
+			mgmt_notify_payment(params)
 				.then((res) => {
 					if (res.status == 0) {
 						this.$message.success('支付成功');
+					} else if (res.status == -7 && res.err_code == 463) {
+						this.$message({
+							message: '未开通按量计费',
+							type: 'warning',
+						});
 					}
 				})
 				.catch((error) => {});
 		},
+		//查询用户余额
 		get_user_money() {
 			let params = {
 				user_id: this.user_id,
@@ -164,6 +219,18 @@ export default {
 					}
 				})
 				.catch((error) => {});
+		},
+		//切换金额
+		change_paraer(data, index) {
+			console.log(data, index);
+			this.amount = '';
+		},
+		//聚焦
+		amountFocus() {
+			this.money_num = 0;
+		},
+		go_cost_list() {
+			this.$router.push({ path: '/cost_list' });
 		},
 		//查询屏幕高度自适应
 		changeFixed(data) {
@@ -191,6 +258,7 @@ export default {
 	}
 	.content {
 		width: 50%;
+		min-width: 850px;
 		margin: auto;
 		.parameter_item {
 			display: flex;
@@ -200,6 +268,18 @@ export default {
 			margin-left: 80px;
 			span {
 				width: 100px;
+			}
+			.balance {
+				font-size: 16px;
+				font-weight: 600;
+			}
+			i {
+				font-style: normal;
+				margin-left: 10px;
+				margin-right: 5px;
+			}
+			.activeClass {
+				// margin-left: 10px;
 			}
 		}
 		.tips {

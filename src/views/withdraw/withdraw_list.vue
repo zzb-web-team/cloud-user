@@ -1,7 +1,7 @@
 <template>
 	<div class="order_list_com">
 		<div class="con_top">
-			<div class="t_title">收支明细</div>
+			<div class="t_title">提现记录</div>
 			<div class="title_seach">
 				<div class="search_left">
 					<el-row
@@ -10,9 +10,7 @@
 						class="title_seach_item"
 					>
 						<el-col>
-							<span class="item_title"
-								>交易单号</span
-							>
+							<span class="item_title">交易单号</span>
 							<el-input
 								v-model="order_id"
 								placeholder="请输入订单号"
@@ -22,17 +20,17 @@
 							></el-input>
 						</el-col>
 						<el-col>
-							<span class="item_title">渠道流水号</span>
+							<span class="item_title">交易账户</span>
 							<el-input
 								v-model="qu_id"
-								placeholder="请输入商品名称"
+								placeholder="请输入交易账户"
 								size="medium"
 								@change="onChanges"
 								style="width:60%;max-width:300px;"
 							></el-input>
 						</el-col>
 						<el-col>
-							<span class="item_title">支付方式</span>
+							<span class="item_title">状态</span>
 							<el-select
 								size="medium"
 								v-model="pay_type"
@@ -40,10 +38,10 @@
 								style="width:60%;max-width:300px;height:auto;"
 							>
 								<el-option label="全部" value="0"></el-option>
-								<el-option label="微信" value="1"></el-option>
-								<el-option label="支付宝" value="2"></el-option>
+								<el-option label="成功" value="1"></el-option>
+								<el-option label="审核中" value="2"></el-option>
 								<el-option
-									label="钱包扣费"
+									label="审核未通过"
 									value="3"
 								></el-option>
 							</el-select>
@@ -55,20 +53,7 @@
 						class="title_seach_item"
 					>
 						<el-col>
-							<span class="item_title">交易类型</span>
-							<el-select
-								size="medium"
-								v-model="order_type"
-								placeholder="请选择活动区域"
-								style="width:60%;max-width:300px;height:auto;"
-							>
-								<el-option label="全部" value="0"></el-option>
-								<el-option label="充值" value="1"></el-option>
-								<el-option label="扣费" value="2"></el-option>
-							</el-select>
-						</el-col>
-						<el-col>
-							<span class="item_title">&nbsp;&nbsp;&nbsp;&nbsp;创建时间</span>
+							<span class="item_title">创建时间</span>
 							<el-date-picker
 								size="medium"
 								v-model="search_time"
@@ -81,6 +66,7 @@
 							>
 							</el-date-picker>
 						</el-col>
+						<el-col> </el-col>
 						<el-col> </el-col>
 					</el-row>
 				</div>
@@ -100,41 +86,52 @@
 				:cell-style="rowClass"
 				:header-cell-style="headClass"
 			>
-				<el-table-column prop="order_idr" label="交易单号">
+				<el-table-column prop="order_id" label="交易单号">
 				</el-table-column>
-				<el-table-column prop="charge_time" label="交易时间">
+				<el-table-column prop="create_time" label="交易时间">
 					<template slot-scope="scope">{{
-						scope.row.charge_time | settimes
+						scope.row.create_time
 					}}</template>
 				</el-table-column>
 				<el-table-column prop="order_type" label="交易类型">
 					<template slot-scope="scope">
 						<span>{{
-							scope.row.order_type == 1 ? '充值' : '扣费'
+							scope.row.order_type == 1 ? '提现' : '扣费'
 						}}</span>
-					</template>
-				</el-table-column>
-				<el-table-column prop="amount" label="金额">
-					<template slot-scope="scope">
-						<span>{{ scope.row.order_type == 1 ? '+' : '-' }}</span>
-						<span>￥{{ scope.row.amount }}</span></template
-					>
-				</el-table-column>
-				<el-table-column prop="balance" label="余额"> </el-table-column>
-				<el-table-column prop="pay_type" label="交易渠道">
-					<template slot-scope="scope">
-						<span v-if="scope.row.pay_type == 1">微信</span>
-						<span v-else-if="scope.row.pay_type == 2">支付宝</span>
-						<span v-else>钱包</span>
 					</template>
 				</el-table-column>
 				<el-table-column
 					prop="serial_number"
-					label="渠道流水号"
+					label="提现账户"
 					width="220"
 				>
+					<template slot-scope="scope">
+						{{ scope.row.serial_number | setserial }}
+					</template>
 				</el-table-column>
-				<el-table-column prop="user_id" label="操作账号账号">
+				<el-table-column prop="money" label="金额">
+					<template slot-scope="scope">
+						<span>{{ scope.row.money }}</span></template
+					>
+				</el-table-column>
+				<el-table-column prop="specification" label="服务费">
+				</el-table-column>
+				<el-table-column prop="pay_type" label="状态">
+					<template slot-scope="scope">
+						<span v-if="scope.row.pay_type == 1">成功</span>
+						<span v-else-if="scope.row.pay_type == 2">审核中</span>
+						<span v-else>审核未通过</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="user_id" label="操作">
+					<template slot-scope="scope">
+						<el-button
+							@click="go_detil(scope.row)"
+							type="text"
+							size="small"
+							>查看详情</el-button
+						>
+					</template>
 				</el-table-column>
 			</el-table>
 			<div class="content_bottom" v-show="tableData.length > 0">
@@ -169,34 +166,34 @@ export default {
 			pageSize: 10, //每页数量
 			total_cnt: 0, //数据总量
 			tableData: [
-				// {
-				// 	order_id: 15049156199,
-				// 	visit_cnt: 150,
-				// 	name: '充值',
-				// 	user_information: '王小虎',
-				// 	serial_number: '20200511795515913124680',
-				// 	product_type: '流量包',
-				// 	num: 12,
-				// 	money: 140,
-				// 	specification: 3,
-				// 	pay_type: '微信',
-				// 	create_time: '2021-08-03 11:30:00',
-				// 	order_type: 1,
-				// },
-				// {
-				// 	order_id: 15049156402,
-				// 	visit_cnt: 366,
-				// 	name: '扣费',
-				// 	user_information: '王小虎',
-				// 	serial_number: '20200511795515913124680',
-				// 	product_type: '流量包',
-				// 	num: 12,
-				// 	money: 12540,
-				// 	specification: 3,
-				// 	pay_type: '支付宝',
-				// 	create_time: '2021-08-03 11:30:00',
-				// 	order_type: 1,
-				// },
+				{
+					order_id: 15049156199,
+					visit_cnt: 150,
+					name: '充值',
+					user_information: '王小虎',
+					serial_number: '20200511795515913124680',
+					product_type: '流量包',
+					num: 12,
+					money: 140,
+					specification: 3,
+					pay_type: 1,
+					create_time: '2021-08-03 11:30:00',
+					order_type: 1,
+				},
+				{
+					order_id: 15049156402,
+					visit_cnt: 366,
+					name: '扣费',
+					user_information: '王小虎',
+					serial_number: '20200511795515913124680',
+					product_type: '流量包',
+					num: 12,
+					money: 12540,
+					specification: 3,
+					pay_type: 2,
+					create_time: '2021-08-03 11:30:00',
+					order_type: 1,
+				},
 			],
 		};
 	},
@@ -216,6 +213,9 @@ export default {
 			} else {
 				return data;
 			}
+		},
+		setserial(num) { 
+			return num.substr(0, 4) + ' ****** ' + num.substr(num.length - 3);
 		},
 	},
 	watch: {
@@ -247,7 +247,6 @@ export default {
 			let params = {
 				user_id: this.user_id,
 				order_id: this.order_id, //交易单号
-				order_type: Number(this.order_type), //1:充值 2:扣费
 				pay_type: Number(this.pay_type), //1:微信 2:支付宝 3:钱包
 				start_time: parseInt(this.search_time[0] / 1000),
 				end_time: parseInt(this.search_time[1] / 1000),
@@ -272,6 +271,12 @@ export default {
 			this.search_time = [];
 			this.pageNo = 0;
 			this.onChanges();
+		},
+		go_detil(data) {
+			this.$router.push({
+				path: '/withdraw_detil',
+				query: { data: JSON.stringify(data) },
+			});
 		},
 		//获取页码
 		handleCurrentChange(pages) {

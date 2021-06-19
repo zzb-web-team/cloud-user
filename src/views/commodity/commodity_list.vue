@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { query_pktproduct,create_pktorder } from '../../servers/api';
+import { query_pktproduct, create_pktorder } from '../../servers/api';
 export default {
 	data() {
 		return {
@@ -91,6 +91,11 @@ export default {
 							this.$router.push({
 								path: '/pre_payment',
 								query: { data: JSON.stringify(res.data) },
+							});
+						} else if (res.status == -7 && res.err_code == 458) {
+							this.$message({
+								message: '库存不足，购买失败',
+								type: 'warning',
 							});
 						}
 					})

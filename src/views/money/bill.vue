@@ -10,6 +10,7 @@
 						v-model="search_time"
 						type="month"
 						placeholder="选择月"
+						value-format="yyyy-MM-dd"
 						style="width:40%;max-width:220px;"
 					>
 					</el-date-picker>
@@ -24,7 +25,12 @@
 		</div>
 		<div class="myChart">
 			<div id="myChart" :style="{ height: '607px' }"></div>
-			<el-radio-group v-model="radio" size="medium" class="echarts_radio">
+			<el-radio-group
+				v-model="radio"
+				size="medium"
+				class="echarts_radio"
+				@change="set_radio_time"
+			>
 				<el-radio-button label="近一个月"></el-radio-button>
 				<el-radio-button label="近半年"></el-radio-button>
 				<el-radio-button label="近一年"></el-radio-button>
@@ -45,7 +51,7 @@
 				</el-table-column>
 				<el-table-column prop="total_cost" label="总费用">
 				</el-table-column>
-				<el-table-column prop="deduction" label="扣费">
+				<!-- <el-table-column prop="deduction" label="扣费">
 				</el-table-column>
 				<el-table-column prop="money" label="欠费">
 					<template slot-scope="scope">{{
@@ -53,8 +59,17 @@
 							? '-' + (scope.row.total_cost - scope.row.deduction)
 							: 0
 					}}</template>
+				</el-table-column> -->
+				<el-table-column label="操作" prop="remakes">
+					<template slot-scope="scope">
+						<el-button
+							@click="handleClick(scope.row)"
+							type="text"
+							size="small"
+							>查看详情</el-button
+						>
+					</template>
 				</el-table-column>
-				<el-table-column label="备注" prop="remakes"> </el-table-column>
 			</el-table>
 			<div class="content_bottom">
 				<fenye
@@ -77,10 +92,10 @@ export default {
 		return {
 			user_id: JSON.parse(sessionStorage.getItem('id')),
 			clientHeight: '',
-			search_time: [],
+			search_time: new Date(),
 			starttime: '',
 			endtime: '',
-			pageNo: 1, //当前页码
+			pageNo: 0, //当前页码
 			pageSize: 10, //每页数量
 			total_cnt: 0, //数据总量
 			radio: '近一个月',
@@ -147,45 +162,79 @@ export default {
 			that.$refs.box_rHeight.style.height =
 				that.clientHeight - 334 + 'px';
 			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
-        }
-        this.onChanges();
-		this.set_echarts();
+		}
+		this.onChanges();
 	},
 	methods: {
-		onChanges() {
-			let date = new Date();
-			let starttime =
-				date.getFullYear() + '-' + date.getMonth() + '-' + '01';
-			console.log(starttime);
+		onChanges(y, m) {
 			let params = {
 				user_id: this.user_id, //用户ID
 				order_id: '', //交易单号
 				order_type: 2, //1:充值 2:扣费
 				pay_type: 0, //1:微信 2:支付宝 3:钱包
-				start_time: parseInt(this.search_time[0] / 1000),
-				end_time: parseInt(this.search_time[1] / 1000),
-				page: 0,
+				end_time: parseInt(new Date().getTime() / 1000),
+				page: this.pageNo,
 				order: 0,
 			};
+			if (!y) {
+				let time = new Date(); //当前月 要计算其他时间点自己传入即可
+				params.start_time = parseInt(
+					new Date(
+						time.getFullYear() +
+							'-' +
+							parseInt(time.getMonth() + 1) +
+							'-01 00:00:00'
+					).getTime() / 1000
+				);
+			} else {
+				params.start_time = parseInt(
+					new Date(y + '-' + m + '-01 00:00:00').getTime() / 1000
+				);
+			}
 			query_user_sz(params)
 				.then((res) => {
 					if (res.status == 0) {
-                        this.tableData=res.data.data;
-                        this.total_cnt=res.data.total;
+						this.tableData = res.data.data;
+						this.total_cnt = res.data.total;
+						let num = [],
+							data_time = [];
+						res.data.data.forEach((element) => {
+							num = num.push(element.amount);
+							data_time = data_time.push(element.order_time);
+							setTimeout(() => {
+								this.set_echarts(num, data_time);
+							}, 500);
+						});
 					}
 				})
 				.catch((error) => {});
 		},
-		reset() {},
+		set_radio_time() {
+			let time = new Date(); //当前月 要计算其他时间点自己传入即可
+			let year = time.getFullYear();
+			let month = parseInt(time.getMonth() + 1);
+			if (this.radio == '近一个月') {
+				this.onChanges(year, month);
+			} else if (this.radio == '近半年') {
+				let olddate = new Date(year, month - 6);
+				this.onChanges(olddate.getFullYear(), olddate.getMonth() + 1);
+			} else if (this.radio == '近一年') {
+				this.onChanges(year - 1, month);
+			}
+		},
+		reset() {
+			this.search_time = new Date();
+			this.onChanges();
+		},
 		handleClick(row) {
 			this.$router.push({
-				path: '/traffic_detil',
+				path: '/bill_deail',
 				query: {
 					data: JSON.stringify(row),
 				},
 			});
 		},
-		set_echarts() {
+		set_echarts(data, time) {
 			let _this = this;
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = this.$echarts.init(
@@ -240,7 +289,8 @@ export default {
 					},
 				},
 				xAxis: {
-					data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+					// data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+					data: time,
 					axisTick: {
 						show: false,
 					},
@@ -254,7 +304,8 @@ export default {
 						type: 'line',
 						// barWidth: 30, //柱图宽度
 						barMaxWidth: 30,
-						data: [150, 230, 224, 218, 135, 147, 260],
+						// data: [150, 230, 224, 218, 135, 147, 260],
+						data: data,
 						smooth: false, //设置折线图的弧度
 						itemStyle: {
 							normal: {
@@ -273,7 +324,7 @@ export default {
 		},
 		//获取页码
 		handleCurrentChange(pages) {
-			this.pageNo = pages;
+			this.pageNo = pages - 1;
 			this.onChanges();
 		},
 		handleSizeChange(pagesize) {

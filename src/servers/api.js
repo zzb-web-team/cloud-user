@@ -398,3 +398,7 @@ export const query_user_sz = (params) => {
 export const query_user_sz_for_admin = (params) => {
     return post(`${testurl}/flowcharge_mgmt/query_user_sz_for_admin`, params)
 };
+//查询账户流水
+export const query_help = (params) => {
+    return post(`${testurl}/help_mgmt/query_help`, params)
+};

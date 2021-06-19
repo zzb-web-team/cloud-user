@@ -58,6 +58,7 @@
 				<el-table-column prop="product_name" label="资源包名">
 				</el-table-column>
                 <el-table-column prop="product_type" label="产品类型">
+                     <template slot-scope="scope">流量包</template>
 				</el-table-column>
 				<el-table-column prop="size_spec" label="资源流量" width="120">
                     <template slot-scope="scope">{{(scope.row.size_spec) |set_gb}}</template>

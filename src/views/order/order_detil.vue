@@ -111,6 +111,7 @@
 
 <script>
 import PayDia from '../../components/payment_panel';
+import {mgmt_notify_payment} from "../../servers/api";
 export default {
 	data() {
 		return {
@@ -167,7 +168,7 @@ export default {
 	},
 	methods: {
 		pay_money() {
-			this.$refs.PayDialog.show_dia();
+			// this.$refs.PayDialog.show_dia();
 			let pay_data = {
 				order_id: this.order_id,
 				pay_type: 1,
@@ -183,7 +184,7 @@ export default {
 				pay_state: 1, //1:成功 2:异常
 				pay_amount: data.pay_amount, //单位:元
 			};
-			notify_payment(params)
+			mgmt_notify_payment(params)
 				.then((res) => {
 					if (res.status == 0) {
 						this.$message.success('支付成功');

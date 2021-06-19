@@ -102,6 +102,10 @@ export default {
 			that.clientHeight = `${document.documentElement.clientHeight ||
 				document.documentElement.offsetHeight}`;
 		};
+		this.charge_type = this.$route.query.type;
+		if (this.charge_type != 3) {
+			this.tableData = this.change_table_data;
+		}
 	},
 	methods: {
 		pay_money() {
@@ -114,7 +118,7 @@ export default {
 			}
 			let params = {
 				user_id: this.user_id,
-				charge_type: this.charge_type, //1:流量包计费 2:流量计费(日结) 3:流量计费(月结)
+				charge_type: this.charge_type != 3 ? 1 : 3, //1:流量包计费 2:流量计费(日结) 3:流量计费(月结)
 			};
 			change_chargetype(params)
 				.then((res) => {

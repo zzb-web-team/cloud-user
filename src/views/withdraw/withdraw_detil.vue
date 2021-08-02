@@ -1,6 +1,6 @@
 <template>
 	<div class="traffic_detil" ref="box_rHeight">
-		<div class="title_text">资金管理 > 提现 > 提现详情</div>
+		<div class="title_text">提现详情</div>
 		<div class="state">
 			<p v-if="title_data.pay_type == 1">
 				<i class="el-icon-success"></i>
@@ -41,12 +41,27 @@
 				<el-table-column prop="order_id" label="交易号">
 				</el-table-column>
 				<el-table-column prop="pay_type" label="交易类型">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.pay_type==1">提现</span>
+                        <span v-else-if="scope.row.pay_type==2"></span>
+                        <span v-else>提现</span>
+                    </template>
 				</el-table-column>
 				<el-table-column prop="collect_money" label="实收">
 				</el-table-column>
 				<el-table-column prop="service_charge" label="服务费">
 				</el-table-column>
 				<el-table-column prop="money" label="金额（单位：元）">
+					<template slot-scope="scope">
+						<span style="font-size:16px;color:#f59a23;">
+							{{
+								(
+									Number(scope.row.collect_money) +
+									Number(scope.row.money)
+								).toFixed(2)
+							}}
+						</span>
+					</template>
 				</el-table-column>
 			</el-table>
 			<div class="content_bottom">
@@ -68,26 +83,14 @@ export default {
 		return {
 			clientHeight: '',
 			tableData: [
-				// {
-				// 	date: '2016-05-02',
-				// 	name: '王小虎',
-				// 	address: '上海市普陀区金沙江路 1518 弄',
-				// },
-				// {
-				// 	date: '2016-05-04',
-				// 	name: '王小虎',
-				// 	address: '上海市普陀区金沙江路 1517 弄',
-				// },
-				// {
-				// 	date: '2016-05-01',
-				// 	name: '王小虎',
-				// 	address: '上海市普陀区金沙江路 1519 弄',
-				// },
-				// {
-				// 	date: '2016-05-03',
-				// 	name: '王小虎',
-				// 	address: '上海市普陀区金沙江路 1516 弄',
-				// },
+				{
+					service_charge: '12',
+					collect_money: '120',
+					address: '上海市普陀区金沙江路 1518 弄',
+					order_id: '1651616513465610651',
+					pay_type: 1,
+					money: 12,
+				},
 			],
 			pageNo: 1,
 			pageSize: 10,
@@ -158,6 +161,8 @@ export default {
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	.title_text {
 		margin-bottom: 40px;
+		font-size: 16px;
+		font-weight: 500;
 	}
 	.state {
 		margin-bottom: 20px;

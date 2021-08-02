@@ -1,6 +1,6 @@
 <template>
 	<div class="traffic_detil" ref="box_rHeight">
-		<div class="title_text">资金管理 > 费用账单 > 费用账单详情</div>
+		<div class="title_text">费用账单详情</div>
 		<div class="second_text">
 			<div>
 				<p>账单周期</p>
@@ -142,6 +142,8 @@ export default {
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	.title_text {
 		margin-bottom: 40px;
+        font-size: 16px;
+        font-weight: 500;
 	}
 	.second_text {
 		display: flex;

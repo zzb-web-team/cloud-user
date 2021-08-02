@@ -1,6 +1,6 @@
 <template>
 	<div class="pay_dosage" ref="box_rHeight">
-		<div class="top_title">概览 > 流量包商城 > 按量计费包</div>
+		<div class="top_title">按量计费包</div>
 		<div class="second_title">
 			当前配置
 		</div>

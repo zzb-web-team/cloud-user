@@ -368,7 +368,6 @@ export default {
 			height: 60px;
 			line-height: 70px;
 			text-align: left;
-			font-size: 18px;
 			color: #202020;
 		}
 		.title_seach {

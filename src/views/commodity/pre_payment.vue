@@ -1,6 +1,6 @@
 <template>
 	<div class="order_detil_con" ref="box_rHeight">
-		<div class="top_title">订单管理 > 订单详情</div>
+		<div class="top_title">订单详情</div>
 		<h3>
 			<span class="top_title_text">订单详情</span>
 		</h3>
@@ -172,7 +172,7 @@ export default {
 	background-color: #fff;
 	.top_title {
 		margin-bottom: 20px;
-		font-size: 14px;
+		font-size: 16px;
 	}
 	h3 {
 		display: flex;

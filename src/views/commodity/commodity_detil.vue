@@ -1,6 +1,6 @@
 <template>
 	<div class="commodity_detil" ref="box_rHeight">
-		<div class="top_title">概览 > 流量包商城 > 购买流量信息</div>
+		<!-- <div class="top_title">概览 > 流量包商城 > 购买流量信息</div> -->
 		<div class="second_title">点播加速流量包</div>
 		<div class="parameter_title">基本配置</div>
 		<div>

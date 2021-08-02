@@ -229,8 +229,7 @@ export default {
 				elem.hidden != true &&
 				elem.name != '节点流量统计' &&
 				elem.name != '播放统计' &&
-				elem.name != '资金管理' &&
-				elem.name != '提现管理'
+				elem.name != '资金管理'
 			) {
 				return elem;
 			}

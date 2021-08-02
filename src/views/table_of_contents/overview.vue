@@ -101,7 +101,7 @@
 						<div
 							id="myChart3"
 							:style="{
-								height: clientHeight - 650 + 'px',
+								height: clientHeight - 615 + 'px',
 								fontSize: '16px',
 							}"
 						></div>
@@ -264,26 +264,26 @@ export default {
 			uesr_endbale: {},
 			msg: [
 				// {
-				// 	name: '【新用户体验】',
-				// 	goods:
+				// 	title: '【新用户体验】',
+				// 	redirect_url:
 				// 		'点播流量包新用户限时体验，新注册用户每人可限时体验 ',
 				// },
 				// {
-				// 	name: '【限时秒杀】',
-				// 	goods: '点播流量包1.25元/GB起，还有多种优惠等你来',
+				// 	title: '【限时秒杀】',
+				// 	redirect_url: '点播流量包1.25元/GB起，还有多种优惠等你来',
 				// },
 				// {
-				// 	name: '【促销优惠】',
-				// 	goods:
+				// 	title: '【促销优惠】',
+				// 	redirect_url:
 				// 		'云点播提供媒资管理+短视频SDK+小程序插件等丰富的产品能力，9.9元起',
 				// },
 				// {
-				// 	name: '【春季新特惠】',
-				// 	goods: '点播流量包1元/GB起，还有存储、转码多种优惠等你来 ',
+				// 	title: '【春季新特惠】',
+				// 	redirect_url: '点播流量包1元/GB起，还有存储、转码多种优惠等你来 ',
 				// },
 				// {
-				// 	name: '【超值特惠】',
-				// 	goods:
+				// 	title: '【超值特惠】',
+				// 	redirect_url:
 				// 		'点播流量包0.09元/GB起，还有存储、转码、加速多种优惠等你来 ',
 				// },
 			],
@@ -757,6 +757,7 @@ export default {
 				margin: 0 24px 15px 25px;
 				background-color: #f8fafef2;
 				box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
+                min-height: 186px;
 				.left_img {
 					width: 80px;
 					display: flex;

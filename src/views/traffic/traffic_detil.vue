@@ -1,6 +1,6 @@
 <template>
 	<div class="traffic_detil" ref="box_rHeight">
-		<div class="title_text">流量包管理 > 流量包使用明细</div>
+		<div class="title_text">流量包使用明细</div>
 		<div class="second_text">
 			<div>
 				<span>产品名称</span><span>{{ title_data.product_name }}</span>
@@ -12,7 +12,8 @@
 				<span>数量</span><span>{{ title_data.num }}</span>
 			</div>
 			<div>
-				<span>产品类型</span><span>{{ title_data.product_type }}</span>
+				<span>产品类型</span
+				><span>{{ title_data.product_type || '流量包' }}</span>
 			</div>
 		</div>
 		<div>
@@ -25,9 +26,10 @@
 			>
 				<!-- <el-table-column prop="name" label="加速内容" >
 				</el-table-column> -->
-				<el-table-column prop="date" label="加速时间" >
+				<el-table-column prop="date" label="加速时间">
 				</el-table-column>
-				<el-table-column prop="address" label="流量使用"> </el-table-column>
+				<el-table-column prop="address" label="流量使用">
+				</el-table-column>
 			</el-table>
 			<div class="content_bottom">
 				<fenye
@@ -43,10 +45,12 @@
 
 <script>
 import fenye from '@/components/fenye';
+import { query_pktuse_info } from '../../servers/api';
 export default {
 	data() {
 		return {
 			clientHeight: '',
+			user_id: JSON.parse(sessionStorage.getItem('id')),
 			tableData: [
 				// {
 				// 	date: '2016-05-02',
@@ -69,7 +73,7 @@ export default {
 				// 	address: '上海市普陀区金沙江路 1516 弄',
 				// },
 			],
-			pageNo: 1,
+			pageNo: 0,
 			pageSize: 10,
 			total_cnt: 0,
 			title_data: {},
@@ -85,7 +89,7 @@ export default {
 		},
 	},
 	mounted() {
-        this.title_data = JSON.parse(this.$route.query.data);
+		this.title_data = JSON.parse(this.$route.query.data);
 		let that = this;
 		that.clientHeight = `${document.documentElement.clientHeight ||
 			document.documentElement.offsetHeight}`; //获取浏览器可视区域高度
@@ -99,12 +103,26 @@ export default {
 			that.$refs.box_rHeight.style.minHeight = 500 + 'px';
 		}
 		console.log(that.$refs.box_rHeight.style.minHeight);
+		this.get_data();
 	},
 	methods: {
+		get_data() {
+			let params = {
+				user_id: this.user_id,
+				order_id: this.title_data.order_id,
+				page: this.pageNo,
+			};
+			query_pktuse_info(params)
+				.then((res) => {
+					if (res.status == 0) {
+					}
+				})
+				.catch((error) => {});
+		},
 		//获取页码
 		handleCurrentChange(pages) {
-			this.pageNo = pages;
-			this.onChanges();
+			this.pageNo = pages - 1;
+			this.get_data();
 		},
 		handleSizeChange(pagesize) {
 			this.pageSize = pagesize;
@@ -138,6 +156,8 @@ export default {
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	.title_text {
 		margin-bottom: 40px;
+		font-size: 16px;
+		font-weight: 500;
 	}
 	.second_text {
 		display: flex;

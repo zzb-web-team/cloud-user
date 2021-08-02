@@ -1,6 +1,6 @@
 <template>
 	<div class="change_billing" ref="box_rHeight">
-		<div class="top_title">概览 > 变更计费方式</div>
+		<div class="top_title">变更计费方式</div>
 		<div class="second_title">变更配置</div>
 		<ol class="detailed_table">
 			<li class="header">

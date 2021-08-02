@@ -379,13 +379,12 @@ export default {
 		padding: 20px 30px;
 		.t_title {
 			// margin-bottom: 20px;
-			font-size: 16px;
 			font-weight: 500;
 			width: 100%;
 			height: 60px;
 			line-height: 70px;
 			text-align: left;
-			font-size: 18px;
+			font-size: 16px;
 			color: #202020;
 		}
 		.title_seach {

@@ -86,11 +86,11 @@
 				:cell-style="rowClass"
 				:header-cell-style="headClass"
 			>
-				<el-table-column prop="order_id" label="交易单号">
+				<el-table-column prop="order_idr" label="交易单号">
 				</el-table-column>
-				<el-table-column prop="create_time" label="交易时间">
+				<el-table-column prop="charge_time" label="交易时间">
 					<template slot-scope="scope">{{
-						scope.row.create_time
+						common.getTimes(scope.row.charge_time*1000)
 					}}</template>
 				</el-table-column>
 				<el-table-column prop="order_type" label="交易类型">
@@ -166,34 +166,34 @@ export default {
 			pageSize: 10, //每页数量
 			total_cnt: 0, //数据总量
 			tableData: [
-				{
-					order_id: 15049156199,
-					visit_cnt: 150,
-					name: '充值',
-					user_information: '王小虎',
-					serial_number: '20200511795515913124680',
-					product_type: '流量包',
-					num: 12,
-					money: 140,
-					specification: 3,
-					pay_type: 1,
-					create_time: '2021-08-03 11:30:00',
-					order_type: 1,
-				},
-				{
-					order_id: 15049156402,
-					visit_cnt: 366,
-					name: '扣费',
-					user_information: '王小虎',
-					serial_number: '20200511795515913124680',
-					product_type: '流量包',
-					num: 12,
-					money: 12540,
-					specification: 3,
-					pay_type: 2,
-					create_time: '2021-08-03 11:30:00',
-					order_type: 1,
-				},
+				// {
+				// 	order_id: 15049156199,
+				// 	visit_cnt: 150,
+				// 	name: '充值',
+				// 	user_information: '王小虎',
+				// 	serial_number: '20200511795515913124680',
+				// 	product_type: '流量包',
+				// 	num: 12,
+				// 	money: 140,
+				// 	specification: 3,
+				// 	pay_type: 1,
+				// 	create_time: '2021-08-03 11:30:00',
+				// 	order_type: 1,
+				// },
+				// {
+				// 	order_id: 15049156402,
+				// 	visit_cnt: 366,
+				// 	name: '扣费',
+				// 	user_information: '王小虎',
+				// 	serial_number: '15616515644545641311131',
+				// 	product_type: '流量包',
+				// 	num: 12,
+				// 	money: 12540,
+				// 	specification: 3,
+				// 	pay_type: 2,
+				// 	create_time: '2021-08-03 11:30:00',
+				// 	order_type: 1,
+				// },
 			],
 		};
 	},
@@ -215,6 +215,7 @@ export default {
 			}
 		},
 		setserial(num) { 
+           if(!num) return;
 			return num.substr(0, 4) + ' ****** ' + num.substr(num.length - 3);
 		},
 	},
@@ -324,7 +325,6 @@ export default {
 			height: 60px;
 			line-height: 70px;
 			text-align: left;
-			font-size: 18px;
 			color: #202020;
 		}
 		.title_seach {

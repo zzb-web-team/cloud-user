@@ -1,6 +1,6 @@
 <template>
 	<div class="traffic_detil" ref="box_rHeight">
-		<div class="title_text">资金管理 > 待办提醒</div>
+		<div class="title_text">待办提醒</div>
 		<div class="second_text">
 			<div>
 				<p>名称</p>
@@ -151,6 +151,7 @@ export default {
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	.title_text {
 		margin-bottom: 40px;
+        font-weight: 500;font-size: 16px;
 	}
 	.second_text {
 		display: flex;

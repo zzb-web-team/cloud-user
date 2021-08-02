@@ -16,7 +16,7 @@ if (href.indexOf('xyj.grapefruitcloud.com') >= 0) {
     // var userUrl = 'http://www.forteatime.com';
     var userUrl = 'http://service.kclgames.com';
     // var userUrl = 'http://xyj.grapefruitcloud.com'; //PHP服务URL
-    var myurl = "http://10.0.0.75:8090"
+    // var myurl = "http://10.0.0.75:8090"
     var testurl = "http://test.zzb.com"
 }
 
@@ -321,7 +321,7 @@ export const export_manage_dataflow_table_file = (params) =>
 
 //首页概览数据
 export const ipfs_flow_summay = (params) => {
-    return post(`${myurl}/resource_manage/ipfs_flow_summay`, params)
+    return post(`${userUrl}/resource_manage/ipfs_flow_summay`, params)
 };
 //查询流量包产品
 export const query_pktproduct = (params) => {
@@ -401,4 +401,8 @@ export const query_user_sz_for_admin = (params) => {
 //查询账户流水
 export const query_help = (params) => {
     return post(`${testurl}/help_mgmt/query_help`, params)
+};
+//流量包使用详情
+export const query_pktuse_info = (params) => {
+    return post(`${testurl}/pktorder_mgmt/query_pktuse_info`, params)
 };

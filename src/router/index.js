@@ -74,6 +74,8 @@ import upcoming from '@/views/money/upcoming.vue';
 //提现
 import withdraw_list from "../views/withdraw/withdraw_list.vue"
 import withdraw_detil from "../views/withdraw/withdraw_detil.vue"
+import withdraw_deposit from "../views/withdraw/withdraw_deposit.vue"
+import add_bankcard from "../views/withdraw/add_bankcard.vue"
 
 Vue.use(Router);
 
@@ -455,6 +457,20 @@ const router = new Router({
                     name: '提现详情',
                     component: withdraw_detil,
                     hidden: true,
+                    icon: 'iconfont icon-zhongduanguanli',
+                },
+                {
+                    path: '/withdraw_deposit',
+                    name: '提现',
+                    component: withdraw_deposit,
+                    hidden: false,
+                    icon: 'iconfont icon-zhongduanguanli',
+                },
+                {
+                    path: '/add_bankcard',
+                    name: '添加银行卡',
+                    component: add_bankcard,
+                    hidden: false,
                     icon: 'iconfont icon-zhongduanguanli',
                 },
             ]

@@ -1,6 +1,6 @@
 <template>
 	<div class="commodity_con" ref="box_rHeight">
-		<div class="top_title">概览 > 流量包商城</div>
+		<div class="top_title">流量包商城</div>
 		<ol>
 			<li v-for="(item, index) in list" :key="index">
 				<div class="item_title">
@@ -182,7 +182,7 @@ export default {
 	box-shadow: 0px 0px 6px 0px rgba(51, 51, 51, 0.16);
 	position: relative;
 	.top_title {
-		font-size: 14px;
+		font-size: 16px;
 	}
 	ol {
 		position: absolute;
